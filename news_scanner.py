@@ -1,4 +1,3 @@
-```python
 import html
 import re
 from datetime import datetime, timezone
@@ -1859,4 +1858,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
