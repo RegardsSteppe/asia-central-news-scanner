@@ -30,9 +30,10 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
+        shell: bash
         run: |
-        set -o pipefail        # pipeline retourne l'exit code réel si une commande échoue
-        python -u -c "from news_scanner import fetch_all_news, send_email; news_data = fetch_all_news(); send_email(news_data)" 2>&1 | tee news_scanner.log
+          set -o pipefail        # pipeline retourne l'exit code réel si une commande échoue
+          python -u -c "from news_scanner import fetch_all_news, send_email; news_data = fetch_all_news(); send_email(news_data)" 2>&1 | tee news_scanner.log
       
       - name: Upload logs
         if: always()
