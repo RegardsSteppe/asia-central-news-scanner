@@ -1433,7 +1433,7 @@ def show_memory():
         print()
 
         print(
-            f"[{level}] {score}/20 | "
+            f"[{level}] {score}/100 | "
             f"{source}"
         )
 
@@ -1589,7 +1589,7 @@ def scan_news():
     for article in selected:
 
         logger.info(
-            "[%s] %d/20 | %s | %s | %s",
+            "[%s] %d/100 | %s | %s | %s",
             article.get(
                 "level",
                 "D",
