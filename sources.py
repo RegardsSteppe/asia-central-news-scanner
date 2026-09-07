@@ -57,6 +57,60 @@ SOURCES = [
     },
 
     # ========================================================
+    # INVESTIGATION / DROITS HUMAINS
+    # ========================================================
+
+    {
+        "name": "OCCRP",
+        "short_name": "OCCRP",
+        "profile": "investigative",
+        "label": "International · investigation",
+        "type": "html",
+        "url": "https://www.occrp.org/en/",
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Human Rights Watch",
+        "short_name": "HRW",
+        "profile": "human_rights",
+        "label": "International · droits humains",
+        "type": "html",
+        "url": "https://www.hrw.org/",
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Amnesty International",
+        "short_name": "Amnesty",
+        "profile": "human_rights",
+        "label": "International · droits humains",
+        "type": "html",
+        "url": "https://www.amnesty.org/",
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Committee to Protect Journalists",
+        "short_name": "CPJ",
+        "profile": "human_rights",
+        "label": "International · liberté de la presse",
+        "type": "html",
+        "url": "https://cpj.org/",
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Reporters Without Borders",
+        "short_name": "RSF",
+        "profile": "human_rights",
+        "label": "International · liberté de la presse",
+        "type": "html",
+        "url": "https://rsf.org/",
+        "max_articles": 100,
+    },
+
+    # ========================================================
     # MÉDIAS RÉGIONAUX INDÉPENDANTS
     # ========================================================
 
@@ -111,6 +165,126 @@ SOURCES = [
     },
 
     # ========================================================
+    # KAZAKHSTAN
+    # ========================================================
+
+    {
+        "name": "Vlast",
+        "short_name": "Vlast",
+        "profile": "regional_independent",
+        "label": "Régional · Kazakhstan",
+        "type": "html",
+        "url": "https://vlast.kz/",
+        "max_articles": 120,
+    },
+
+    {
+        "name": "Radio Azattyq",
+        "short_name": "Azattyq",
+        "profile": "international_independent",
+        "label": "International · Kazakhstan",
+        "type": "html",
+        "url": "https://www.azattyq.org/",
+        "max_articles": 120,
+    },
+
+    # ========================================================
+    # KIRGHIZISTAN
+    # ========================================================
+
+    {
+        "name": "Kloop",
+        "short_name": "Kloop",
+        "profile": "investigative",
+        "label": "Investigation · Kirghizistan",
+        "type": "html",
+        "url": "https://kloop.kg/",
+        "max_articles": 120,
+    },
+
+    {
+        "name": "24.kg",
+        "short_name": "24.kg",
+        "profile": "regional_media",
+        "label": "Régional · Kirghizistan",
+        "type": "html",
+        "url": "https://24.kg/",
+        "max_articles": 120,
+    },
+
+    # ========================================================
+    # TADJIKISTAN
+    # ========================================================
+
+    {
+        "name": "Asia-Plus",
+        "short_name": "Asia-Plus",
+        "profile": "regional_independent",
+        "label": "Régional · Tadjikistan",
+        "type": "html",
+        "url": "https://asiaplustj.info/en",
+        "max_articles": 120,
+    },
+
+    {
+        "name": "Radio Ozodi",
+        "short_name": "Ozodi",
+        "profile": "international_independent",
+        "label": "International · Tadjikistan",
+        "type": "html",
+        "url": "https://www.ozodi.org/",
+        "max_articles": 120,
+    },
+
+    # ========================================================
+    # OUZBÉKISTAN
+    # ========================================================
+
+    {
+        "name": "Gazeta.uz",
+        "short_name": "Gazeta.uz",
+        "profile": "regional_media",
+        "label": "Régional · Ouzbékistan",
+        "type": "html",
+        "url": "https://www.gazeta.uz/en/",
+        "max_articles": 120,
+    },
+
+    {
+        "name": "Kun.uz",
+        "short_name": "Kun.uz",
+        "profile": "regional_media",
+        "label": "Régional · Ouzbékistan",
+        "type": "html",
+        "url": "https://kun.uz/en",
+        "max_articles": 120,
+    },
+
+    # ========================================================
+    # TURKMÉNISTAN
+    # ========================================================
+
+    {
+        "name": "Turkmen.News",
+        "short_name": "Turkmen.News",
+        "profile": "human_rights",
+        "label": "Indépendant · Turkménistan",
+        "type": "html",
+        "url": "https://turkmen.news/",
+        "max_articles": 120,
+    },
+
+    {
+        "name": "Chronicles of Turkmenistan",
+        "short_name": "Chronicles",
+        "profile": "human_rights",
+        "label": "Indépendant · Turkménistan",
+        "type": "html",
+        "url": "https://en.hronikatm.com/",
+        "max_articles": 120,
+    },
+
+    # ========================================================
     # CAUCASE
     # ========================================================
 
@@ -126,44 +300,64 @@ SOURCES = [
 ]
 
 
+# ============================================================
+# PROFILS DES SOURCES
+# ============================================================
+
 SOURCE_PROFILES = {
 
     "international_independent": {
         "name": "International · indépendant",
         "description": (
-            "Média international à couverture "
-            "indépendante."
+            "Média international indépendant ou à forte "
+            "autonomie éditoriale."
         ),
     },
 
     "independent": {
         "name": "Indépendant",
         "description": (
-            "Média indépendant spécialisé "
-            "sur la région."
+            "Média indépendant spécialisé sur l'Asie centrale."
         ),
     },
 
     "international_analysis": {
         "name": "International · analyse",
         "description": (
-            "Publication internationale orientée "
-            "analyse et géopolitique."
+            "Publication internationale orientée analyse, "
+            "géopolitique et politique régionale."
         ),
     },
 
     "regional_independent": {
         "name": "Régional · indépendant",
         "description": (
-            "Média régional indépendant."
+            "Média régional indépendant couvrant "
+            "l'actualité politique et sociale."
         ),
     },
 
     "regional_media": {
         "name": "Média régional",
         "description": (
-            "Média régional couvrant notamment "
-            "la politique et l'actualité."
+            "Média régional couvrant notamment la politique, "
+            "l'économie et l'actualité."
+        ),
+    },
+
+    "investigative": {
+        "name": "Investigation",
+        "description": (
+            "Source spécialisée dans le journalisme "
+            "d'investigation, la corruption ou les abus de pouvoir."
+        ),
+    },
+
+    "human_rights": {
+        "name": "Droits humains",
+        "description": (
+            "Source spécialisée dans les droits humains, "
+            "les libertés fondamentales et/ou la liberté de la presse."
         ),
     },
 }
