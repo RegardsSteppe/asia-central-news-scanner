@@ -1,11 +1,11 @@
-import re
+```python
 import html
-import logging
+import re
 from datetime import datetime, timezone
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
-import requests
 import feedparser
+import requests
 from bs4 import BeautifulSoup
 
 
@@ -13,603 +13,521 @@ from bs4 import BeautifulSoup
 # CONFIGURATION
 # ============================================================
 
-REQUEST_TIMEOUT = 20
-
 MAX_FEED_ENTRIES = 40
 MAX_HTML_ARTICLES = 30
+ARTICLES_TO_DISPLAY = 10
 ARTICLE_PAGE_FETCH_LIMIT = 20
 
-# Nombre d'articles affichés sur GitHub Pages
-ARTICLES_TO_DISPLAY = 10
+REQUEST_TIMEOUT = 20
 
 HEADERS = {
     "User-Agent": (
-        "Mozilla/5.0 (compatible; AsiaCentralNewsScanner/3.0; "
+        "Mozilla/5.0 (compatible; AsiaCentralNewsScanner/3.1; "
         "+https://github.com/RegardsSteppe/asia-central-news-scanner)"
     )
 }
 
 
-# ============================================================
-# SOURCES
-# ============================================================
-
-SOURCES = [
+TOP_NEWS_SOURCES = [
     {
         "name": "Eurasianet",
         "url": "https://eurasianet.org/",
-        "rss": [
-            "https://eurasianet.org/main-rss-feed",
-        ],
     },
     {
         "name": "Cabar.asia",
-        "url": "https://cabar.asia/",
-        "rss": [
-            "https://cabar.asia/ru/feed",
-            "https://cabar.asia/feed",
-        ],
-    },
-    {
-        "name": "Azernews",
-        "url": "https://www.azernews.az/",
-        "rss": [],
+        "url": "https://cabar.asia/en/",
     },
     {
         "name": "Radio Free Europe / Radio Liberty",
         "url": "https://www.rferl.org/",
-        "rss": [],
-        "rss_directory": "https://www.rferl.org/rssfeeds",
+    },
+    {
+        "name": "Azernews",
+        "url": "https://www.azernews.az/",
     },
 ]
 
 
 # ============================================================
-# CENTRAL ASIA — LARGE VOCABULARY
+# KEYWORDS
 # ============================================================
 
-# Noms des pays en anglais
-COUNTRY_TERMS_EN = {
-    "Kazakhstan": [
-        "kazakhstan",
-        "kazakh",
-        "kazakhstani",
-        "kazakhstan's",
-    ],
-    "Kyrgyzstan": [
-        "kyrgyzstan",
-        "kyrgyz",
-        "kyrgyzstan's",
-        "kirghizstan",
-        "kirghiz",
-    ],
-    "Tajikistan": [
-        "tajikistan",
-        "tajik",
-        "tajikistan's",
-    ],
-    "Turkmenistan": [
-        "turkmenistan",
-        "turkmen",
-        "turkmenistan's",
-    ],
-    "Uzbekistan": [
-        "uzbekistan",
-        "uzbek",
-        "uzbekistan's",
-    ],
-}
-
-# Noms en russe
-COUNTRY_TERMS_RU = {
-    "Kazakhstan": [
-        "казахстан",
-        "казахстанский",
-        "казах",
-        "казахский",
-    ],
-    "Kyrgyzstan": [
-        "кыргызстан",
-        "киргизстан",
-        "кыргызский",
-        "киргизский",
-        "кыргыз",
-        "киргиз",
-    ],
-    "Tajikistan": [
-        "таджикистан",
-        "таджикский",
-        "таджик",
-    ],
-    "Turkmenistan": [
-        "туркменистан",
-        "туркменский",
-        "туркмен",
-    ],
-    "Uzbekistan": [
-        "узбекистан",
-        "узбекский",
-        "узбек",
-    ],
-}
-
-# Expressions régionales
-REGIONAL_TERMS = [
-    # English
+CENTRAL_ASIA_TERMS = [
+    # Regional
     "central asia",
     "central asian",
-    "central asian states",
-    "central asian countries",
-    "central asian region",
-    "post-soviet central asia",
-    "former soviet central asia",
-
-    # Russian
     "центральная азия",
-    "центральноазиатский",
-    "центральноазиатские",
-    "страны центральной азии",
-    "государства центральной азии",
-    "региона центральной азии",
+    "центральной азии",
+    "центральную азию",
+    "центральноазиат",
+
+    # Kazakhstan
+    "kazakhstan",
+    "kazakh",
+    "kazakhstani",
+    "казахстан",
+    "казахстана",
+    "казахстане",
+    "казахстанский",
+    "казах",
+
+    # Kyrgyzstan
+    "kyrgyzstan",
+    "kyrgyz",
+    "киргизия",
+    "киргизии",
+    "киргизстан",
+    "кыргызстан",
+    "кыргызский",
+    "кыргыз",
+
+    # Tajikistan
+    "tajikistan",
+    "tajik",
+    "таджикистан",
+    "таджикистане",
+    "таджикский",
+    "таджик",
+
+    # Turkmenistan
+    "turkmenistan",
+    "turkmen",
+    "туркменистан",
+    "туркменистане",
+    "туркменский",
+    "туркмен",
+
+    # Uzbekistan
+    "uzbekistan",
+    "uzbek",
+    "узбекистан",
+    "узбекистана",
+    "узбекистане",
+    "узбекский",
+    "узбек",
+
+    # Optional broader regional context
+    "tashkent",
+    "ташкент",
+    "astana",
+    "астана",
+    "almaty",
+    "алматы",
+    "bishkek",
+    "бишкек",
+    "dushanbe",
+    "душанбе",
+    "ashgabat",
+    "ашхабад",
+    "ashkhabad",
+    "samarkand",
+    "самарканд",
 ]
 
 
-# Pays / acteurs proches qui peuvent être très importants pour
-# l'actualité d'Asie centrale.
-REGIONAL_ACTORS = [
-    # Russie
-    "russia",
-    "russian",
-    "russia's",
-    "moscow",
-    "kremlin",
-    "putin",
-    "россия",
-    "российский",
-    "российская",
-    "российские",
-    "москва",
-    "кремль",
-    "путин",
-
-    # Chine
-    "china",
-    "chinese",
-    "beijing",
-    "xi jinping",
-    "китай",
-    "китайский",
-    "пекин",
-    "си цзиньпин",
-
-    # Afghanistan
-    "afghanistan",
-    "afghan",
-    "афганистан",
-    "афганский",
-
-    # Iran
-    "iran",
-    "iranian",
-    "tehran",
-    "иран",
-    "иранский",
-    "тегеран",
-
-    # Caucasus / corridors
-    "azerbaijan",
-    "azerbaijani",
-    "armenia",
-    "georgia",
-    "азербайджан",
-    "азербайджанский",
-    "армения",
-    "армянский",
-    "грузия",
-    "грузинский",
-
-    # Turkey
-    "turkey",
-    "turkish",
-    "ankara",
-    "турция",
-    "турецкий",
-    "анкара",
-
-    # EU / US — important for regional geopolitics
-    "european union",
-    "eu",
-    "united states",
-    "washington",
-    "евросоюз",
-    "европейский союз",
-    "сша",
-    "вашингтон",
-]
-
-
-# ============================================================
-# TOPICS
-# ============================================================
-
-# Droits humains / dissidence
-HUMAN_RIGHTS_TERMS = [
-    # English
+# Level A: human rights / dissidence / repression
+STRONG_HR_TERMS = [
     "human rights",
-    "human rights abuses",
-    "rights violations",
+    "human rights violation",
+    "human rights violations",
     "rights violation",
-    "civil rights",
-    "freedom of speech",
-    "freedom of expression",
-    "freedom of press",
-    "press freedom",
-    "free speech",
+    "rights violations",
     "political prisoner",
     "political prisoners",
+    "political arrest",
+    "political arrests",
+    "arrested activist",
+    "arrested activists",
+    "detained activist",
+    "detained activists",
     "dissident",
     "dissidents",
-    "political opposition",
-    "opposition activist",
-    "opposition leader",
-    "political activist",
-    "activist",
-    "activists",
-    "rights activist",
-    "human rights activist",
-    "journalist detained",
-    "journalist arrested",
-    "journalist imprisoned",
-    "independent journalist",
-    "independent media",
-    "independent outlet",
-    "censorship",
+    "dissidence",
     "torture",
-    "arbitrary detention",
-    "political repression",
-    "political persecution",
-    "persecution",
-    "crackdown",
-    "protest crackdown",
-    "mass arrests",
+    "tortured",
+    "torture allegations",
     "forced disappearance",
-    "disappeared",
-    "kidnapped",
+    "forced disappearances",
+    "enforced disappearance",
+    "enforced disappearances",
+    "freedom of the press",
+    "press freedom",
+    "journalist arrested",
+    "journalists arrested",
+    "journalist detained",
+    "journalists detained",
+    "journalist persecuted",
+    "journalists persecuted",
+    "media repression",
+    "media crackdown",
+    "crackdown on media",
+    "opposition crackdown",
+    "opposition figure arrested",
+    "opposition figures arrested",
+    "opposition leader arrested",
+    "opposition leaders arrested",
+    "activist arrested",
+    "activists arrested",
+    "activist detained",
+    "activists detained",
+    "protesters arrested",
+    "protesters detained",
+    "protest crackdown",
+    "protests repressed",
 
     # Russian
     "права человека",
     "нарушение прав человека",
     "нарушения прав человека",
-    "правозащитник",
-    "правозащитники",
-    "правозащитный",
+    "политический заключенный",
+    "политические заключенные",
+    "политзаключенный",
+    "политзаключенные",
+    "политический арест",
+    "политические аресты",
+    "арест активиста",
+    "арест активистов",
+    "задержание активиста",
+    "задержание активистов",
     "диссидент",
     "диссиденты",
-    "оппозиционер",
-    "оппозиционеры",
-    "оппозиция",
-    "политическая оппозиция",
-    "политический активист",
-    "политические активисты",
-    "активист",
-    "активисты",
-    "правозащитник",
-    "журналист",
-    "журналисты",
-    "независимый журналист",
-    "независимые СМИ",
-    "независимые медиа",
-    "свобода слова",
-    "свобода прессы",
-    "свобода выражения",
-    "цензура",
-    "репрессии",
-    "политические репрессии",
-    "политическое преследование",
-    "преследование",
-    "политзаключенный",
-    "политзаключённый",
-    "политзаключенные",
-    "политзаключённые",
-    "политический заключенный",
-    "политический заключённый",
-    "произвольное задержание",
-    "произвольно задержан",
-    "произвольно задержали",
-    "задержан",
-    "задержана",
-    "задержали",
-    "арестован",
-    "арестована",
-    "арестовали",
-    "приговорен",
-    "приговорена",
-    "осужден",
-    "осуждён",
-    "осуждена",
+    "диссидентство",
     "пытки",
     "пытка",
+    "насильственное исчезновение",
     "исчезновение",
-    "похищен",
-    "похищена",
-    "похищение",
-    "протест",
-    "протесты",
-    "митинг",
+    "свобода прессы",
+    "свобода слова",
+    "журналист арестован",
+    "журналисты арестованы",
+    "журналист задержан",
+    "журналисты задержаны",
+    "репрессии",
+    "репрессии против СМИ",
+    "давление на СМИ",
+    "разгон протестов",
+    "протестующие задержаны",
+    "оппозиционер арестован",
+    "оппозиционеры арестованы",
 ]
 
 
-# Politique / sécurité / géopolitique
-POLITICAL_TERMS = [
-    # English
-    "president",
-    "presidential",
-    "government",
-    "parliament",
-    "politics",
-    "political",
+# Level A/B supporting human-rights signals
+SECONDARY_HR_TERMS = [
+    "activist",
+    "activists",
+    "civil society",
+    "human rights defender",
+    "human rights defenders",
+    "rights defender",
+    "rights defenders",
+    "free speech",
+    "freedom of speech",
+    "freedom of expression",
+    "independent media",
+    "censorship",
+    "censored",
+    "crackdown",
+    "repression",
+    "repressed",
+    "persecution",
+    "persecuted",
+    "political persecution",
+    "political opposition",
+    "opposition",
+    "dissident",
+    "lawyer",
+    "rights group",
+    "rights groups",
+
+    # Russian
+    "активист",
+    "активисты",
+    "гражданское общество",
+    "правозащитник",
+    "правозащитники",
+    "защитник прав",
+    "свобода слова",
+    "свобода выражения",
+    "независимые СМИ",
+    "цензура",
+    "цензур",
+    "репрессия",
+    "репрессии",
+    "преследование",
+    "преследования",
+    "политическое преследование",
+    "политическая оппозиция",
+    "оппозиция",
+]
+
+
+# Level B: meaningful domestic politics
+DOMESTIC_POLITICAL_TERMS = [
     "election",
     "elections",
-    "opposition",
+    "presidential election",
+    "parliamentary election",
+    "parliamentary elections",
+    "vote",
+    "voting",
+    "ballot",
     "constitution",
-    "minister",
-    "prime minister",
-    "foreign policy",
-    "diplomatic",
-    "diplomacy",
-    "security",
-    "border",
-    "border security",
-    "military",
-    "army",
-    "sanctions",
-    "treaty",
-    "summit",
-    "regional summit",
-    "state visit",
-    "strategic partnership",
+    "constitutional reform",
+    "constitutional amendments",
+    "presidential transition",
+    "presidential succession",
+    "new president",
+    "president resigns",
+    "president resigned",
+    "president steps down",
+    "opposition party",
+    "opposition parties",
+    "opposition leader",
+    "opposition leaders",
+    "political opposition",
+    "political reform",
+    "political reforms",
+    "political crisis",
+    "government crisis",
+    "cabinet reshuffle",
+    "parliament",
+    "parliamentary",
+    "civil society",
+    "political corruption",
+    "corruption scandal",
+    "anti-corruption",
+    "anti-corruption campaign",
+    "political party",
+    "political parties",
 
     # Russian
-    "президент",
-    "президентский",
-    "правительство",
-    "парламент",
-    "политика",
-    "политический",
     "выборы",
-    "оппозиция",
+    "президентские выборы",
+    "парламентские выборы",
+    "голосование",
+    "голосов",
     "конституция",
-    "министр",
-    "премьер-министр",
-    "внешняя политика",
-    "дипломатия",
-    "дипломатический",
-    "безопасность",
-    "граница",
-    "пограничный",
-    "военный",
-    "армия",
-    "санкции",
-    "договор",
-    "саммит",
-    "встреча лидеров",
-    "стратегическое партнерство",
-    "стратегическое партнёрство",
+    "конституционная реформа",
+    "конституционные поправки",
+    "смена президента",
+    "отставка президента",
+    "новый президент",
+    "оппозиционная партия",
+    "оппозиционные партии",
+    "лидер оппозиции",
+    "политическая оппозиция",
+    "политическая реформа",
+    "политический кризис",
+    "правительственный кризис",
+    "перестановки в правительстве",
+    "парламент",
+    "гражданское общество",
+    "политическая коррупция",
+    "коррупционный скандал",
+    "борьба с коррупцией",
+    "политическая партия",
 ]
 
 
-# Actualité régionale importante
-REGIONAL_EVENT_TERMS = [
-    # SCO
+# Exceptional regional events.
+# These terms are intentionally narrow: routine trade/gas/diplomatic
+# stories should NOT pass simply because they concern Central Asia.
+MAJOR_REGIONAL_EVENTS = [
     "shanghai cooperation organization",
-    "shanghai cooperation organisation",
     "sco summit",
-    "sco",
+    "sco meeting",
+    "sco leaders",
+    "sco declaration",
+    "sco summit kicks off",
+    "sco summit begins",
+    "sco summit ends",
+
+    "major conflict",
+    "armed conflict",
+    "military conflict",
+    "border conflict",
+    "border clashes",
+    "major sanctions",
+    "new sanctions",
+    "sanctions regime",
+    "major diplomatic crisis",
+    "diplomatic crisis",
+    "strategic shift",
+    "strategic realignment",
+    "security crisis",
+    "regional security crisis",
+
+    # Russian
     "шанхайская организация сотрудничества",
-    "шос",
-
-    # Relations régionales
-    "central asian summit",
-    "central asia summit",
-    "central asian leaders",
-    "central asian presidents",
-    "central asian cooperation",
-    "central asian integration",
-    "regional cooperation",
-    "regional integration",
-    "regional security",
-
-    "саммит центральной азии",
-    "саммит стран центральной азии",
-    "лидеры центральной азии",
-    "президенты центральной азии",
-    "сотрудничество в центральной азии",
-    "интеграция центральной азии",
-    "региональное сотрудничество",
-    "региональная безопасность",
-
-    # Transport / geopolitics
-    "middle corridor",
-    "trans-caspian",
-    "trans-caspian corridor",
-    "transport corridor",
-    "trade corridor",
-    "rail corridor",
-    "pipeline",
-    "gas pipeline",
-    "energy security",
-    "water security",
-
-    "средний коридор",
-    "транскаспийский коридор",
-    "транспортный коридор",
-    "торговый коридор",
-    "железнодорожный коридор",
-    "газопровод",
-    "энергетическая безопасность",
-    "водная безопасность",
+    "саммит шос",
+    "саммит шанхайской организации сотрудничества",
+    "вооруженный конфликт",
+    "военный конфликт",
+    "пограничный конфликт",
+    "пограничные столкновения",
+    "крупные санкции",
+    "новые санкции",
+    "дипломатический кризис",
+    "стратегический сдвиг",
+    "стратегическая переориентация",
+    "кризис безопасности",
 ]
 
 
-# Economie pertinente lorsqu'elle concerne la région.
-ECONOMIC_TERMS = [
+# Context only. These must never be sufficient for relevance.
+ROUTINE_GEO_TERMS = [
     "trade",
-    "investment",
-    "economy",
-    "economic",
-    "energy",
-    "oil",
-    "gas",
-    "uranium",
-    "mining",
-    "sanctions",
+    "trading",
     "exports",
     "imports",
-    "tariffs",
-    "infrastructure",
+    "investment",
+    "investments",
+    "business",
+    "economic cooperation",
+    "economic partnership",
+    "trade agreement",
+    "trade corridor",
+    "transport corridor",
     "railway",
-    "rail",
+    "railroad",
+    "logistics",
+    "gas",
+    "oil",
+    "uranium",
+    "electricity",
+    "power line",
     "pipeline",
-    "water",
-
-    "торговля",
-    "инвестиции",
-    "экономика",
-    "экономический",
-    "энергетика",
-    "нефть",
-    "газ",
-    "уран",
-    "добыча",
-    "экспорт",
-    "импорт",
-    "тарифы",
-    "инфраструктура",
-    "железная дорога",
-    "трубопровод",
-    "вода",
-]
-
-
-# ============================================================
-# NEGATIVE SIGNALS
-# ============================================================
-
-# Ces termes ne rendent PAS un article pertinent.
-# Ils permettent surtout d'éliminer les faux positifs.
-GENERIC_BUSINESS_TERMS = [
-    # English
-    "restaurant",
-    "restaurants",
-    "food",
-    "dining",
-    "corporate dining",
-    "menu",
-    "meal",
-    "meals",
-    "catering",
-    "cafe",
-    "coffee",
-    "hotel",
-    "hospitality",
-    "lifestyle",
-    "shopping",
-    "fashion",
-    "beauty",
-    "entertainment",
-    "advertising",
-    "marketing",
-    "startup",
-    "product launch",
-    "brand",
-    "consumer",
-    "customer experience",
+    "energy cooperation",
+    "energy project",
+    "gas deal",
+    "oil deal",
+    "investment agreement",
+    "business forum",
+    "economic forum",
+    "summit",
+    "meeting",
+    "visit",
+    "talks",
+    "cooperation",
+    "roadmap",
 
     # Russian
-    "ресторан",
-    "рестораны",
-    "еда",
-    "питание",
-    "корпоративное питание",
-    "меню",
-    "кафе",
-    "отель",
-    "гостиница",
-    "развлечения",
-    "реклама",
-    "маркетинг",
-    "стартап",
-    "бренд",
-    "потребитель",
+    "торговля",
+    "экспорт",
+    "импорт",
+    "инвестиции",
+    "бизнес",
+    "экономическое сотрудничество",
+    "экономическое партнерство",
+    "торговое соглашение",
+    "торговый коридор",
+    "транспортный коридор",
+    "железная дорога",
+    "логистика",
+    "газ",
+    "нефть",
+    "уран",
+    "электроэнергия",
+    "линия электропередачи",
+    "трубопровод",
+    "энергетическое сотрудничество",
+    "энергетический проект",
+    "газовое соглашение",
+    "нефтяное соглашение",
+    "инвестиционное соглашение",
+    "бизнес-форум",
+    "экономический форум",
+    "саммит",
+    "встреча",
+    "визит",
+    "переговоры",
+    "сотрудничество",
+    "дорожная карта",
 ]
 
 
-SPORTS_TERMS = [
+REGIONAL_ACTORS = [
+    "russia",
+    "russian",
+    "kremlin",
+    "putin",
+    "china",
+    "chinese",
+    "beijing",
+    "afghanistan",
+    "afghan",
+    "iran",
+    "iranian",
+    "turkey",
+    "turkish",
+    "azerbaijan",
+    "azerbaijani",
+    "armenia",
+    "armenian",
+    "georgia",
+    "georgian",
+    "united states",
+    "washington",
+    "european union",
+    "eu",
+    "brussels",
+
+    # Russian
+    "россия",
+    "российский",
+    "кремль",
+    "путин",
+    "китай",
+    "китайский",
+    "пекин",
+    "афганистан",
+    "афганский",
+    "иран",
+    "иранский",
+    "турция",
+    "турецкий",
+    "азербайджан",
+    "армения",
+    "грузия",
+    "сша",
+    "вашингтон",
+    "евросоюз",
+    "брюссель",
+]
+
+
+BUSINESS_SPORTS_TECH_TERMS = [
     "football",
     "soccer",
     "basketball",
-    "boxing",
-    "wrestling",
     "tennis",
-    "athletics",
+    "match",
     "championship",
     "tournament",
-    "match",
-    "freestyle wrestling",
-    "олимпиада",
-    "футбол",
-    "баскетбол",
-    "бокс",
-    "борьба",
-    "теннис",
-    "чемпионат",
-    "турнир",
-    "матч",
+    "olympics",
+    "athlete",
+    "coach",
+    "goal",
+    "scored",
+    "startup",
+    "start-up",
+    "software",
+    "smartphone",
+    "app",
+    "artificial intelligence",
+    "ai model",
+    "technology expo",
+    "gaming",
+    "restaurant",
+    "hotel",
+    "tourism",
+    "travel guide",
 ]
 
 
-GENERIC_TECH_TERMS = [
-    "ai training",
-    "artificial intelligence training",
-    "software update",
-    "app launch",
-    "mobile app",
-    "tech startup",
-]
-
-
 # ============================================================
-# LOGGING
-# ============================================================
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-)
-
-logger = logging.getLogger("asia-central-news-scanner")
-
-
-# ============================================================
-# HTTP
-# ============================================================
-
-def fetch_url(url):
-    try:
-        response = requests.get(
-            url,
-            headers=HEADERS,
-            timeout=REQUEST_TIMEOUT,
-        )
-        response.raise_for_status()
-        return response.text
-    except requests.RequestException as exc:
-        logger.warning("Impossible de récupérer %s : %s", url, exc)
-        return None
-
-
-# ============================================================
-# TEXT NORMALIZATION
+# HELPERS
 # ============================================================
 
 def normalize_text(text):
@@ -618,30 +536,22 @@ def normalize_text(text):
 
     text = html.unescape(str(text))
     text = re.sub(r"\s+", " ", text)
-    return text.strip().lower()
+    return text.strip()
 
 
 def phrase_present(text, phrase):
     """
-    Recherche robuste :
-    - les phrases multi-mots sont cherchées directement
-    - les mots seuls utilisent des limites pour éviter
-      des faux positifs du type "arrest" dans un autre mot.
+    Search for a phrase with reasonable word boundaries.
     """
-    text = normalize_text(text)
-    phrase = normalize_text(phrase)
-
     if not text or not phrase:
         return False
 
-    if " " in phrase or "-" in phrase:
-        return phrase in text
-
-    pattern = rf"(?<!\w){re.escape(phrase)}(?!\w)"
-    return re.search(pattern, text, flags=re.IGNORECASE) is not None
+    pattern = r"(?<!\w)" + re.escape(phrase.lower()) + r"(?!\w)"
+    return re.search(pattern, text.lower()) is not None
 
 
 def find_terms(text, terms):
+    text = normalize_text(text).lower()
     found = []
 
     for term in terms:
@@ -651,251 +561,108 @@ def find_terms(text, terms):
     return found
 
 
-def contains_any(text, terms):
-    return bool(find_terms(text, terms))
-
-
-# ============================================================
-# GEOGRAPHY
-# ============================================================
-
-def detect_central_asia(text):
-    """
-    Retourne les pays d'Asie centrale détectés.
-    Les variantes anglaises et russes sont prises en compte.
-    """
-    found = []
-
-    for country, terms in COUNTRY_TERMS_EN.items():
-        if contains_any(text, terms):
-            found.append(country)
-            continue
-
-    for country, terms in COUNTRY_TERMS_RU.items():
-        if country not in found and contains_any(text, terms):
-            found.append(country)
-
-    if contains_any(text, REGIONAL_TERMS):
-        found.append("Central Asia")
-
-    return sorted(set(found))
-
-
-def detect_regional_actor(text):
-    return find_terms(text, REGIONAL_ACTORS)
-
-
-# ============================================================
-# ARTICLE EXTRACTION
-# ============================================================
-
-def clean_html_fragment(fragment):
-    if not fragment:
+def canonical_url(url):
+    if not url:
         return ""
 
-    soup = BeautifulSoup(fragment, "html.parser")
+    parsed = urlparse(url)
 
-    for tag in soup([
-        "script",
-        "style",
-        "noscript",
-        "svg",
-        "form",
-        "nav",
-        "header",
-        "footer",
-        "aside",
-    ]):
-        tag.decompose()
+    if not parsed.scheme:
+        return url
 
-    return soup.get_text(" ", strip=True)
+    clean = parsed._replace(
+        query="",
+        fragment="",
+    )
+
+    return clean.geturl().rstrip("/")
 
 
-def extract_article_body(url):
-    """
-    Extrait uniquement le contenu éditorial probable.
+def is_valid_url(url):
+    if not url:
+        return False
 
-    IMPORTANT :
-    on ne fait plus soup.get_text() sur toute la page.
-    Cela évite que le menu, les articles recommandés ou
-    le footer déclenchent des mots comme "arrest", "activist", etc.
-    """
-    content = fetch_url(url)
+    parsed = urlparse(url)
 
-    if not content:
-        return ""
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
 
-    soup = BeautifulSoup(content, "html.parser")
 
-    for tag in soup([
-        "script",
-        "style",
-        "noscript",
-        "svg",
-        "form",
-        "nav",
-        "header",
-        "footer",
-        "aside",
-    ]):
-        tag.decompose()
+def fetch_url(url):
+    try:
+        response = requests.get(
+            url,
+            headers=HEADERS,
+            timeout=REQUEST_TIMEOUT,
+        )
 
-    # Supprimer les blocs typiquement non éditoriaux.
-    for element in soup.find_all(
-        attrs={
-            "class": re.compile(
-                r"(nav|menu|footer|sidebar|related|recommend|"
-                r"newsletter|social|share|advert|promo)",
-                re.I,
-            )
-        }
-    ):
-        element.decompose()
+        response.raise_for_status()
+        return response.text
 
-    for element in soup.find_all(
-        attrs={
-            "id": re.compile(
-                r"(nav|menu|footer|sidebar|related|recommend|"
-                r"newsletter|social|share|advert|promo)",
-                re.I,
-            )
-        }
-    ):
-        element.decompose()
-
-    article = soup.find("article")
-
-    if article:
-        text = article.get_text(" ", strip=True)
-    else:
-        main = soup.find("main")
-
-        if main:
-            text = main.get_text(" ", strip=True)
-        else:
-            # Fallback limité : paragraphes uniquement.
-            paragraphs = soup.find_all("p")
-            text = " ".join(
-                p.get_text(" ", strip=True)
-                for p in paragraphs
-            )
-
-    text = re.sub(r"\s+", " ", text)
-
-    return text[:30000]
+    except requests.RequestException as exc:
+        print(f"[WARN] Failed to fetch {url}: {exc}")
+        return None
 
 
 # ============================================================
 # RSS DISCOVERY
 # ============================================================
 
-def discover_rss_links(page_url):
-    content = fetch_url(page_url)
-
-    if not content:
-        return []
-
-    soup = BeautifulSoup(content, "html.parser")
-
-    links = []
-
-    # <link rel="alternate" type="application/rss+xml">
-    for link in soup.find_all("link"):
-        rel = link.get("rel", [])
-        href = link.get("href")
-
-        rel_text = " ".join(rel).lower() if isinstance(rel, list) else str(rel).lower()
-
-        if href and (
-            "rss" in rel_text
-            or "atom" in rel_text
-            or "application/rss+xml" in str(link.get("type", "")).lower()
-            or "application/atom+xml" in str(link.get("type", "")).lower()
-        ):
-            links.append(urljoin(page_url, href))
-
-    # Liens visibles contenant RSS / Atom.
-    for a in soup.find_all("a", href=True):
-        href = a["href"]
-        label = a.get_text(" ", strip=True)
-
-        combined = f"{label} {href}".lower()
-
-        if any(word in combined for word in [
-            "rss",
-            "atom",
-            "feed",
-            "watchdog",
-        ]):
-            links.append(urljoin(page_url, href))
-
-    # Déduplication.
-    result = []
-    seen = set()
-
-    for link in links:
-        if link not in seen:
-            seen.add(link)
-            result.append(link)
-
-    return result
-
-
-def discover_rferl_specialized_feeds():
+def discover_rss_urls(source_url):
     """
-    RFE/RL possède plusieurs flux : Watchdog, pays, régions, etc.
-
-    On découvre les liens depuis leur page RSS au lieu de dépendre
-    d'URLs codées en dur susceptibles de changer.
+    Discover RSS/Atom feeds from a source homepage.
     """
-    page = "https://www.rferl.org/rssfeeds"
+    candidates = []
 
-    content = fetch_url(page)
+    # Special handling for RFE/RL, which exposes many feeds.
+    if "rferl.org" in source_url:
+        candidates.append("https://www.rferl.org/rssfeeds")
 
-    if not content:
-        logger.warning("RFE/RL : impossible d'ouvrir la page RSS.")
-        return []
+    page = fetch_url(source_url)
 
-    soup = BeautifulSoup(content, "html.parser")
+    if page:
+        soup = BeautifulSoup(page, "html.parser")
 
-    wanted = [
-        "watchdog",
-        "kazakhstan",
-        "kyrgyzstan",
-        "tajikistan",
-        "turkmenistan",
-        "uzbekistan",
-        "central asia",
-        "azerbaijan",
-    ]
+        for link in soup.find_all("link"):
+            rel = link.get("rel", [])
+            href = link.get("href")
 
-    feeds = []
+            if not href:
+                continue
 
-    for a in soup.find_all("a", href=True):
-        href = urljoin(page, a["href"])
-        label = a.get_text(" ", strip=True)
+            rel_text = " ".join(rel).lower() if isinstance(rel, list) else str(rel).lower()
 
-        combined = normalize_text(f"{label} {href}")
+            link_type = str(link.get("type", "")).lower()
 
-        if any(term in combined for term in wanted):
-            feeds.append((label, href))
+            if (
+                "alternate" in rel_text
+                and (
+                    "rss" in link_type
+                    or "atom" in link_type
+                    or "feed" in link_type
+                )
+            ):
+                candidates.append(urljoin(source_url, href))
 
-    # Déduplication
-    result = []
+    # Common fallback feed locations.
+    for path in [
+        "rss.xml",
+        "feed.xml",
+        "rss",
+        "feed",
+        "atom.xml",
+    ]:
+        candidates.append(urljoin(source_url.rstrip("/") + "/", path))
+
+    # Deduplicate while preserving order.
     seen = set()
+    result = []
 
-    for label, href in feeds:
-        if href not in seen:
-            seen.add(href)
-            result.append((label, href))
+    for url in candidates:
+        url = canonical_url(url)
 
-    logger.info(
-        "RFE/RL : %d flux spécialisés découverts.",
-        len(result),
-    )
-
-    for label, href in result:
-        logger.info("  RFE/RL feed : %s -> %s", label, href)
+        if url and url not in seen:
+            seen.add(url)
+            result.append(url)
 
     return result
 
@@ -905,48 +672,30 @@ def discover_rferl_specialized_feeds():
 # ============================================================
 
 def parse_feed(feed_url, source_name):
-    logger.info("Lecture RSS : %s", feed_url)
+    raw = fetch_url(feed_url)
 
-    try:
-        response = requests.get(
-            feed_url,
-            headers=HEADERS,
-            timeout=REQUEST_TIMEOUT,
-        )
-        response.raise_for_status()
-
-        parsed = feedparser.parse(response.content)
-
-    except requests.RequestException as exc:
-        logger.warning(
-            "%s : erreur RSS %s : %s",
-            source_name,
-            feed_url,
-            exc,
-        )
+    if not raw:
         return []
 
-    if not parsed.entries:
-        logger.warning(
-            "%s : RSS trouvé mais aucun article.",
-            source_name,
-        )
+    try:
+        feed = feedparser.parse(raw)
+    except Exception as exc:
+        print(f"[WARN] Could not parse feed {feed_url}: {exc}")
         return []
 
     articles = []
 
-    for entry in parsed.entries[:MAX_FEED_ENTRIES]:
+    for entry in feed.entries[:MAX_FEED_ENTRIES]:
+        title = normalize_text(entry.get("title", ""))
+        link = entry.get("link", "")
 
-        title = entry.get("title", "").strip()
-        link = entry.get("link", "").strip()
+        if not title or not is_valid_url(link):
+            continue
 
-        summary = (
-            entry.get("summary")
-            or entry.get("description")
-            or ""
+        summary = normalize_text(
+            entry.get("summary", "")
+            or entry.get("description", "")
         )
-
-        summary = clean_html_fragment(summary)
 
         published = (
             entry.get("published")
@@ -959,35 +708,28 @@ def parse_feed(feed_url, source_name):
             or entry.get("updated_parsed")
         )
 
-        timestamp = None
+        published_dt = None
 
         if published_parsed:
             try:
-                timestamp = datetime(
+                published_dt = datetime(
                     *published_parsed[:6],
                     tzinfo=timezone.utc,
                 )
             except Exception:
-                timestamp = None
+                published_dt = None
 
-        if not title or not link:
-            continue
-
-        articles.append({
-            "source": source_name,
-            "title": title,
-            "summary": summary,
-            "url": link,
-            "published": published,
-            "timestamp": timestamp,
-            "body": "",
-        })
-
-    logger.info(
-        "%s : %d articles RSS récupérés.",
-        source_name,
-        len(articles),
-    )
+        articles.append(
+            {
+                "source": source_name,
+                "title": title,
+                "url": canonical_url(link),
+                "summary": summary,
+                "published": published,
+                "published_dt": published_dt,
+                "body": "",
+            }
+        )
 
     return articles
 
@@ -996,420 +738,385 @@ def parse_feed(feed_url, source_name):
 # HTML FALLBACK
 # ============================================================
 
-def extract_html_articles(source):
-    url = source["url"]
+def extract_html_articles(source_url, source_name):
+    page = fetch_url(source_url)
 
-    content = fetch_url(url)
-
-    if not content:
+    if not page:
         return []
 
-    soup = BeautifulSoup(content, "html.parser")
-
-    for tag in soup([
-        "script",
-        "style",
-        "noscript",
-        "svg",
-        "form",
-    ]):
-        tag.decompose()
+    soup = BeautifulSoup(page, "html.parser")
 
     articles = []
     seen_urls = set()
 
-    # Priorité aux balises article.
-    candidates = soup.find_all("article")
+    # Remove elements unlikely to contain article content.
+    for tag in soup.find_all(
+        [
+            "script",
+            "style",
+            "noscript",
+            "nav",
+            "header",
+            "footer",
+            "aside",
+            "form",
+        ]
+    ):
+        tag.decompose()
 
-    if not candidates:
-        candidates = soup.find_all(
-            ["h1", "h2", "h3"]
+    for item in soup.find_all(["article", "h1", "h2", "h3"]):
+        if len(articles) >= MAX_HTML_ARTICLES:
+            break
+
+        if item.name == "article":
+            heading = item.find(["h1", "h2", "h3", "h4"])
+            link_tag = item.find("a", href=True)
+
+            if not heading or not link_tag:
+                continue
+
+            title = normalize_text(heading.get_text(" ", strip=True))
+            url = urljoin(source_url, link_tag.get("href", ""))
+
+            text = normalize_text(
+                item.get_text(" ", strip=True)
+            )
+
+        else:
+            title = normalize_text(
+                item.get_text(" ", strip=True)
+            )
+
+            link_tag = item.find_parent("a", href=True)
+
+            if not link_tag:
+                link_tag = item.find("a", href=True)
+
+            if not link_tag:
+                continue
+
+            url = urljoin(source_url, link_tag.get("href", ""))
+            text = title
+
+        if not title or len(title) < 15:
+            continue
+
+        if not is_valid_url(url):
+            continue
+
+        url = canonical_url(url)
+
+        if url in seen_urls:
+            continue
+
+        # Avoid generic navigation / section titles.
+        if title.lower() in {
+            "latest",
+            "news",
+            "more news",
+            "read more",
+            "latest news",
+        }:
+            continue
+
+        seen_urls.add(url)
+
+        articles.append(
+            {
+                "source": source_name,
+                "title": title,
+                "url": url,
+                "summary": text,
+                "published": "",
+                "published_dt": None,
+                "body": "",
+            }
         )
-
-    for candidate in candidates[:MAX_HTML_ARTICLES]:
-
-        if candidate.name in ["h1", "h2", "h3"]:
-            heading = candidate
-        else:
-            heading = candidate.find(
-                ["h1", "h2", "h3"]
-            )
-
-        if not heading:
-            continue
-
-        title = heading.get_text(" ", strip=True)
-
-        if not title or len(title) < 10:
-            continue
-
-        link = heading.find_parent("a", href=True)
-
-        if link:
-            href = link["href"]
-        else:
-            link = candidate.find("a", href=True)
-            href = link["href"] if link else None
-
-        if not href:
-            continue
-
-        full_url = urljoin(url, href)
-
-        if full_url in seen_urls:
-            continue
-
-        seen_urls.add(full_url)
-
-        summary = ""
-
-        if candidate.name == "article":
-            summary = candidate.get_text(
-                " ",
-                strip=True,
-            )
-
-        articles.append({
-            "source": source["name"],
-            "title": title,
-            "summary": summary[:5000],
-            "url": full_url,
-            "published": "",
-            "timestamp": None,
-            "body": "",
-        })
-
-    logger.info(
-        "%s : %d articles HTML récupérés.",
-        source["name"],
-        len(articles),
-    )
 
     return articles
 
 
 # ============================================================
-# SCORING
+# ARTICLE PAGE ENRICHMENT
+# ============================================================
+
+def extract_article_body(url):
+    page = fetch_url(url)
+
+    if not page:
+        return ""
+
+    soup = BeautifulSoup(page, "html.parser")
+
+    for tag in soup.find_all(
+        [
+            "script",
+            "style",
+            "noscript",
+            "nav",
+            "header",
+            "footer",
+            "aside",
+            "form",
+            "iframe",
+        ]
+    ):
+        tag.decompose()
+
+    candidates = []
+
+    for selector in [
+        "article",
+        "[class*='article-body']",
+        "[class*='article-content']",
+        "[class*='story-body']",
+        "[class*='story-content']",
+        "[class*='post-content']",
+        "[class*='entry-content']",
+        "main",
+    ]:
+        for node in soup.select(selector):
+            text = normalize_text(node.get_text(" ", strip=True))
+
+            if len(text) >= 200:
+                candidates.append(text)
+
+    if not candidates:
+        paragraphs = []
+
+        for p in soup.find_all("p"):
+            text = normalize_text(p.get_text(" ", strip=True))
+
+            if len(text) >= 50:
+                paragraphs.append(text)
+
+        candidates.append(" ".join(paragraphs))
+
+    if not candidates:
+        return ""
+
+    return max(candidates, key=len)
+
+
+# ============================================================
+# CLASSIFICATION
 # ============================================================
 
 def classify_article(article):
-    """
-    V3 :
-    
-    1. Le titre + résumé sont la source principale.
-    2. Le corps sert uniquement de confirmation.
-    3. Les mots de navigation ne peuvent plus créer un signal.
-    4. Les événements géopolitiques majeurs comme le SCO
-       peuvent être pertinents même sans être "droits humains".
-    """
-
-    title = normalize_text(article["title"])
+    title = normalize_text(article.get("title", ""))
     summary = normalize_text(article.get("summary", ""))
-
-    headline_text = f"{title} {summary}".strip()
-
-    # Corps uniquement pour confirmation.
     body = normalize_text(article.get("body", ""))
 
-    score = 0
-    reasons = []
+    # First pass: title + summary.
+    headline_text = f"{title} {summary}".strip()
 
-    # --------------------------------------------------------
-    # GÉOGRAPHIE
-    # --------------------------------------------------------
-
-    geography = detect_central_asia(headline_text)
-
-    # Si le titre/résumé ne suffit pas, on regarde le corps.
-    if not geography and body:
-        geography = detect_central_asia(body)
-
-    if geography:
-        score += 5
-        reasons.append(
-            "géographie: " + ", ".join(geography)
-        )
-
-    regional_actors = detect_regional_actor(headline_text)
-
-    if regional_actors:
-        score += 2
-        reasons.append(
-            "acteur régional: " + ", ".join(regional_actors[:5])
-        )
-
-    # --------------------------------------------------------
-    # DROITS HUMAINS / DISSIDENCE
-    # --------------------------------------------------------
-
-    hr_terms = find_terms(
+    geography = find_terms(
         headline_text,
-        HUMAN_RIGHTS_TERMS,
+        CENTRAL_ASIA_TERMS,
     )
 
-    if hr_terms:
-        # Plusieurs signaux valent davantage.
-        if len(hr_terms) >= 2:
-            score += 8
-        else:
-            score += 5
-
-        reasons.append(
-            "droits humains/dissidence: "
-            + ", ".join(hr_terms[:6])
-        )
-
-    # --------------------------------------------------------
-    # POLITIQUE
-    # --------------------------------------------------------
-
-    political_terms = find_terms(
+    strong_hr = find_terms(
         headline_text,
-        POLITICAL_TERMS,
+        STRONG_HR_TERMS,
     )
 
-    if political_terms:
-        score += 2
-        reasons.append(
-            "politique: "
-            + ", ".join(political_terms[:5])
-        )
-
-    # --------------------------------------------------------
-    # ÉVÉNEMENT RÉGIONAL IMPORTANT
-    # --------------------------------------------------------
-
-    event_terms = find_terms(
+    secondary_hr = find_terms(
         headline_text,
-        REGIONAL_EVENT_TERMS,
+        SECONDARY_HR_TERMS,
     )
 
-    if event_terms:
-        score += 6
-        reasons.append(
-            "événement régional: "
-            + ", ".join(event_terms[:5])
-        )
-
-    # --------------------------------------------------------
-    # ÉCONOMIE / ÉNERGIE
-    # --------------------------------------------------------
-
-    economic_terms = find_terms(
+    domestic_politics = find_terms(
         headline_text,
-        ECONOMIC_TERMS,
+        DOMESTIC_POLITICAL_TERMS,
     )
 
-    if economic_terms and geography:
-        score += 2
-        reasons.append(
-            "économie/énergie: "
-            + ", ".join(economic_terms[:5])
-        )
-
-    # --------------------------------------------------------
-    # SIGNALS DE RÉPRESSION
-    # --------------------------------------------------------
-
-    repression_terms = [
-        "arrested",
-        "arrest",
-        "detained",
-        "detention",
-        "imprisoned",
-        "jail",
-        "sentenced",
-        "convicted",
-        "banned",
-        "raided",
-        "crackdown",
-        "repression",
-        "torture",
-        "задержан",
-        "задержана",
-        "задержали",
-        "арестован",
-        "арестована",
-        "арестовали",
-        "осужден",
-        "осуждён",
-        "осуждена",
-        "приговорен",
-        "приговорена",
-        "репрессии",
-        "пытки",
-    ]
-
-    repression_found = find_terms(
+    major_events = find_terms(
         headline_text,
-        repression_terms,
+        MAJOR_REGIONAL_EVENTS,
     )
 
-    if repression_found and geography:
-        score += 5
-        reasons.append(
-            "action répressive: "
-            + ", ".join(repression_found[:5])
-        )
+    routine_geo = find_terms(
+        headline_text,
+        ROUTINE_GEO_TERMS,
+    )
+
+    regional_actors = find_terms(
+        headline_text,
+        REGIONAL_ACTORS,
+    )
+
+    negative = find_terms(
+        headline_text,
+        BUSINESS_SPORTS_TECH_TERMS,
+    )
 
     # --------------------------------------------------------
-    # CORPS DE L'ARTICLE = CONFIRMATION UNIQUEMENT
+    # Body confirmation.
     # --------------------------------------------------------
+
+    confirmation_hr = []
+    confirmation_politics = []
+    confirmation_events = []
+
+    # Only fetch article pages when the headline itself looks
+    # potentially relevant. This avoids downloading every page.
+    potentially_relevant = (
+        bool(geography)
+        and (
+            bool(strong_hr)
+            or bool(secondary_hr)
+            or bool(domestic_politics)
+            or bool(major_events)
+        )
+    )
+
+    if potentially_relevant and not body:
+        body = extract_article_body(article.get("url", ""))
+        article["body"] = body
 
     if body:
-        body_hr = find_terms(
-            body,
-            HUMAN_RIGHTS_TERMS,
-        )
-
-        body_geo = detect_central_asia(body)
-
-        # Le corps peut renforcer un article déjà pertinent.
-        if body_hr and geography:
-            score += min(3, len(body_hr))
-            reasons.append(
-                "confirmation article: droits humains"
-            )
-
-        if body_geo and not geography:
-            score += 2
-            reasons.append(
-                "confirmation article: géographie"
-            )
+        confirmation_hr = find_terms(body, STRONG_HR_TERMS)
+        confirmation_politics = find_terms(body, DOMESTIC_POLITICAL_TERMS)
+        confirmation_events = find_terms(body, MAJOR_REGIONAL_EVENTS)
 
     # --------------------------------------------------------
-    # EXCLUSIONS BUSINESS / CORPORATE
+    # Classification hierarchy.
     # --------------------------------------------------------
 
-    business_found = find_terms(
-        headline_text,
-        GENERIC_BUSINESS_TERMS,
-    )
+    level = "D"
+    classification = "Filtré"
 
-    if business_found:
-        score -= 10
-        reasons.append(
-            "hors sujet business: "
-            + ", ".join(business_found[:5])
-        )
+    # Level A — Human rights / repression / dissidence.
+    if geography and (strong_hr or confirmation_hr):
+        level = "A"
+        classification = "Droits humains / dissidence"
 
-    # --------------------------------------------------------
-    # EXCLUSIONS SPORTS
-    # --------------------------------------------------------
-
-    sports_found = find_terms(
-        headline_text,
-        SPORTS_TERMS,
-    )
-
-    if sports_found:
-        score -= 12
-        reasons.append(
-            "hors sujet sport: "
-            + ", ".join(sports_found[:5])
-        )
-
-    # --------------------------------------------------------
-    # EXCLUSIONS TECH GÉNÉRIQUE
-    # --------------------------------------------------------
-
-    tech_found = find_terms(
-        headline_text,
-        GENERIC_TECH_TERMS,
-    )
-
-    if tech_found and not geography:
-        score -= 8
-        reasons.append(
-            "hors sujet tech"
-        )
-
-    # --------------------------------------------------------
-    # RÈGLE DE PERTINENCE
-    # --------------------------------------------------------
-
-    # Un événement régional important passe même sans HR.
-    is_major_regional_event = bool(event_terms and geography)
-
-    # Droits humains + géographie = très bon candidat.
-    is_human_rights = bool(hr_terms and geography)
-
-    # Politique seule ne suffit pas.
-    is_political = bool(political_terms and geography)
-
-    # Économie seule ne suffit pas.
-    is_economic = bool(economic_terms and geography)
-
-    # Deux signaux régionaux peuvent suffire.
-    has_regional_context = bool(
-        geography
-        and (
-            political_terms
-            or economic_terms
-            or regional_actors
-        )
-    )
-
-    relevant = (
-        is_human_rights
-        or is_major_regional_event
-        or (
-            score >= 7
-            and has_regional_context
-        )
-        or (
-            score >= 8
-            and is_political
-        )
-        or (
-            score >= 8
-            and is_economic
-            and regional_actors
-        )
-    )
-
-    # Un article business fortement identifié ne passe pas.
-    if business_found:
-        relevant = False
-
-    # Un article sportif ne passe jamais.
-    if sports_found:
-        relevant = False
-
-    # --------------------------------------------------------
-    # CAS SPÉCIAL : SCO
-    # --------------------------------------------------------
-
-    # Le SCO est explicitement considéré comme intéressant
-    # pour le scanner régional.
-    if (
-        geography
-        and (
-            "sco" in event_terms
-            or "shanghai cooperation organization" in event_terms
-            or "shanghai cooperation organisation" in event_terms
-            or "шанхайская организация сотрудничества" in event_terms
-        )
-        and not sports_found
-        and not business_found
+    # Level B — Domestic politics.
+    elif geography and (
+        domestic_politics
+        or confirmation_politics
     ):
-        relevant = True
+        level = "B"
+        classification = "Politique intérieure"
 
-        if "événement régional majeur: SCO" not in reasons:
-            reasons.append("événement régional majeur: SCO")
+    # Level C — Exceptional geopolitics.
+    elif geography and (
+        major_events
+        or confirmation_events
+    ):
+        level = "C"
+        classification = "Géopolitique majeure"
 
     # --------------------------------------------------------
-    # LOG
+    # Score.
     # --------------------------------------------------------
 
-    logger.info(
-        "%s | score=%d | relevant=%s | %s",
-        article["title"],
-        score,
-        relevant,
-        "; ".join(reasons) if reasons else "aucun signal",
-    )
+    score = 0
 
+    if geography:
+        score += 2
+
+    if strong_hr:
+        score += 10
+
+    if confirmation_hr:
+        score += 3
+
+    if secondary_hr:
+        score += 4
+
+    if domestic_politics:
+        score += 6
+
+    if confirmation_politics:
+        score += 2
+
+    if major_events:
+        score += 10
+
+    if confirmation_events:
+        score += 3
+
+    # Regional actors are contextual only.
+    if regional_actors:
+        score += 1
+
+    # Routine geopolitics should actively reduce the score.
+    if routine_geo:
+        score -= 4
+
+    # Business/sports/tech noise gets a strong penalty.
+    if negative:
+        score -= 10
+
+    score = max(0, min(score, 20))
+
+    # --------------------------------------------------------
+    # Strict relevance gate.
+    # --------------------------------------------------------
+
+    relevant = level in {"A", "B", "C"}
+
+    reasons = []
+
+    if geography:
+        reasons.append(
+            "géographie: " + ", ".join(geography[:8])
+        )
+
+    if strong_hr:
+        reasons.append(
+            "droits humains/dissidence: "
+            + ", ".join(strong_hr[:5])
+        )
+
+    if secondary_hr and not strong_hr:
+        reasons.append(
+            "droits humains/dissidence: "
+            + ", ".join(secondary_hr[:5])
+        )
+
+    if domestic_politics:
+        reasons.append(
+            "politique: "
+            + ", ".join(domestic_politics[:5])
+        )
+
+    if major_events:
+        reasons.append(
+            "événement régional: "
+            + ", ".join(major_events[:5])
+        )
+
+    if regional_actors:
+        reasons.append(
+            "acteur régional: "
+            + ", ".join(regional_actors[:5])
+        )
+
+    if routine_geo:
+        reasons.append(
+            "économie/géopolitique courante: "
+            + ", ".join(routine_geo[:5])
+        )
+
+    if negative:
+        reasons.append(
+            "hors sujet probable: "
+            + ", ".join(negative[:5])
+        )
+
+    if confirmation_hr:
+        reasons.append("confirmation article: droits humains")
+
+    if confirmation_politics:
+        reasons.append("confirmation article: politique")
+
+    if confirmation_events:
+        reasons.append("confirmation article: événement régional")
+
+    article["level"] = level
+    article["classification"] = classification
     article["score"] = score
     article["relevant"] = relevant
     article["reasons"] = reasons
@@ -1418,233 +1125,213 @@ def classify_article(article):
 
 
 # ============================================================
-# ARTICLE ENRICHMENT
+# DATE / DEDUPLICATION
 # ============================================================
 
-def enrich_articles(articles):
-    """
-    On ne télécharge pas toutes les pages.
-    Seulement les meilleurs candidats initiaux.
-    """
+def article_timestamp(article):
+    dt = article.get("published_dt")
 
-    # Priorité :
-    # - articles sans date en dernier
-    # - puis les plus récents
-    candidates = sorted(
-        articles,
-        key=lambda x: (
-            x.get("timestamp") or datetime.min.replace(
-                tzinfo=timezone.utc
-            )
-        ),
-        reverse=True,
-    )
+    if dt:
+        return dt
 
-    candidates = candidates[:ARTICLE_PAGE_FETCH_LIMIT]
+    return datetime.min.replace(tzinfo=timezone.utc)
 
-    for article in candidates:
-        try:
-            article["body"] = extract_article_body(
-                article["url"]
-            )
-        except Exception as exc:
-            logger.warning(
-                "Erreur enrichissement %s : %s",
-                article["url"],
-                exc,
-            )
-
-    return articles
-
-
-# ============================================================
-# DÉDUPLICATION
-# ============================================================
 
 def deduplicate_articles(articles):
     seen = set()
     result = []
 
     for article in articles:
-        title_key = normalize_text(
-            article["title"]
-        )
+        url = canonical_url(article.get("url", ""))
 
-        # Normalisation légère des titres.
-        title_key = re.sub(
-            r"[^\w\s]",
-            "",
-            title_key,
-        )
-
-        if not title_key:
+        if not url:
             continue
 
-        if title_key in seen:
+        if url in seen:
             continue
 
-        seen.add(title_key)
+        seen.add(url)
         result.append(article)
 
     return result
 
 
 # ============================================================
-# TRI
+# SCAN
 # ============================================================
 
-def article_sort_key(article):
-    timestamp = article.get("timestamp")
+def scan_news():
+    raw_articles = []
+    source_status = []
 
-    if timestamp:
-        return timestamp
+    for source in TOP_NEWS_SOURCES:
+        name = source["name"]
+        url = source["url"]
 
-    return datetime.min.replace(
-        tzinfo=timezone.utc
-    )
-
-
-# ============================================================
-# FETCH ALL NEWS
-# ============================================================
-
-def fetch_all_news():
-    all_articles = []
-
-    for source in SOURCES:
+        print(f"[INFO] Scanning {name}")
 
         source_articles = []
 
-        # ----------------------------------------------------
-        # RSS connus
-        # ----------------------------------------------------
+        feed_urls = discover_rss_urls(url)
 
-        for rss_url in source.get("rss", []):
+        for feed_url in feed_urls:
+            print(f"[INFO] Trying feed: {feed_url}")
+
             parsed = parse_feed(
-                rss_url,
-                source["name"],
+                feed_url,
+                name,
             )
 
-            source_articles.extend(parsed)
-
-        # ----------------------------------------------------
-        # RFE/RL : flux spécialisés
-        # ----------------------------------------------------
-
-        if source["name"] == "Radio Free Europe / Radio Liberty":
-
-            specialized = (
-                discover_rferl_specialized_feeds()
-            )
-
-            for label, feed_url in specialized:
-                parsed = parse_feed(
-                    feed_url,
-                    source["name"],
-                )
-
+            if parsed:
                 source_articles.extend(parsed)
 
-        # ----------------------------------------------------
-        # Si aucun RSS : découverte RSS
-        # ----------------------------------------------------
+                # Once a valid feed is found, there is usually
+                # no need to process every guessed feed.
+                if len(source_articles) >= 5:
+                    break
 
+        # HTML fallback if RSS didn't produce enough material.
         if not source_articles:
-            discovered = discover_rss_links(
-                source["url"]
-            )
+            print(f"[INFO] RSS unavailable for {name}, using HTML fallback")
 
-            for rss_url in discovered[:10]:
-                parsed = parse_feed(
-                    rss_url,
-                    source["name"],
-                )
-
-                source_articles.extend(parsed)
-
-        # ----------------------------------------------------
-        # Fallback HTML
-        # ----------------------------------------------------
-
-        if not source_articles:
             source_articles = extract_html_articles(
-                source
+                url,
+                name,
             )
 
-        all_articles.extend(
-            source_articles
-        )
+        if source_articles:
+            source_status.append(
+                {
+                    "name": name,
+                    "status": "success",
+                    "count": len(source_articles),
+                }
+            )
+        else:
+            source_status.append(
+                {
+                    "name": name,
+                    "status": "failed",
+                    "count": 0,
+                }
+            )
 
-    logger.info(
-        "TOTAL avant déduplication : %d articles.",
-        len(all_articles),
+        raw_articles.extend(source_articles)
+
+    print(f"[INFO] Raw articles collected: {len(raw_articles)}")
+
+    articles = deduplicate_articles(raw_articles)
+
+    print(
+        f"[INFO] Articles after deduplication: {len(articles)}"
     )
 
-    all_articles = deduplicate_articles(
-        all_articles
-    )
+    classified_articles = []
 
-    logger.info(
-        "TOTAL après déduplication : %d articles.",
-        len(all_articles),
-    )
+    for article in articles:
+        try:
+            classified = classify_article(article)
+            classified_articles.append(classified)
 
-    # --------------------------------------------------------
-    # Première classification sur titre + résumé.
-    # --------------------------------------------------------
-
-    classified = []
-
-    for article in all_articles:
-        classify_article(article)
-        classified.append(article)
+        except Exception as exc:
+            print(
+                f"[WARN] Classification failed for "
+                f"{article.get('title', '')}: {exc}"
+            )
 
     # --------------------------------------------------------
-    # Enrichissement seulement des candidats prometteurs.
+    # Dashboard statistics.
     # --------------------------------------------------------
 
-    promising = [
+    analyzed_count = len(classified_articles)
+
+    retained_articles = [
         article
-        for article in classified
-        if article["relevant"]
-        or article["score"] >= 4
+        for article in classified_articles
+        if article.get("relevant")
     ]
 
-    logger.info(
-        "Articles prometteurs à enrichir : %d",
-        len(promising),
+    levels = {
+        "A": 0,
+        "B": 0,
+        "C": 0,
+        "D": 0,
+    }
+
+    total_score = 0
+
+    for article in classified_articles:
+        level = article.get("level", "D")
+
+        if level not in levels:
+            level = "D"
+
+        levels[level] += 1
+
+        total_score += article.get("score", 0)
+
+    average_score = (
+        round(total_score / analyzed_count, 1)
+        if analyzed_count
+        else 0
     )
 
-    enrich_articles(promising)
+    relevance_rate = (
+        round(
+            len(retained_articles)
+            / analyzed_count
+            * 100,
+            1,
+        )
+        if analyzed_count
+        else 0
+    )
 
-    # --------------------------------------------------------
-    # Reclassification après enrichissement.
-    # --------------------------------------------------------
+    successful_sources = sum(
+        1
+        for source in source_status
+        if source["status"] == "success"
+    )
 
-    final_articles = []
+    stats = {
+        "raw": len(raw_articles),
+        "analyzed": analyzed_count,
+        "retained": len(retained_articles),
+        "average_score": average_score,
+        "levels": levels,
+        "sources_success": successful_sources,
+        "sources_total": len(TOP_NEWS_SOURCES),
+        "relevance_rate": relevance_rate,
+    }
 
-    for article in classified:
-        if article in promising:
-            classify_article(article)
-
-        if article["relevant"]:
-            final_articles.append(article)
-
-    # --------------------------------------------------------
-    # Tri par date
-    # --------------------------------------------------------
-
-    final_articles.sort(
-        key=article_sort_key,
+    # Sort newest first.
+    retained_articles.sort(
+        key=article_timestamp,
         reverse=True,
     )
 
-    logger.info(
-        "Articles pertinents finaux : %d",
-        len(final_articles),
+    selected = retained_articles[:ARTICLES_TO_DISPLAY]
+
+    print(
+        "[INFO] Dashboard: "
+        f"{analyzed_count} analyzed / "
+        f"{len(retained_articles)} retained / "
+        f"average score {average_score}"
     )
 
-    return final_articles
+    print(
+        "[INFO] Levels: "
+        f"A={levels['A']} "
+        f"B={levels['B']} "
+        f"C={levels['C']} "
+        f"D={levels['D']}"
+    )
+
+    return {
+        "articles": selected,
+        "stats": stats,
+        "source_status": source_status,
+    }
 
 
 # ============================================================
@@ -1652,161 +1339,285 @@ def fetch_all_news():
 # ============================================================
 
 def format_date(article):
-    timestamp = article.get("timestamp")
+    dt = article.get("published_dt")
 
-    if timestamp:
-        try:
-            return timestamp.strftime(
-                "%Y-%m-%d %H:%M UTC"
-            )
-        except Exception:
-            pass
+    if dt:
+        return dt.strftime("%Y-%m-%d %H:%M UTC")
 
     published = article.get("published", "")
 
-    return published or "Date inconnue"
+    if published:
+        return html.escape(published)
+
+    return "Date inconnue"
 
 
-def escape_html(text):
-    return (
-        html.escape(str(text))
-        if text is not None
-        else ""
+def level_badge(level):
+    labels = {
+        "A": "🟥 Niveau A — Droits humains",
+        "B": "🟧 Niveau B — Politique intérieure",
+        "C": "🟦 Niveau C — Géopolitique majeure",
+        "D": "⚪ Niveau D — Filtré",
+    }
+
+    return labels.get(
+        level,
+        "⚪ Niveau D — Filtré",
     )
 
 
-def create_web_page(articles):
-    selected = articles[:ARTICLES_TO_DISPLAY]
+def create_web_page(scan_result):
+    articles = scan_result["articles"]
+    stats = scan_result["stats"]
 
-    generated_at = datetime.now(
-        timezone.utc
-    ).strftime("%Y-%m-%d %H:%M UTC")
+    scan_time = datetime.now(timezone.utc).strftime(
+        "%Y-%m-%d %H:%M UTC"
+    )
 
     cards = []
 
-    for article in selected:
+    for article in articles:
+        title = html.escape(article.get("title", "Sans titre"))
+        source = html.escape(article.get("source", "Source inconnue"))
+        url = html.escape(article.get("url", "#"), quote=True)
 
-        reasons = article.get(
-            "reasons",
-            [],
+        summary = html.escape(
+            article.get("summary", "")
         )
 
-        reasons_html = ""
+        if len(summary) > 500:
+            summary = summary[:500].rstrip() + "…"
+
+        score = article.get("score", 0)
+        level = article.get("level", "D")
+        classification = html.escape(
+            article.get("classification", "Filtré")
+        )
+
+        reasons = article.get("reasons", [])
+
+        reason_html = ""
 
         if reasons:
-            reasons_html = (
+            reason_html = (
                 "<div class='reasons'>"
-                + escape_html(
-                    " • ".join(reasons[:4])
+                "<strong>Raisons :</strong> "
+                + " • ".join(
+                    html.escape(reason)
+                    for reason in reasons
                 )
                 + "</div>"
             )
 
-        card = f"""
-        <article class="card">
-            <div class="source">
-                {escape_html(article["source"])}
-            </div>
+        cards.append(
+            f"""
+            <article class="article-card level-{level}">
+                <div class="article-meta">
+                    <span>{source}</span>
+                    <span>{format_date(article)}</span>
+                </div>
 
-            <h2>
-                <a href="{escape_html(article["url"])}"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    {escape_html(article["title"])}
-                </a>
-            </h2>
+                <div class="article-heading">
+                    <h2>
+                        <a href="{url}" target="_blank" rel="noopener">
+                            {title}
+                        </a>
+                    </h2>
 
-            <div class="date">
-                {escape_html(format_date(article))}
-            </div>
+                    <span class="level-badge">
+                        {level_badge(level)}
+                    </span>
+                </div>
 
-            <p>
-                {escape_html(article.get("summary", ""))[:700]}
-            </p>
+                <div class="score-line">
+                    <strong>Score : {score}/20</strong>
+                    <span>{classification}</span>
+                </div>
 
-            {reasons_html}
-        </article>
-        """
+                <p>{summary}</p>
 
-        cards.append(card)
+                {reason_html}
+            </article>
+            """
+        )
 
-    if not cards:
-        cards_html = """
+    articles_html = "\n".join(cards)
+
+    if not articles_html:
+        articles_html = """
         <div class="empty">
-            Aucun article pertinent trouvé lors du dernier scan.
+            Aucun article retenu pour ce scan.
         </div>
         """
-    else:
-        cards_html = "\n".join(cards)
 
-    page = f"""<!DOCTYPE html>
+    levels = stats["levels"]
+
+    return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Central Asia News Scanner</title>
 
     <style>
+        :root {{
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --accent: #111827;
+        }}
+
+        * {{
+            box-sizing: border-box;
+        }}
+
         body {{
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
             font-family:
                 -apple-system,
                 BlinkMacSystemFont,
                 "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
                 sans-serif;
+        }}
 
-            max-width: 1000px;
+        .container {{
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 32px 20px 60px;
+        }}
 
-            background: #f5f5f5;
-            color: #222;
+        header {{
+            margin-bottom: 28px;
         }}
 
         h1 {{
-            margin-bottom: 5px;
+            margin: 0 0 8px;
+            font-size: 2rem;
         }}
 
         .subtitle {{
-            color: #666;
-            margin-bottom: 30px;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
         }}
 
-        .updated {{
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 25px;
+        .scan-time {{
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--muted);
         }}
 
-        .card {{
-            background: white;
-            border-radius: 10px;
-            padding: 22px;
-            margin-bottom: 18px;
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.07);
+        /* ====================================================
+           DASHBOARD
+           ==================================================== */
+
+        .dashboard {{
+            margin: 28px 0 32px;
         }}
 
-        .source {{
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #666;
-            margin-bottom: 8px;
+        .dashboard-title {{
+            margin: 0 0 14px;
+            font-size: 1.2rem;
+        }}
+
+        .stats-grid {{
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(145px, 1fr));
+            gap: 12px;
+        }}
+
+        .stat {{
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 95px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }}
+
+        .stat-value {{
+            font-size: 1.65rem;
+            font-weight: 750;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }}
+
+        .stat-label {{
+            color: var(--muted);
+            font-size: 0.85rem;
+        }}
+
+        .dashboard-note {{
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }}
+
+        /* ====================================================
+           ARTICLES
+           ==================================================== */
+
+        .articles {{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }}
+
+        .article-card {{
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }}
+
+        .article-card.level-A {{
+            border-left: 5px solid #b91c1c;
+        }}
+
+        .article-card.level-B {{
+            border-left: 5px solid #c2410c;
+        }}
+
+        .article-card.level-C {{
+            border-left: 5px solid #2563eb;
+        }}
+
+        .article-meta {{
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }}
+
+        .article-heading {{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
         }}
 
         h2 {{
-            margin: 0 0 8px 0;
-            font-size: 22px;
-            line-height: 1.3;
+            margin: 0;
+            font-size: 1.25rem;
+            line-height: 1.35;
         }}
 
         h2 a {{
-            color: #111;
+            color: var(--text);
             text-decoration: none;
         }}
 
@@ -1814,64 +1625,212 @@ def create_web_page(articles):
             text-decoration: underline;
         }}
 
-        .date {{
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 14px;
+        .level-badge {{
+            flex-shrink: 0;
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            font-size: 0.78rem;
+            white-space: nowrap;
         }}
 
-        p {{
-            line-height: 1.6;
-            color: #444;
+        .score-line {{
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }}
+
+        .score-line span {{
+            color: var(--muted);
+        }}
+
+        .article-card p {{
+            margin: 0;
+            line-height: 1.55;
+            color: #374151;
         }}
 
         .reasons {{
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
-            font-size: 11px;
-            color: #888;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.5;
         }}
 
         .empty {{
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            color: var(--muted);
+        }}
+
+        footer {{
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.8rem;
+        }}
+
+        @media (max-width: 700px) {{
+            .container {{
+                padding: 22px 14px 40px;
+            }}
+
+            h1 {{
+                font-size: 1.6rem;
+            }}
+
+            .article-heading {{
+                flex-direction: column;
+            }}
+
+            .article-meta {{
+                flex-direction: column;
+                gap: 4px;
+            }}
+
+            .level-badge {{
+                white-space: normal;
+            }}
         }}
     </style>
 </head>
 
 <body>
+    <main class="container">
 
-    <h1>Central Asia News Scanner</h1>
+        <header>
+            <h1>Central Asia News Scanner</h1>
 
-    <div class="subtitle">
-        Actualités récentes d'Asie centrale —
-        politique, droits humains, dissidence,
-        sécurité, géopolitique et événements régionaux.
-    </div>
+            <p class="subtitle">
+                Actualités récentes d’Asie centrale —
+                politique, droits humains, dissidence,
+                sécurité, géopolitique et événements régionaux.
+            </p>
 
-    <div class="updated">
-        Dernier scan : {escape_html(generated_at)}
-    </div>
+            <div class="scan-time">
+                Dernier scan : {scan_time}
+            </div>
+        </header>
 
-    {cards_html}
+        <section class="dashboard">
+            <h2 class="dashboard-title">
+                Tableau de bord
+            </h2>
 
+            <div class="stats-grid">
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {stats["analyzed"]}
+                    </div>
+                    <div class="stat-label">
+                        📰 Articles analysés
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {stats["retained"]}
+                    </div>
+                    <div class="stat-label">
+                        🎯 Articles retenus
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {stats["average_score"]}/20
+                    </div>
+                    <div class="stat-label">
+                        📊 Score moyen
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {stats["sources_success"]}/{stats["sources_total"]}
+                    </div>
+                    <div class="stat-label">
+                        📡 Sources analysées
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {levels["A"]}
+                    </div>
+                    <div class="stat-label">
+                        🟥 Niveau A
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {levels["B"]}
+                    </div>
+                    <div class="stat-label">
+                        🟧 Niveau B
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {levels["C"]}
+                    </div>
+                    <div class="stat-label">
+                        🟦 Niveau C
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {levels["D"]}
+                    </div>
+                    <div class="stat-label">
+                        ⚪ Niveau D
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        {stats["relevance_rate"]}%
+                    </div>
+                    <div class="stat-label">
+                        📈 Taux de pertinence
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="dashboard-note">
+                Le score moyen est calculé sur l’ensemble des
+                articles analysés après déduplication, et non
+                uniquement sur les articles retenus.
+            </div>
+        </section>
+
+        <section class="articles">
+            {articles_html}
+        </section>
+
+        <footer>
+            Scanner automatique — Asie centrale.
+            Les articles sont classés selon leur pertinence
+            politique, droits humains et géopolitique.
+        </footer>
+
+    </main>
 </body>
 </html>
 """
-
-    with open(
-        "index.html",
-        "w",
-        encoding="utf-8",
-    ) as file:
-        file.write(page)
-
-    logger.info(
-        "index.html généré avec %d articles.",
-        len(selected),
-    )
 
 
 # ============================================================
@@ -1879,26 +1838,25 @@ def create_web_page(articles):
 # ============================================================
 
 def main():
-    logger.info(
-        "=========================================="
-    )
-    logger.info(
-        "Central Asia News Scanner V3"
-    )
-    logger.info(
-        "=========================================="
+    print("[INFO] Starting Asia Central News Scanner")
+
+    scan_result = scan_news()
+
+    create_web_page_result = create_web_page(
+        scan_result
     )
 
-    articles = fetch_all_news()
+    with open(
+        "index.html",
+        "w",
+        encoding="utf-8",
+    ) as f:
+        f.write(create_web_page_result)
 
-    create_web_page(
-        articles
-    )
-
-    logger.info(
-        "Scan terminé."
-    )
+    print("[INFO] index.html generated")
+    print("[INFO] Scan completed successfully")
 
 
 if __name__ == "__main__":
     main()
+```
