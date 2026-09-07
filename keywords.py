@@ -1,5 +1,6 @@
 # ============================================================
 # KEYWORDS — VEILLE ASIE CENTRALE / ACTIVISTES / DROITS HUMAINS
+# VERSION 2
 # ============================================================
 
 
@@ -8,7 +9,6 @@
 # ============================================================
 
 CENTRAL_ASIA_TERMS = [
-    # Général
     "central asia",
     "central asian",
 
@@ -48,6 +48,7 @@ CENTRAL_ASIA_TERMS = [
     "центральноазиат",
     "казахстан",
     "казах",
+    "казахи",
     "киргизстан",
     "кыргызстан",
     "киргиз",
@@ -539,6 +540,7 @@ CENTRAL_ASIA_HR_TERMS = [
     "january 2022",
     "january events",
     "bloody january",
+    "bloody january events",
     "qantar",
     "qantar events",
 
@@ -551,7 +553,6 @@ CENTRAL_ASIA_HR_TERMS = [
     # Tajikistan
     "gorno-badakhshan",
     "gorno badakhshan",
-    "gb ao",
     "gbao",
     "pamiri",
     "pamiris",
@@ -567,8 +568,6 @@ CENTRAL_ASIA_HR_TERMS = [
     "vpn in turkmenistan",
 
     # Uzbekistan
-    "karakalpakstan",
-    "karakalpak",
     "karakalpakstan protests",
     "karakalpakstan unrest",
     "forced psychiatric treatment",
@@ -580,10 +579,10 @@ CENTRAL_ASIA_HR_TERMS = [
     "январские события",
     "январь 2022",
     "кровавый январь",
-    "ГБАО",
-    "Горно-Бадахшан",
+    "гбaо",
+    "горно-бадахшан",
     "памирцы",
-    "Каракалпакстан",
+    "каракалпакстан",
     "каракалпаки",
 ]
 
@@ -591,6 +590,10 @@ CENTRAL_ASIA_HR_TERMS = [
 # ============================================================
 # 10. POLITIQUE INTÉRIEURE
 # ============================================================
+
+# IMPORTANT :
+# Les termes très génériques comme "president", "government"
+# ne doivent pas produire beaucoup de points à eux seuls.
 
 DOMESTIC_POLITICAL_TERMS = [
     "election",
@@ -659,16 +662,15 @@ DOMESTIC_POLITICAL_TERMS = [
 
 MAJOR_GEOPOLITICAL_TERMS = [
     "shanghai cooperation organization",
+    "shanghai cooperation organisation",
     "sco summit",
     "sco leaders",
     "sco heads of state",
     "sco meeting",
-    "sco",
 
     "шанхайская организация сотрудничества",
     "шос",
 
-    "war",
     "armed conflict",
     "major conflict",
     "military escalation",
@@ -886,7 +888,6 @@ NOISE_TERMS = [
     "boxing",
     "tennis",
     "olympics",
-    "championship",
 
     "match",
     "player",
@@ -901,4 +902,240 @@ NOISE_TERMS = [
 
     "cryptocurrency",
     "stock market",
+]
+
+
+# ============================================================
+# 17. MOTS-CLÉS FORTS — RÉPRESSION
+# ============================================================
+
+SEVERE_REPRESSION_TERMS = [
+    "torture",
+    "tortured",
+    "enforced disappearance",
+    "forced disappearance",
+    "forcibly disappeared",
+    "political prisoner",
+    "political prisoners",
+    "political repression",
+    "political crackdown",
+    "opposition crackdown",
+
+    # Russe
+    "пытка",
+    "пытки",
+    "насильственное исчезновение",
+    "политический заключенный",
+    "политические заключенные",
+    "политические репрессии",
+    "репрессии",
+]
+
+
+# ============================================================
+# 18. PATTERNS — RELATIONS ACTIVISTES
+# ============================================================
+
+ACTIVIST_REPRESSION_PATTERNS = [
+    r"\bactivist\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b",
+    r"\bactivists\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b",
+
+    r"\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b.{0,100}\bactivist\b",
+    r"\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b.{0,100}\bactivists\b",
+
+    r"\bhuman rights defender\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b",
+    r"\bhuman rights defenders\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b",
+]
+
+
+# ============================================================
+# 19. PATTERNS — RELATIONS JOURNALISTES
+# ============================================================
+
+JOURNALIST_REPRESSION_PATTERNS = [
+    r"\bjournalist\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
+    r"\bjournalists\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
+
+    r"\breporter\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
+    r"\breporters\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
+
+    r"\bjournalist\b.{0,100}\b(censorship|censored|blocked|banned)\b",
+    r"\bindependent media\b.{0,100}\b(blocked|banned|closed|shut down)\b",
+]
+
+
+# ============================================================
+# 20. PATTERNS — RUSSE / RELATIONS
+# ============================================================
+
+ACTIVIST_REPRESSION_RU_PATTERNS = [
+    r"(активист|активисты|правозащитник|правозащитники).{0,100}(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены)",
+    r"(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены).{0,100}(активист|активисты|правозащитник|правозащитники)",
+]
+
+
+JOURNALIST_REPRESSION_RU_PATTERNS = [
+    r"(журналист|журналисты|репортер|репортеры).{0,100}(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены)",
+    r"(журналист|журналисты|репортер|репортеры).{0,100}(угрож|напад|избит|запрет|цензур|задерж)",
+]
+
+
+# ============================================================
+# 21. WEIGHTS — RÉPRESSION
+# ============================================================
+
+REPRESSION_WEIGHTS = {
+    "torture": 10,
+    "tortured": 10,
+    "enforced disappearance": 10,
+    "forced disappearance": 10,
+    "forcibly disappeared": 10,
+    "political prisoner": 10,
+    "political prisoners": 10,
+
+    "political repression": 9,
+    "political crackdown": 9,
+    "opposition crackdown": 9,
+
+    "imprisoned": 8,
+    "imprisonment": 8,
+    "jailed": 8,
+    "prison sentence": 8,
+    "sentenced to prison": 8,
+
+    "arrested": 7,
+    "arrest": 6,
+    "arrests": 6,
+    "detained": 7,
+    "detention": 6,
+
+    "convicted": 6,
+    "conviction": 6,
+    "sentenced": 6,
+
+    "criminal prosecution": 5,
+    "prosecuted": 5,
+    "charged with": 5,
+    "criminal charges": 5,
+
+    "trial": 4,
+    "closed-door trial": 5,
+    "secret trial": 5,
+
+    "travel ban": 4,
+    "exit ban": 4,
+    "passport confiscated": 4,
+
+    "censorship": 3,
+    "online censorship": 3,
+    "internet censorship": 4,
+    "website blocked": 3,
+    "internet shutdown": 5,
+
+    "police abuse": 6,
+    "abuse in custody": 7,
+    "custodial abuse": 7,
+
+    "репрессии": 8,
+    "политические репрессии": 9,
+    "пытка": 10,
+    "пытки": 10,
+    "арестован": 7,
+    "арестована": 7,
+    "арестованы": 7,
+    "задержан": 7,
+    "задержана": 7,
+    "задержаны": 7,
+    "осужден": 6,
+    "осуждена": 6,
+    "осуждены": 6,
+    "заключен": 8,
+    "заключена": 8,
+    "заключены": 8,
+}
+
+
+# ============================================================
+# 22. WEIGHTS — DROITS SPÉCIFIQUES
+# ============================================================
+
+SPECIFIC_RIGHTS_WEIGHTS = {
+
+    "gender-based violence": 8,
+    "violence against women": 8,
+    "violence against girls": 8,
+    "sexual violence": 8,
+    "forced marriage": 7,
+    "child marriage": 7,
+
+    "gender discrimination": 6,
+    "gender-based discrimination": 6,
+
+    "lgbt rights": 7,
+    "lgbti rights": 7,
+    "gay rights": 7,
+    "lgbt": 5,
+    "lgbti": 5,
+    "lgbtq": 5,
+    "same-sex relations": 5,
+    "same-sex conduct": 5,
+
+    "ethnic discrimination": 7,
+    "religious discrimination": 7,
+    "minority rights": 6,
+
+    "child abuse": 8,
+    "child labor": 7,
+    "child labour": 7,
+
+    "forced labor": 8,
+    "forced labour": 8,
+
+    "migrant rights": 5,
+    "refugee rights": 5,
+
+    "права женщин": 5,
+    "гендерная дискриминация": 6,
+    "насилие в отношении женщин": 8,
+    "домашнее насилие": 7,
+    "сексуальное насилие": 8,
+    "принудительный брак": 7,
+    "детский брак": 7,
+    "лгбт": 5,
+    "права меньшинств": 6,
+    "дискриминация": 4,
+    "права детей": 5,
+    "детский труд": 7,
+    "принудительный труд": 8,
+    "права мигрантов": 5,
+}
+
+
+# ============================================================
+# 23. MOTS FORTS POUR IDENTIFIER UNE VICTIME
+# ============================================================
+
+VICTIM_TERMS = [
+    "activist",
+    "activists",
+    "human rights activist",
+    "human rights defender",
+    "dissident",
+
+    "journalist",
+    "journalists",
+    "reporter",
+    "blogger",
+    "independent journalist",
+
+    # Russe
+    "активист",
+    "активисты",
+    "правозащитник",
+    "правозащитники",
+    "диссидент",
+    "журналист",
+    "журналисты",
+    "репортер",
+    "блогер",
 ]
