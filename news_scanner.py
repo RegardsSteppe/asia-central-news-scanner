@@ -1,4 +1,3 @@
-```python
 #!/usr/bin/env python3
 """
 Asia Central Human Rights News Scanner
@@ -1135,4 +1134,3 @@ if __name__ == "__main__":
         )
 
         raise
-```
