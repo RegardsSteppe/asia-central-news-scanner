@@ -1,9 +1,11 @@
-# sources.py
+# ============================================================
+# SOURCES
+# ============================================================
 
 SOURCES = [
 
     # ========================================================
-    # SOURCES INTERNATIONALES / INDÉPENDANTES
+    # INTERNATIONAL / INDÉPENDANT
     # ========================================================
 
     {
@@ -12,6 +14,7 @@ SOURCES = [
         "profile": "international_independent",
         "label": "International · indépendant",
         "type": "rss",
+
         "feeds": [
             "https://www.rferl.org/api/zriiml-vomx-tpeogm_",
             "https://www.rferl.org/api/zqii_l-vomx-tpeigmy",
@@ -19,7 +22,11 @@ SOURCES = [
             "https://www.rferl.org/api/ztiiml-vomx-tpekgm_",
             "https://www.rferl.org/api/ztukmrl-vomx-tpeki-mo",
         ],
-        "fallback": "https://www.rferl.org/p/5549.html",
+
+        "fallbacks": [
+            "https://www.rferl.org/p/5549.html",
+        ],
+
         "max_articles": 150,
     },
 
@@ -29,7 +36,13 @@ SOURCES = [
         "profile": "independent",
         "label": "Indépendant · régional",
         "type": "html",
+
         "url": "https://eurasianet.org/latest",
+
+        "fallbacks": [
+            "https://eurasianet.org/",
+        ],
+
         "max_articles": 120,
     },
 
@@ -39,10 +52,15 @@ SOURCES = [
         "profile": "independent",
         "label": "Indépendant · Asie centrale",
         "type": "rss",
+
         "feeds": [
             "https://cabar.asia/en/feed",
         ],
-        "fallback": "https://cabar.asia/en/",
+
+        "fallbacks": [
+            "https://cabar.asia/en/",
+        ],
+
         "max_articles": 120,
     },
 
@@ -52,12 +70,18 @@ SOURCES = [
         "profile": "international_analysis",
         "label": "International · analyse",
         "type": "html",
+
         "url": "https://thediplomat.com/regions/central-asia/",
-        "max_articles": 120,
+
+        "fallbacks": [
+            "https://thediplomat.com/",
+        ],
+
+        "max_articles": 100,
     },
 
     # ========================================================
-    # INVESTIGATION / DROITS HUMAINS
+    # INVESTIGATION
     # ========================================================
 
     {
@@ -66,9 +90,15 @@ SOURCES = [
         "profile": "investigative",
         "label": "International · investigation",
         "type": "html",
+
         "url": "https://www.occrp.org/en/",
+
         "max_articles": 100,
     },
+
+    # ========================================================
+    # DROITS HUMAINS
+    # ========================================================
 
     {
         "name": "Human Rights Watch",
@@ -76,8 +106,14 @@ SOURCES = [
         "profile": "human_rights",
         "label": "International · droits humains",
         "type": "html",
+
         "url": "https://www.hrw.org/",
-        "max_articles": 100,
+
+        "fallbacks": [
+            "https://www.hrw.org/asia",
+        ],
+
+        "max_articles": 80,
     },
 
     {
@@ -86,32 +122,38 @@ SOURCES = [
         "profile": "human_rights",
         "label": "International · droits humains",
         "type": "html",
+
         "url": "https://www.amnesty.org/",
-        "max_articles": 100,
+
+        "max_articles": 80,
     },
 
     {
         "name": "Committee to Protect Journalists",
         "short_name": "CPJ",
-        "profile": "human_rights",
+        "profile": "press_freedom",
         "label": "International · liberté de la presse",
         "type": "html",
+
         "url": "https://cpj.org/",
-        "max_articles": 100,
+
+        "max_articles": 80,
     },
 
     {
         "name": "Reporters Without Borders",
         "short_name": "RSF",
-        "profile": "human_rights",
+        "profile": "press_freedom",
         "label": "International · liberté de la presse",
         "type": "html",
+
         "url": "https://rsf.org/",
-        "max_articles": 100,
+
+        "max_articles": 80,
     },
 
     # ========================================================
-    # MÉDIAS RÉGIONAUX INDÉPENDANTS
+    # RÉGIONAL
     # ========================================================
 
     {
@@ -120,8 +162,10 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · indépendant",
         "type": "html",
+
         "url": "https://timesca.com/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -130,8 +174,10 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · indépendant",
         "type": "html",
+
         "url": "https://novastan.org/en/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -140,8 +186,10 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Ouzbékistan",
         "type": "html",
+
         "url": "https://uznews.uz/en",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -150,8 +198,10 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · indépendant",
         "type": "html",
+
         "url": "https://sarpa.media/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -160,8 +210,10 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · business & politique",
         "type": "html",
+
         "url": "https://kz.kursiv.media/en/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     # ========================================================
@@ -174,8 +226,10 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · Kazakhstan",
         "type": "html",
+
         "url": "https://vlast.kz/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -184,8 +238,34 @@ SOURCES = [
         "profile": "international_independent",
         "label": "International · Kazakhstan",
         "type": "html",
+
         "url": "https://www.azattyq.org/",
-        "max_articles": 120,
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Orda.kz",
+        "short_name": "Orda",
+        "profile": "regional_independent",
+        "label": "Indépendant · Kazakhstan",
+        "type": "html",
+
+        "url": "https://orda.kz/",
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Tengrinews",
+        "short_name": "Tengrinews",
+        "profile": "regional_media",
+        "label": "Média régional · Kazakhstan",
+        "type": "html",
+
+        "url": "https://en.tengrinews.kz/",
+
+        "max_articles": 100,
     },
 
     # ========================================================
@@ -198,8 +278,10 @@ SOURCES = [
         "profile": "investigative",
         "label": "Investigation · Kirghizistan",
         "type": "html",
+
         "url": "https://kloop.kg/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -208,8 +290,34 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Kirghizistan",
         "type": "html",
+
         "url": "https://24.kg/",
-        "max_articles": 120,
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Kaktus Media",
+        "short_name": "Kaktus",
+        "profile": "regional_independent",
+        "label": "Indépendant · Kirghizistan",
+        "type": "html",
+
+        "url": "https://kaktus.media/",
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Kabar",
+        "short_name": "Kabar",
+        "profile": "state_media",
+        "label": "Agence officielle · Kirghizistan",
+        "type": "html",
+
+        "url": "https://en.kabar.kg/",
+
+        "max_articles": 80,
     },
 
     # ========================================================
@@ -222,8 +330,10 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · Tadjikistan",
         "type": "html",
+
         "url": "https://asiaplustj.info/en",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -232,8 +342,10 @@ SOURCES = [
         "profile": "international_independent",
         "label": "International · Tadjikistan",
         "type": "html",
+
         "url": "https://www.ozodi.org/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     # ========================================================
@@ -246,8 +358,10 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Ouzbékistan",
         "type": "html",
+
         "url": "https://www.gazeta.uz/en/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -256,8 +370,22 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Ouzbékistan",
         "type": "html",
+
         "url": "https://kun.uz/en",
-        "max_articles": 120,
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Spot.uz",
+        "short_name": "Spot.uz",
+        "profile": "economic_media",
+        "label": "Économie · Ouzbékistan",
+        "type": "html",
+
+        "url": "https://www.spot.uz/en/",
+
+        "max_articles": 80,
     },
 
     # ========================================================
@@ -270,8 +398,10 @@ SOURCES = [
         "profile": "human_rights",
         "label": "Indépendant · Turkménistan",
         "type": "html",
+
         "url": "https://turkmen.news/",
-        "max_articles": 120,
+
+        "max_articles": 100,
     },
 
     {
@@ -280,8 +410,38 @@ SOURCES = [
         "profile": "human_rights",
         "label": "Indépendant · Turkménistan",
         "type": "html",
+
         "url": "https://en.hronikatm.com/",
-        "max_articles": 120,
+
+        "max_articles": 100,
+    },
+
+    # ========================================================
+    # RÉGIONAL / TRANSFRONTALIER
+    # ========================================================
+
+    {
+        "name": "Fergana Agency",
+        "short_name": "Fergana",
+        "profile": "regional_independent",
+        "label": "Régional · transfrontalier",
+        "type": "html",
+
+        "url": "https://fergana.agency/",
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Central Asia-Caucasus Analyst",
+        "short_name": "CAC Analyst",
+        "profile": "regional_analysis",
+        "label": "Régional · analyse",
+        "type": "html",
+
+        "url": "https://www.cacianalyst.org/",
+
+        "max_articles": 80,
     },
 
     # ========================================================
@@ -294,8 +454,10 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Caucase",
         "type": "html",
+
         "url": "https://www.azernews.az/latest/",
-        "max_articles": 120,
+
+        "max_articles": 80,
     },
 ]
 
@@ -357,7 +519,39 @@ SOURCE_PROFILES = {
         "name": "Droits humains",
         "description": (
             "Source spécialisée dans les droits humains, "
-            "les libertés fondamentales et/ou la liberté de la presse."
+            "les libertés fondamentales et/ou les abus."
+        ),
+    },
+
+    "press_freedom": {
+        "name": "Liberté de la presse",
+        "description": (
+            "Source spécialisée dans la liberté de la presse, "
+            "les journalistes et les médias."
+        ),
+    },
+
+    "economic_media": {
+        "name": "Économie",
+        "description": (
+            "Source orientée économie, entreprises, marchés "
+            "et politiques économiques."
+        ),
+    },
+
+    "state_media": {
+        "name": "Média officiel",
+        "description": (
+            "Agence ou média proche des institutions publiques. "
+            "Utile comme source de comparaison et de contrepoint."
+        ),
+    },
+
+    "regional_analysis": {
+        "name": "Régional · analyse",
+        "description": (
+            "Publication spécialisée dans l'analyse politique "
+            "et géopolitique de l'Asie centrale et du Caucase."
         ),
     },
 }
