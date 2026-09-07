@@ -354,27 +354,27 @@ def render_dashboard(
         )}
 
         {render_stat(
-            stats["levels"]["A"],
+            stats["level_a"],
             "🟥 Niveau A"
         )}
 
         {render_stat(
-            stats["levels"]["B"],
+            stats["level_b"],
             "🟧 Niveau B"
         )}
 
         {render_stat(
-            stats["levels"]["C"],
+            stats["level_c"],
             "🟦 Niveau C"
         )}
 
         {render_stat(
-            stats["levels"]["D"],
+            stats["level_d"]
             "⚪ Niveau D"
         )}
 
         {render_stat(
-            f'{stats["sources"]}/{stats["sources_total"]}',
+            f'{stats["sources_successful"]}/{stats["sources_total"]}',
             "📡 Sources analysées"
         )}
 
