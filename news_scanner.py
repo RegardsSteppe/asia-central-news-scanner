@@ -61,6 +61,7 @@ TOP_NEWS_SOURCES = [
         "name": "Radio Free Liberty",
         "url": "https://www.rferl.org/",
         "description": "Radio"
+    }
 ]
 
 
