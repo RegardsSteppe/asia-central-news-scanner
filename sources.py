@@ -1,6 +1,7 @@
 # sources.py
 
 SOURCES = [
+
     {
         "name": "Eurasianet",
         "type": "html",
@@ -14,6 +15,7 @@ SOURCES = [
         "feeds": [
             "https://cabar.asia/en/feed",
         ],
+        "fallback": "https://cabar.asia/en/",
         "max_articles": 100,
     },
 
@@ -21,11 +23,20 @@ SOURCES = [
         "name": "Radio Free Europe / Radio Liberty",
         "type": "rss",
         "feeds": [
-            "https://www.rferl.org/api/zriiml-vomx-tpeogm_",  # Kazakhstan
-            "https://www.rferl.org/api/zqii_l-vomx-tpeigmy",   # Kyrgyzstan
-            "https://www.rferl.org/api/z_iiol-vomx-tpevgmi",   # Tajikistan
-            "https://www.rferl.org/api/ztiiml-vomx-tpekgm_",   # Turkmenistan
-            "https://www.rferl.org/api/ztukmrl-vomx-tpeki-mo", # Uzbekistan
+            # Kazakhstan
+            "https://www.rferl.org/api/zriiml-vomx-tpeogm_",
+
+            # Kyrgyzstan
+            "https://www.rferl.org/api/zqii_l-vomx-tpeigmy",
+
+            # Tajikistan
+            "https://www.rferl.org/api/z_iiol-vomx-tpevgmi",
+
+            # Turkmenistan
+            "https://www.rferl.org/api/ztiiml-vomx-tpekgm_",
+
+            # Uzbekistan
+            "https://www.rferl.org/api/ztukmrl-vomx-tpeki-mo",
         ],
         "fallback": "https://www.rferl.org/p/5549.html",
         "max_articles": 150,
