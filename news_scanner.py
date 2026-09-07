@@ -58,10 +58,9 @@ TOP_NEWS_SOURCES = [
         "description": "Azerbaijan news source"
     },
     {
-        "name": "The Diplomat",
-        "url": "https://thediplomat.com/regions/asia/",
-        "description": "Asia-Pacific news and analysis"
-    }
+        "name": "Radio Free Liberty",
+        "url": "https://www.rferl.org/",
+        "description": "Radio"
 ]
 
 
