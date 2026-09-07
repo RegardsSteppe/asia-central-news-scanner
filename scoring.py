@@ -17,6 +17,13 @@ from keywords import (
     JOURNALIST_TERMS,
     ACTIVIST_TERMS,
     CENTRAL_ASIA_HR_TERMS,
+    SEVERE_REPRESSION_TERMS,
+    ACTIVIST_REPRESSION_PATTERNS,
+    JOURNALIST_REPRESSION_PATTERNS,
+    ACTIVIST_REPRESSION_RU_PATTERNS,
+    JOURNALIST_REPRESSION_RU_PATTERNS,
+    REPRESSION_WEIGHTS,
+    SPECIFIC_RIGHTS_WEIGHTS,
 )
 
 
@@ -41,9 +48,6 @@ def phrase_present(text, phrase):
 
     phrase = normalize(phrase)
 
-    if not phrase:
-        return False
-
     pattern = (
         r"(?<!\w)"
         + re.escape(phrase)
@@ -61,26 +65,40 @@ def find_terms(text, terms):
     ]
 
 
-def unique_terms(*groups):
-    result = []
-    seen = set()
-
-    for group in groups:
-        for term in group:
-            key = normalize(term)
-
-            if key in seen:
-                continue
-
-            seen.add(key)
-            result.append(term)
-
-    return result
-
-
 def capped_add(current, value, maximum):
     return min(
         current + value,
+        maximum,
+    )
+
+
+def contains_pattern(text, patterns):
+    for pattern in patterns:
+        if re.search(pattern, text):
+            return True
+
+    return False
+
+
+def weighted_score(terms, weights, maximum):
+    """
+    Calcule un score pondéré sans double compter
+    plusieurs occurrences du même signal.
+    """
+    score = 0
+
+    for term in terms:
+        normalized = normalize(term)
+
+        value = weights.get(
+            normalized,
+            2,
+        )
+
+        score += value
+
+    return min(
+        score,
         maximum,
     )
 
@@ -90,31 +108,23 @@ def capped_add(current, value, maximum):
 # ============================================================
 
 def classify_article(article):
+
     """
-    Classe un article pour une veille :
-        ASIE CENTRALE
-        ACTIVISTES
-        DROITS HUMAINS
-        RÉPRESSION
+    Classification V2.
 
-    Score global : 0-100.
+    Score global : 0-100
 
-    Sous-scores :
-        geography_score       /20
-        activist_score        /25
-        repression_score      /25
-        rights_score          /15
+    Dimensions :
+
+        geography_score       /15
+        target_score          /20
+        repression_score      /30
+        rights_score          /10
         journalism_score      /10
-        confirmation_score    /5
+        geopolitical_score    /10
+        freshness_score       /5
 
-    Sortie :
-        score
-        level
-        priority
-        theme
-        reasons
-        relevant
-        signals
+        TOTAL                  /100
     """
 
     title = normalize(
@@ -130,20 +140,26 @@ def classify_article(article):
     )
 
     # --------------------------------------------------------
-    # TEXTE
+    # HEADLINE
     # --------------------------------------------------------
 
     headline = (
         title
         + " "
         + summary[:3000]
-    )
+    ).strip()
+
+    # --------------------------------------------------------
+    # FULL TEXT
+    # --------------------------------------------------------
 
     full_text = (
         headline
         + " "
         + body[:12000]
-    )
+    ).strip()
+
+    reasons = []
 
     # ========================================================
     # DÉTECTION DES SIGNAUX
@@ -230,7 +246,7 @@ def classify_article(article):
     )
 
     # ========================================================
-    # BODY — CONFIRMATION
+    # BODY
     # ========================================================
 
     body_geography = find_terms(
@@ -268,12 +284,20 @@ def classify_article(article):
         ACTIVIST_TERMS,
     )
 
-    body_has_geography = bool(
+    body_geo_count = len(
         body_geography
     )
 
+    body_has_geography = (
+        body_geo_count >= 1
+    )
+
+    strong_body_geography = (
+        body_geo_count >= 2
+    )
+
     # ========================================================
-    # RELATIONS IMPORTANTES
+    # RELATIONS
     # ========================================================
 
     has_repression = bool(
@@ -303,50 +327,352 @@ def classify_article(article):
         or body_human_rights
     )
 
+    # --------------------------------------------------------
+    # Relation explicite activiste -> répression
+    # --------------------------------------------------------
+
+    activist_relation = (
+        contains_pattern(
+            headline,
+            ACTIVIST_REPRESSION_PATTERNS,
+        )
+        or contains_pattern(
+            body[:12000],
+            ACTIVIST_REPRESSION_PATTERNS,
+        )
+        or contains_pattern(
+            headline,
+            ACTIVIST_REPRESSION_RU_PATTERNS,
+        )
+        or contains_pattern(
+            body[:12000],
+            ACTIVIST_REPRESSION_RU_PATTERNS,
+        )
+    )
+
+    # --------------------------------------------------------
+    # Relation explicite journaliste -> répression
+    # --------------------------------------------------------
+
+    journalist_relation = (
+        contains_pattern(
+            headline,
+            JOURNALIST_REPRESSION_PATTERNS,
+        )
+        or contains_pattern(
+            body[:12000],
+            JOURNALIST_REPRESSION_PATTERNS,
+        )
+        or contains_pattern(
+            headline,
+            JOURNALIST_REPRESSION_RU_PATTERNS,
+        )
+        or contains_pattern(
+            body[:12000],
+            JOURNALIST_REPRESSION_RU_PATTERNS,
+        )
+    )
+
+    # ========================================================
+    # CONFIRMATIONS
+    # ========================================================
+
     confirmed_repression = (
-        body_has_geography
-        and has_repression
+        strong_body_geography
+        and bool(
+            body_repression
+            or body_legal_repression
+        )
     )
 
     confirmed_rights = (
-        body_has_geography
-        and has_human_rights
-    )
-
-    # Activiste + répression
-    activist_pressure = (
-        has_activist
-        and has_repression
-    )
-
-    # Journaliste + répression
-    journalist_pressure = (
-        has_journalist
-        and has_repression
+        strong_body_geography
+        and bool(
+            body_human_rights
+            or body_specific_rights
+        )
     )
 
     confirmed_activist_pressure = (
-        body_has_geography
-        and bool(body_activists)
-        and bool(
-            body_repression
-            or body_legal_repression
-        )
+        strong_body_geography
+        and activist_relation
     )
 
     confirmed_journalist_pressure = (
-        body_has_geography
-        and bool(body_journalists)
-        and bool(
-            body_repression
-            or body_legal_repression
-        )
+        strong_body_geography
+        and journalist_relation
     )
 
     # ========================================================
-    # SCO
+    # SOUS-SCORE 1 — GÉOGRAPHIE /15
     # ========================================================
 
+    geography_score = 0
+
+    if central_asia:
+
+        geography_score = 12
+
+        reasons.append(
+            "Asie centrale: "
+            + ", ".join(
+                central_asia[:6]
+            )
+        )
+
+    elif caucasus:
+
+        geography_score = 3
+
+        reasons.append(
+            "Caucase: "
+            + ", ".join(
+                caucasus[:6]
+            )
+        )
+
+    if central_asia and body_has_geography:
+
+        geography_score = capped_add(
+            geography_score,
+            3,
+            15,
+        )
+
+        reasons.append(
+            "géographie confirmée dans le corps"
+        )
+
+    # Caucase seul : plafond
+    caucasus_only = (
+        bool(caucasus)
+        and not bool(central_asia)
+    )
+
+    # ========================================================
+    # SOUS-SCORE 2 — CIBLE /20
+    # ========================================================
+
+    target_score = 0
+
+    if confirmed_activist_pressure:
+
+        target_score = 20
+
+        reasons.append(
+            "activiste / défenseur des droits ciblé"
+        )
+
+    elif confirmed_journalist_pressure:
+
+        target_score = 18
+
+        reasons.append(
+            "journaliste / média ciblé"
+        )
+
+    elif has_activist:
+
+        target_score = 10
+
+        reasons.append(
+            "activistes / dissidents: "
+            + ", ".join(
+                (activists or body_activists)[:6]
+            )
+        )
+
+    elif has_journalist:
+
+        target_score = 7
+
+        reasons.append(
+            "journaliste / média"
+        )
+
+    elif (
+        "civil society" in headline
+        or "ngo" in headline
+        or "ngos" in headline
+    ):
+
+        target_score = 5
+
+        reasons.append(
+            "société civile / ONG"
+        )
+
+    # ========================================================
+    # SOUS-SCORE 3 — RÉPRESSION /30
+    # ========================================================
+
+    repression_score = 0
+
+    repression_terms_all = list(
+        dict.fromkeys(
+            repression
+            + legal_repression
+        )
+    )
+
+    if repression_terms_all:
+
+        repression_score = weighted_score(
+            repression_terms_all,
+            REPRESSION_WEIGHTS,
+            25,
+        )
+
+        reasons.append(
+            "répression: "
+            + ", ".join(
+                repression_terms_all[:8]
+            )
+        )
+
+    # Répression juridique sans terme fort
+    if (
+        legal_repression
+        and repression_score < 10
+    ):
+
+        repression_score = max(
+            repression_score,
+            8,
+        )
+
+    # Confirmation dans le body
+    if confirmed_repression:
+
+        repression_score = capped_add(
+            repression_score,
+            5,
+            30,
+        )
+
+        reasons.append(
+            "répression confirmée dans le corps"
+        )
+
+    # Relation explicite victime -> répression
+    if (
+        confirmed_activist_pressure
+        or confirmed_journalist_pressure
+    ):
+
+        repression_score = capped_add(
+            repression_score,
+            5,
+            30,
+        )
+
+    # ========================================================
+    # SOUS-SCORE 4 — DROITS SPÉCIFIQUES /10
+    # ========================================================
+
+    rights_score = 0
+
+    rights_terms_all = list(
+        dict.fromkeys(
+            specific_rights
+        )
+    )
+
+    if rights_terms_all:
+
+        rights_score = weighted_score(
+            rights_terms_all,
+            SPECIFIC_RIGHTS_WEIGHTS,
+            8,
+        )
+
+        reasons.append(
+            "droits spécifiques: "
+            + ", ".join(
+                rights_terms_all[:8]
+            )
+        )
+
+    elif has_human_rights:
+
+        rights_score = 4
+
+        reasons.append(
+            "droits humains"
+        )
+
+    if confirmed_rights:
+
+        rights_score = capped_add(
+            rights_score,
+            2,
+            10,
+        )
+
+        reasons.append(
+            "droits humains confirmés dans le corps"
+        )
+
+    # ========================================================
+    # SOUS-SCORE 5 — IMPORTANCE JOURNALISTIQUE /10
+    # ========================================================
+
+    journalism_score = 0
+
+    # Article original avec événement concret
+    if (
+        confirmed_activist_pressure
+        or confirmed_journalist_pressure
+    ):
+
+        journalism_score = 7
+
+    elif confirmed_repression:
+
+        journalism_score = 6
+
+    elif major_geo:
+
+        journalism_score = 5
+
+    elif domestic and (
+        has_human_rights
+        or has_repression
+        or has_specific_rights
+    ):
+
+        journalism_score = 4
+
+    elif has_human_rights:
+
+        journalism_score = 3
+
+    elif domestic:
+
+        journalism_score = 2
+
+    # ========================================================
+    # SOUS-SCORE 6 — GÉOPOLITIQUE /10
+    # ========================================================
+
+    geopolitical_score = 0
+
+    if major_geo:
+
+        geopolitical_score = 7
+
+        reasons.append(
+            "géopolitique majeure: "
+            + ", ".join(
+                major_geo[:6]
+            )
+        )
+
+    elif routine_geo:
+
+        geopolitical_score = 2
+
+    # SCO seul : signal contextuel faible
     has_sco = any(
         phrase_present(
             full_text,
@@ -360,337 +686,60 @@ def classify_article(article):
         ]
     )
 
-    # ========================================================
-    # SOUS-SCORE 1 — GÉOGRAPHIE /20
-    # ========================================================
-
-    geography_score = 0
-    reasons = []
-
-    if central_asia:
-
-        geography_score = 15
-
-        reasons.append(
-            "Asie centrale: "
-            + ", ".join(
-                central_asia[:6]
-            )
-        )
-
-    elif caucasus:
-
-        # Le Caucase est conservé mais moins prioritaire.
-        geography_score = 5
-
-        reasons.append(
-            "Caucase: "
-            + ", ".join(
-                caucasus[:6]
-            )
-        )
-
-    if central_asia and body_has_geography:
-
-        geography_score = capped_add(
-            geography_score,
-            5,
-            20,
-        )
-
-        reasons.append(
-            "géographie confirmée dans le corps"
-        )
-
-    # ========================================================
-    # SOUS-SCORE 2 — ACTIVISTES /25
-    # ========================================================
-
-    activist_score = 0
-
-    if has_activist:
-
-        if activist_pressure:
-            activist_score = 20
-
-        elif len(activists) >= 2:
-            activist_score = 14
-
-        else:
-            activist_score = 10
-
-        reasons.append(
-            "activistes / dissidents: "
-            + ", ".join(
-                (activists or body_activists)[:8]
-            )
-        )
-
-    # Société civile sans activiste individuel
-    elif any(
-        phrase_present(
-            headline,
-            term,
-        )
-        for term in [
-            "civil society",
-            "civil society organization",
-            "civil society organizations",
-            "ngo",
-            "ngos",
-        ]
+    if (
+        has_sco
+        and major_geo
     ):
-        activist_score = 7
 
-        reasons.append(
-            "société civile / ONG"
-        )
-
-    if confirmed_activist_pressure:
-
-        activist_score = capped_add(
-            activist_score,
-            5,
-            25,
-        )
-
-        reasons.append(
-            "activiste + répression confirmés"
-        )
-
-    # ========================================================
-    # SOUS-SCORE 3 — RÉPRESSION /25
-    # ========================================================
-
-    repression_score = 0
-
-    if repression:
-
-        # Très grave
-        severe_terms = {
-            "torture",
-            "tortured",
-            "enforced disappearance",
-            "forced disappearance",
-            "forcibly disappeared",
-            "political prisoner",
-            "political prisoners",
-            "political repression",
-            "political crackdown",
-            "opposition crackdown",
-        }
-
-        if any(
-            normalize(term) in severe_terms
-            for term in repression
-        ):
-            repression_score = 25
-
-        # Arrestation / détention / prison
-        elif any(
-            word in normalize(term)
-            for term in repression
-            for word in [
-                "arrest",
-                "detain",
-                "imprison",
-                "jail",
-                "prison",
-                "convict",
-            ]
-        ):
-            repression_score = 20
-
-        # Autres formes sérieuses
-        else:
-            repression_score = 14
-
-        reasons.append(
-            "répression: "
-            + ", ".join(
-                repression[:8]
-            )
-        )
-
-    elif legal_repression:
-
-        repression_score = 14
-
-        reasons.append(
-            "répression juridique: "
-            + ", ".join(
-                legal_repression[:8]
-            )
-        )
-
-    # Confirmation body
-    if confirmed_repression:
-
-        repression_score = capped_add(
-            repression_score,
-            5,
-            25,
-        )
-
-        reasons.append(
-            "répression confirmée dans le corps"
-        )
-
-    # ========================================================
-    # SOUS-SCORE 4 — DROITS SPÉCIFIQUES /15
-    # ========================================================
-
-    rights_score = 0
-
-    if specific_rights:
-
-        normalized_rights = [
-            normalize(term)
-            for term in specific_rights
-        ]
-
-        if any(
-            term in normalized_rights
-            for term in [
-                "lgbt",
-                "lgbti",
-                "lgbtq",
-                "lgbt rights",
-                "lgbti rights",
-                "gay rights",
-            ]
-        ):
-            rights_score = 15
-
-        elif any(
-            "violence against" in term
-            or "sexual violence" in term
-            or "forced labor" in term
-            or "forced labour" in term
-            for term in normalized_rights
-        ):
-            rights_score = 13
-
-        elif any(
-            "minority" in term
-            or "discrimination" in term
-            for term in normalized_rights
-        ):
-            rights_score = 11
-
-        elif any(
-            "women" in term
-            or "gender" in term
-            or "feminist" in term
-            for term in normalized_rights
-        ):
-            rights_score = 10
-
-        else:
-            rights_score = 8
-
-        reasons.append(
-            "droits spécifiques: "
-            + ", ".join(
-                specific_rights[:8]
-            )
-        )
-
-    elif has_human_rights:
-
-        rights_score = 5
-
-        reasons.append(
-            "droits humains"
-        )
-
-    if confirmed_rights:
-
-        rights_score = capped_add(
-            rights_score,
+        geopolitical_score = capped_add(
+            geopolitical_score,
             3,
-            15,
+            10,
         )
 
         reasons.append(
-            "droits humains confirmés dans le corps"
+            "Organisation de coopération de Shanghai"
         )
 
     # ========================================================
-    # SOUS-SCORE 5 — IMPORTANCE JOURNALISTIQUE /10
+    # SOUS-SCORE 7 — FRAÎCHEUR /5
     # ========================================================
 
-    journalism_score = 0
+    freshness_score = 0
 
-    # Cas le plus intéressant :
-    # activiste sous pression
-    if activist_pressure:
+    # Si ton scraper fournit déjà un âge en jours,
+    # on l'utilise.
+    age_days = article.get(
+        "age_days"
+    )
 
-        journalism_score = 10
+    if age_days is not None:
 
-    elif journalist_pressure:
-
-        journalism_score = 9
-
-    elif major_geo:
-
-        journalism_score = 8
-
-    elif domestic:
-
-        journalism_score = 5
-
-    elif has_human_rights:
-
-        journalism_score = 5
-
-    elif routine_geo:
-
-        journalism_score = 2
-
-    if major_geo:
-
-        reasons.append(
-            "géopolitique majeure: "
-            + ", ".join(
-                major_geo[:6]
+        try:
+            age_days = float(
+                age_days
             )
-        )
 
-    if domestic:
+            if age_days <= 1:
+                freshness_score = 5
 
-        reasons.append(
-            "politique intérieure: "
-            + ", ".join(
-                domestic[:8]
-            )
-        )
+            elif age_days <= 3:
+                freshness_score = 4
 
-    # ========================================================
-    # SOUS-SCORE 6 — CONFIRMATION /5
-    # ========================================================
+            elif age_days <= 7:
+                freshness_score = 3
 
-    confirmation_score = 0
+            elif age_days <= 14:
+                freshness_score = 2
 
-    if confirmed_activist_pressure:
+            elif age_days <= 30:
+                freshness_score = 1
 
-        confirmation_score = 5
-
-    elif confirmed_journalist_pressure:
-
-        confirmation_score = 5
-
-    elif confirmed_repression:
-
-        confirmation_score = 4
-
-    elif confirmed_rights:
-
-        confirmation_score = 3
-
-    elif body_has_geography:
-
-        confirmation_score = 2
+        except (
+            TypeError,
+            ValueError,
+        ):
+            freshness_score = 0
 
     # ========================================================
     # SCORE BRUT
@@ -698,11 +747,12 @@ def classify_article(article):
 
     score = (
         geography_score
-        + activist_score
+        + target_score
         + repression_score
         + rights_score
         + journalism_score
-        + confirmation_score
+        + geopolitical_score
+        + freshness_score
     )
 
     # ========================================================
@@ -711,36 +761,88 @@ def classify_article(article):
 
     penalties = 0
 
+    # --------------------------------------------------------
     # Économie / géopolitique ordinaire
-    if routine_geo and not (
-        activist_pressure
-        or journalist_pressure
-        or has_specific_rights
+    # --------------------------------------------------------
+
+    if (
+        routine_geo
+        and not (
+            has_activist
+            or has_journalist
+            or has_specific_rights
+            or has_repression
+            or has_human_rights
+        )
     ):
-        penalties += 8
+
+        penalties += 10
 
         reasons.append(
-            "géopolitique/économie ordinaire"
+            "géopolitique / économie ordinaire"
         )
 
+    # --------------------------------------------------------
     # Histoire / culture
-    if historical and not (
-        activist_pressure
-        or journalist_pressure
-        or confirmed_repression
+    # --------------------------------------------------------
+
+    if (
+        historical
+        and not (
+            has_activist
+            or has_journalist
+            or has_repression
+            or has_specific_rights
+            or has_human_rights
+        )
     ):
+
         penalties += 12
 
         reasons.append(
-            "histoire/culture"
+            "histoire / culture"
         )
 
-    # Acteur extérieur seul : faible valeur
-    # Pas de pénalité directe, car il peut être pertinent.
+    # --------------------------------------------------------
+    # Acteur extérieur seul
+    # --------------------------------------------------------
 
-    # ========================================================
-    # NON-NEWS
-    # ========================================================
+    if (
+        actors
+        and not (
+            central_asia
+            and (
+                has_activist
+                or has_journalist
+                or has_repression
+                or has_specific_rights
+                or domestic
+                or major_geo
+            )
+        )
+    ):
+
+        penalties += 5
+
+        reasons.append(
+            "acteur extérieur sans enjeu régional clair"
+        )
+
+    # --------------------------------------------------------
+    # Caucase seul
+    # --------------------------------------------------------
+
+    if caucasus_only:
+
+        penalties += 10
+
+        reasons.append(
+            "Caucase uniquement"
+        )
+
+    # --------------------------------------------------------
+    # Non-news
+    # --------------------------------------------------------
 
     if non_news:
 
@@ -756,9 +858,9 @@ def classify_article(article):
             )
         )
 
-    # ========================================================
-    # BRUIT
-    # ========================================================
+    # --------------------------------------------------------
+    # Bruit
+    # --------------------------------------------------------
 
     if noise:
 
@@ -776,40 +878,20 @@ def classify_article(article):
         score -= penalties
 
     # ========================================================
-    # BONUS ASIE CENTRALE + ACTIVISTE + RÉPRESSION
-    # ========================================================
-
-    # Cas cible de la veille.
-    target_case = (
-        bool(central_asia)
-        and has_activist
-        and has_repression
-    )
-
-    if target_case:
-
-        # On s'assure que ce cas reste dans le haut
-        # sans dépasser 100.
-        score = max(
-            score,
-            80,
-        )
-
-        reasons.append(
-            "cas prioritaire: Asie centrale + activiste + répression"
-        )
-
-    # ========================================================
     # BONUS SIGNAL SPÉCIFIQUE ASIE CENTRALE
     # ========================================================
 
-    central_asia_hr_signal = bool(
-        central_asia_hr
-    )
+    if central_asia_hr:
 
-    if central_asia_hr_signal:
+        # Bonus limité.
+        # Le signal ne peut pas à lui seul transformer
+        # un article banal en article prioritaire.
+        bonus = min(
+            4,
+            len(central_asia_hr) * 2,
+        )
 
-        score += 5
+        score += bonus
 
         reasons.append(
             "signal spécifique Asie centrale: "
@@ -819,25 +901,61 @@ def classify_article(article):
         )
 
     # ========================================================
-    # SCO — BONUS LIMITÉ
+    # BONUS RELATION FORTE
     # ========================================================
 
-    if has_sco:
+    if confirmed_activist_pressure:
+
+        score += 8
+
+        reasons.append(
+            "relation confirmée: activiste + répression"
+        )
+
+    elif confirmed_journalist_pressure:
+
+        score += 7
+
+        reasons.append(
+            "relation confirmée: journaliste + répression"
+        )
+
+    # ========================================================
+    # BONUS GRAVE
+    # ========================================================
+
+    severe_detected = any(
+        normalize(term)
+        in [
+            normalize(x)
+            for x in SEVERE_REPRESSION_TERMS
+        ]
+        for term in repression
+    )
+
+    if (
+        severe_detected
+        and (
+            confirmed_repression
+            or confirmed_activist_pressure
+            or confirmed_journalist_pressure
+        )
+    ):
 
         score += 5
 
         reasons.append(
-            "Organisation de coopération de Shanghai"
+            "signal de répression grave confirmé"
         )
 
     # ========================================================
-    # BORNE 0-100
+    # BORNE
     # ========================================================
 
     score = max(
         0,
         min(
-            score,
+            round(score),
             100,
         ),
     )
@@ -847,39 +965,36 @@ def classify_article(article):
     # ========================================================
 
     if (
-        central_asia
-        and activist_pressure
+        not central_asia
+        or caucasus_only
+        or non_news
+        or noise
     ):
-        level = "A"
 
-    elif (
-        central_asia
-        and (
-            confirmed_repression
-            or confirmed_rights
-            or journalist_pressure
-            or has_specific_rights
-        )
-    ):
-        level = "A"
-
-    elif (
-        central_asia
-        and major_geo
-    ):
-        level = "C"
-
-    elif (
-        central_asia
-        and domestic
-    ):
-        level = "B"
-
-    else:
         level = "D"
 
-    # Non-news toujours D
-    if non_news:
+    elif (
+        score >= 75
+        and (
+            confirmed_activist_pressure
+            or confirmed_journalist_pressure
+            or severe_detected
+            or confirmed_repression
+        )
+    ):
+
+        level = "A"
+
+    elif score >= 55:
+
+        level = "B"
+
+    elif score >= 35:
+
+        level = "C"
+
+    else:
+
         level = "D"
 
     # ========================================================
@@ -914,13 +1029,13 @@ def classify_article(article):
     # THÈME
     # ========================================================
 
-    if activist_pressure:
+    if confirmed_activist_pressure:
 
         theme = (
             "Activistes / dissidents sous pression"
         )
 
-    elif journalist_pressure:
+    elif confirmed_journalist_pressure:
 
         theme = (
             "Journalistes sous pression"
@@ -983,14 +1098,31 @@ def classify_article(article):
         and score >= 40
         and not non_news
         and not noise
+        and (
+            has_activist
+            or has_journalist
+            or has_repression
+            or has_specific_rights
+            or has_human_rights
+            or major_geo
+        )
     )
 
-    # Cas cible : toujours retenu
+    # Cas très fort
     if (
-        target_case
+        confirmed_activist_pressure
         and not non_news
         and not noise
     ):
+
+        relevant = True
+
+    if (
+        confirmed_journalist_pressure
+        and not non_news
+        and not noise
+    ):
+
         relevant = True
 
     # ========================================================
@@ -1003,10 +1135,19 @@ def classify_article(article):
         "central_asia": central_asia,
         "caucasus": caucasus,
         "body_geography": body_geography,
+        "body_geo_count": body_geo_count,
+        "strong_body_geography": (
+            strong_body_geography
+        ),
+        "caucasus_only": caucasus_only,
 
         # Activistes
         "activists": activists,
         "body_activists": body_activists,
+
+        # Journalistes
+        "journalists": journalists,
+        "body_journalists": body_journalists,
 
         # Droits
         "human_rights": human_rights,
@@ -1018,17 +1159,18 @@ def classify_article(article):
         "repression": repression,
         "legal_repression": legal_repression,
         "body_repression": body_repression,
-        "body_legal_repression": body_legal_repression,
+        "body_legal_repression": (
+            body_legal_repression
+        ),
 
-        # Journalistes
-        "journalists": journalists,
-        "body_journalists": body_journalists,
-
-        # Politique / géopolitique
+        # Politique
         "domestic": domestic,
+
+        # Géopolitique
         "major_geo": major_geo,
         "routine_geo": routine_geo,
         "actors": actors,
+        "has_sco": has_sco,
 
         # Contexte
         "central_asia_hr": central_asia_hr,
@@ -1043,11 +1185,16 @@ def classify_article(article):
         "has_specific_rights": has_specific_rights,
         "has_human_rights": has_human_rights,
 
-        "confirmed_repression": confirmed_repression,
-        "confirmed_rights": confirmed_rights,
+        "activist_relation": activist_relation,
+        "journalist_relation": journalist_relation,
 
-        "activist_pressure": activist_pressure,
-        "journalist_pressure": journalist_pressure,
+        "confirmed_repression": (
+            confirmed_repression
+        ),
+
+        "confirmed_rights": (
+            confirmed_rights
+        ),
 
         "confirmed_activist_pressure": (
             confirmed_activist_pressure
@@ -1057,17 +1204,16 @@ def classify_article(article):
             confirmed_journalist_pressure
         ),
 
-        "target_case": target_case,
-
-        "has_sco": has_sco,
+        "severe_detected": severe_detected,
 
         # Scores
         "geography_score": geography_score,
-        "activist_score": activist_score,
+        "target_score": target_score,
         "repression_score": repression_score,
         "rights_score": rights_score,
         "journalism_score": journalism_score,
-        "confirmation_score": confirmation_score,
+        "geopolitical_score": geopolitical_score,
+        "freshness_score": freshness_score,
 
         "penalties": penalties,
     }
