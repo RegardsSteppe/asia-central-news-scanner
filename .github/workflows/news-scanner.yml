@@ -1,3 +1,4 @@
+```yaml
 name: Asia Central News Scanner
 
 on:
@@ -27,12 +28,6 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run news scanner
-        env:
-          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
-          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
-          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
         shell: bash
         run: |
           set -o pipefail
@@ -46,20 +41,17 @@ jobs:
           path: news_scanner.log
           retention-days: 7
 
+      - name: Prepare website
+        if: success()
+        run: |
+          mkdir -p public
+          cp index.html public/index.html
+
       - name: Publish website
         if: success()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./public
           publish_branch: gh-pages
-          exclude_assets: |
-            .github
-            .git
-            __pycache__
-            "*.py"
-            "*.yml"
-            "*.yaml"
-            "*.txt"
-            "*.log"
-            "*.md"
+```
