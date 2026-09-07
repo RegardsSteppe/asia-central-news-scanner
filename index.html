@@ -2,70 +2,168 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Central Asia News Scanner</title>
 
     <style>
+        :root {
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --accent: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
             font-family:
                 -apple-system,
                 BlinkMacSystemFont,
                 "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
                 sans-serif;
+        }
 
-            max-width: 1000px;
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 32px 20px 60px;
+        }
 
-            background: #f5f5f5;
-            color: #222;
+        header {
+            margin-bottom: 28px;
         }
 
         h1 {
-            margin-bottom: 5px;
+            margin: 0 0 8px;
+            font-size: 2rem;
         }
 
         .subtitle {
-            color: #666;
-            margin-bottom: 30px;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
         }
 
-        .updated {
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 25px;
+        .scan-time {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--muted);
         }
 
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 22px;
-            margin-bottom: 18px;
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.07);
+        /* ====================================================
+           DASHBOARD
+           ==================================================== */
+
+        .dashboard {
+            margin: 28px 0 32px;
         }
 
-        .source {
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #666;
-            margin-bottom: 8px;
+        .dashboard-title {
+            margin: 0 0 14px;
+            font-size: 1.2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(145px, 1fr));
+            gap: 12px;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 95px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-value {
+            font-size: 1.65rem;
+            font-weight: 750;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .dashboard-note {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        /* ====================================================
+           ARTICLES
+           ==================================================== */
+
+        .articles {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .article-card.level-A {
+            border-left: 5px solid #b91c1c;
+        }
+
+        .article-card.level-B {
+            border-left: 5px solid #c2410c;
+        }
+
+        .article-card.level-C {
+            border-left: 5px solid #2563eb;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .article-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
         }
 
         h2 {
-            margin: 0 0 8px 0;
-            font-size: 22px;
-            line-height: 1.3;
+            margin: 0;
+            font-size: 1.25rem;
+            line-height: 1.35;
         }
 
         h2 a {
-            color: #111;
+            color: var(--text);
             text-decoration: none;
         }
 
@@ -73,297 +171,294 @@
             text-decoration: underline;
         }
 
-        .date {
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 14px;
+        .level-badge {
+            flex-shrink: 0;
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            font-size: 0.78rem;
+            white-space: nowrap;
         }
 
-        p {
-            line-height: 1.6;
-            color: #444;
+        .score-line {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+
+        .score-line span {
+            color: var(--muted);
+        }
+
+        .article-card p {
+            margin: 0;
+            line-height: 1.55;
+            color: #374151;
         }
 
         .reasons {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
-            font-size: 11px;
-            color: #888;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.5;
         }
 
         .empty {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        footer {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 22px 14px 40px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .article-heading {
+                flex-direction: column;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .level-badge {
+                white-space: normal;
+            }
         }
     </style>
 </head>
 
 <body>
+    <main class="container">
 
-    <h1>Central Asia News Scanner</h1>
+        <header>
+            <h1>Central Asia News Scanner</h1>
 
-    <div class="subtitle">
-        Actualités récentes d'Asie centrale —
-        politique, droits humains, dissidence,
-        sécurité, géopolitique et événements régionaux.
-    </div>
-
-    <div class="updated">
-        Dernier scan : 2026-09-07 16:30 UTC
-    </div>
-
-    
-        <article class="card">
-            <div class="source">
-                Radio Free Europe / Radio Liberty
-            </div>
-
-            <h2>
-                <a href="https://www.rferl.org/a/armenia-tripp-trump-route-kazakhstan-kyrgyzstan-russia/33847948.html"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Armenia Courts Central Asia As TRIPP Corridor Takes Shape
-                </a>
-            </h2>
-
-            <div class="date">
-                2026-09-06 11:34 UTC
-            </div>
-
-            <p>
-                Armenia is stepping up efforts to pull Kazakhstan and Kyrgyzstan into an ambitious trade corridor named after US President Donald Trump. While Bishkek has shown enthusiasm and Astana has voiced support, neither has so far committed to the project.
+            <p class="subtitle">
+                Actualités récentes d’Asie centrale —
+                politique, droits humains, dissidence,
+                sécurité, géopolitique et événements régionaux.
             </p>
 
-            <div class='reasons'>géographie: Central Asia, Kazakhstan, Kyrgyzstan • acteur régional: armenia • politique: president • événement régional: trade corridor</div>
-        </article>
-        
-
-        <article class="card">
-            <div class="source">
-                Cabar.asia
+            <div class="scan-time">
+                Dernier scan : 2026-09-07 16:45 UTC
             </div>
+        </header>
 
-            <h2>
-                <a href="https://cabar.asia/ru/gumanizatsiya-sudoproizvodstva-v-tsa-bezopasnost-vazhnee-prav-cheloveka"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Гуманизация судопроизводства в ЦА: безопасность важнее прав человека?
-                </a>
+        <section class="dashboard">
+            <h2 class="dashboard-title">
+                Tableau de bord
             </h2>
 
-            <div class="date">
-                2026-07-31 11:45 UTC
+            <div class="stats-grid">
+
+                <div class="stat">
+                    <div class="stat-value">
+                        32
+                    </div>
+                    <div class="stat-label">
+                        📰 Articles analysés
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        3
+                    </div>
+                    <div class="stat-label">
+                        🎯 Articles retenus
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        2.9/20
+                    </div>
+                    <div class="stat-label">
+                        📊 Score moyen
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        4/4
+                    </div>
+                    <div class="stat-label">
+                        📡 Sources analysées
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        2
+                    </div>
+                    <div class="stat-label">
+                        🟥 Niveau A
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        1
+                    </div>
+                    <div class="stat-label">
+                        🟧 Niveau B
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        0
+                    </div>
+                    <div class="stat-label">
+                        🟦 Niveau C
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        29
+                    </div>
+                    <div class="stat-label">
+                        ⚪ Niveau D
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">
+                        9.4%
+                    </div>
+                    <div class="stat-label">
+                        📈 Taux de pertinence
+                    </div>
+                </div>
+
             </div>
 
-            <p>
-                Вопреки заявлениям о гуманизация уголовного законодательства в странах Центральной Азии (ЦА), обвинительный уклон в судебной практике по-прежнему преобладает. Либерализация в этой сфере  избирательна: смягчаются наказания за экономические преступления и одновременно происходит резкое ужесточение ответственности там, где затрагиваются интересы режимной стабильности. В исследовании международных экспертов говорят о проблемах уголовного судпроизводства стран ЦА. Правозащитники отмечают, что государства […] The post Гуманизация судопроизводства в ЦА: безопасность важнее прав человека? appeared first on CABAR.asia .
-            </p>
-
-            <div class='reasons'>géographie: Central Asia, Kazakhstan • droits humains/dissidence: правозащитники • politique: безопасность • confirmation article: droits humains</div>
-        </article>
-        
-
-        <article class="card">
-            <div class="source">
-                Eurasianet
+            <div class="dashboard-note">
+                Le score moyen est calculé sur l’ensemble des
+                articles analysés après déduplication, et non
+                uniquement sur les articles retenus.
             </div>
+        </section>
 
-            <h2>
-                <a href="https://eurasianet.org/uzbekistan-downgrading-its-nuclear-cooperation-with-russia"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Uzbekistan downgrading its nuclear cooperation with Russia Sep 4, 2026 Rosatom appears on outs with Tashkent.
-                </a>
-            </h2>
+        <section class="articles">
+            
+            <article class="article-card level-A">
+                <div class="article-meta">
+                    <span>Cabar.asia</span>
+                    <span>2026-06-01 10:27 UTC</span>
+                </div>
 
-            <div class="date">
-                Date inconnue
-            </div>
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://cabar.asia/en/vacancy-project-evaluator" target="_blank" rel="noopener">
+                            Vacancy: Project Evaluator
+                        </a>
+                    </h2>
 
-            <p>
-                Top Story Uzbekistan downgrading its nuclear cooperation with Russia Sep 4, 2026 Rosatom appears on outs with Tashkent.
-            </p>
+                    <span class="level-badge">
+                        🟥 Niveau A — Droits humains
+                    </span>
+                </div>
 
-            <div class='reasons'>géographie: Uzbekistan • acteur régional: russia</div>
-        </article>
-        
+                <div class="score-line">
+                    <strong>Score : 18/20</strong>
+                    <span>Droits humains / dissidence</span>
+                </div>
 
-        <article class="card">
-            <div class="source">
-                Eurasianet
-            </div>
+                <p>&lt;p&gt;IWPR Kazakhstan is looking for an external M&amp;E consultant to assess the impact and effectiveness of the Civil Society for Kazakhstan (CS4K) project through a final evaluation. About the project: The “Civil Society for Kazakhstan (CS4K)” project is funded by the European Union and being implemented by the Institute for War and Peace Reporting (IWPR) in […]&lt;/p&gt; &lt;p&gt;The post &lt;a href=&quot;https://cabar.asia/en/vacancy-project-evaluator&quot;&gt;Vacancy: Project Evaluator&…</p>
 
-            <h2>
-                <a href="https://eurasianet.org/putin-seems-peeved-with-uzbekistan"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Putin seems peeved with Uzbekistan Sep 2, 2026 Kremlin leader may harbor lengthy list of potential grievances.
-                </a>
-            </h2>
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan • droits humains/dissidence: civil society • politique: civil society • acteur régional: european union • confirmation article: droits humains • confirmation article: politique</div>
+            </article>
+            
 
-            <div class="date">
-                Date inconnue
-            </div>
+            <article class="article-card level-A">
+                <div class="article-meta">
+                    <span>Cabar.asia</span>
+                    <span>2025-12-01 12:30 UTC</span>
+                </div>
 
-            <p>
-                Putin seems peeved with Uzbekistan Sep 2, 2026 Kremlin leader may harbor lengthy list of potential grievances.
-            </p>
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://cabar.asia/en/workshop-results-within-the-framework-of-the-civil-society-for-kazakhstan-project-funded-by-the-european-union" target="_blank" rel="noopener">
+                            Workshop Results within the Framework of the «Civil Society for Kazakhstan» Project, funded by the European Union
+                        </a>
+                    </h2>
 
-            <div class='reasons'>géographie: Uzbekistan • acteur régional: kremlin, putin</div>
-        </article>
-        
+                    <span class="level-badge">
+                        🟥 Niveau A — Droits humains
+                    </span>
+                </div>
 
-        <article class="card">
-            <div class="source">
-                Eurasianet
-            </div>
+                <div class="score-line">
+                    <strong>Score : 20/20</strong>
+                    <span>Droits humains / dissidence</span>
+                </div>
 
-            <h2>
-                <a href="https://eurasianet.org/river-trade-route-to-arctic-ports-getting-new-look-from-china-russia-and-kazakhstan"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    River trade route to Arctic ports getting new look from China, Russia and Kazakhstan Sep 1, 2026 Lots of obstacles stand in way.
-                </a>
-            </h2>
+                <p>&lt;p&gt;From May to November 2025, IWPR and the Public Foundation “INIDI” held 10 practical workshops for recipients of funding for advocacy projects in the field of human rights as part of the “Civil Society for Kazakhstan” (CS4K) project, funded by the European Union. The workshops took place in eight cities of Kazakhstan: Almaty, Aktau, Kyzylorda, […]&lt;/p&gt; &lt;p&gt;The post &lt;a href=&quot;https://cabar.asia/en/workshop-results-within-the-framework-of-the-civil-society-for-kazakhstan-p…</p>
 
-            <div class="date">
-                Date inconnue
-            </div>
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan, almaty • droits humains/dissidence: human rights • politique: civil society • acteur régional: european union • confirmation article: droits humains • confirmation article: politique</div>
+            </article>
+            
 
-            <p>
-                River trade route to Arctic ports getting new look from China, Russia and Kazakhstan Sep 1, 2026 Lots of obstacles stand in way.
-            </p>
+            <article class="article-card level-B">
+                <div class="article-meta">
+                    <span>Eurasianet</span>
+                    <span>Sep 1, 2026</span>
+                </div>
 
-            <div class='reasons'>géographie: Kazakhstan • acteur régional: russia, china • économie/énergie: trade</div>
-        </article>
-        
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://eurasianet.org/us-officials-shake-up-anti-american-sco-summit-narrative" target="_blank" rel="noopener">
+                            US officials shake up anti-American SCO summit narrative
+                        </a>
+                    </h2>
 
-        <article class="card">
-            <div class="source">
-                Eurasianet
-            </div>
+                    <span class="level-badge">
+                        🟧 Niveau B — Politique intérieure
+                    </span>
+                </div>
 
-            <h2>
-                <a href="https://eurasianet.org/turkmenistan-agrees-to-send-gas-to-afghanistan-endorses-trans-afghan-power-line-concept"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Turkmenistan agrees to send gas to Afghanistan, endorses trans-Afghan power line concept
-                </a>
-            </h2>
+                <div class="score-line">
+                    <strong>Score : 13/20</strong>
+                    <span>Politique intérieure</span>
+                </div>
 
-            <div class="date">
-                Date inconnue
-            </div>
+                <p>Surprise appearance in Bishkek.</p>
 
-            <p>
-                Turkmenistan agrees to send gas to Afghanistan, endorses trans-Afghan power line concept
-            </p>
+                <div class='reasons'><strong>Raisons :</strong> géographie: bishkek • événement régional: sco summit • économie/géopolitique courante: summit • confirmation article: politique • confirmation article: événement régional</div>
+            </article>
+            
+        </section>
 
-            <div class='reasons'>géographie: Turkmenistan • acteur régional: afghanistan, afghan • économie/énergie: gas</div>
-        </article>
-        
+        <footer>
+            Scanner automatique — Asie centrale.
+            Les articles sont classés selon leur pertinence
+            politique, droits humains et géopolitique.
+        </footer>
 
-        <article class="card">
-            <div class="source">
-                Eurasianet
-            </div>
-
-            <h2>
-                <a href="https://eurasianet.org/regional-trade-among-central-asian-states-shows-growth"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Regional trade among Central Asian states shows growth
-                </a>
-            </h2>
-
-            <div class="date">
-                Date inconnue
-            </div>
-
-            <p>
-                Regional trade among Central Asian states shows growth
-            </p>
-
-            <div class='reasons'>géographie: Central Asia • économie/énergie: trade</div>
-        </article>
-        
-
-        <article class="card">
-            <div class="source">
-                Eurasianet
-            </div>
-
-            <h2>
-                <a href="https://eurasianet.org/activists-call-for-more-attention-to-human-rights-concerns-in-central-asia"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Activists call for more attention to human rights concerns in Central Asia
-                </a>
-            </h2>
-
-            <div class="date">
-                Date inconnue
-            </div>
-
-            <p>
-                Activists call for more attention to human rights concerns in Central Asia
-            </p>
-
-            <div class='reasons'>géographie: Central Asia • droits humains/dissidence: human rights, activists</div>
-        </article>
-        
-
-        <article class="card">
-            <div class="source">
-                Eurasianet
-            </div>
-
-            <h2>
-                <a href="https://eurasianet.org/central-asian-states-azerbaijan-create-roadmap-for-cooperation"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Central Asian states &amp; Azerbaijan create roadmap for cooperation
-                </a>
-            </h2>
-
-            <div class="date">
-                Date inconnue
-            </div>
-
-            <p>
-                Central Asian states &amp; Azerbaijan create roadmap for cooperation
-            </p>
-
-            <div class='reasons'>géographie: Central Asia • acteur régional: azerbaijan</div>
-        </article>
-        
-
-        <article class="card">
-            <div class="source">
-                Eurasianet
-            </div>
-
-            <h2>
-                <a href="https://eurasianet.org/report-accuses-azerbaijan-georgia-kazakhstan-and-uzbekistan-of-scamming-united-states"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Report accuses Azerbaijan, Georgia, Kazakhstan and Uzbekistan of scamming United States
-                </a>
-            </h2>
-
-            <div class="date">
-                Date inconnue
-            </div>
-
-            <p>
-                Report accuses Azerbaijan, Georgia, Kazakhstan and Uzbekistan of scamming United States
-            </p>
-
-            <div class='reasons'>géographie: Kazakhstan, Uzbekistan • acteur régional: azerbaijan, georgia, united states</div>
-        </article>
-        
-
+    </main>
 </body>
 </html>
