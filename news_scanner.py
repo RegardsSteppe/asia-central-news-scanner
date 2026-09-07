@@ -1,6 +1,7 @@
 # news_scanner.py
 
 import html
+import json
 import logging
 import re
 from collections import Counter
@@ -12,6 +13,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from sources import SOURCES
+
 from keywords import (
     CENTRAL_ASIA_TERMS,
     CRITICAL_HR_TERMS,
@@ -31,18 +33,18 @@ from keywords import (
 
 REQUEST_TIMEOUT = 20
 
-MAX_ARTICLES_PER_SOURCE = 100
+ARTICLES_TO_DISPLAY = 20
 
-ARTICLES_TO_DISPLAY = 10
-
-ARTICLE_PAGE_FETCH_LIMIT = 50
+ARTICLE_PAGE_FETCH_LIMIT = 60
 
 MIN_RELEVANCE_SCORE = 10
 
 USER_AGENT = (
-    "Mozilla/5.0 (compatible; "
+    "Mozilla/5.0 "
+    "(compatible; "
     "AsiaCentralNewsScanner/3.3; "
-    "+https://github.com/RegardsSteppe/asia-central-news-scanner)"
+    "+https://github.com/RegardsSteppe/"
+    "asia-central-news-scanner)"
 )
 
 
@@ -66,7 +68,10 @@ SESSION = requests.Session()
 
 SESSION.headers.update({
     "User-Agent": USER_AGENT,
-    "Accept-Language": "en-US,en;q=0.9,fr;q=0.8,ru;q=0.7",
+    "Accept-Language": (
+        "en-US,en;q=0.9,"
+        "fr;q=0.8,ru;q=0.7"
+    ),
 })
 
 
@@ -92,14 +97,16 @@ def fetch_url(url):
 
 
 # ============================================================
-# TEXT HELPERS
+# TEXT
 # ============================================================
 
 def normalize_text(text):
     if not text:
         return ""
 
-    text = html.unescape(text)
+    text = html.unescape(
+        str(text)
+    )
 
     text = re.sub(
         r"\s+",
@@ -110,39 +117,49 @@ def normalize_text(text):
     return text.strip()
 
 
-def phrase_present(text, phrase):
-    """
-    Recherche relativement robuste d'une expression.
-    """
-
+def phrase_present(
+    text,
+    phrase,
+):
     if not text or not phrase:
         return False
 
-    pattern = r"(?<!\w)" + re.escape(
-        phrase.lower()
-    ) + r"(?!\w)"
+    pattern = (
+        r"(?<!\w)"
+        + re.escape(
+            phrase.lower()
+        )
+        + r"(?!\w)"
+    )
 
-    return re.search(
-        pattern,
-        text.lower(),
-    ) is not None
+    return (
+        re.search(
+            pattern,
+            text.lower(),
+        )
+        is not None
+    )
 
 
-def find_terms(text, terms):
-    found = []
-
-    for term in terms:
-        if phrase_present(text, term):
-            found.append(term)
-
-    return found
+def find_terms(
+    text,
+    terms,
+):
+    return [
+        term
+        for term in terms
+        if phrase_present(
+            text,
+            term,
+        )
+    ]
 
 
 # ============================================================
-# DATE
+# DATES
 # ============================================================
 
-def parse_date(entry):
+def parse_feed_date(entry):
     for key in (
         "published_parsed",
         "updated_parsed",
@@ -159,26 +176,202 @@ def parse_date(entry):
             except Exception:
                 pass
 
-    for key in (
-        "published",
-        "updated",
-        "created",
-    ):
-        value = entry.get(key)
+    return None
 
-        if value:
-            try:
-                parsed = feedparser._parse_date(
-                    value
+
+def parse_date_string(value):
+    if not value:
+        return None
+
+    value = normalize_text(
+        value
+    )
+
+    # ISO avec Z
+    candidates = [
+        value,
+        value.replace(
+            "Z",
+            "+00:00",
+        ),
+    ]
+
+    for candidate in candidates:
+
+        try:
+            dt = datetime.fromisoformat(
+                candidate
+            )
+
+            if dt.tzinfo is None:
+                dt = dt.replace(
+                    tzinfo=timezone.utc
+                )
+
+            return dt.astimezone(
+                timezone.utc
+            )
+
+        except ValueError:
+            pass
+
+    # Formats courants
+    formats = [
+        "%Y-%m-%d",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d %H:%M:%S",
+
+        "%d.%m.%Y",
+        "%d.%m.%Y %H:%M",
+
+        "%d/%m/%Y",
+        "%d/%m/%Y %H:%M",
+
+        "%B %d, %Y",
+        "%B %d, %Y %H:%M",
+
+        "%b %d, %Y",
+        "%b %d, %Y %H:%M",
+    ]
+
+    for fmt in formats:
+        try:
+            return datetime.strptime(
+                value,
+                fmt,
+            ).replace(
+                tzinfo=timezone.utc
+            )
+
+        except ValueError:
+            continue
+
+    return None
+
+
+def extract_date_from_html(
+    soup,
+):
+    # --------------------------------------------------------
+    # <time datetime="">
+    # --------------------------------------------------------
+
+    for element in soup.find_all(
+        "time"
+    ):
+
+        value = (
+            element.get(
+                "datetime"
+            )
+            or element.get_text(
+                " ",
+                strip=True,
+            )
+        )
+
+        parsed = parse_date_string(
+            value
+        )
+
+        if parsed:
+            return parsed
+
+    # --------------------------------------------------------
+    # Meta tags
+    # --------------------------------------------------------
+
+    meta_names = [
+        "article:published_time",
+        "article:modified_time",
+        "datePublished",
+        "datepublished",
+        "publish-date",
+        "publish_date",
+        "published_time",
+        "publication_date",
+        "date",
+        "dc.date",
+        "dc.date.issued",
+    ]
+
+    for name in meta_names:
+
+        element = soup.find(
+            "meta",
+            attrs={
+                "property": name
+            },
+        )
+
+        if element is None:
+            element = soup.find(
+                "meta",
+                attrs={
+                    "name": name
+                },
+            )
+
+        if element:
+
+            value = element.get(
+                "content"
+            )
+
+            parsed = parse_date_string(
+                value
+            )
+
+            if parsed:
+                return parsed
+
+    # --------------------------------------------------------
+    # JSON-LD
+    # --------------------------------------------------------
+
+    for script in soup.find_all(
+        "script",
+        type="application/ld+json",
+    ):
+
+        try:
+            data = json.loads(
+                script.string
+                or script.get_text()
+            )
+
+        except Exception:
+            continue
+
+        objects = (
+            data
+            if isinstance(
+                data,
+                list,
+            )
+            else [data]
+        )
+
+        for obj in objects:
+
+            if not isinstance(
+                obj,
+                dict,
+            ):
+                continue
+
+            for key in (
+                "datePublished",
+                "dateCreated",
+                "dateModified",
+            ):
+
+                parsed = parse_date_string(
+                    obj.get(key)
                 )
 
                 if parsed:
-                    return datetime(
-                        *parsed[:6],
-                        tzinfo=timezone.utc,
-                    )
-            except Exception:
-                pass
+                    return parsed
 
     return None
 
@@ -192,7 +385,9 @@ def parse_rss(
     source_name,
     max_articles=100,
 ):
-    response = fetch_url(url)
+    response = fetch_url(
+        url
+    )
 
     if response is None:
         return []
@@ -201,30 +396,43 @@ def parse_rss(
         feed = feedparser.parse(
             response.content
         )
+
     except Exception as exc:
         logger.warning(
             "RSS parse error %s: %s",
             url,
             exc,
         )
+
         return []
 
     articles = []
 
-    for entry in feed.entries[:max_articles]:
+    for entry in feed.entries[
+        :max_articles
+    ]:
 
         title = normalize_text(
-            entry.get("title", "")
+            entry.get(
+                "title",
+                "",
+            )
         )
 
         summary = normalize_text(
             entry.get(
                 "summary",
-                entry.get("description", ""),
+                entry.get(
+                    "description",
+                    "",
+                ),
             )
         )
 
-        link = entry.get("link", "")
+        link = entry.get(
+            "link",
+            "",
+        )
 
         if not title or not link:
             continue
@@ -234,14 +442,16 @@ def parse_rss(
             "title": title,
             "summary": summary,
             "url": link,
-            "date": parse_date(entry),
+            "date": parse_feed_date(
+                entry
+            ),
         })
 
     return articles
 
 
 # ============================================================
-# HTML ARTICLE EXTRACTION
+# HTML EXTRACTION
 # ============================================================
 
 def extract_articles_from_html(
@@ -255,12 +465,11 @@ def extract_articles_from_html(
         "html.parser",
     )
 
-    articles = []
+    page_date = extract_date_from_html(
+        soup
+    )
 
-    seen_urls = set()
-
-    # Supprime les zones qui contiennent souvent
-    # navigation / publicité / menus / footer.
+    # Supprime les zones inutiles.
     for tag in soup([
         "script",
         "style",
@@ -273,13 +482,25 @@ def extract_articles_from_html(
     ]):
         tag.decompose()
 
-    for link in soup.find_all("a", href=True):
+    articles = []
+
+    seen_urls = set()
+
+    for link in soup.find_all(
+        "a",
+        href=True,
+    ):
 
         title = normalize_text(
-            link.get_text(" ", strip=True)
+            link.get_text(
+                " ",
+                strip=True,
+            )
         )
 
-        href = link.get("href")
+        href = link.get(
+            "href"
+        )
 
         if not title or not href:
             continue
@@ -292,13 +513,17 @@ def extract_articles_from_html(
             href,
         )
 
-        if absolute_url in seen_urls:
+        clean_url = (
+            absolute_url
+            .split("#")[0]
+        )
+
+        if clean_url in seen_urls:
             continue
 
-        # Évite les liens qui sont clairement
-        # navigationnels.
         lowered = title.lower()
 
+        # Navigation évidente
         if lowered in {
             "home",
             "latest",
@@ -309,31 +534,73 @@ def extract_articles_from_html(
             "previous",
             "login",
             "subscribe",
+            "about",
+            "contact",
         }:
             continue
 
-        seen_urls.add(
-            absolute_url
-        )
+        # Évite quelques faux liens.
+        if any(
+            part in clean_url.lower()
+            for part in [
+                "/tag/",
+                "/tags/",
+                "/author/",
+                "/category/",
+            ]
+        ):
+            continue
 
         parent = link.parent
 
-        summary = ""
+        context = ""
 
         if parent:
-            summary = normalize_text(
+            context = normalize_text(
                 parent.get_text(
                     " ",
                     strip=True,
                 )
             )
 
+        article_date = None
+
+        # On cherche une date dans le bloc
+        # entourant le lien.
+        container = parent
+
+        for _ in range(3):
+
+            if container is None:
+                break
+
+            date_found = (
+                extract_date_from_html(
+                    container
+                )
+            )
+
+            if date_found:
+                article_date = date_found
+                break
+
+            container = (
+                container.parent
+            )
+
+        if article_date is None:
+            article_date = page_date
+
+        seen_urls.add(
+            clean_url
+        )
+
         articles.append({
             "source": source_name,
             "title": title,
-            "summary": summary[:2000],
-            "url": absolute_url,
-            "date": None,
+            "summary": context[:2500],
+            "url": clean_url,
+            "date": article_date,
         })
 
         if len(articles) >= max_articles:
@@ -369,7 +636,7 @@ def scrape_html_source(
         source_name,
         source.get(
             "max_articles",
-            MAX_ARTICLES_PER_SOURCE,
+            100,
         ),
     )
 
@@ -394,6 +661,7 @@ def scrape_rss_source(
         "feeds",
         [],
     ):
+
         logger.info(
             "Trying feed: %s",
             feed_url,
@@ -404,7 +672,7 @@ def scrape_rss_source(
             source_name,
             source.get(
                 "max_articles",
-                MAX_ARTICLES_PER_SOURCE,
+                100,
             ),
         )
 
@@ -420,6 +688,7 @@ def scrape_rss_source(
     )
 
     if fallback:
+
         logger.info(
             "RSS unavailable for %s, "
             "using HTML fallback",
@@ -437,7 +706,7 @@ def scrape_rss_source(
                 source_name,
                 source.get(
                     "max_articles",
-                    MAX_ARTICLES_PER_SOURCE,
+                    100,
                 ),
             )
 
@@ -445,10 +714,12 @@ def scrape_rss_source(
 
 
 # ============================================================
-# SOURCE SCANNING
+# SOURCE
 # ============================================================
 
-def scan_source(source):
+def scan_source(
+    source,
+):
     if source["type"] == "rss":
         return scrape_rss_source(
             source
@@ -476,14 +747,19 @@ def deduplicate_articles(
 ):
     result = []
 
-    seen = set()
+    seen_urls = set()
+    seen_titles = set()
 
     for article in articles:
 
-        url = article.get(
-            "url",
-            "",
-        ).split("?")[0].rstrip("/")
+        url = (
+            article.get(
+                "url",
+                "",
+            )
+            .split("?")[0]
+            .rstrip("/")
+        )
 
         title = re.sub(
             r"\W+",
@@ -494,19 +770,17 @@ def deduplicate_articles(
             ).lower(),
         ).strip()
 
-        key = (
-            url
-            if url
-            else title
-        )
-
-        if not key:
+        if url and url in seen_urls:
             continue
 
-        if key in seen:
+        if title and title in seen_titles:
             continue
 
-        seen.add(key)
+        if url:
+            seen_urls.add(url)
+
+        if title:
+            seen_titles.add(title)
 
         result.append(
             article
@@ -543,8 +817,6 @@ def classify_article(
         )
     )
 
-    # Le titre et le résumé ont davantage
-    # d'importance que le corps.
     headline_text = (
         title
         + " "
@@ -602,31 +874,34 @@ def classify_article(
         BUSINESS_SPORTS_TECH_TERMS,
     )
 
-    # --------------------------------------------------------
-    # SCORE
-    # --------------------------------------------------------
-
     score = 0
-
     reasons = []
+
+    # --------------------------------------------------------
+    # GEOGRAPHIE
+    # --------------------------------------------------------
 
     if geography:
         score += 2
+
         reasons.append(
             "géographie: "
             + ", ".join(
-                geography[:5]
+                geography[:6]
             )
         )
 
-    # CRITIQUE = priorité absolue.
+    # --------------------------------------------------------
+    # DROITS HUMAINS CRITIQUES
+    # --------------------------------------------------------
+
     if critical_hr:
         score += 14
 
         reasons.append(
             "droits humains critiques: "
             + ", ".join(
-                critical_hr[:6]
+                critical_hr[:8]
             )
         )
 
@@ -636,9 +911,13 @@ def classify_article(
         reasons.append(
             "droits humains/dissidence: "
             + ", ".join(
-                strong_hr[:6]
+                strong_hr[:8]
             )
         )
+
+    # --------------------------------------------------------
+    # POLITIQUE
+    # --------------------------------------------------------
 
     if domestic:
         score += 6
@@ -646,34 +925,46 @@ def classify_article(
         reasons.append(
             "politique intérieure: "
             + ", ".join(
-                domestic[:6]
+                domestic[:8]
             )
         )
 
-    # Important :
-    # C est évalué AVANT B.
+    # --------------------------------------------------------
+    # GÉOPOLITIQUE MAJEURE
+    # --------------------------------------------------------
+
     if major_events:
         score += 10
 
         reasons.append(
             "événement régional majeur: "
             + ", ".join(
-                major_events[:5]
+                major_events[:6]
             )
         )
 
+    # --------------------------------------------------------
+    # ACTEURS EXTÉRIEURS
+    # --------------------------------------------------------
+
     if regional_actors:
-        score += min(
+        actor_bonus = min(
             len(regional_actors),
             2,
         )
 
+        score += actor_bonus
+
         reasons.append(
             "acteur régional: "
             + ", ".join(
-                regional_actors[:5]
+                regional_actors[:6]
             )
         )
+
+    # --------------------------------------------------------
+    # GÉOPOLITIQUE ORDINAIRE
+    # --------------------------------------------------------
 
     if routine_geo:
         score -= 5
@@ -681,9 +972,13 @@ def classify_article(
         reasons.append(
             "géopolitique/économie ordinaire: "
             + ", ".join(
-                routine_geo[:5]
+                routine_geo[:6]
             )
         )
+
+    # --------------------------------------------------------
+    # BRUIT
+    # --------------------------------------------------------
 
     if business:
         score -= 10
@@ -691,18 +986,19 @@ def classify_article(
         reasons.append(
             "contenu secondaire: "
             + ", ".join(
-                business[:5]
+                business[:6]
             )
         )
 
     # --------------------------------------------------------
-    # NON-NEWS
+    # CONTENU NON JOURNALISTIQUE
     # --------------------------------------------------------
 
     if non_news:
-        # Une annonce de recrutement peut être
-        # intéressante pour l'audit, mais ne doit
-        # jamais devenir une fausse actualité A.
+
+        # Une annonce peut être conservée dans
+        # l'audit, mais ne doit jamais devenir
+        # une fausse actualité importante.
         score = min(
             score,
             9,
@@ -711,9 +1007,13 @@ def classify_article(
         reasons.append(
             "contenu non journalistique: "
             + ", ".join(
-                non_news[:5]
+                non_news[:8]
             )
         )
+
+    # --------------------------------------------------------
+    # SCORE FINAL
+    # --------------------------------------------------------
 
     score = max(
         0,
@@ -724,44 +1024,40 @@ def classify_article(
     )
 
     # --------------------------------------------------------
-    # LEVEL
+    # NIVEAU
+    #
+    # IMPORTANT :
+    # A > C > B dans la logique de classification.
+    # Cela évite qu'un article SCO soit classé B
+    # simplement parce qu'il contient "president".
     # --------------------------------------------------------
 
-    if (
-        geography
-        and (
-            critical_hr
-            or strong_hr
-        )
+    if geography and (
+        critical_hr
+        or strong_hr
     ):
         level = "A"
 
-    elif (
-        geography
-        and major_events
-    ):
+    elif geography and major_events:
         level = "C"
 
-    elif (
-        geography
-        and domestic
-    ):
+    elif geography and domestic:
         level = "B"
 
     else:
         level = "D"
 
-    # Une annonce reste D.
+    # Contenu institutionnel = D.
     if non_news:
         level = "D"
 
     # --------------------------------------------------------
-    # RELEVANCE
+    # RETENU
     # --------------------------------------------------------
 
     relevant = (
-        score >= MIN_RELEVANCE_SCORE
-        and bool(geography)
+        bool(geography)
+        and score >= MIN_RELEVANCE_SCORE
         and not non_news
     )
 
@@ -774,7 +1070,7 @@ def classify_article(
 
 
 # ============================================================
-# ARTICLE PAGE ENRICHMENT
+# ARTICLE BODY
 # ============================================================
 
 def fetch_article_body(
@@ -807,17 +1103,22 @@ def fetch_article_body(
 
     candidates = []
 
-    for selector in [
+    selectors = [
         "article",
         "main",
         ".article-body",
         ".article-content",
         ".entry-content",
         ".post-content",
-    ]:
+        "[itemprop='articleBody']",
+    ]
+
+    for selector in selectors:
+
         for element in soup.select(
             selector
         ):
+
             text = normalize_text(
                 element.get_text(
                     " ",
@@ -831,6 +1132,7 @@ def fetch_article_body(
                 )
 
     if not candidates:
+
         paragraphs = soup.find_all(
             "p"
         )
@@ -853,14 +1155,59 @@ def fetch_article_body(
 
     return " ".join(
         candidates
-    )[:15000]
+    )[:18000]
 
 
 # ============================================================
-# MAIN SCAN
+# TRI
+# ============================================================
+
+LEVEL_PRIORITY = {
+    "A": 4,
+    "B": 3,
+    "C": 2,
+    "D": 1,
+}
+
+
+def article_sort_key(
+    article,
+):
+    level = article.get(
+        "level",
+        "D",
+    )
+
+    score = article.get(
+        "score",
+        0,
+    )
+
+    date = article.get(
+        "date"
+    )
+
+    if date is None:
+        date = datetime.min.replace(
+            tzinfo=timezone.utc
+        )
+
+    return (
+        LEVEL_PRIORITY.get(
+            level,
+            0,
+        ),
+        score,
+        date,
+    )
+
+
+# ============================================================
+# SCAN
 # ============================================================
 
 def scan_news():
+
     logger.info(
         "Starting Asia Central News Scanner"
     )
@@ -877,6 +1224,12 @@ def scan_news():
 
         if articles:
             successful_sources += 1
+
+        logger.info(
+            "%s: %d articles collected",
+            source["name"],
+            len(articles),
+        )
 
         raw_articles.extend(
             articles
@@ -897,41 +1250,51 @@ def scan_news():
     )
 
     # --------------------------------------------------------
-    # Première classification
+    # PREMIÈRE CLASSIFICATION
     # --------------------------------------------------------
 
-    classified = []
-
-    for article in articles:
-        classified.append(
-            classify_article(
-                article
-            )
+    classified = [
+        classify_article(
+            article
         )
+        for article in articles
+    ]
 
     # --------------------------------------------------------
-    # Enrichissement des articles
-    # potentiellement pertinents.
+    # ENRICHISSEMENT
+    #
+    # On récupère le corps uniquement des articles
+    # qui ont déjà des signaux intéressants.
     # --------------------------------------------------------
 
     candidates = [
         article
         for article in classified
-        if article["score"] >= 5
-        or article["level"] in {
+        if article.get(
+            "score",
+            0,
+        ) >= 5
+        or article.get(
+            "level"
+        ) in {
             "A",
             "B",
             "C",
         }
     ]
 
-    candidates = sorted(
-        candidates,
-        key=lambda item: (
-            item["date"]
+    candidates.sort(
+        key=lambda article: (
+            article.get(
+                "score",
+                0,
+            ),
+            article.get(
+                "date"
+            )
             or datetime.min.replace(
                 tzinfo=timezone.utc
-            )
+            ),
         ),
         reverse=True,
     )
@@ -949,14 +1312,12 @@ def scan_news():
 
         article["body"] = body
 
-        # Reclassification avec confirmation
-        # du contenu de l'article.
         classify_article(
             article
         )
 
     # --------------------------------------------------------
-    # Sélection
+    # ARTICLES RETENUS
     # --------------------------------------------------------
 
     relevant = [
@@ -968,24 +1329,21 @@ def scan_news():
         )
     ]
 
-    # Tri par date quand disponible,
-    # puis score.
+    # --------------------------------------------------------
+    # TRI :
+    #
+    # A > B > C > D
+    # puis score
+    # puis date
+    # --------------------------------------------------------
+
     relevant.sort(
-        key=lambda item: (
-            item.get("date")
-            or datetime.min.replace(
-                tzinfo=timezone.utc
-            ),
-            item.get(
-                "score",
-                0,
-            ),
-        ),
+        key=article_sort_key,
         reverse=True,
     )
 
     # --------------------------------------------------------
-    # Stats
+    # STATISTIQUES
     # --------------------------------------------------------
 
     level_counts = Counter(
@@ -1033,9 +1391,13 @@ def scan_news():
 
     stats = {
         "raw": len(raw_articles),
+
         "analyzed": analyzed,
+
         "retained": retained,
+
         "avg_score": average_score,
+
         "levels": {
             "A": level_counts.get(
                 "A",
@@ -1054,16 +1416,20 @@ def scan_news():
                 0,
             ),
         },
+
         "sources": successful_sources,
+
         "sources_total": len(
             SOURCES
         ),
+
         "relevance_rate": relevance_rate,
     }
 
     logger.info(
         "Dashboard: %d analyzed / "
-        "%d retained / average score %.1f",
+        "%d retained / "
+        "average score %.1f",
         analyzed,
         retained,
         average_score,
@@ -1081,27 +1447,33 @@ def scan_news():
         "articles": relevant[
             :ARTICLES_TO_DISPLAY
         ],
+
         "audit": classified,
+
         "stats": stats,
     }
 
 
 # ============================================================
-# HTML
+# HTML HELPERS
 # ============================================================
 
-def format_date(value):
+def format_date(
+    value,
+):
     if not value:
-        return "Date inconnue"
+        return "Date non disponible"
 
     return value.strftime(
-        "%Y-%m-%d %H:%M UTC"
+        "%d/%m/%Y à %H:%M UTC"
     )
 
 
-def level_label(level):
+def level_label(
+    level,
+):
     return {
-        "A": "🟥 A — Priorité droits humains",
+        "A": "🟥 A — Droits humains / répression",
         "B": "🟧 B — Politique intérieure",
         "C": "🟦 C — Géopolitique majeure",
         "D": "⚪ D — Faible priorité",
@@ -1111,28 +1483,55 @@ def level_label(level):
     )
 
 
-def escape(value):
+def escape(
+    value,
+):
     return html.escape(
         str(value)
     )
 
 
+# ============================================================
+# HTML
+# ============================================================
+
 def create_web_page(
     data,
 ):
-    articles = data["articles"]
-    audit = data["audit"]
-    stats = data["stats"]
+
+    articles = data[
+        "articles"
+    ]
+
+    audit = data[
+        "audit"
+    ]
+
+    stats = data[
+        "stats"
+    ]
 
     now = datetime.now(
         timezone.utc
-    ).strftime(
-        "%Y-%m-%d %H:%M UTC"
     )
+
+    now_display = now.strftime(
+        "%d/%m/%Y à %H:%M UTC"
+    )
+
+    # ========================================================
+    # ARTICLES PRINCIPAUX
+    # ========================================================
 
     cards = []
 
     for article in articles:
+
+        date = format_date(
+            article.get(
+                "date"
+            )
+        )
 
         reasons = (
             " • ".join(
@@ -1141,61 +1540,82 @@ def create_web_page(
                     [],
                 )
             )
-            or "Aucune raison particulière"
+            or "Aucun signal particulier"
         )
 
         cards.append(
             f"""
             <article class="article-card">
+
+                <div class="article-header">
+
+                    <span class="level level-{article["level"]}">
+                        {escape(article["level"])}
+                    </span>
+
+                    <span class="score">
+                        {article["score"]}/20
+                    </span>
+
+                </div>
+
                 <div class="article-source">
                     {escape(article["source"])}
                 </div>
 
                 <h2>
-                    <a href="{escape(article["url"])}"
-                       target="_blank"
-                       rel="noopener">
+                    <a
+                        href="{escape(article["url"])}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         {escape(article["title"])}
                     </a>
                 </h2>
 
-                <div class="article-meta">
-                    {format_date(article.get("date"))}
-                    ·
-                    {level_label(article["level"])}
-                    ·
-                    Score {article["score"]}/20
+                <div class="article-date">
+                    📅 {escape(date)}
+                </div>
+
+                <div class="theme">
+                    {escape(
+                        level_label(
+                            article["level"]
+                        )
+                    )}
                 </div>
 
                 <p>
-                    {escape(article.get("summary", "")[:500])}
+                    {escape(
+                        article.get(
+                            "summary",
+                            "",
+                        )[:700]
+                    )}
                 </p>
 
                 <div class="reasons">
+                    <strong>Pourquoi :</strong>
                     {escape(reasons)}
                 </div>
+
             </article>
             """
         )
 
+    # ========================================================
+    # AUDIT
+    # ========================================================
+
+    audit_sorted = sorted(
+        audit,
+        key=article_sort_key,
+        reverse=True,
+    )
+
     audit_rows = []
 
-    for article in sorted(
-        audit,
-        key=lambda item: (
-            item.get(
-                "score",
-                0,
-            ),
-            item.get(
-                "date"
-            )
-            or datetime.min.replace(
-                tzinfo=timezone.utc
-            ),
-        ),
-        reverse=True,
-    ):
+    for article in audit_sorted:
 
         retained = (
             "✓"
@@ -1209,49 +1629,104 @@ def create_web_page(
         audit_rows.append(
             f"""
             <tr>
-                <td>{escape(article["source"])}</td>
+
                 <td>
-                    <a href="{escape(article["url"])}"
-                       target="_blank"
-                       rel="noopener">
-                        {escape(article["title"])}
+                    <span class="audit-level level-{article.get("level", "D")}">
+                        {escape(article.get("level", "D"))}
+                    </span>
+                </td>
+
+                <td>
+                    <strong>
+                        {article.get("score", 0)}/20
+                    </strong>
+                </td>
+
+                <td>
+                    {escape(
+                        format_date(
+                            article.get("date")
+                        )
+                    )}
+                </td>
+
+                <td>
+                    {escape(
+                        article.get(
+                            "source",
+                            "",
+                        )
+                    )}
+                </td>
+
+                <td>
+                    <a
+                        href="{escape(article.get("url", ""))}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {escape(
+                            article.get(
+                                "title",
+                                "",
+                            )
+                        )}
                     </a>
                 </td>
-                <td>{format_date(article.get("date"))}</td>
-                <td>{article.get("score", 0)}/20</td>
-                <td>{article.get("level", "D")}</td>
-                <td>{retained}</td>
+
+                <td>
+                    {retained}
+                </td>
+
             </tr>
             """
         )
 
+    # ========================================================
+    # PAGE
+    # ========================================================
+
     return f"""
 <!DOCTYPE html>
+
 <html lang="fr">
 
 <head>
+
 <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<title>Central Asia News Scanner</title>
+<title>
+Central Asia News Scanner
+</title>
 
 <style>
 
+* {{
+    box-sizing: border-box;
+}}
+
 body {{
+
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
 
-    max-width: 1200px;
+    max-width: 1300px;
+
     margin: auto;
+
     padding: 30px;
 
-    background: #f5f5f5;
-    color: #222;
+    background: #f5f6f8;
+
+    color: #202124;
 }}
 
 h1 {{
@@ -1260,101 +1735,303 @@ h1 {{
 
 .subtitle {{
     color: #666;
+    margin-bottom: 10px;
+}}
+
+.scan-date {{
+    color: #555;
+    font-size: 14px;
     margin-bottom: 25px;
 }}
 
+
+/* ==========================================================
+   DASHBOARD
+   ========================================================== */
+
 .dashboard {{
+
     display: grid;
+
     grid-template-columns:
-        repeat(auto-fit, minmax(150px, 1fr));
+        repeat(
+            auto-fit,
+            minmax(145px, 1fr)
+        );
 
     gap: 12px;
-    margin: 25px 0;
+
+    margin: 25px 0 35px;
 }}
 
 .stat {{
+
     background: white;
-    padding: 18px;
+
+    padding: 17px;
+
     border-radius: 10px;
+
     box-shadow:
-        0 2px 8px rgba(0,0,0,.08);
+        0 2px 8px
+        rgba(0,0,0,.07);
 }}
 
 .stat-number {{
-    font-size: 28px;
+
+    font-size: 27px;
+
     font-weight: 700;
+
+    margin-bottom: 5px;
 }}
 
 .stat-label {{
+
     color: #666;
+
     font-size: 13px;
 }}
 
+
+/* ==========================================================
+   ARTICLE
+   ========================================================== */
+
 .article-card {{
+
     background: white;
+
     padding: 22px;
+
     margin: 18px 0;
+
     border-radius: 10px;
+
     box-shadow:
-        0 2px 8px rgba(0,0,0,.08);
+        0 2px 8px
+        rgba(0,0,0,.08);
 }}
 
-.article-card h2 {{
-    margin: 8px 0;
+.article-header {{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 8px;
 }}
 
-.article-card a {{
-    color: #222;
-    text-decoration: none;
+.level {{
+
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 6px;
+
+    font-size: 12px;
+
+    font-weight: 700;
 }}
 
-.article-card a:hover {{
-    text-decoration: underline;
+.level-A {{
+    background: #ffdede;
+}}
+
+.level-B {{
+    background: #ffe8cc;
+}}
+
+.level-C {{
+    background: #dceaff;
+}}
+
+.level-D {{
+    background: #eeeeee;
+}}
+
+.score {{
+
+    font-weight: 700;
+
+    font-size: 18px;
 }}
 
 .article-source {{
+
     font-weight: 700;
+
     color: #555;
+
+    margin-top: 5px;
 }}
 
-.article-meta {{
-    font-size: 13px;
+.article-card h2 {{
+
+    margin: 7px 0 8px;
+
+    font-size: 21px;
+}}
+
+.article-card h2 a {{
+
+    color: #202124;
+
+    text-decoration: none;
+}}
+
+.article-card h2 a:hover {{
+    text-decoration: underline;
+}}
+
+.article-date {{
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #444;
+
+    margin: 8px 0;
+}}
+
+.theme {{
+
     color: #666;
+
+    font-size: 13px;
+
+    margin-bottom: 12px;
+}}
+
+.article-card p {{
+
+    line-height: 1.5;
+
+    color: #444;
 }}
 
 .reasons {{
-    margin-top: 12px;
-    padding: 10px;
-    background: #f1f1f1;
+
+    margin-top: 14px;
+
+    padding: 11px;
+
+    background: #f1f2f3;
+
     border-radius: 6px;
+
     font-size: 13px;
+
+    line-height: 1.5;
+}}
+
+
+/* ==========================================================
+   AUDIT
+   ========================================================== */
+
+.audit {{
+
+    margin-top: 55px;
+}}
+
+.audit-description {{
+
+    color: #666;
+
+    margin-bottom: 15px;
+}}
+
+.audit-table-wrapper {{
+
+    overflow-x: auto;
+
+    background: white;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 8px
+        rgba(0,0,0,.06);
 }}
 
 table {{
+
     width: 100%;
+
     border-collapse: collapse;
-    background: white;
 }}
 
-th, td {{
-    padding: 9px;
-    border-bottom: 1px solid #ddd;
+th,
+td {{
+
+    padding: 10px;
+
+    border-bottom:
+        1px solid #ddd;
+
     text-align: left;
+
     font-size: 13px;
+
+    vertical-align: top;
 }}
 
 th {{
-    background: #eee;
+
+    background: #eeeeee;
+
+    position: sticky;
+
+    top: 0;
 }}
 
-.audit {{
-    margin-top: 50px;
-    overflow-x: auto;
+td a {{
+
+    color: #222;
+
+    text-decoration: none;
 }}
+
+td a:hover {{
+    text-decoration: underline;
+}}
+
+.audit-level {{
+
+    display: inline-block;
+
+    min-width: 25px;
+
+    text-align: center;
+
+    padding: 4px 6px;
+
+    border-radius: 5px;
+
+    font-weight: 700;
+}}
+
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
 
 footer {{
+
     margin-top: 40px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid #ddd;
+
     color: #777;
+
     font-size: 13px;
 }}
 
@@ -1362,130 +2039,242 @@ footer {{
 
 </head>
 
+
 <body>
 
-<h1>Central Asia News Scanner</h1>
+
+<h1>
+Central Asia News Scanner
+</h1>
+
 
 <div class="subtitle">
+
 Actualités récentes d’Asie centrale —
-droits humains, dissidence, politique,
-sécurité, géopolitique majeure et événements régionaux.
+droits humains, dissidence,
+politique intérieure,
+sécurité et géopolitique majeure.
+
 </div>
 
-<div>
-Dernier scan : {now}
+
+<div class="scan-date">
+
+Dernier scan :
+<strong>
+{escape(now_display)}
+</strong>
+
 </div>
+
+
+<!-- ========================================================
+     DASHBOARD
+========================================================= -->
 
 <div class="dashboard">
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["analyzed"]}
     </div>
+
     <div class="stat-label">
         📰 Articles analysés
     </div>
+
 </div>
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["retained"]}
     </div>
+
     <div class="stat-label">
         🎯 Articles retenus
     </div>
+
 </div>
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["avg_score"]}/20
     </div>
+
     <div class="stat-label">
         📊 Score moyen
     </div>
+
 </div>
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["levels"]["A"]}
     </div>
+
     <div class="stat-label">
         🟥 Niveau A
     </div>
+
 </div>
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["levels"]["B"]}
     </div>
+
     <div class="stat-label">
         🟧 Niveau B
     </div>
+
 </div>
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["levels"]["C"]}
     </div>
+
     <div class="stat-label">
         🟦 Niveau C
     </div>
+
 </div>
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["levels"]["D"]}
     </div>
+
     <div class="stat-label">
         ⚪ Niveau D
     </div>
+
 </div>
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["sources"]}/{stats["sources_total"]}
     </div>
+
     <div class="stat-label">
         📡 Sources analysées
     </div>
+
 </div>
 
+
 <div class="stat">
+
     <div class="stat-number">
         {stats["relevance_rate"]}%
     </div>
+
     <div class="stat-label">
         🎯 Taux de pertinence
     </div>
-</div>
 
 </div>
 
-<h2>Actualités retenues</h2>
+
+</div>
+
+
+<!-- ========================================================
+     ARTICLES
+========================================================= -->
+
+<h2>
+Actualités prioritaires
+</h2>
+
+<p class="subtitle">
+
+Classement :
+<strong>
+niveau A → B → C → D
+</strong>,
+puis score décroissant,
+puis date la plus récente.
+
+</p>
+
 
 {"".join(cards)}
 
-<div class="audit">
 
-<h2>Audit du scan</h2>
+<!-- ========================================================
+     AUDIT
+========================================================= -->
 
-<p>
-Tous les articles analysés sont listés ci-dessous,
+<section class="audit">
+
+<h2>
+Audit complet du scan
+</h2>
+
+<p class="audit-description">
+
+Tous les articles analysés sont conservés ici,
 y compris ceux qui ont été filtrés.
+La date, le score, le niveau et le statut
+de sélection permettent de contrôler les décisions
+du filtre.
+
 </p>
+
+
+<div class="audit-table-wrapper">
 
 <table>
 
 <thead>
+
 <tr>
-    <th>Source</th>
-    <th>Article</th>
-    <th>Date</th>
-    <th>Score</th>
-    <th>Niveau</th>
-    <th>Retenu</th>
+
+<th>
+Niveau
+</th>
+
+<th>
+Score
+</th>
+
+<th>
+Date
+</th>
+
+<th>
+Source
+</th>
+
+<th>
+Article
+</th>
+
+<th>
+Retenu
+</th>
+
 </tr>
+
 </thead>
+
 
 <tbody>
 
@@ -1497,12 +2286,20 @@ y compris ceux qui ont été filtrés.
 
 </div>
 
+</section>
+
+
 <footer>
-Scanner automatique — dernière exécution :
-{now}
+
+Central Asia News Scanner ·
+Scan automatique du
+{escape(now_display)}
+
 </footer>
 
+
 </body>
+
 </html>
 """
 
@@ -1524,6 +2321,7 @@ if __name__ == "__main__":
         "w",
         encoding="utf-8",
     ) as file:
+
         file.write(
             page
         )
