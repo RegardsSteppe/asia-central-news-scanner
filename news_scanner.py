@@ -73,7 +73,11 @@ def fetch_url(url):
         response.raise_for_status()
         return response.text
     except Exception as exc:
-        logger.warning("Failed to fetch %s: %s", url, exc)
+        logger.warning(
+            "Failed to fetch %s: %s",
+            url,
+            exc,
+        )
         return None
 
 
@@ -85,20 +89,22 @@ def clean_text(text):
     if not text:
         return ""
 
-    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"\s+", " ", str(text))
     return text.strip()
 
 
 def normalize_text(text):
-    text = clean_text(text)
-    return text.lower()
+    return clean_text(text).lower()
 
 
 def phrase_present(text, phrase):
     """
     Word-boundary-aware keyword detection.
-    Prevents terms such as 'sco' from matching unrelated words.
+
+    This avoids, for example, matching 'sco' inside
+    an unrelated word such as 'scooter'.
     """
+
     if not text or not phrase:
         return False
 
@@ -107,8 +113,16 @@ def phrase_present(text, phrase):
     if not phrase:
         return False
 
-    pattern = r"(?<!\w)" + re.escape(phrase) + r"(?!\w)"
-    return re.search(pattern, text.lower()) is not None
+    pattern = (
+        r"(?<!\w)"
+        + re.escape(phrase)
+        + r"(?!\w)"
+    )
+
+    return re.search(
+        pattern,
+        text.lower(),
+    ) is not None
 
 
 def find_terms(text, terms):
@@ -121,16 +135,6 @@ def find_terms(text, terms):
     return found
 
 
-def first_non_empty(*values):
-    for value in values:
-        if value:
-            value = clean_text(value)
-            if value:
-                return value
-
-    return ""
-
-
 # ============================================================
 # DATE HELPERS
 # ============================================================
@@ -141,23 +145,30 @@ def parse_date(value):
 
     if isinstance(value, datetime):
         if value.tzinfo is None:
-            return value.replace(tzinfo=timezone.utc)
+            return value.replace(
+                tzinfo=timezone.utc
+            )
+
         return value
 
     value = str(value).strip()
 
-    # ISO date
+    # ISO
     try:
-        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(
+            value.replace("Z", "+00:00")
+        )
 
         if parsed.tzinfo is None:
-            parsed = parsed.replace(tzinfo=timezone.utc)
+            parsed = parsed.replace(
+                tzinfo=timezone.utc
+            )
 
         return parsed
+
     except Exception:
         pass
 
-    # Common formats
     formats = [
         "%Y-%m-%d",
         "%Y-%m-%d %H:%M:%S",
@@ -170,8 +181,15 @@ def parse_date(value):
 
     for fmt in formats:
         try:
-            parsed = datetime.strptime(value, fmt)
-            return parsed.replace(tzinfo=timezone.utc)
+            parsed = datetime.strptime(
+                value,
+                fmt,
+            )
+
+            return parsed.replace(
+                tzinfo=timezone.utc
+            )
+
         except Exception:
             continue
 
@@ -180,8 +198,10 @@ def parse_date(value):
 
 def extract_date_from_container(container):
     """
-    Extract a date only from the local article/card container.
-    Never use a page-level date for every article.
+    Extract the date only from the local article/card.
+
+    We deliberately do NOT use a page-level date because
+    that would give the same date to every article.
     """
 
     if not container:
@@ -193,7 +213,10 @@ def extract_date_from_container(container):
     if time_tag:
         value = (
             time_tag.get("datetime")
-            or time_tag.get_text(" ", strip=True)
+            or time_tag.get_text(
+                " ",
+                strip=True,
+            )
         )
 
         parsed = parse_date(value)
@@ -201,16 +224,28 @@ def extract_date_from_container(container):
         if parsed:
             return parsed
 
-    # Metadata inside the local container
+    # Local metadata
     for element in container.find_all(
         ["meta", "span", "div", "p"],
         limit=30,
     ):
-        classes = " ".join(element.get("class", []))
-        itemprop = element.get("itemprop", "")
-        text = element.get_text(" ", strip=True)
+        classes = " ".join(
+            element.get("class", [])
+        )
 
-        marker = f"{classes} {itemprop}".lower()
+        itemprop = element.get(
+            "itemprop",
+            "",
+        )
+
+        text = element.get_text(
+            " ",
+            strip=True,
+        )
+
+        marker = (
+            f"{classes} {itemprop}"
+        ).lower()
 
         if any(
             word in marker
@@ -242,7 +277,10 @@ def absolute_url(base_url, href):
     if not href:
         return ""
 
-    return urljoin(base_url, href.strip())
+    return urljoin(
+        base_url,
+        href.strip(),
+    )
 
 
 def is_probable_article_url(url):
@@ -254,10 +292,14 @@ def is_probable_article_url(url):
     if lowered.startswith("#"):
         return False
 
-    if lowered.startswith("javascript:"):
+    if lowered.startswith(
+        "javascript:"
+    ):
         return False
 
-    if lowered.startswith("mailto:"):
+    if lowered.startswith(
+        "mailto:"
+    ):
         return False
 
     ignored = [
@@ -277,7 +319,10 @@ def is_probable_article_url(url):
         "/donate",
     ]
 
-    return not any(part in lowered for part in ignored)
+    return not any(
+        part in lowered
+        for part in ignored
+    )
 
 
 # ============================================================
@@ -285,7 +330,10 @@ def is_probable_article_url(url):
 # ============================================================
 
 def parse_feed(feed_url, source):
-    logger.info("Trying feed: %s", feed_url)
+    logger.info(
+        "Trying feed: %s",
+        feed_url,
+    )
 
     raw = fetch_url(feed_url)
 
@@ -294,25 +342,38 @@ def parse_feed(feed_url, source):
 
     try:
         parsed = feedparser.parse(raw)
+
     except Exception as exc:
-        logger.warning("Failed to parse feed %s: %s", feed_url, exc)
+        logger.warning(
+            "Failed to parse feed %s: %s",
+            feed_url,
+            exc,
+        )
         return []
 
     articles = []
 
-    for entry in parsed.entries[:MAX_FEED_ENTRIES]:
+    for entry in parsed.entries[
+        :MAX_FEED_ENTRIES
+    ]:
         title = clean_text(
             entry.get("title", "")
         )
 
-        url = entry.get("link", "")
+        url = entry.get(
+            "link",
+            "",
+        )
 
         if not title or not url:
             continue
 
         summary = clean_text(
             entry.get("summary", "")
-            or entry.get("description", "")
+            or entry.get(
+                "description",
+                "",
+            )
         )
 
         published = (
@@ -322,7 +383,9 @@ def parse_feed(feed_url, source):
             or ""
         )
 
-        date = parse_date(published)
+        date = parse_date(
+            published
+        )
 
         if not date:
             for key in [
@@ -330,7 +393,9 @@ def parse_feed(feed_url, source):
                 "updated_parsed",
                 "created_parsed",
             ]:
-                parsed_time = entry.get(key)
+                parsed_time = entry.get(
+                    key
+                )
 
                 if parsed_time:
                     try:
@@ -344,6 +409,7 @@ def parse_feed(feed_url, source):
                             tzinfo=timezone.utc,
                         )
                         break
+
                     except Exception:
                         pass
 
@@ -358,8 +424,14 @@ def parse_feed(feed_url, source):
                     "short_name",
                     source["name"],
                 ),
-                "source_profile": source.get("profile", ""),
-                "source_label": source.get("label", ""),
+                "source_profile": source.get(
+                    "profile",
+                    "",
+                ),
+                "source_label": source.get(
+                    "label",
+                    "",
+                ),
             }
         )
 
@@ -372,19 +444,23 @@ def parse_feed(feed_url, source):
 
 def find_article_containers(soup):
     """
-    Find article/card containers without taking the entire page
-    as the context of every article.
+    Find article/card containers without using the entire
+    webpage as the context of every article.
     """
 
     containers = []
 
-    # 1. Semantic <article>
-    semantic_articles = soup.find_all("article")
+    # First: semantic <article>
+    semantic_articles = soup.find_all(
+        "article"
+    )
 
     if semantic_articles:
-        containers.extend(semantic_articles)
+        containers.extend(
+            semantic_articles
+        )
 
-    # 2. Common CMS card/container classes
+    # Second: common CMS classes
     if not containers:
         selectors = [
             "div[class*='article']",
@@ -403,10 +479,11 @@ def find_article_containers(soup):
                 containers.extend(
                     soup.select(selector)
                 )
+
             except Exception:
                 continue
 
-    # 3. De-duplicate containers
+    # Remove duplicate container objects
     unique = []
     seen_ids = set()
 
@@ -434,13 +511,20 @@ def extract_article_from_container(
     if not container:
         return None
 
-    # Find candidate links.
-    links = container.find_all("a", href=True)
+    links = container.find_all(
+        "a",
+        href=True,
+    )
 
     candidates = []
 
     for link in links:
-        title = clean_text(link.get_text(" ", strip=True))
+        title = clean_text(
+            link.get_text(
+                " ",
+                strip=True,
+            )
+        )
 
         if len(title) < 20:
             continue
@@ -450,46 +534,67 @@ def extract_article_from_container(
             link.get("href"),
         )
 
-        if not is_probable_article_url(href):
+        if not is_probable_article_url(
+            href
+        ):
             continue
 
         candidates.append(
-            (title, href, link)
+            (
+                title,
+                href,
+                link,
+            )
         )
 
     if not candidates:
         return None
 
-    # Prefer the longest meaningful title.
+    # Longest meaningful title.
     title, url, title_link = max(
         candidates,
-        key=lambda item: len(item[0]),
+        key=lambda item: len(
+            item[0]
+        ),
     )
 
     # Local paragraphs only.
     paragraphs = []
 
-    for paragraph in container.find_all("p"):
+    for paragraph in container.find_all(
+        "p"
+    ):
         text = clean_text(
-            paragraph.get_text(" ", strip=True)
+            paragraph.get_text(
+                " ",
+                strip=True,
+            )
         )
 
         if len(text) >= 40:
             paragraphs.append(text)
 
-    summary = " ".join(paragraphs[:3])
+    summary = " ".join(
+        paragraphs[:3]
+    )
 
-    # If no paragraph exists, use local text,
-    # but limit it heavily to avoid navigation contamination.
+    # Small local fallback.
     if not summary:
         local_text = clean_text(
-            container.get_text(" ", strip=True)
+            container.get_text(
+                " ",
+                strip=True,
+            )
         )
 
         if len(local_text) > len(title):
-            summary = local_text[:800]
+            summary = local_text[
+                :800
+            ]
 
-    date = extract_date_from_container(container)
+    date = extract_date_from_container(
+        container
+    )
 
     return {
         "title": title,
@@ -501,8 +606,14 @@ def extract_article_from_container(
             "short_name",
             source["name"],
         ),
-        "source_profile": source.get("profile", ""),
-        "source_label": source.get("label", ""),
+        "source_profile": source.get(
+            "profile",
+            "",
+        ),
+        "source_label": source.get(
+            "label",
+            "",
+        ),
     }
 
 
@@ -511,25 +622,43 @@ def extract_article_from_container(
 # ============================================================
 
 def parse_html_source(url, source):
-    logger.info("Scanning HTML: %s", url)
+    logger.info(
+        "Scanning HTML: %s",
+        url,
+    )
 
     raw = fetch_url(url)
 
     if not raw:
         return []
 
-    soup = BeautifulSoup(raw, "html.parser")
+    soup = BeautifulSoup(
+        raw,
+        "html.parser",
+    )
 
     articles = []
     seen_urls = set()
 
-    containers = find_article_containers(soup)
+    containers = find_article_containers(
+        soup
+    )
+
+    max_articles = min(
+        source.get(
+            "max_articles",
+            MAX_HTML_ARTICLES,
+        ),
+        MAX_HTML_ARTICLES,
+    )
 
     for container in containers:
-        article = extract_article_from_container(
-            container,
-            url,
-            source,
+        article = (
+            extract_article_from_container(
+                container,
+                url,
+                source,
+            )
         )
 
         if not article:
@@ -543,20 +672,20 @@ def parse_html_source(url, source):
         seen_urls.add(article_url)
         articles.append(article)
 
-        if len(articles) >= min(
-            source.get(
-                "max_articles",
-                MAX_HTML_ARTICLES,
-            ),
-            MAX_HTML_ARTICLES,
-        ):
+        if len(articles) >= max_articles:
             break
 
-    # Generic fallback if the page has no recognizable containers.
+    # Generic fallback.
     if not articles:
-        for link in soup.find_all("a", href=True):
+        for link in soup.find_all(
+            "a",
+            href=True,
+        ):
             title = clean_text(
-                link.get_text(" ", strip=True)
+                link.get_text(
+                    " ",
+                    strip=True,
+                )
             )
 
             if len(title) < 25:
@@ -567,7 +696,9 @@ def parse_html_source(url, source):
                 link.get("href"),
             )
 
-            if not is_probable_article_url(article_url):
+            if not is_probable_article_url(
+                article_url
+            ):
                 continue
 
             if article_url in seen_urls:
@@ -580,11 +711,16 @@ def parse_html_source(url, source):
             summary = ""
 
             if parent:
-                paragraphs = parent.find_all("p")
+                paragraphs = (
+                    parent.find_all("p")
+                )
 
                 summary = " ".join(
                     clean_text(
-                        p.get_text(" ", strip=True)
+                        p.get_text(
+                            " ",
+                            strip=True,
+                        )
                     )
                     for p in paragraphs[:2]
                 )
@@ -615,13 +751,7 @@ def parse_html_source(url, source):
                 }
             )
 
-            if len(articles) >= min(
-                source.get(
-                    "max_articles",
-                    MAX_HTML_ARTICLES,
-                ),
-                MAX_HTML_ARTICLES,
-            ):
+            if len(articles) >= max_articles:
                 break
 
     return articles
@@ -633,8 +763,9 @@ def parse_html_source(url, source):
 
 def extract_article_body(url):
     """
-    Fetch the article page and extract the main text.
-    Used only to confirm classification signals.
+    Fetch an article page and extract its main text.
+
+    This is used only for classification confirmation.
     """
 
     raw = fetch_url(url)
@@ -642,7 +773,10 @@ def extract_article_body(url):
     if not raw:
         return ""
 
-    soup = BeautifulSoup(raw, "html.parser")
+    soup = BeautifulSoup(
+        raw,
+        "html.parser",
+    )
 
     # Remove obvious noise.
     for tag in soup.find_all(
@@ -662,7 +796,6 @@ def extract_article_body(url):
 
     candidates = []
 
-    # Prefer semantic article/main.
     for selector in [
         "article",
         "main",
@@ -683,15 +816,22 @@ def extract_article_body(url):
     for candidate in candidates:
         paragraphs = []
 
-        for paragraph in candidate.find_all("p"):
+        for paragraph in candidate.find_all(
+            "p"
+        ):
             text = clean_text(
-                paragraph.get_text(" ", strip=True)
+                paragraph.get_text(
+                    " ",
+                    strip=True,
+                )
             )
 
             if len(text) >= 30:
                 paragraphs.append(text)
 
-        text = " ".join(paragraphs)
+        text = " ".join(
+            paragraphs
+        )
 
         if len(text) > len(best_text):
             best_text = text
@@ -709,7 +849,11 @@ def normalize_url_for_dedup(url):
 
     url = url.strip().lower()
 
-    url = re.sub(r"#.*$", "", url)
+    url = re.sub(
+        r"#.*$",
+        "",
+        url,
+    )
 
     url = re.sub(
         r"[?&](utm_[^=&]+|fbclid|gclid)=[^&]*",
@@ -726,12 +870,20 @@ def deduplicate_articles(articles):
     seen_titles = set()
 
     for article in articles:
-        normalized_url = normalize_url_for_dedup(
-            article.get("url", "")
+        normalized_url = (
+            normalize_url_for_dedup(
+                article.get(
+                    "url",
+                    "",
+                )
+            )
         )
 
         normalized_title = normalize_text(
-            article.get("title", "")
+            article.get(
+                "title",
+                "",
+            )
         )
 
         if (
@@ -747,10 +899,14 @@ def deduplicate_articles(articles):
             continue
 
         if normalized_url:
-            seen_urls.add(normalized_url)
+            seen_urls.add(
+                normalized_url
+            )
 
         if normalized_title:
-            seen_titles.add(normalized_title)
+            seen_titles.add(
+                normalized_title
+            )
 
         result.append(article)
 
@@ -761,7 +917,10 @@ def deduplicate_articles(articles):
 # CLASSIFICATION
 # ============================================================
 
-def classify_article(article, body=""):
+def classify_article(
+    article,
+    body="",
+):
     """
     Deterministic hierarchy:
 
@@ -770,11 +929,18 @@ def classify_article(article, body=""):
     C = exceptional geopolitics
     D = everything else
 
-    No generic geopolitics fallback.
+    Generic geopolitics is NOT enough to become relevant.
     """
 
-    title = article.get("title", "")
-    summary = article.get("summary", "")
+    title = article.get(
+        "title",
+        "",
+    )
+
+    summary = article.get(
+        "summary",
+        "",
+    )
 
     headline_context = normalize_text(
         f"{title} {summary}"
@@ -799,7 +965,8 @@ def classify_article(article, body=""):
     )
 
     has_scope = bool(
-        central_asia or caucasus
+        central_asia
+        or caucasus
     )
 
     # --------------------------------------------------------
@@ -857,18 +1024,16 @@ def classify_article(article, body=""):
     )
 
     # --------------------------------------------------------
-    # Special rights cases
+    # Journalist pressure
     # --------------------------------------------------------
 
     journalist_terms = {
         "journalist",
         "journalists",
-        "journalist(e)",
         "journalistes",
         "journalism",
         "reporter",
         "reporters",
-        "journalistinnen",
     }
 
     journalist_pressure = (
@@ -879,7 +1044,10 @@ def classify_article(article, body=""):
         and bool(repression)
     )
 
-    # Activist + legal/repression context.
+    # --------------------------------------------------------
+    # Activist + legal pressure
+    # --------------------------------------------------------
+
     activist_terms = {
         "activist",
         "activists",
@@ -907,7 +1075,6 @@ def classify_article(article, body=""):
         "prosecution",
         "travel ban",
         "travel bans",
-        "ban",
         "banned",
         "criminal case",
         "criminal cases",
@@ -931,16 +1098,8 @@ def classify_article(article, body=""):
     )
 
     # --------------------------------------------------------
-    # Strong classification signals
+    # Strong human rights
     # --------------------------------------------------------
-
-    confirmed_repression = (
-        bool(repression)
-        and bool(
-            central_asia
-            or caucasus
-        )
-    )
 
     strong_rights = (
         bool(specific_rights)
@@ -959,23 +1118,48 @@ def classify_article(article, body=""):
     )
 
     # --------------------------------------------------------
-    # Major geopolitical event
+    # Major geopolitics
     # --------------------------------------------------------
 
-    major_event = bool(major_geo)
+    major_event = bool(
+        major_geo
+    )
 
     # --------------------------------------------------------
-    # Historical/noise detection
+    # SCO
     # --------------------------------------------------------
 
-    is_historical = bool(historical)
-
-    is_non_news = bool(non_news)
-
-    is_noise = bool(noise)
+    has_sco = any(
+        phrase_present(
+            full_context,
+            term,
+        )
+        for term in [
+            "sco",
+            "shanghai cooperation organization",
+            "shanghai cooperation organisation",
+            "sco summit",
+        ]
+    )
 
     # --------------------------------------------------------
-    # Score
+    # Historical / non-news / noise
+    # --------------------------------------------------------
+
+    is_historical = bool(
+        historical
+    )
+
+    is_non_news = bool(
+        non_news
+    )
+
+    is_noise = bool(
+        noise
+    )
+
+    # --------------------------------------------------------
+    # SCORE
     # --------------------------------------------------------
 
     score = 0
@@ -1053,42 +1237,28 @@ def classify_article(article, body=""):
             "bruit / hors sujet"
         )
 
-    # Special boost: journalists under pressure.
+    # Journalist pressure bonus.
     if journalist_pressure:
         score += 6
         reasons.append(
             "journalistes sous pression"
         )
 
-    # Special boost: activist facing legal action.
+    # Activist legal pressure bonus.
     if activist_legal_pressure:
         score += 7
         reasons.append(
             "activiste sous pression judiciaire"
         )
 
-    # SCO should remain a major regional story.
-    if any(
-        phrase_present(
-            full_context,
-            term,
-        )
-        for term in [
-            "sco",
-            "shanghai cooperation organization",
-            "shanghai cooperation organisation",
-            "sco summit",
-        ]
-    ):
+    # SCO bonus.
+    if has_sco:
         score += 8
         reasons.append(
             "Organisation de coopération de Shanghai"
         )
 
-    # --------------------------------------------------------
-    # Clamp
-    # --------------------------------------------------------
-
+    # Clamp.
     score = max(
         0,
         min(
@@ -1098,34 +1268,34 @@ def classify_article(article, body=""):
     )
 
     # --------------------------------------------------------
-    # Level
+    # LEVEL
     # --------------------------------------------------------
 
     level = "D"
 
-    if has_scope and strong_human_rights:
+    # A = serious rights / repression.
+    if (
+        has_scope
+        and strong_human_rights
+    ):
         level = "A"
 
-    elif has_scope and major_event:
+    # C = exceptional geopolitics.
+    elif (
+        has_scope
+        and major_event
+    ):
         level = "C"
 
-    elif has_scope and domestic:
+    # B = domestic politics.
+    elif (
+        has_scope
+        and domestic
+    ):
         level = "B"
 
-    # SCO is always C unless it is already A.
-    has_sco = any(
-        phrase_present(
-            full_context,
-            term,
-        )
-        for term in [
-            "sco",
-            "shanghai cooperation organization",
-            "shanghai cooperation organisation",
-            "sco summit",
-        ]
-    )
-
+    # SCO always remains at least C,
+    # unless it is already A.
     if (
         has_scope
         and has_sco
@@ -1134,43 +1304,43 @@ def classify_article(article, body=""):
         level = "C"
 
     # --------------------------------------------------------
-    # Strict relevance gate
+    # RELEVANCE GATE
     # --------------------------------------------------------
 
-    relevant = False
+    relevant = level in {
+        "A",
+        "B",
+        "C",
+    }
 
-    if level == "A":
-        relevant = True
-
-    elif level == "B":
-        relevant = True
-
-    elif level == "C":
-        relevant = True
-
-    # D articles are filtered out.
-    if level == "D":
+    # Historical articles are filtered unless they contain
+    # a genuine current rights/repression story.
+    if (
+        is_historical
+        and not strong_human_rights
+    ):
+        level = "D"
         relevant = False
 
-    # Historical articles should not dominate.
-    if is_historical and not strong_human_rights:
-        relevant = False
-
-    # Non-news items are kept in audit but never as selected news.
+    # Non-news items remain in the audit but not selected.
     if is_non_news:
         level = "D"
         relevant = False
+        score = min(
+            score,
+            8,
+        )
 
-        # Explicitly cap non-news.
-        score = min(score, 8)
-
-    # Noise always loses.
-    if is_noise and not strong_human_rights:
+    # Noise is filtered unless it is a strong rights story.
+    if (
+        is_noise
+        and not strong_human_rights
+    ):
         level = "D"
         relevant = False
 
     # --------------------------------------------------------
-    # Strong rights articles should be 20/20
+    # 20/20 FOR STRONG RIGHTS CASES
     # --------------------------------------------------------
 
     if (
@@ -1187,13 +1357,16 @@ def classify_article(article, body=""):
     ):
         score = 20
 
-    # SCO summit stories should remain highly visible.
+    # SCO stories should remain highly visible.
     if (
         level == "C"
         and has_sco
         and not is_non_news
     ):
-        score = max(score, 18)
+        score = max(
+            score,
+            18,
+        )
 
     return {
         "level": level,
@@ -1230,6 +1403,7 @@ def scan_source(source):
     articles = []
 
     if source.get("type") == "rss":
+
         for feed_url in source.get(
             "feeds",
             [],
@@ -1250,8 +1424,9 @@ def scan_source(source):
                 break
 
         # HTML fallback
-        if not articles and source.get(
-            "fallback"
+        if (
+            not articles
+            and source.get("fallback")
         ):
             logger.info(
                 "RSS unavailable for %s, using HTML fallback",
@@ -1264,46 +1439,56 @@ def scan_source(source):
             )
 
     elif source.get("type") == "html":
+
         if source.get("url"):
             articles = parse_html_source(
                 source["url"],
                 source,
             )
 
-    # Ensure source metadata is present.
+    # Ensure source metadata.
     for article in articles:
-        article["source"] = source["name"]
+        article["source"] = source[
+            "name"
+        ]
+
         article["source_short"] = source.get(
             "short_name",
             source["name"],
         )
+
         article["source_profile"] = source.get(
             "profile",
             "",
         )
+
         article["source_label"] = source.get(
             "label",
             "",
         )
 
-    return articles[:source.get(
-        "max_articles",
-        MAX_HTML_ARTICLES,
-    )]
+    return articles[
+        :source.get(
+            "max_articles",
+            MAX_HTML_ARTICLES,
+        )
+    ]
 
 
 # ============================================================
-# SCAN ALL SOURCES
+# COLLECT ALL SOURCES
 # ============================================================
 
 def collect_articles():
     all_articles = []
-
     successful_sources = 0
 
     for source in SOURCES:
+
         try:
-            articles = scan_source(source)
+            articles = scan_source(
+                source
+            )
 
             if articles:
                 successful_sources += 1
@@ -1312,7 +1497,7 @@ def collect_articles():
                 articles
             )
 
-        except Exception as exc:
+        except Exception:
             logger.exception(
                 "Source failed: %s",
                 source.get("name"),
@@ -1330,49 +1515,67 @@ def collect_articles():
 
 def classify_articles(articles):
     """
-    First classify headline + summary.
-    Then fetch article pages only for the strongest candidates.
+    First pass:
+        title + summary
+
+    Second pass:
+        fetch article body for the strongest candidates.
     """
 
     audit = []
 
-    # First pass without article-body fetching.
+    # --------------------------------------------------------
+    # First pass
+    # --------------------------------------------------------
+
     for article in articles:
+
         classification = classify_article(
             article
         )
 
-        article["level"] = classification[
-            "level"
-        ]
+        article["level"] = (
+            classification["level"]
+        )
 
-        article["score"] = classification[
-            "score"
-        ]
+        article["score"] = (
+            classification["score"]
+        )
 
-        article["relevant"] = classification[
-            "relevant"
-        ]
+        article["relevant"] = (
+            classification["relevant"]
+        )
 
-        article["reasons"] = classification[
-            "reasons"
-        ]
+        article["reasons"] = (
+            classification["reasons"]
+        )
 
-        article["signals"] = classification[
-            "signals"
-        ]
+        article["signals"] = (
+            classification["signals"]
+        )
 
         audit.append(article)
 
-    # Candidate ranking for body confirmation.
+    # --------------------------------------------------------
+    # Select strongest candidates for body fetch
+    # --------------------------------------------------------
+
+    minimum_date = (
+        datetime.min.replace(
+            tzinfo=timezone.utc
+        )
+    )
+
     candidates = sorted(
         audit,
         key=lambda article: (
-            article.get("score", 0),
-            article.get("date")
-            or datetime.min.replace(
-                tzinfo=timezone.utc
+            article.get(
+                "score",
+                0,
             ),
+            article.get(
+                "date"
+            ) or minimum_date,
         ),
         reverse=True,
     )
@@ -1386,13 +1589,20 @@ def classify_articles(articles):
         for article in candidates
     }
 
-    # Second pass: body confirmation.
+    # --------------------------------------------------------
+    # Second pass
+    # --------------------------------------------------------
+
     for article in audit:
+
         if article.get("url") not in candidate_urls:
             continue
 
         body = extract_article_body(
-            article.get("url", "")
+            article.get(
+                "url",
+                "",
+            )
         )
 
         if not body:
@@ -1403,25 +1613,25 @@ def classify_articles(articles):
             body,
         )
 
-        article["level"] = classification[
-            "level"
-        ]
+        article["level"] = (
+            classification["level"]
+        )
 
-        article["score"] = classification[
-            "score"
-        ]
+        article["score"] = (
+            classification["score"]
+        )
 
-        article["relevant"] = classification[
-            "relevant"
-        ]
+        article["relevant"] = (
+            classification["relevant"]
+        )
 
-        article["reasons"] = classification[
-            "reasons"
-        ]
+        article["reasons"] = (
+            classification["reasons"]
+        )
 
-        article["signals"] = classification[
-            "signals"
-        ]
+        article["signals"] = (
+            classification["signals"]
+        )
 
     return audit
 
@@ -1440,26 +1650,32 @@ LEVEL_PRIORITY = {
 
 def sort_articles(articles):
     """
-    Primary:
-      - score
-      - level
-      - date
-
-    This makes the strongest themes appear first.
+    Strongest score first, then level, then date.
     """
+
+    minimum_date = (
+        datetime.min.replace(
+            tzinfo=timezone.utc
+        )
+    )
 
     return sorted(
         articles,
         key=lambda article: (
-            article.get("score", 0),
-            LEVEL_PRIORITY.get(
-                article.get("level", "D"),
+            article.get(
+                "score",
                 0,
             ),
-            article.get("date")
-            or datetime.min.replace(
-                tzinfo=timezone.utc
+            LEVEL_PRIORITY.get(
+                article.get(
+                    "level",
+                    "D",
+                ),
+                0,
             ),
+            article.get(
+                "date"
+            ) or minimum_date,
         ),
         reverse=True,
     )
@@ -1478,15 +1694,20 @@ def build_stats(
     retained = [
         article
         for article in audit
-        if article.get("relevant")
+        if article.get(
+            "relevant"
+        )
     ]
 
     scores = [
-        article.get("score", 0)
+        article.get(
+            "score",
+            0,
+        )
         for article in audit
     ]
 
-    average_score = (
+    avg_score = (
         sum(scores) / len(scores)
         if scores
         else 0
@@ -1500,6 +1721,7 @@ def build_stats(
     }
 
     for article in audit:
+
         level = article.get(
             "level",
             "D",
@@ -1513,16 +1735,27 @@ def build_stats(
     return {
         "analyzed": analyzed,
         "retained": len(retained),
-        "average_score": round(
-            average_score,
+
+        # IMPORTANT:
+        # html_template.py expects avg_score.
+        "avg_score": round(
+            avg_score,
             1,
         ),
+
         "level_a": levels["A"],
         "level_b": levels["B"],
         "level_c": levels["C"],
         "level_d": levels["D"],
-        "sources_successful": successful_sources,
-        "sources_total": len(SOURCES),
+
+        "sources_successful": (
+            successful_sources
+        ),
+
+        "sources_total": len(
+            SOURCES
+        ),
+
         "relevance_rate": round(
             (
                 len(retained)
@@ -1537,7 +1770,7 @@ def build_stats(
 
 
 # ============================================================
-# MAIN SCANNER
+# MAIN
 # ============================================================
 
 def scan_news():
@@ -1549,9 +1782,10 @@ def scan_news():
     # Collect
     # --------------------------------------------------------
 
-    raw_articles, successful_sources = (
-        collect_articles()
-    )
+    (
+        raw_articles,
+        successful_sources,
+    ) = collect_articles()
 
     logger.info(
         "Raw articles collected: %d",
@@ -1590,7 +1824,9 @@ def scan_news():
     selected = [
         article
         for article in sorted_audit
-        if article.get("relevant")
+        if article.get(
+            "relevant"
+        )
     ]
 
     selected = selected[
@@ -1610,7 +1846,7 @@ def scan_news():
         "Dashboard: %d analyzed / %d retained / average score %.1f",
         stats["analyzed"],
         stats["retained"],
-        stats["average_score"],
+        stats["avg_score"],
     )
 
     logger.info(
@@ -1628,14 +1864,26 @@ def scan_news():
     for article in selected:
         logger.info(
             "[%s] %d/20 | %s | %s",
-            article.get("level"),
-            article.get("score"),
-            article.get("source_short"),
-            article.get("title"),
+            article.get(
+                "level",
+                "D",
+            ),
+            article.get(
+                "score",
+                0,
+            ),
+            article.get(
+                "source_short",
+                "",
+            ),
+            article.get(
+                "title",
+                "",
+            ),
         )
 
     # --------------------------------------------------------
-    # Create website
+    # Generate website
     # --------------------------------------------------------
 
     html = create_web_page(
@@ -1655,7 +1903,11 @@ def scan_news():
         "Website generated: index.html"
     )
 
-    return selected, sorted_audit, stats
+    return (
+        selected,
+        sorted_audit,
+        stats,
+    )
 
 
 # ============================================================
