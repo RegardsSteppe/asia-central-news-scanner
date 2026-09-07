@@ -15,8 +15,16 @@ from keywords import (
     HISTORICAL_TERMS,
     NON_NEWS_TERMS,
     NOISE_TERMS,
+    LEGAL_REPRESSION_TERMS,
+    JOURNALIST_TERMS,
+    ACTIVIST_TERMS,
+    CENTRAL_ASIA_HR_TERMS,
 )
 
+
+# ============================================================
+# OUTILS
+# ============================================================
 
 def normalize(text):
     if not text:
@@ -29,18 +37,18 @@ def normalize(text):
     ).strip().lower()
 
 
-def phrase_present(
-    text,
-    phrase,
-):
+def phrase_present(text, phrase):
     if not text or not phrase:
+        return False
+
+    phrase = str(phrase).strip().lower()
+
+    if not phrase:
         return False
 
     pattern = (
         r"(?<!\w)"
-        + re.escape(
-            phrase.lower()
-        )
+        + re.escape(phrase)
         + r"(?!\w)"
     )
 
@@ -52,23 +60,61 @@ def phrase_present(
     )
 
 
-def find_terms(
-    text,
-    terms,
-):
-    return [
-        term
-        for term in terms
+def find_terms(text, terms):
+    found = []
+
+    for term in terms:
         if phrase_present(
             text,
             term,
-        )
-    ]
+        ):
+            found.append(term)
+
+    return found
 
 
-def classify_article(
-    article,
-):
+def unique_terms(*groups):
+    result = []
+    seen = set()
+
+    for group in groups:
+        for term in group:
+            normalized = normalize(term)
+
+            if normalized in seen:
+                continue
+
+            seen.add(normalized)
+            result.append(term)
+
+    return result
+
+
+# ============================================================
+# CLASSIFICATION
+# ============================================================
+
+def classify_article(article):
+    """
+    Cerveau éditorial.
+
+    Entrée :
+        article = {
+            "title": ...,
+            "summary": ...,
+            "body": ...
+        }
+
+    Sortie :
+        article enrichi avec :
+            score
+            level
+            theme
+            reasons
+            relevant
+            signals
+    """
+
     title = normalize(
         article.get(
             "title",
@@ -90,31 +136,28 @@ def classify_article(
         )
     )
 
-    # --------------------------------------------------------
-    # IMPORTANT
-    #
-    # Le titre + résumé sont prioritaires.
-    #
-    # Le body sert surtout à confirmer un article.
-    # Cela évite qu'une page contenant une liste
-    # d'articles contamine tous les résultats.
-    # --------------------------------------------------------
+    # ========================================================
+    # CONTEXTE
+    # ========================================================
 
+    # Le titre + résumé restent la base.
+    # On limite le résumé pour éviter les pages polluées.
     headline = (
         title
         + " "
         + summary[:3000]
     )
 
+    # Le body sert à confirmer.
     full_text = (
         headline
         + " "
         + body[:12000]
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # GÉOGRAPHIE
-    # --------------------------------------------------------
+    # ========================================================
 
     central_asia = find_terms(
         headline,
@@ -126,14 +169,14 @@ def classify_article(
         CAUCASUS_TERMS,
     )
 
-    geography = (
-        central_asia
-        + caucasus
+    geography = unique_terms(
+        central_asia,
+        caucasus,
     )
 
-    # --------------------------------------------------------
-    # SIGNAUX
-    # --------------------------------------------------------
+    # ========================================================
+    # SIGNAUX PRINCIPAUX
+    # ========================================================
 
     human_rights = find_terms(
         headline,
@@ -186,12 +229,47 @@ def classify_article(
     )
 
     # ========================================================
-    # CONFIRMATION PAR LE CORPS
+    # NOUVEAUX SIGNAUX RH
     # ========================================================
+
+    legal_repression = find_terms(
+        headline,
+        LEGAL_REPRESSION_TERMS,
+    )
+
+    journalists = find_terms(
+        headline,
+        JOURNALIST_TERMS,
+    )
+
+    activists = find_terms(
+        headline,
+        ACTIVIST_TERMS,
+    )
+
+    central_asia_hr = find_terms(
+        headline,
+        CENTRAL_ASIA_HR_TERMS,
+    )
+
+    # ========================================================
+    # CONFIRMATION PAR LE BODY
+    # ========================================================
+
+    body_geography = find_terms(
+        body,
+        CENTRAL_ASIA_TERMS
+        + CAUCASUS_TERMS,
+    )
 
     body_repression = find_terms(
         body,
         REPRESSION_TERMS,
+    )
+
+    body_legal_repression = find_terms(
+        body,
+        LEGAL_REPRESSION_TERMS,
     )
 
     body_specific_rights = find_terms(
@@ -204,20 +282,25 @@ def classify_article(
         HUMAN_RIGHTS_TERMS,
     )
 
-    # On ne considère le body comme confirmation
-    # que s'il contient aussi une géographie.
+    body_journalists = find_terms(
+        body,
+        JOURNALIST_TERMS,
+    )
+
+    body_activists = find_terms(
+        body,
+        ACTIVIST_TERMS,
+    )
+
     body_has_geography = bool(
-        find_terms(
-            body,
-            CENTRAL_ASIA_TERMS
-            + CAUCASUS_TERMS,
-        )
+        body_geography
     )
 
     confirmed_repression = (
         body_has_geography
         and bool(
             body_repression
+            or body_legal_repression
         )
     )
 
@@ -230,11 +313,97 @@ def classify_article(
     )
 
     # ========================================================
+    # PRESSION SUR JOURNALISTES
+    # ========================================================
+
+    journalist_pressure = (
+        bool(journalists)
+        and bool(
+            repression
+            or legal_repression
+            or body_journalists
+            or body_repression
+            or body_legal_repression
+        )
+    )
+
+    # ========================================================
+    # PRESSION SUR ACTIVISTES / DISSIDENTS
+    # ========================================================
+
+    activist_pressure = (
+        bool(activists)
+        and bool(
+            repression
+            or legal_repression
+            or body_activists
+            or body_repression
+            or body_legal_repression
+        )
+    )
+
+    # ========================================================
+    # CAS RH CONFIRMÉ PAR LE BODY
+    # ========================================================
+
+    confirmed_journalist_pressure = (
+        body_has_geography
+        and bool(
+            body_journalists
+        )
+        and bool(
+            body_repression
+            or body_legal_repression
+        )
+    )
+
+    confirmed_activist_pressure = (
+        body_has_geography
+        and bool(
+            body_activists
+        )
+        and bool(
+            body_repression
+            or body_legal_repression
+        )
+    )
+
+    # ========================================================
+    # DROITS SPÉCIFIQUES + RÉPRESSION
+    # ========================================================
+
+    serious_specific_rights = (
+        bool(specific_rights)
+        and bool(
+            repression
+            or legal_repression
+        )
+    )
+
+    confirmed_specific_rights = (
+        body_has_geography
+        and bool(
+            body_specific_rights
+        )
+        and bool(
+            body_repression
+            or body_legal_repression
+        )
+    )
+
+    # ========================================================
+    # SIGNAL RH CENTRAL ASIA
+    # ========================================================
+
+    central_asia_hr_signal = bool(
+        central_asia_hr
+    )
+
+    # ========================================================
     # SCORE
     # ========================================================
 
     score = 0
-
     reasons = []
 
     # --------------------------------------------------------
@@ -262,6 +431,40 @@ def classify_article(
         )
 
     # --------------------------------------------------------
+    # DROITS HUMAINS
+    # --------------------------------------------------------
+
+    if human_rights:
+
+        generic_people_terms = {
+            "journalist",
+            "journalists",
+            "journaliste",
+            "journalistes",
+            "activist",
+            "activists",
+            "activiste",
+            "activistes",
+        }
+
+        if any(
+            normalize(term)
+            in generic_people_terms
+            for term in human_rights
+        ):
+            score += 2
+
+        else:
+            score += 5
+
+        reasons.append(
+            "droits humains: "
+            + ", ".join(
+                human_rights[:8]
+            )
+        )
+
+    # --------------------------------------------------------
     # RÉPRESSION
     # --------------------------------------------------------
 
@@ -272,6 +475,62 @@ def classify_article(
             "répression: "
             + ", ".join(
                 repression[:8]
+            )
+        )
+
+    # --------------------------------------------------------
+    # PRESSION JUDICIAIRE / ADMINISTRATIVE
+    # --------------------------------------------------------
+
+    if legal_repression:
+        score += 6
+
+        reasons.append(
+            "pression judiciaire: "
+            + ", ".join(
+                legal_repression[:8]
+            )
+        )
+
+    # --------------------------------------------------------
+    # JOURNALISTES
+    # --------------------------------------------------------
+
+    if journalists:
+        score += 1
+
+        reasons.append(
+            "journalistes: "
+            + ", ".join(
+                journalists[:6]
+            )
+        )
+
+    # --------------------------------------------------------
+    # ACTIVISTES / DISSIDENTS
+    # --------------------------------------------------------
+
+    if activists:
+        score += 1
+
+        reasons.append(
+            "activistes / dissidents: "
+            + ", ".join(
+                activists[:6]
+            )
+        )
+
+    # --------------------------------------------------------
+    # CENTRAL ASIA + DROITS HUMAINS
+    # --------------------------------------------------------
+
+    if central_asia_hr_signal:
+        score += 3
+
+        reasons.append(
+            "signal droits humains Asie centrale: "
+            + ", ".join(
+                central_asia_hr[:8]
             )
         )
 
@@ -290,55 +549,42 @@ def classify_article(
         )
 
     # --------------------------------------------------------
-    # DROITS HUMAINS GÉNÉRAUX
-    #
-    # Un simple "journalist" ne vaut que +2.
-    # Il faut un contexte de répression pour faire
-    # exploser le score.
-    # --------------------------------------------------------
-
-    if human_rights:
-
-        if (
-            "journalist" in human_rights
-            or "journalists" in human_rights
-            or "activist" in human_rights
-            or "activists" in human_rights
-        ):
-
-            score += 2
-
-        else:
-
-            score += 5
-
-        reasons.append(
-            "droits humains: "
-            + ", ".join(
-                human_rights[:8]
-            )
-        )
-
-    # --------------------------------------------------------
-    # CONFIRMATION PAR L'ARTICLE
+    # CONFIRMATION PAR LE BODY
     # --------------------------------------------------------
 
     if confirmed_repression:
-
         score += 5
 
         reasons.append(
-            "confirmation article: "
-            "répression"
+            "confirmation article: répression"
         )
 
     elif confirmed_rights:
-
         score += 3
 
         reasons.append(
-            "confirmation article: "
-            "droits humains"
+            "confirmation article: droits humains"
+        )
+
+    if confirmed_journalist_pressure:
+        score += 4
+
+        reasons.append(
+            "confirmation article: journaliste sous pression"
+        )
+
+    if confirmed_activist_pressure:
+        score += 4
+
+        reasons.append(
+            "confirmation article: activiste sous pression"
+        )
+
+    if confirmed_specific_rights:
+        score += 4
+
+        reasons.append(
+            "confirmation article: atteinte à un droit spécifique"
         )
 
     # --------------------------------------------------------
@@ -346,7 +592,6 @@ def classify_article(
     # --------------------------------------------------------
 
     if domestic:
-
         score += 6
 
         reasons.append(
@@ -361,7 +606,6 @@ def classify_article(
     # --------------------------------------------------------
 
     if major_geo:
-
         score += 10
 
         reasons.append(
@@ -376,7 +620,6 @@ def classify_article(
     # --------------------------------------------------------
 
     if actors:
-
         score += min(
             len(actors),
             2,
@@ -394,7 +637,6 @@ def classify_article(
     # --------------------------------------------------------
 
     if routine_geo:
-
         score -= 5
 
         reasons.append(
@@ -409,7 +651,6 @@ def classify_article(
     # --------------------------------------------------------
 
     if historical:
-
         score -= 8
 
         reasons.append(
@@ -420,14 +661,10 @@ def classify_article(
         )
 
     # --------------------------------------------------------
-    # CONTENU NON JOURNALISTIQUE
+    # NON-NEWS
     # --------------------------------------------------------
 
     if non_news:
-
-        # On garde l'article dans l'audit,
-        # mais il ne peut pas être présenté
-        # comme une actualité importante.
         score = min(
             score,
             8,
@@ -445,7 +682,6 @@ def classify_article(
     # --------------------------------------------------------
 
     if noise:
-
         score -= 10
 
         reasons.append(
@@ -456,66 +692,65 @@ def classify_article(
         )
 
     # ========================================================
-    # CAS SPÉCIAUX
+    # PRIORITÉ MAXIMALE RH
     # ========================================================
 
-    # --------------------------------------------------------
-    # ARTICLE JOURNALISTES + RÉPRESSION
-    #
-    # Criminal Cases, Travel Bans...
-    # doit arriver à 20/20.
-    # --------------------------------------------------------
-
-    journalist_pressure = (
-        (
-            "journalist" in repression
-            or "journalists" in repression
-        )
-        and bool(
-            repression
-        )
+    high_priority_human_rights = (
+        journalist_pressure
+        or activist_pressure
+        or serious_specific_rights
+        or confirmed_journalist_pressure
+        or confirmed_activist_pressure
+        or confirmed_specific_rights
     )
 
-    if journalist_pressure:
+    if high_priority_human_rights:
         score = max(
             score,
             20,
         )
 
-        reasons.append(
-            "forte pression sur les journalistes"
-        )
+        if journalist_pressure:
+            reasons.append(
+                "forte pression sur les journalistes"
+            )
 
-    # --------------------------------------------------------
-    # FEMMES / LGBT / MINORITÉS
-    #
-    # Un article traitant concrètement d'une
-    # condamnation, arrestation ou répression
-    # doit devenir prioritaire.
-    # --------------------------------------------------------
+        if activist_pressure:
+            reasons.append(
+                "forte pression sur les activistes / dissidents"
+            )
 
-    serious_specific_rights = (
-        bool(
-            specific_rights
+        if serious_specific_rights:
+            reasons.append(
+                "atteinte grave à des droits spécifiques"
+            )
+
+    # ========================================================
+    # SCO
+    # ========================================================
+
+    has_sco = any(
+        phrase_present(
+            full_text,
+            term,
         )
-        and bool(
-            repression
-        )
+        for term in [
+            "sco",
+            "shanghai cooperation organization",
+            "shanghai cooperation organisation",
+            "sco summit",
+        ]
     )
 
-    if serious_specific_rights:
-
-        score = max(
-            score,
-            20,
-        )
+    if has_sco:
+        score += 8
 
         reasons.append(
-            "atteinte grave à des droits spécifiques"
+            "Organisation de coopération de Shanghai"
         )
 
     # ========================================================
-    # LIMITATION
+    # SCORE FINAL
     # ========================================================
 
     score = max(
@@ -530,40 +765,51 @@ def classify_article(
     # NIVEAU
     # ========================================================
 
-    # A = droits humains / répression
+    # A : droits humains / répression
     if (
         geography
         and (
             repression
+            or legal_repression
             or serious_specific_rights
             or confirmed_repression
+            or journalist_pressure
+            or activist_pressure
+            or confirmed_journalist_pressure
+            or confirmed_activist_pressure
+            or confirmed_specific_rights
         )
     ):
-
         level = "A"
 
-    # C = géopolitique majeure
+    # C : géopolitique majeure
     elif (
         geography
         and major_geo
     ):
-
         level = "C"
 
-    # B = politique intérieure
+    # B : politique intérieure
     elif (
         geography
         and domestic
     ):
-
         level = "B"
 
     else:
-
         level = "D"
 
-    # Les contenus non journalistiques
-    # restent toujours D.
+    # SCO peut transformer une actualité géopolitique
+    # pertinente en C, mais jamais en A à lui seul.
+    if (
+        geography
+        and has_sco
+        and level == "D"
+        and not non_news
+    ):
+        level = "C"
+
+    # Non-news = toujours D.
     if non_news:
         level = "D"
 
@@ -572,16 +818,35 @@ def classify_article(
     # ========================================================
 
     if level == "A":
-        theme = (
-            "Droits humains / répression"
-        )
+
+        if journalist_pressure:
+            theme = (
+                "Journalistes sous pression"
+            )
+
+        elif activist_pressure:
+            theme = (
+                "Activistes / dissidents sous pression"
+            )
+
+        elif serious_specific_rights:
+            theme = (
+                "Droits spécifiques / répression"
+            )
+
+        else:
+            theme = (
+                "Droits humains / répression"
+            )
 
     elif level == "B":
+
         theme = (
             "Politique intérieure"
         )
 
     elif level == "C":
+
         theme = (
             "Géopolitique majeure"
         )
@@ -589,21 +854,25 @@ def classify_article(
     else:
 
         if historical:
+
             theme = (
                 "Histoire / culture / contexte"
             )
 
         elif non_news:
+
             theme = (
                 "Contenu institutionnel"
             )
 
         elif routine_geo:
+
             theme = (
                 "Économie / géopolitique ordinaire"
             )
 
         else:
+
             theme = (
                 "Faible priorité"
             )
@@ -613,18 +882,97 @@ def classify_article(
     # ========================================================
 
     relevant = (
-        bool(
-            geography
-        )
+        bool(geography)
         and score >= 10
         and not non_news
         and not noise
+        and level in {
+            "A",
+            "B",
+            "C",
+        }
     )
+
+    # Un vrai cas RH confirmé reste prioritaire.
+    if (
+        geography
+        and high_priority_human_rights
+        and not non_news
+        and not noise
+    ):
+        relevant = True
+
+    # ========================================================
+    # SIGNAUX POUR AUDIT / HTML
+    # ========================================================
+
+    signals = {
+        "central_asia": central_asia,
+        "caucasus": caucasus,
+        "geography": geography,
+
+        "human_rights": human_rights,
+        "repression": repression,
+        "legal_repression": legal_repression,
+
+        "specific_rights": specific_rights,
+
+        "journalists": journalists,
+        "activists": activists,
+
+        "central_asia_hr": central_asia_hr,
+
+        "domestic": domestic,
+        "major_geo": major_geo,
+        "routine_geo": routine_geo,
+        "actors": actors,
+
+        "historical": historical,
+        "non_news": non_news,
+        "noise": noise,
+
+        "body_geography": body_geography,
+        "body_repression": body_repression,
+        "body_legal_repression": body_legal_repression,
+        "body_specific_rights": body_specific_rights,
+        "body_human_rights": body_human_rights,
+        "body_journalists": body_journalists,
+        "body_activists": body_activists,
+
+        "confirmed_repression": confirmed_repression,
+        "confirmed_rights": confirmed_rights,
+
+        "journalist_pressure": journalist_pressure,
+        "activist_pressure": activist_pressure,
+
+        "confirmed_journalist_pressure": (
+            confirmed_journalist_pressure
+        ),
+
+        "confirmed_activist_pressure": (
+            confirmed_activist_pressure
+        ),
+
+        "serious_specific_rights": (
+            serious_specific_rights
+        ),
+
+        "confirmed_specific_rights": (
+            confirmed_specific_rights
+        ),
+
+        "has_sco": has_sco,
+    }
+
+    # ========================================================
+    # SORTIE
+    # ========================================================
 
     article["score"] = score
     article["level"] = level
     article["theme"] = theme
     article["reasons"] = reasons
     article["relevant"] = relevant
+    article["signals"] = signals
 
     return article
