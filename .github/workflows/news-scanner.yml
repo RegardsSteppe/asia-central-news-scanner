@@ -2,9 +2,9 @@
 name: Asia Central News Scanner
 
 on:
-  schedule:
-    - cron: '0 6 * * *'  # 08:00 Paris en heure d'été
   workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"
 
 permissions:
   contents: write
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Install dependencies
         run: |
@@ -28,27 +28,14 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run news scanner
-        shell: bash
-        run: |
-          set -o pipefail
-          python -u news_scanner.py 2>&1 | tee news_scanner.log
-
-      - name: Upload logs
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: news-scanner-logs
-          path: news_scanner.log
-          retention-days: 7
+        run: python -u news_scanner.py
 
       - name: Prepare website
-        if: success()
         run: |
           mkdir -p public
           cp index.html public/index.html
 
       - name: Publish website
-        if: success()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
