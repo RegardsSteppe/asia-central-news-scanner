@@ -1,5 +1,3 @@
-# news_scanner.py
-
 import argparse
 import logging
 import re
@@ -13,6 +11,7 @@ from bs4 import BeautifulSoup
 
 from sources import SOURCES
 from scoring import classify_article
+
 from memory import (
     load_memory,
     save_memory,
@@ -22,6 +21,7 @@ from memory import (
     get_all_articles,
     get_memory_stats,
 )
+
 from html_template import create_web_page
 
 
@@ -33,6 +33,8 @@ MAX_FEED_ENTRIES = 100
 MAX_HTML_ARTICLES = 100
 
 ARTICLES_TO_DISPLAY = 20
+
+# Nombre maximum d'articles dont on récupère le body.
 ARTICLE_PAGE_FETCH_LIMIT = 80
 
 REQUEST_TIMEOUT = 20
@@ -43,7 +45,13 @@ HEADERS = {
         "AppleWebKit/537.36 "
         "(KHTML, like Gecko) "
         "Chrome/128.0 Safari/537.36"
-    )
+    ),
+    "Accept": (
+        "text/html,application/xhtml+xml,"
+        "application/xml;q=0.9,*/*;q=0.8"
+    ),
+    "Accept-Language": "en-US,en;q=0.8,fr;q=0.6",
+    "Connection": "keep-alive",
 }
 
 
@@ -63,18 +71,115 @@ logger = logging.getLogger(__name__)
 # HTTP
 # ============================================================
 
-def fetch_url(url):
+def fetch_url(url, source=None):
+    """
+    Télécharge une URL.
+
+    Retourne un dictionnaire afin de distinguer :
+    - succès
+    - erreur HTTP
+    - timeout
+    - erreur SSL
+    - autre erreur
+
+    On ne transforme plus toutes les erreurs en simple None.
+    """
+
+    headers = dict(HEADERS)
+
+    if source:
+        custom_headers = source.get(
+            "headers",
+            {},
+        )
+
+        headers.update(custom_headers)
 
     try:
+
         response = requests.get(
             url,
-            headers=HEADERS,
+            headers=headers,
             timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
         )
 
         response.raise_for_status()
 
-        return response.text
+        return {
+            "ok": True,
+            "status": response.status_code,
+            "url": response.url,
+            "text": response.text,
+            "error": "",
+        }
+
+    except requests.exceptions.HTTPError as exc:
+
+        status = None
+
+        if exc.response is not None:
+            status = exc.response.status_code
+
+        logger.warning(
+            "Failed to fetch %s: HTTP %s",
+            url,
+            status or "?",
+        )
+
+        return {
+            "ok": False,
+            "status": status,
+            "url": url,
+            "text": "",
+            "error": f"HTTP {status}" if status else str(exc),
+        }
+
+    except requests.exceptions.Timeout as exc:
+
+        logger.warning(
+            "Failed to fetch %s: timeout",
+            url,
+        )
+
+        return {
+            "ok": False,
+            "status": None,
+            "url": url,
+            "text": "",
+            "error": "timeout",
+        }
+
+    except requests.exceptions.SSLError as exc:
+
+        logger.warning(
+            "Failed to fetch %s: SSL error",
+            url,
+        )
+
+        return {
+            "ok": False,
+            "status": None,
+            "url": url,
+            "text": "",
+            "error": "SSL error",
+        }
+
+    except requests.exceptions.RequestException as exc:
+
+        logger.warning(
+            "Failed to fetch %s: %s",
+            url,
+            exc,
+        )
+
+        return {
+            "ok": False,
+            "status": None,
+            "url": url,
+            "text": "",
+            "error": str(exc),
+        }
 
     except Exception as exc:
 
@@ -84,7 +189,13 @@ def fetch_url(url):
             exc,
         )
 
-        return None
+        return {
+            "ok": False,
+            "status": None,
+            "url": url,
+            "text": "",
+            "error": str(exc),
+        }
 
 
 # ============================================================
@@ -303,6 +414,7 @@ def is_probable_article_url(url):
         "/privacy",
         "/terms",
         "/donate",
+        "/page/",
     ]
 
     return not any(
@@ -328,8 +440,8 @@ def build_article(
         "url": url,
         "summary": clean_text(summary),
 
-        # Le body sera récupéré plus tard
-        # uniquement pour les meilleurs candidats.
+        # Le body sera récupéré uniquement
+        # pour les meilleurs candidats.
         "body": "",
 
         "date": date,
@@ -367,10 +479,15 @@ def parse_feed(
         feed_url,
     )
 
-    raw = fetch_url(feed_url)
+    result = fetch_url(
+        feed_url,
+        source,
+    )
 
-    if not raw:
-        return []
+    if not result["ok"]:
+        return [], result
+
+    raw = result["text"]
 
     try:
 
@@ -384,7 +501,13 @@ def parse_feed(
             exc,
         )
 
-        return []
+        return [], {
+            "ok": False,
+            "status": result.get("status"),
+            "url": feed_url,
+            "text": "",
+            "error": f"feed parse: {exc}",
+        }
 
     articles = []
 
@@ -471,7 +594,7 @@ def parse_feed(
             )
         )
 
-    return articles
+    return articles, result
 
 
 # ============================================================
@@ -656,10 +779,15 @@ def parse_html_source(
         url,
     )
 
-    raw = fetch_url(url)
+    result = fetch_url(
+        url,
+        source,
+    )
 
-    if not raw:
-        return []
+    if not result["ok"]:
+        return [], result
+
+    raw = result["text"]
 
     soup = BeautifulSoup(
         raw,
@@ -709,7 +837,7 @@ def parse_html_source(
             break
 
     # --------------------------------------------------------
-    # FALLBACK
+    # FALLBACK LINK EXTRACTION
     # --------------------------------------------------------
 
     if not articles:
@@ -783,19 +911,27 @@ def parse_html_source(
             if len(articles) >= max_articles:
                 break
 
-    return articles
+    return articles, result
 
 
 # ============================================================
 # ARTICLE BODY
 # ============================================================
 
-def extract_article_body(url):
+def extract_article_body(
+    url,
+    source=None,
+):
 
-    raw = fetch_url(url)
+    result = fetch_url(
+        url,
+        source,
+    )
 
-    if not raw:
+    if not result["ok"]:
         return ""
+
+    raw = result["text"]
 
     soup = BeautifulSoup(
         raw,
@@ -963,17 +1099,41 @@ def scan_source(source):
 
     articles = []
 
-    if source.get("type") == "rss":
+    errors = []
+
+    successful_fetch = False
+
+    source_type = source.get(
+        "type",
+        "html",
+    )
+
+    # --------------------------------------------------------
+    # RSS
+    # --------------------------------------------------------
+
+    if source_type == "rss":
 
         for feed_url in source.get(
             "feeds",
             [],
         ):
 
-            feed_articles = parse_feed(
+            feed_articles, result = parse_feed(
                 feed_url,
                 source,
             )
+
+            if result.get("ok"):
+                successful_fetch = True
+
+            else:
+                errors.append(
+                    result.get(
+                        "error",
+                        "unknown error",
+                    )
+                )
 
             articles.extend(
                 feed_articles
@@ -985,30 +1145,102 @@ def scan_source(source):
             ):
                 break
 
+        # ----------------------------------------------------
+        # FALLBACKS RSS → HTML
+        # ----------------------------------------------------
+
         if (
             not articles
-            and source.get("fallback")
+            and source.get("fallbacks")
         ):
 
-            logger.info(
-                "RSS unavailable for %s, "
-                "using HTML fallback",
-                source["name"],
-            )
+            for fallback in source.get(
+                "fallbacks",
+                [],
+            ):
 
-            articles = parse_html_source(
-                source["fallback"],
-                source,
-            )
+                logger.info(
+                    "RSS unavailable for %s, "
+                    "trying HTML fallback: %s",
+                    source["name"],
+                    fallback,
+                )
 
-    elif source.get("type") == "html":
+                fallback_articles, result = (
+                    parse_html_source(
+                        fallback,
+                        source,
+                    )
+                )
+
+                if result.get("ok"):
+                    successful_fetch = True
+
+                else:
+                    errors.append(
+                        result.get(
+                            "error",
+                            "unknown error",
+                        )
+                    )
+
+                articles.extend(
+                    fallback_articles
+                )
+
+                if articles:
+                    break
+
+    # --------------------------------------------------------
+    # HTML
+    # --------------------------------------------------------
+
+    elif source_type == "html":
+
+        urls = []
 
         if source.get("url"):
-
-            articles = parse_html_source(
-                source["url"],
-                source,
+            urls.append(
+                source["url"]
             )
+
+        urls.extend(
+            source.get(
+                "fallbacks",
+                [],
+            )
+        )
+
+        for url in urls:
+
+            html_articles, result = (
+                parse_html_source(
+                    url,
+                    source,
+                )
+            )
+
+            if result.get("ok"):
+                successful_fetch = True
+
+            else:
+                errors.append(
+                    result.get(
+                        "error",
+                        "unknown error",
+                    )
+                )
+
+            articles.extend(
+                html_articles
+            )
+
+            if articles:
+                break
+
+    # --------------------------------------------------------
+    # METADATA
+    # --------------------------------------------------------
 
     for article in articles:
 
@@ -1029,12 +1261,41 @@ def scan_source(source):
             "",
         )
 
-    return articles[
+    articles = articles[
         :source.get(
             "max_articles",
             MAX_HTML_ARTICLES,
         )
     ]
+
+    # --------------------------------------------------------
+    # STATUS
+    # --------------------------------------------------------
+
+    if articles:
+
+        status = "success"
+
+    elif successful_fetch:
+
+        status = "empty"
+
+    else:
+
+        status = "error"
+
+    error_text = ""
+
+    if errors:
+        error_text = "; ".join(
+            dict.fromkeys(errors)
+        )
+
+    return {
+        "articles": articles,
+        "status": status,
+        "error": error_text,
+    }
 
 
 # ============================================================
@@ -1045,13 +1306,20 @@ def collect_articles(memory):
 
     all_articles = []
 
-    successful_sources = 0
-    skipped_sources = 0
+    stats = {
+        "attempted": 0,
+        "successful": 0,
+        "empty": 0,
+        "errors": 0,
+        "cached": 0,
+        "articles": 0,
+        "sources": [],
+    }
 
     for source in SOURCES:
 
         # ----------------------------------------------------
-        # CACHE 1 HEURE
+        # CACHE
         # ----------------------------------------------------
 
         if is_source_cached(
@@ -1059,14 +1327,23 @@ def collect_articles(memory):
             source,
         ):
 
-            skipped_sources += 1
+            stats["cached"] += 1
 
             logger.info(
                 "CACHE: %s -> scan ignoré (< 1h)",
                 source["name"],
             )
 
+            stats["sources"].append({
+                "name": source["name"],
+                "status": "cached",
+                "articles": 0,
+                "error": "",
+            })
+
             continue
+
+        stats["attempted"] += 1
 
         # ----------------------------------------------------
         # SCAN
@@ -1074,16 +1351,46 @@ def collect_articles(memory):
 
         try:
 
-            articles = scan_source(
+            result = scan_source(
                 source
             )
 
-            if articles:
-                successful_sources += 1
+            articles = result[
+                "articles"
+            ]
+
+            status = result[
+                "status"
+            ]
+
+            error = result.get(
+                "error",
+                "",
+            )
 
             all_articles.extend(
                 articles
             )
+
+            if status == "success":
+                stats["successful"] += 1
+
+            elif status == "empty":
+                stats["empty"] += 1
+
+            else:
+                stats["errors"] += 1
+
+            stats["articles"] += len(
+                articles
+            )
+
+            stats["sources"].append({
+                "name": source["name"],
+                "status": status,
+                "articles": len(articles),
+                "error": error,
+            })
 
             mark_source_scanned(
                 memory,
@@ -1091,24 +1398,102 @@ def collect_articles(memory):
                 len(articles),
             )
 
+            if status == "success":
+
+                logger.info(
+                    "[OK] %s -> %d articles",
+                    source["name"],
+                    len(articles),
+                )
+
+            elif status == "empty":
+
+                logger.warning(
+                    "[EMPTY] %s -> "
+                    "site accessible, "
+                    "aucun article extrait",
+                    source["name"],
+                )
+
+            else:
+
+                logger.warning(
+                    "[ERROR] %s -> %s",
+                    source["name"],
+                    error or "unknown error",
+                )
+
         except Exception:
+
+            stats["errors"] += 1
 
             logger.exception(
                 "Source failed: %s",
                 source.get("name"),
             )
 
+            stats["sources"].append({
+                "name": source["name"],
+                "status": "error",
+                "articles": 0,
+                "error": "unexpected exception",
+            })
+
+    # --------------------------------------------------------
+    # SUMMARY
+    # --------------------------------------------------------
+
     logger.info(
-        "Sources scannées: %d | "
-        "sources ignorées par cache: %d",
-        successful_sources,
-        skipped_sources,
+        "Sources: %d tentées | "
+        "%d OK | %d vides | %d erreurs | "
+        "%d cache",
+        stats["attempted"],
+        stats["successful"],
+        stats["empty"],
+        stats["errors"],
+        stats["cached"],
     )
+
+    logger.info(
+        "Articles collectés: %d",
+        stats["articles"],
+    )
+
+    # --------------------------------------------------------
+    # SOURCE DETAILS
+    # --------------------------------------------------------
+
+    for item in stats["sources"]:
+
+        if item["status"] == "cached":
+            continue
+
+        if item["status"] == "success":
+
+            logger.info(
+                "SOURCE %-30s %3d articles",
+                item["name"],
+                item["articles"],
+            )
+
+        elif item["status"] == "empty":
+
+            logger.info(
+                "SOURCE %-30s EMPTY",
+                item["name"],
+            )
+
+        else:
+
+            logger.info(
+                "SOURCE %-30s ERROR: %s",
+                item["name"],
+                item["error"],
+            )
 
     return (
         all_articles,
-        successful_sources,
-        skipped_sources,
+        stats,
     )
 
 
@@ -1171,6 +1556,11 @@ def classify_articles(articles):
     # SECOND PASS AVEC BODY
     # --------------------------------------------------------
 
+    source_lookup = {
+        source["name"]: source
+        for source in SOURCES
+    }
+
     for article in audit:
 
         if article.get(
@@ -1178,11 +1568,16 @@ def classify_articles(articles):
         ) not in candidate_urls:
             continue
 
+        source = source_lookup.get(
+            article.get("source")
+        )
+
         body = extract_article_body(
             article.get(
                 "url",
                 "",
-            )
+            ),
+            source,
         )
 
         if not body:
@@ -1245,8 +1640,7 @@ def sort_articles(articles):
 
 def build_stats(
     audit,
-    successful_sources,
-    skipped_sources=0,
+    source_stats,
 ):
 
     analyzed = len(audit)
@@ -1303,23 +1697,42 @@ def build_stats(
 
         "levels": levels,
 
-        # Compatibilité HTML
         "level_a": levels["A"],
         "level_b": levels["B"],
         "level_c": levels["C"],
         "level_d": levels["D"],
 
-        "sources_successful": (
-            successful_sources
-        ),
+        # ----------------------------------------------------
+        # SOURCES
+        # ----------------------------------------------------
+
+        "sources_successful": source_stats[
+            "successful"
+        ],
 
         "sources_total": len(
             SOURCES
         ),
 
-        "sources_skipped_cache": (
-            skipped_sources
-        ),
+        "sources_attempted": source_stats[
+            "attempted"
+        ],
+
+        "sources_empty": source_stats[
+            "empty"
+        ],
+
+        "sources_errors": source_stats[
+            "errors"
+        ],
+
+        "sources_skipped_cache": source_stats[
+            "cached"
+        ],
+
+        "source_details": source_stats[
+            "sources"
+        ],
 
         "relevance_rate": round(
             (
@@ -1389,7 +1802,6 @@ def show_memory():
     print(" DERNIERS ARTICLES")
     print("-" * 70)
 
-    # Trier la mémoire par dernière apparition
     articles = sorted(
         articles,
         key=lambda article: (
@@ -1482,8 +1894,7 @@ def scan_news():
 
     (
         raw_articles,
-        successful_sources,
-        skipped_sources,
+        source_stats,
     ) = collect_articles(
         memory
     )
@@ -1561,8 +1972,7 @@ def scan_news():
 
     stats = build_stats(
         sorted_audit,
-        successful_sources,
-        skipped_sources,
+        source_stats,
     )
 
     logger.info(
@@ -1678,19 +2088,11 @@ def main():
 
     args = parser.parse_args()
 
-    # --------------------------------------------------------
-    # CONSULTATION MÉMOIRE
-    # --------------------------------------------------------
-
     if args.memory:
 
         show_memory()
 
         return
-
-    # --------------------------------------------------------
-    # SCAN
-    # --------------------------------------------------------
 
     scan_news()
 
