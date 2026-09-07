@@ -369,7 +369,7 @@ def render_dashboard(
         )}
 
         {render_stat(
-            stats["level_d"]
+            stats["level_d"],
             "⚪ Niveau D"
         )}
 
