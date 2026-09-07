@@ -65,7 +65,7 @@ EMAIL_CONFIG = {
     'sender_password': os.getenv('SENDER_PASSWORD', 'your_app_password'),
     'recipient_email': os.getenv('RECIPIENT_EMAIL', 'recipient@example.com'),
     'smtp_server': os.getenv('SMTP_SERVER', 'smtp.gmail.com'),
-    'smtp_port': int(os.getenv('SMTP_PORT', 587))
+    'smtp_port': int(os.getenv('SMTP_PORT') or 587)
 }
 
 HEADERS = {
