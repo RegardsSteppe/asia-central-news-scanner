@@ -1,10 +1,12 @@
 # keywords.py
 
+
 # ============================================================
-# GEOGRAPHIE
+# GÉOGRAPHIE — ASIE CENTRALE
 # ============================================================
 
 CENTRAL_ASIA_TERMS = [
+
     "central asia",
     "central asian",
 
@@ -33,7 +35,7 @@ CENTRAL_ASIA_TERMS = [
     "karakalpakstan",
     "karakalpak",
 
-    # Russian
+    # Russe
     "центральная азия",
     "центральноазиат",
     "казахстан",
@@ -53,126 +55,44 @@ CENTRAL_ASIA_TERMS = [
 
 
 # ============================================================
-# NIVEAU A — SIGNAUX CRITIQUES
+# GÉOGRAPHIE — CAUCASE
 # ============================================================
 
-CRITICAL_HR_TERMS = [
+CAUCASUS_TERMS = [
 
-    "political prisoner",
-    "political prisoners",
+    "georgia",
+    "georgian",
 
-    "political arrest",
-    "political arrests",
+    "armenia",
+    "armenian",
 
-    "politically motivated arrest",
+    "azerbaijan",
+    "azerbaijani",
 
-    "journalist arrested",
-    "journalists arrested",
+    "south caucasus",
+    "caucasus",
 
-    "journalist detained",
-    "journalists detained",
-
-    "journalist imprisoned",
-    "journalists imprisoned",
-
-    "activist arrested",
-    "activists arrested",
-
-    "activist detained",
-    "activists detained",
-
-    "dissident arrested",
-    "dissidents arrested",
-
-    "opposition activist",
-    "opposition activists",
-
-    "political crackdown",
-    "political repression",
-
-    "media crackdown",
-    "press crackdown",
-
-    "press freedom",
-    "freedom of the press",
-
-    "media pressure",
-
-    "travel ban",
-    "travel bans",
-
-    "criminal case",
-    "criminal cases",
-
-    "prosecution",
-    "prosecuted",
-
-    "persecuted",
-    "persecution",
-
-    "torture",
-    "tortured",
-
-    "ill-treatment",
-    "abuse in custody",
-
-    "forced confession",
-    "forced confessions",
-
-    "repression of activists",
-    "repression of journalists",
-
-    "civil society crackdown",
-    "ngo crackdown",
-    "ngo repression",
-
-    # Russian
-    "политический заключенный",
-    "политические заключенные",
-    "политический арест",
-    "политические аресты",
-    "журналист арестован",
-    "журналисты арестованы",
-    "журналист задержан",
-    "журналисты задержаны",
-    "активист арестован",
-    "активисты арестованы",
-    "политические репрессии",
-    "репрессии",
-    "пытки",
-    "преследование журналистов",
-    "преследование активистов",
-    "запрет на выезд",
-    "уголовное дело",
-    "уголовные дела",
-
-    # French
-    "prisonnier politique",
-    "prisonniers politiques",
-    "arrestation politique",
-    "journaliste arrêté",
-    "journalistes arrêtés",
-    "militant arrêté",
-    "militants arrêtés",
-    "dissident arrêté",
-    "répression politique",
-    "répression",
-    "liberté de la presse",
-    "interdiction de voyager",
-    "affaire pénale",
+    # Russe
+    "грузия",
+    "грузин",
+    "армения",
+    "армян",
+    "азербайджан",
+    "азербайджанский",
+    "южный кавказ",
+    "кавказ",
 ]
 
 
 # ============================================================
-# NIVEAU A — DROITS HUMAINS
+# DROITS HUMAINS — SIGNAL FAIBLE
 # ============================================================
 
-STRONG_HR_TERMS = [
+HUMAN_RIGHTS_TERMS = [
 
     "human rights",
     "human rights violations",
     "rights violations",
-    "rights abuse",
 
     "civil rights",
 
@@ -181,14 +101,18 @@ STRONG_HR_TERMS = [
     "freedom of assembly",
     "freedom of association",
 
+    "press freedom",
+    "freedom of the press",
+
+    "censorship",
+
+    "civil society",
+
     "activist",
     "activists",
 
     "dissident",
     "dissidents",
-
-    "human rights defender",
-    "human rights defenders",
 
     "journalist",
     "journalists",
@@ -197,19 +121,12 @@ STRONG_HR_TERMS = [
     "independent media",
 
     "opposition",
-    "political opposition",
 
-    "civil society",
-    "ngo",
+    "human rights defender",
+    "human rights defenders",
 
-    "press freedom",
-    "censorship",
-    "internet censorship",
-    "blocked website",
-
-    # Russian
+    # Russe
     "права человека",
-    "нарушение прав человека",
     "правозащитник",
     "правозащитники",
     "активист",
@@ -222,35 +139,153 @@ STRONG_HR_TERMS = [
     "цензура",
     "свобода слова",
     "свобода прессы",
-
-    # French
-    "droits humains",
-    "droits de l'homme",
-    "violations des droits",
-    "défenseur des droits",
-    "militant",
-    "militants",
-    "dissident",
-    "journaliste",
-    "journalistes",
-    "opposition",
-    "société civile",
-    "censure",
-    "liberté d'expression",
-    "liberté de la presse",
 ]
 
 
 # ============================================================
-# NIVEAU B — POLITIQUE INTÉRIEURE
+# SIGNAUX FORTS DE RÉPRESSION
+# ============================================================
+
+REPRESSION_TERMS = [
+
+    "political prisoner",
+    "political prisoners",
+
+    "political arrest",
+    "political arrests",
+
+    "politically motivated arrest",
+
+    "arrested",
+    "arrest",
+
+    "detained",
+    "detention",
+
+    "imprisoned",
+    "imprisonment",
+
+    "convicted",
+    "conviction",
+
+    "sentenced",
+
+    "criminal case",
+    "criminal cases",
+
+    "criminal prosecution",
+
+    "prosecuted",
+    "prosecution",
+
+    "persecuted",
+    "persecution",
+
+    "torture",
+    "tortured",
+
+    "ill-treatment",
+
+    "forced confession",
+
+    "travel ban",
+    "travel bans",
+
+    "exit ban",
+
+    "media crackdown",
+    "press crackdown",
+
+    "political crackdown",
+
+    "political repression",
+
+    "repression of activists",
+
+    "repression of journalists",
+
+    "opposition crackdown",
+
+    "opposition repression",
+
+    # Russe
+    "политический заключенный",
+    "политические заключенные",
+    "политический арест",
+    "политические аресты",
+    "арестован",
+    "арестована",
+    "арестованы",
+    "задержан",
+    "задержана",
+    "задержаны",
+    "заключен",
+    "осужден",
+    "уголовное дело",
+    "уголовные дела",
+    "уголовное преследование",
+    "преследование",
+    "репрессии",
+    "политические репрессии",
+    "пытки",
+    "запрет на выезд",
+]
+
+
+# ============================================================
+# DROITS SPÉCIFIQUES
+# ============================================================
+
+SPECIFIC_RIGHTS_TERMS = [
+
+    # Femmes
+    "women's rights",
+    "women rights",
+    "feminist",
+    "feminists",
+    "gender rights",
+
+    # LGBT
+    "lgbt",
+    "lgbti",
+    "lgbtq",
+    "lgbti rights",
+    "gay rights",
+
+    # Minorités
+    "minority rights",
+    "ethnic minority",
+    "religious minority",
+
+    # Enfants
+    "children's rights",
+    "child rights",
+
+    # Migrants
+    "migrant rights",
+    "refugee rights",
+
+    # Russe
+    "права женщин",
+    "феминист",
+    "феминистка",
+    "лгбт",
+    "права меньшинств",
+]
+
+
+# ============================================================
+# POLITIQUE INTÉRIEURE
 # ============================================================
 
 DOMESTIC_POLITICAL_TERMS = [
 
     "election",
     "elections",
+
     "parliamentary election",
     "presidential election",
+
     "parliamentary vote",
 
     "parliament",
@@ -266,8 +301,10 @@ DOMESTIC_POLITICAL_TERMS = [
     "president",
     "presidential",
 
-    "government reshuffle",
+    "government",
+
     "cabinet reshuffle",
+    "government reshuffle",
 
     "opposition party",
     "opposition parties",
@@ -283,13 +320,13 @@ DOMESTIC_POLITICAL_TERMS = [
 
     "rally",
 
-    "pro-democracy",
-
     "referendum",
 
-    "legislative vote",
+    "political corruption",
 
-    # Russian
+    "corruption scandal",
+
+    # Russe
     "выборы",
     "парламентские выборы",
     "президентские выборы",
@@ -305,30 +342,14 @@ DOMESTIC_POLITICAL_TERMS = [
     "протесты",
     "митинг",
     "референдум",
-
-    # French
-    "élection",
-    "élections",
-    "élections législatives",
-    "élection présidentielle",
-    "parlement",
-    "constitution",
-    "réforme constitutionnelle",
-    "réforme politique",
-    "président",
-    "gouvernement",
-    "parti d'opposition",
-    "manifestation",
-    "manifestations",
-    "référendum",
 ]
 
 
 # ============================================================
-# NIVEAU C — GÉOPOLITIQUE EXCEPTIONNELLE
+# GÉOPOLITIQUE MAJEURE
 # ============================================================
 
-MAJOR_REGIONAL_EVENTS = [
+MAJOR_GEOPOLITICAL_TERMS = [
 
     # SCO
     "shanghai cooperation organization",
@@ -336,16 +357,17 @@ MAJOR_REGIONAL_EVENTS = [
     "sco leaders",
     "sco heads of state",
     "sco meeting",
-    "sco summit",
-    "sco at",
-    "шос",
-    "шанхайская организация сотрудничества",
+    "sco",
 
-    # Conflits
+    "шанхайская организация сотрудничества",
+    "шос",
+
+    # Guerre / conflit
+    "war",
     "armed conflict",
     "major conflict",
     "military escalation",
-    "war",
+
     "ceasefire",
     "peace agreement",
 
@@ -353,33 +375,37 @@ MAJOR_REGIONAL_EVENTS = [
     "border clashes",
     "border crisis",
 
-    "terrorist attack",
     "major security crisis",
+
+    "terrorist attack",
+    "terrorist attacks",
 
     # Sanctions
     "major sanctions",
     "new sanctions",
-    "sanctions against",
     "sanctions imposed",
 
-    # Crises diplomatiques
+    # Diplomatie
     "diplomatic crisis",
-    "diplomatic dispute",
     "diplomatic rupture",
-    "expelled ambassador",
-    "ambassador expelled",
+    "diplomatic dispute",
 
-    # Changements stratégiques
+    "ambassador expelled",
+    "expelled ambassador",
+
+    # Stratégique
     "strategic partnership",
     "strategic realignment",
     "major strategic shift",
+
     "security alliance",
     "military alliance",
+    "military cooperation agreement",
 ]
 
 
 # ============================================================
-# GÉOPOLITIQUE / ÉCONOMIE ORDINAIRE
+# GÉOPOLITIQUE ORDINAIRE
 # ============================================================
 
 ROUTINE_GEO_TERMS = [
@@ -395,10 +421,10 @@ ROUTINE_GEO_TERMS = [
     "uranium",
 
     "pipeline",
+
     "railway",
     "railroad",
 
-    "road corridor",
     "trade corridor",
     "transport corridor",
 
@@ -409,12 +435,14 @@ ROUTINE_GEO_TERMS = [
 
     "business forum",
     "investment forum",
+
     "economic forum",
 
     "memorandum",
     "memorandum of understanding",
 
     "delegation",
+
     "official visit",
 
     "bilateral talks",
@@ -449,16 +477,57 @@ REGIONAL_ACTORS = [
     "turkey",
     "turkish",
 
-    "azerbaijan",
-    "armenia",
-    "georgia",
-
     "european union",
     "eu",
 
     "united states",
-    "us",
     "washington",
+]
+
+
+# ============================================================
+# CONTENU HISTORIQUE / CULTUREL
+# ============================================================
+
+HISTORICAL_TERMS = [
+
+    "history",
+    "historical",
+    "historian",
+
+    "century",
+    "19th century",
+    "20th century",
+    "21st century",
+
+    "ancient",
+
+    "soviet era",
+    "soviet period",
+    "former soviet",
+
+    "cold war",
+
+    "biography",
+    "biographical",
+
+    "born in",
+    "died in",
+
+    "legacy",
+
+    "heritage",
+
+    "museum",
+
+    "photography",
+    "photographer",
+
+    "book review",
+    "film review",
+
+    "archive",
+    "archives",
 ]
 
 
@@ -470,14 +539,19 @@ NON_NEWS_TERMS = [
 
     "vacancy",
     "vacancies",
+
     "job opening",
     "job openings",
+
     "hiring",
     "we are hiring",
+
+    "career",
     "careers",
 
     "employment opportunity",
     "job opportunity",
+
     "apply now",
 
     "call for applications",
@@ -499,22 +573,22 @@ NON_NEWS_TERMS = [
     "event registration",
 
     "project results",
+
     "annual report",
 
-    # Russian
+    # Russe
     "вакансия",
     "вакансии",
     "требуется",
     "прием на работу",
-    "грант",
     "тендер",
+    "грант",
     "семинар",
     "вебинар",
     "тренинг",
 
-    # French
+    # Français
     "offre d'emploi",
-    "offres d'emploi",
     "recrutement",
     "poste à pourvoir",
     "appel à candidatures",
@@ -529,7 +603,7 @@ NON_NEWS_TERMS = [
 # BRUIT
 # ============================================================
 
-BUSINESS_SPORTS_TECH_TERMS = [
+NOISE_TERMS = [
 
     "football",
     "soccer",
@@ -538,6 +612,7 @@ BUSINESS_SPORTS_TECH_TERMS = [
     "tennis",
     "olympics",
     "championship",
+
     "match",
     "player",
     "coach",
@@ -549,7 +624,6 @@ BUSINESS_SPORTS_TECH_TERMS = [
     "software release",
     "app launch",
 
-    "startup funding",
     "cryptocurrency",
     "stock market",
 ]
