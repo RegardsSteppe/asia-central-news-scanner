@@ -2,18 +2,20 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Central Asia News Scanner</title>
 
     <style>
+
         :root {
             --bg: #f5f7fa;
             --card: #ffffff;
             --text: #1f2937;
             --muted: #6b7280;
             --border: #e5e7eb;
-            --accent: #111827;
         }
 
         * {
@@ -22,7 +24,6 @@
 
         body {
             margin: 0;
-            padding: 0;
             background: var(--bg);
             color: var(--text);
             font-family:
@@ -36,8 +37,8 @@
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 1250px;
+            margin: auto;
             padding: 32px 20px 60px;
         }
 
@@ -58,16 +59,14 @@
 
         .scan-time {
             margin-top: 10px;
-            font-size: 0.9rem;
             color: var(--muted);
+            font-size: .9rem;
         }
 
-        /* ====================================================
-           DASHBOARD
-           ==================================================== */
+        /* ================= DASHBOARD ================= */
 
         .dashboard {
-            margin: 28px 0 32px;
+            margin: 28px 0 34px;
         }
 
         .dashboard-title {
@@ -102,18 +101,16 @@
 
         .stat-label {
             color: var(--muted);
-            font-size: 0.85rem;
+            font-size: .85rem;
         }
 
         .dashboard-note {
             margin-top: 12px;
             color: var(--muted);
-            font-size: 0.82rem;
+            font-size: .82rem;
         }
 
-        /* ====================================================
-           ARTICLES
-           ==================================================== */
+        /* ================= ARTICLES ================= */
 
         .articles {
             display: flex;
@@ -146,7 +143,7 @@
             gap: 12px;
             margin-bottom: 12px;
             color: var(--muted);
-            font-size: 0.82rem;
+            font-size: .82rem;
         }
 
         .article-heading {
@@ -176,7 +173,7 @@
             padding: 6px 9px;
             border-radius: 8px;
             background: #f3f4f6;
-            font-size: 0.78rem;
+            font-size: .78rem;
             white-space: nowrap;
         }
 
@@ -185,7 +182,7 @@
             gap: 14px;
             align-items: center;
             margin: 12px 0;
-            font-size: 0.9rem;
+            font-size: .9rem;
         }
 
         .score-line span {
@@ -203,8 +200,109 @@
             padding-top: 12px;
             border-top: 1px solid var(--border);
             color: var(--muted);
-            font-size: 0.78rem;
+            font-size: .78rem;
             line-height: 1.5;
+        }
+
+        /* ================= AUDIT TABLE ================= */
+
+        .audit {
+            margin-top: 48px;
+        }
+
+        .audit h2 {
+            margin-bottom: 8px;
+            font-size: 1.35rem;
+        }
+
+        .audit-description {
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: .88rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: .85rem;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f9fafb;
+            color: var(--muted);
+            font-weight: 650;
+            position: sticky;
+            top: 0;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        td:first-child {
+            min-width: 350px;
+        }
+
+        td a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        .score-cell {
+            white-space: nowrap;
+        }
+
+        .table-level {
+            display: inline-block;
+            padding: 5px 7px;
+            border-radius: 7px;
+            background: #f3f4f6;
+            font-size: .75rem;
+            white-space: nowrap;
+        }
+
+        .status-retained {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 7px;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: .75rem;
+            font-weight: 650;
+        }
+
+        .status-filtered {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 7px;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: .75rem;
         }
 
         .empty {
@@ -221,10 +319,11 @@
             padding-top: 20px;
             border-top: 1px solid var(--border);
             color: var(--muted);
-            font-size: 0.8rem;
+            font-size: .8rem;
         }
 
         @media (max-width: 700px) {
+
             .container {
                 padding: 22px 14px 40px;
             }
@@ -246,125 +345,300 @@
                 white-space: normal;
             }
         }
+
     </style>
 </head>
 
 <body>
-    <main class="container">
 
-        <header>
-            <h1>Central Asia News Scanner</h1>
+<main class="container">
 
-            <p class="subtitle">
-                Actualités récentes d’Asie centrale —
-                politique, droits humains, dissidence,
-                sécurité, géopolitique et événements régionaux.
-            </p>
+    <header>
 
-            <div class="scan-time">
-                Dernier scan : 2026-09-07 16:45 UTC
+        <h1>
+            Central Asia News Scanner
+        </h1>
+
+        <p class="subtitle">
+            Actualités récentes d’Asie centrale —
+            politique, droits humains, dissidence,
+            sécurité, géopolitique et événements régionaux.
+        </p>
+
+        <div class="scan-time">
+            Dernier scan : 2026-09-07 16:52 UTC
+        </div>
+
+    </header>
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <section class="dashboard">
+
+        <h2 class="dashboard-title">
+            Tableau de bord
+        </h2>
+
+        <div class="stats-grid">
+
+            <div class="stat">
+                <div class="stat-value">
+                    68
+                </div>
+
+                <div class="stat-label">
+                    📰 Articles analysés
+                </div>
             </div>
-        </header>
 
-        <section class="dashboard">
-            <h2 class="dashboard-title">
-                Tableau de bord
-            </h2>
 
-            <div class="stats-grid">
-
-                <div class="stat">
-                    <div class="stat-value">
-                        32
-                    </div>
-                    <div class="stat-label">
-                        📰 Articles analysés
-                    </div>
+            <div class="stat">
+                <div class="stat-value">
+                    9
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        3
-                    </div>
-                    <div class="stat-label">
-                        🎯 Articles retenus
-                    </div>
+                <div class="stat-label">
+                    🎯 Articles retenus
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    3.1/20
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        2.9/20
-                    </div>
-                    <div class="stat-label">
-                        📊 Score moyen
-                    </div>
+                <div class="stat-label">
+                    📊 Score moyen
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    4/4
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        4/4
-                    </div>
-                    <div class="stat-label">
-                        📡 Sources analysées
-                    </div>
+                <div class="stat-label">
+                    📡 Sources analysées
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    4
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        2
-                    </div>
-                    <div class="stat-label">
-                        🟥 Niveau A
-                    </div>
+                <div class="stat-label">
+                    🟥 Niveau A
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    1
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        1
-                    </div>
-                    <div class="stat-label">
-                        🟧 Niveau B
-                    </div>
+                <div class="stat-label">
+                    🟧 Niveau B
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    4
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        0
-                    </div>
-                    <div class="stat-label">
+                <div class="stat-label">
+                    🟦 Niveau C
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    59
+                </div>
+
+                <div class="stat-label">
+                    ⚪ Niveau D
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    13.2%
+                </div>
+
+                <div class="stat-label">
+                    📈 Taux de pertinence
+                </div>
+            </div>
+
+        </div>
+
+        <div class="dashboard-note">
+            Le score moyen est calculé sur l’ensemble des
+            articles analysés après déduplication.
+        </div>
+
+    </section>
+
+
+    <!-- ================= SELECTED ARTICLES ================= -->
+
+    <section class="articles">
+
+        
+            <article class="article-card level-C">
+                <div class="article-meta">
+                    <span>Radio Free Europe / Radio Liberty</span>
+                    <span>2026-08-30 22:43 UTC</span>
+                </div>
+
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://www.rferl.org/a/bishkek-kyrgyz-sco-putin-russia-china-iran-summit/33843584.html"
+                           target="_blank"
+                           rel="noopener">
+                            Amid Setbacks, Putin Looks To Restore Russia&#x27;s Standing At Bishkek SCO Summit
+                        </a>
+                    </h2>
+
+                    <span class="level-badge">
                         🟦 Niveau C
-                    </div>
+                    </span>
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        29
-                    </div>
-                    <div class="stat-label">
-                        ⚪ Niveau D
-                    </div>
+                <div class="score-line">
+                    <strong>
+                        Score : 14/20
+                    </strong>
+
+                    <span>
+                        Géopolitique majeure
+                    </span>
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        9.4%
-                    </div>
-                    <div class="stat-label">
-                        📈 Taux de pertinence
-                    </div>
-                </div>
+                <p>Facing increasing confrontations with the West, Russian President Vladimir Putin looks eastward to restore his country&#x27;s standing in the region at a major summit in Bishkek, the Kyrgyz capital.</p>
 
-            </div>
-
-            <div class="dashboard-note">
-                Le score moyen est calculé sur l’ensemble des
-                articles analysés après déduplication, et non
-                uniquement sur les articles retenus.
-            </div>
-        </section>
-
-        <section class="articles">
+                <div class='reasons'><strong>Raisons :</strong> géographie: kyrgyz, bishkek • événement régional: sco summit • acteur régional: russia, russian, putin • économie/géopolitique courante: summit • confirmation article: politique • confirmation article: événement régional</div>
+            </article>
             
+
+            <article class="article-card level-B">
+                <div class="article-meta">
+                    <span>Radio Free Europe / Radio Liberty</span>
+                    <span>2026-08-24 15:36 UTC</span>
+                </div>
+
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://www.rferl.org/a/kazakhstan-election-adilet-toqaev-osce-criticism/33837256.html"
+                           target="_blank"
+                           rel="noopener">
+                            Election Observers Say Kazakh President&#x27;s Party Had &#x27;Undue Advantage&#x27; As It Grabs 70 Percent Of Vote
+                        </a>
+                    </h2>
+
+                    <span class="level-badge">
+                        🟧 Niveau B
+                    </span>
+                </div>
+
+                <div class="score-line">
+                    <strong>
+                        Score : 10/20
+                    </strong>
+
+                    <span>
+                        Politique intérieure
+                    </span>
+                </div>
+
+                <p>A party formed just four months ago has swept Kazakhstan’s parliamentary election, tightening President Qasym-Zhomart Toqaev’s grip on power amid international criticism over a lack of political competition, media pressure, and questions about the vote count.</p>
+
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan, kazakh • politique: election, parliamentary election, vote, parliamentary • confirmation article: politique</div>
+            </article>
+            
+
+            <article class="article-card level-A">
+                <div class="article-meta">
+                    <span>Radio Free Europe / Radio Liberty</span>
+                    <span>2026-08-23 06:44 UTC</span>
+                </div>
+
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://www.rferl.org/a/33836475.html"
+                           target="_blank"
+                           rel="noopener">
+                            Voting Over In Kazakh Election Amid Opposition Exclusion, Media Pressure
+                        </a>
+                    </h2>
+
+                    <span class="level-badge">
+                        🟥 Niveau A
+                    </span>
+                </div>
+
+                <div class="score-line">
+                    <strong>
+                        Score : 20/20
+                    </strong>
+
+                    <span>
+                        Droits humains / dissidence
+                    </span>
+                </div>
+
+                <p>Voting is under way in elections for Kazakhstan&#x27;s new, unicameral parliament, but opposition groups have been excluded from the group in a tightly controlled process that follows contentious changes to the country&#x27;s constitution.</p>
+
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan, kazakh • droits humains/dissidence: opposition • politique: election, elections, voting, constitution, parliament • confirmation article: droits humains • confirmation article: politique • confirmation article: événement régional</div>
+            </article>
+            
+
+            <article class="article-card level-A">
+                <div class="article-meta">
+                    <span>Radio Free Europe / Radio Liberty</span>
+                    <span>2026-08-21 13:29 UTC</span>
+                </div>
+
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://www.rferl.org/a/kazakhstan-election-toqaev-press-freedom-media-crackdown/33835049.html"
+                           target="_blank"
+                           rel="noopener">
+                            Criminal Cases, Travel Bans: Pressure Mounts On Kazakh Journalists Ahead Of Parliamentary Vote
+                        </a>
+                    </h2>
+
+                    <span class="level-badge">
+                        🟥 Niveau A
+                    </span>
+                </div>
+
+                <div class="score-line">
+                    <strong>
+                        Score : 13/20
+                    </strong>
+
+                    <span>
+                        Droits humains / dissidence
+                    </span>
+                </div>
+
+                <p>Independent journalists and government critics in Kazakhstan face mounting pressure ahead of the country’s first parliamentary elections following a controversial constitutional overhaul that critics say has strengthened the president’s power.</p>
+
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan, kazakh • politique: elections, parliamentary elections, vote, parliamentary • confirmation article: droits humains • confirmation article: politique</div>
+            </article>
+            
+
             <article class="article-card level-A">
                 <div class="article-meta">
                     <span>Cabar.asia</span>
@@ -373,24 +647,31 @@
 
                 <div class="article-heading">
                     <h2>
-                        <a href="https://cabar.asia/en/vacancy-project-evaluator" target="_blank" rel="noopener">
+                        <a href="https://cabar.asia/en/vacancy-project-evaluator"
+                           target="_blank"
+                           rel="noopener">
                             Vacancy: Project Evaluator
                         </a>
                     </h2>
 
                     <span class="level-badge">
-                        🟥 Niveau A — Droits humains
+                        🟥 Niveau A
                     </span>
                 </div>
 
                 <div class="score-line">
-                    <strong>Score : 18/20</strong>
-                    <span>Droits humains / dissidence</span>
+                    <strong>
+                        Score : 10/20
+                    </strong>
+
+                    <span>
+                        Droits humains / dissidence
+                    </span>
                 </div>
 
                 <p>&lt;p&gt;IWPR Kazakhstan is looking for an external M&amp;E consultant to assess the impact and effectiveness of the Civil Society for Kazakhstan (CS4K) project through a final evaluation. About the project: The “Civil Society for Kazakhstan (CS4K)” project is funded by the European Union and being implemented by the Institute for War and Peace Reporting (IWPR) in […]&lt;/p&gt; &lt;p&gt;The post &lt;a href=&quot;https://cabar.asia/en/vacancy-project-evaluator&quot;&gt;Vacancy: Project Evaluator&…</p>
 
-                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan • droits humains/dissidence: civil society • politique: civil society • acteur régional: european union • confirmation article: droits humains • confirmation article: politique</div>
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan • droits humains/dissidence: civil society • acteur régional: european union • confirmation article: droits humains</div>
             </article>
             
 
@@ -402,63 +683,2440 @@
 
                 <div class="article-heading">
                     <h2>
-                        <a href="https://cabar.asia/en/workshop-results-within-the-framework-of-the-civil-society-for-kazakhstan-project-funded-by-the-european-union" target="_blank" rel="noopener">
+                        <a href="https://cabar.asia/en/workshop-results-within-the-framework-of-the-civil-society-for-kazakhstan-project-funded-by-the-european-union"
+                           target="_blank"
+                           rel="noopener">
                             Workshop Results within the Framework of the «Civil Society for Kazakhstan» Project, funded by the European Union
                         </a>
                     </h2>
 
                     <span class="level-badge">
-                        🟥 Niveau A — Droits humains
+                        🟥 Niveau A
                     </span>
                 </div>
 
                 <div class="score-line">
-                    <strong>Score : 20/20</strong>
-                    <span>Droits humains / dissidence</span>
+                    <strong>
+                        Score : 20/20
+                    </strong>
+
+                    <span>
+                        Droits humains / dissidence
+                    </span>
                 </div>
 
                 <p>&lt;p&gt;From May to November 2025, IWPR and the Public Foundation “INIDI” held 10 practical workshops for recipients of funding for advocacy projects in the field of human rights as part of the “Civil Society for Kazakhstan” (CS4K) project, funded by the European Union. The workshops took place in eight cities of Kazakhstan: Almaty, Aktau, Kyzylorda, […]&lt;/p&gt; &lt;p&gt;The post &lt;a href=&quot;https://cabar.asia/en/workshop-results-within-the-framework-of-the-civil-society-for-kazakhstan-p…</p>
 
-                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan, almaty • droits humains/dissidence: human rights • politique: civil society • acteur régional: european union • confirmation article: droits humains • confirmation article: politique</div>
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan, almaty • droits humains/dissidence: human rights • acteur régional: european union • confirmation article: droits humains</div>
             </article>
             
 
-            <article class="article-card level-B">
+            <article class="article-card level-C">
                 <div class="article-meta">
                     <span>Eurasianet</span>
-                    <span>Sep 1, 2026</span>
+                    <span>Date inconnue</span>
                 </div>
 
                 <div class="article-heading">
                     <h2>
-                        <a href="https://eurasianet.org/us-officials-shake-up-anti-american-sco-summit-narrative" target="_blank" rel="noopener">
+                        <a href="https://eurasianet.org/us-officials-shake-up-anti-american-sco-summit-narrative"
+                           target="_blank"
+                           rel="noopener">
                             US officials shake up anti-American SCO summit narrative
                         </a>
                     </h2>
 
                     <span class="level-badge">
-                        🟧 Niveau B — Politique intérieure
+                        🟦 Niveau C
                     </span>
                 </div>
 
                 <div class="score-line">
-                    <strong>Score : 13/20</strong>
-                    <span>Politique intérieure</span>
+                    <strong>
+                        Score : 13/20
+                    </strong>
+
+                    <span>
+                        Géopolitique majeure
+                    </span>
                 </div>
 
-                <p>Surprise appearance in Bishkek.</p>
+                <p>US officials shake up anti-American SCO summit narrative Surprise appearance in Bishkek. Sep 1, 2026</p>
 
                 <div class='reasons'><strong>Raisons :</strong> géographie: bishkek • événement régional: sco summit • économie/géopolitique courante: summit • confirmation article: politique • confirmation article: événement régional</div>
             </article>
             
-        </section>
 
-        <footer>
-            Scanner automatique — Asie centrale.
-            Les articles sont classés selon leur pertinence
-            politique, droits humains et géopolitique.
-        </footer>
+            <article class="article-card level-C">
+                <div class="article-meta">
+                    <span>Eurasianet</span>
+                    <span>Date inconnue</span>
+                </div>
 
-    </main>
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://eurasianet.org/kazakhstans-new-parliament-opens-window-for-fresh-trade-possibilities"
+                           target="_blank"
+                           rel="noopener">
+                            Kazakhstan’s new parliament opens window for fresh trade possibilities
+                        </a>
+                    </h2>
+
+                    <span class="level-badge">
+                        🟦 Niveau C
+                    </span>
+                </div>
+
+                <div class="score-line">
+                    <strong>
+                        Score : 9/20
+                    </strong>
+
+                    <span>
+                        Géopolitique majeure
+                    </span>
+                </div>
+
+                <p>Kazakhstan’s new parliament opens window for fresh trade possibilities Commentary by Rustem Kozhybayev Aug 25, 2026</p>
+
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan • politique: parliament • économie/géopolitique courante: trade • confirmation article: politique • confirmation article: événement régional</div>
+            </article>
+            
+
+            <article class="article-card level-C">
+                <div class="article-meta">
+                    <span>Eurasianet</span>
+                    <span>Date inconnue</span>
+                </div>
+
+                <div class="article-heading">
+                    <h2>
+                        <a href="https://eurasianet.org/kazakhstan-pro-presidential-party-dominates-parliamentary-election"
+                           target="_blank"
+                           rel="noopener">
+                            Kazakhstan: Pro-presidential party dominates parliamentary election
+                        </a>
+                    </h2>
+
+                    <span class="level-badge">
+                        🟦 Niveau C
+                    </span>
+                </div>
+
+                <div class="score-line">
+                    <strong>
+                        Score : 13/20
+                    </strong>
+
+                    <span>
+                        Géopolitique majeure
+                    </span>
+                </div>
+
+                <p>Kazakhstan: Pro-presidential party dominates parliamentary election Election observers highlight lack of choice. Aug 24, 2026</p>
+
+                <div class='reasons'><strong>Raisons :</strong> géographie: kazakhstan • politique: election, parliamentary election, parliamentary • confirmation article: politique • confirmation article: événement régional</div>
+            </article>
+            
+
+    </section>
+
+
+    <!-- ================= AUDIT TABLE ================= -->
+
+    <section class="audit">
+
+        <h2>
+            Tableau d’analyse
+        </h2>
+
+        <p class="audit-description">
+            Tous les articles analysés, classés par score
+            décroissant. Les articles filtrés restent visibles
+            afin de permettre un contrôle du classement.
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Article</th>
+                        <th>Source</th>
+                        <th>Date</th>
+                        <th>Score</th>
+                        <th>Niveau</th>
+                        <th>Statut</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/33836475.html"
+                       target="_blank"
+                       rel="noopener">
+                        Voting Over In Kazakh Election Amid Opposition Exclusion, Media Pressure
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-23 06:44 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>20/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-A">
+                        🟥 Niveau A
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/workshop-results-within-the-framework-of-the-civil-society-for-kazakhstan-project-funded-by-the-european-union"
+                       target="_blank"
+                       rel="noopener">
+                        Workshop Results within the Framework of the «Civil Society for Kazakhstan» Project, funded by the European Union
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2025-12-01 12:30 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>20/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-A">
+                        🟥 Niveau A
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/bishkek-kyrgyz-sco-putin-russia-china-iran-summit/33843584.html"
+                       target="_blank"
+                       rel="noopener">
+                        Amid Setbacks, Putin Looks To Restore Russia&#x27;s Standing At Bishkek SCO Summit
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-30 22:43 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>14/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-C">
+                        🟦 Niveau C
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/kazakhstan-election-toqaev-press-freedom-media-crackdown/33835049.html"
+                       target="_blank"
+                       rel="noopener">
+                        Criminal Cases, Travel Bans: Pressure Mounts On Kazakh Journalists Ahead Of Parliamentary Vote
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-21 13:29 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>13/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-A">
+                        🟥 Niveau A
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/us-officials-shake-up-anti-american-sco-summit-narrative"
+                       target="_blank"
+                       rel="noopener">
+                        US officials shake up anti-American SCO summit narrative
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>13/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-C">
+                        🟦 Niveau C
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/kazakhstan-pro-presidential-party-dominates-parliamentary-election"
+                       target="_blank"
+                       rel="noopener">
+                        Kazakhstan: Pro-presidential party dominates parliamentary election
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>13/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-C">
+                        🟦 Niveau C
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/kazakhstan-election-adilet-toqaev-osce-criticism/33837256.html"
+                       target="_blank"
+                       rel="noopener">
+                        Election Observers Say Kazakh President&#x27;s Party Had &#x27;Undue Advantage&#x27; As It Grabs 70 Percent Of Vote
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-24 15:36 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>10/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-B">
+                        🟧 Niveau B
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/vacancy-project-evaluator"
+                       target="_blank"
+                       rel="noopener">
+                        Vacancy: Project Evaluator
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2026-06-01 10:27 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>10/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-A">
+                        🟥 Niveau A
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/kazakhstans-new-parliament-opens-window-for-fresh-trade-possibilities"
+                       target="_blank"
+                       rel="noopener">
+                        Kazakhstan’s new parliament opens window for fresh trade possibilities
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>9/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-C">
+                        🟦 Niveau C
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-retained">
+                        Retenu
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/ukraine-congress-vlasiuk-russia-sanctions-graham/33846754.html"
+                       target="_blank"
+                       rel="noopener">
+                        Ukraine &#x27;Optimistic&#x27; On Russia Sanctions Bill But Obstacles Loom
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-04 02:31 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>7/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/shanghai-security-rifts-show-russia-china-iran-west/33844272.html"
+                       target="_blank"
+                       rel="noopener">
+                        &#x27;Shanghai&#x27; Grouping At 25: Rifts, Rivalries, And A Show Of Unity
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-31 19:12 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>7/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/shanghai-cooperation-organization-summit-kicks-off"
+                       target="_blank"
+                       rel="noopener">
+                        Shanghai Cooperation Organization summit kicks off
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>6/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/armenian-government-levels-corruption-charges-against-leading-opposition-figure"
+                       target="_blank"
+                       rel="noopener">
+                        Armenian government levels corruption charges against leading opposition figure
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>5/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/at-risk-afghans-pakistan-deportation-taliban/33846365.html"
+                       target="_blank"
+                       rel="noopener">
+                        Five Years After Fleeing Taliban Rule, At-Risk Afghans Live In Hiding In Pakistan
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-05 08:19 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>4/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/russia-migrant-worker-rules-central-asia-uzbekistan-tajikistan/33831461.html"
+                       target="_blank"
+                       rel="noopener">
+                        &#x27;Organized Slavery&#x27;: Russia&#x27;s Tighter Migrant Rules Could Hit Central Asian Workers, Worsen Shortages
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-16 12:34 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>3/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/china-xinjiang-kazakh-writer-zhengis-reskhan-secret-trial/33830317.html"
+                       target="_blank"
+                       rel="noopener">
+                        China&#x27;s New &#x27;Ethnic Unity&#x27; Law Looms Over Closed-Door Trial Of Kazakh Writer
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-14 10:41 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>3/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/kazakhstan-russia-wildberries-oil-ukraine-neutrality/33826004.html"
+                       target="_blank"
+                       rel="noopener">
+                        Kazakhs Weigh Hosting Russian Retailers Against Ukraine Neutrality
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-11 09:25 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>3/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/rosatom-developing-program-to-train-uzbek-nuclear-technicians"
+                       target="_blank"
+                       rel="noopener">
+                        Rosatom developing program to train Uzbek nuclear technicians
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>3/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/world-nomad-games-politics-fireworks-opening-ceremone/33844714.html"
+                       target="_blank"
+                       rel="noopener">
+                        Pageantry And Politics As World Nomad Games Open In Kyrgyzstan
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-01 11:05 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/central-asia-seeks-open-borders-security-fears/33842373.html"
+                       target="_blank"
+                       rel="noopener">
+                        Central Asia Seeks Open Borders, But Security Fears Get In The Way
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-30 12:44 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/uzbekistan-s-saida-mirziyoeva-gains-new-powers-fueling-succession-questions/33835766.html"
+                       target="_blank"
+                       rel="noopener">
+                        Uzbekistan&#x27;s Saida Mirziyoeva Gains New Powers, Fueling Succession Questions
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-22 09:09 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/aktas-mental-hospital-kazakhstan-videos/33832790.html"
+                       target="_blank"
+                       rel="noopener">
+                        The Horrors Of Aktas Mental Hospital: Inside Kazakhstan&#x27;s Secretive Asylum
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-18 10:46 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/secret-videos-allege-abuse-at-kazakh-psychiatric-hospital/33832707.html"
+                       target="_blank"
+                       rel="noopener">
+                        Tied To Beds, Forcibly Injected: Secret Videos Allege Abuse At Kazakh Psychiatric Hospital
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-18 07:52 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/psychological-support-for-parents-and-guardians-raising-children-with-disabilities-in-kazakhstan-white-paper"
+                       target="_blank"
+                       rel="noopener">
+                        Psychological support for parents and guardians raising children with disabilities in Kazakhstan (white paper)
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2026-04-28 10:03 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/psychological-support-for-parents-and-guardians-raising-children-with-disabilities-in-kazakhstan-policy-brief"
+                       target="_blank"
+                       rel="noopener">
+                        Psychological support for parents and guardians raising children with disabilities in Kazakhstan (policy brief)
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2026-04-03 09:28 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/reintegration-of-women-after-release-barriers-success-factors-and-measures-to-strengthen-probation-in-the-republic-of-kazakhstan-white-paper"
+                       target="_blank"
+                       rel="noopener">
+                        Reintegration of women after release: Barriers, Success Factors and Measures to Strengthen Probation in the Republic of Kazakhstan (white paper)
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2026-04-01 10:22 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/pasture-management-and-land-degradation-issues-in-the-pavlodar-region-white-paper"
+                       target="_blank"
+                       rel="noopener">
+                        Pasture Management and land degradation issues in the Pavlodar region (white paper)
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2025-12-09 09:02 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/how-are-insulin-pumps-changing-the-country-s-economy-and-the-quality-of-life-of-diabetics-policy-brief"
+                       target="_blank"
+                       rel="noopener">
+                        How are insulin pumps changing the country’s economy and the quality of life of diabetics (policy brief)?
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2025-10-22 08:52 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/accessibility-of-healthcare-services-for-rural-women-in-kyzylorda-oblast-white-paper"
+                       target="_blank"
+                       rel="noopener">
+                        Accessibility of healthcare services for rural women in Kyzylorda oblast (white paper)
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2025-10-16 10:58 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/access-to-healthcare-services-for-rural-women-in-kyzylorda-region"
+                       target="_blank"
+                       rel="noopener">
+                        Access to healthcare services for rural women in Kyzylorda region (policy brief)
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2025-10-09 05:40 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://cabar.asia/en/from-inequality-to-resilience-the-long-term-benefits-of-expanding-access-to-insulin-pumps-white-paper"
+                       target="_blank"
+                       rel="noopener">
+                        From inequality to resilience: the long term benefits of expanding access to insulin pumps (white paper)
+                    </a>
+                </td>
+
+                <td>Cabar.asia</td>
+
+                <td>
+                    2025-10-06 12:41 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/uzbekistans-next-competitive-advantage-is-talent"
+                       target="_blank"
+                       rel="noopener">
+                        Uzbekistan’s next competitive advantage is talent
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/magyars-hungary-in-organization-of-turkic-states"
+                       target="_blank"
+                       rel="noopener">
+                        Magyar’s Hungary in Organization of Turkic States
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/kazakhstan-kyrgyzstan-involved-in-cloud-controversy"
+                       target="_blank"
+                       rel="noopener">
+                        Kazakhstan, Kyrgyzstan involved in cloud controversy
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>2/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/russia-japan-monument-khabarovsk-flower-smashing/33849309.html"
+                       target="_blank"
+                       rel="noopener">
+                        Emblem-Shattering Monument In Russia Sparks Outcry In Japan
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-07 15:16 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/ukraine-donetsk-pet-rescue-volunteer-russia-air-attack-animal/33847001.html"
+                       target="_blank"
+                       rel="noopener">
+                        &#x27;They Save Us&#x27;: Ukrainian Volunteers Rescue Pets Under Fire
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-07 11:59 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/iran-live-blog-trump-middle-east/33803414.html"
+                       target="_blank"
+                       rel="noopener">
+                        UAE: Restoring Trust With Iran Could Take Decades
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-06 23:26 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/ukraine-witkoff-kushner-russia-peace-negotiations/33848067.html"
+                       target="_blank"
+                       rel="noopener">
+                        US Renews Ukraine Peace Push, But Former Ambassadors See No Breakthrough
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-06 22:57 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/how-zaporizhzhya-survives-daily-russian-attacks/33847508.html"
+                       target="_blank"
+                       rel="noopener">
+                        &#x27;It Feels Like A Safari&#x27;: How Zaporizhzhya Survives Daily Russian Attacks
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-06 08:34 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/russia-abducted-ukrainian-children-north-korea/33847096.html"
+                       target="_blank"
+                       rel="noopener">
+                        New EU Sanctions To Hit North Korean Camp Where Russia Sends Abducted Ukrainian Kids
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-05 08:19 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/iran-blinded-protester-death-sentence/33846311.html"
+                       target="_blank"
+                       rel="noopener">
+                        Blinded By Iranian Security Forces, A Protester Now Faces The Death Sentence
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-04 05:46 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/iran-germany-exile-death-sentence-protest-ali-zarei-women-life-freedom/33846514.html"
+                       target="_blank"
+                       rel="noopener">
+                        Partially Blinded Protester Sentenced To Death After Returning To Iran
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-04 05:44 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/iran-vance-wedding-party-attack-probe-skeptical/33846519.html"
+                       target="_blank"
+                       rel="noopener">
+                        Vance Says US Probing Iran&#x27;s Claims Of Wedding Party Attack, But He&#x27;s &#x27;Skeptical&#x27;
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-03 20:08 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/ukraine-russia-black-sea-drone-war-bosphorus-photos/33846382.html"
+                       target="_blank"
+                       rel="noopener">
+                        Ship-Spotting Photos Highlight Ferocity Of Black Sea Drone War
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-03 15:47 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/mobilization-migration-russians-fleeing-amid-fears-draft/33835551.html"
+                       target="_blank"
+                       rel="noopener">
+                        Mobilization Migration: Is There An Uptick In Russians Fleeing Amid Fears Of A New Draft?
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-21 12:46 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/afghanistan-taliban-badakhshan-assassination/33830288.html"
+                       target="_blank"
+                       rel="noopener">
+                        Taliban Official Killed As Violence Flares In Northern Afghanistan
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-14 11:15 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/region/263523.html"
+                       target="_blank"
+                       rel="noopener">
+                        Israel Epstein: Jewish journalist who became a Chinese Communist Party insider World 20:00
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/region/263537.html"
+                       target="_blank"
+                       rel="noopener">
+                        Russia closes German consulate in St. Petersburg World 18:20
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/nation/263526.html"
+                       target="_blank"
+                       rel="noopener">
+                        Why is Azerbaijan held to a different standard by Western media? Nation 17:52
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/region/263522.html"
+                       target="_blank"
+                       rel="noopener">
+                        Russia sending abducted Ukrainian children to North Korean summer camp World 17:33
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/lifestyle/263534.html"
+                       target="_blank"
+                       rel="noopener">
+                        &quot;What should we eat today?&quot; Is a thing of the past: Plan &amp; Eat redefines corporate dining culture in Azerbaijan Lifestyle 17:30
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/region/263528.html"
+                       target="_blank"
+                       rel="noopener">
+                        Russian Interior Ministry General arrested over fuel theft in Moscow Region World 17:19
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>1/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/ratko-mladic-genocide-funeral-belgrade/33849337.html"
+                       target="_blank"
+                       rel="noopener">
+                        Serbia Honors &#x27;Butcher Of Bosnia&#x27; Ratko Mladic, Drawing Outrage Over Glorification
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-07 14:50 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/armenia-tripp-trump-route-kazakhstan-kyrgyzstan-russia/33847948.html"
+                       target="_blank"
+                       rel="noopener">
+                        Armenia Courts Central Asia As TRIPP Corridor Takes Shape
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-06 11:34 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/witkoff-kushner-land-in-moscow-ukraine-peace-talks-kyiv-strikes/33847598.html"
+                       target="_blank"
+                       rel="noopener">
+                        US Envoys Conclude Moscow Meeting With Putin As Kremlin Cites &#x27;Difficult Situation&#x27;
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-05 13:54 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/iran-turkey-bank-sanctions-treasury-economic-outcast/33847194.html"
+                       target="_blank"
+                       rel="noopener">
+                        US Targets Turkish Bank In New Bid To Cut Iran&#x27;s Financial Lifelines
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-04 18:16 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/ukraine-donetsk-druzhkivka-war-evacuations/33847181.html"
+                       target="_blank"
+                       rel="noopener">
+                        &#x27;Apocalyptic Scenes&#x27; In Druzhkivka As Ukrainian Civilians Struggle To Leave
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-04 17:42 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/serbia-draws-international-criticism-for-honoring-war-criminal-mladic/33847116.html"
+                       target="_blank"
+                       rel="noopener">
+                        Serbia Draws International Criticism For Honoring War Criminal Mladic
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-04 15:27 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/ukraine-kyiv-gunfire-security-agencies-russia-war/33846889.html"
+                       target="_blank"
+                       rel="noopener">
+                        Alleged Confession Video Raises More Questions About Ukrainian Security Agencies&#x27; Shoot-Out
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-04 12:58 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/zelenskyy-witkoff-kushner-trump-kyiv-russia/33846491.html"
+                       target="_blank"
+                       rel="noopener">
+                        Zelenskyy Says US Envoys To Visit Kyiv, Moscow As Russia Again Strikes Ukraine&#x27;s Capital
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-09-03 19:00 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.rferl.org/a/russia-kazakhstan-uzbekistan-military-defense-cooperation/33832996.html"
+                       target="_blank"
+                       rel="noopener">
+                        As Ukrainian Strikes Hit Hard, Moscow Seeks Deeper Defense Ties With Central Asia
+                    </a>
+                </td>
+
+                <td>Radio Free Europe / Radio Liberty</td>
+
+                <td>
+                    2026-08-18 18:57 UTC
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://eurasianet.org/azerbaijan-and-ukraine-working-to-boost-trade-ties"
+                       target="_blank"
+                       rel="noopener">
+                        Azerbaijan and Ukraine working to boost trade ties
+                    </a>
+                </td>
+
+                <td>Eurasianet</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/region/263527.html"
+                       target="_blank"
+                       rel="noopener">
+                        Canada, Australia condemn Taliban five years after fall of Kabul World 20:34
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/analysis/263488.html"
+                       target="_blank"
+                       rel="noopener">
+                        Ukraine war unlikely to end by February 2027 - harder days lie ahead: expert warns Analysis 19:28
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/region/263521.html"
+                       target="_blank"
+                       rel="noopener">
+                        Poland&#x27;s Tusk slams Poles celebrating AfD victory in Germany World 18:54
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/business/263525.html"
+                       target="_blank"
+                       rel="noopener">
+                        Azercell and ADA University organize AI training program for students Business 18:15
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/oil_and_gas/263520.html"
+                       target="_blank"
+                       rel="noopener">
+                        Ukraine and Middle East conflicts threaten fuel oil supplies Oil &amp; Gas 17:41
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td>
+                    <a href="https://www.azernews.az/culture/263518.html"
+                       target="_blank"
+                       rel="noopener">
+                        &#x27;Legend of Pomegranate&#x27; to open at National Carpet Museum Culture 17:26
+                    </a>
+                </td>
+
+                <td>Azernews</td>
+
+                <td>
+                    Date inconnue
+                </td>
+
+                <td class="score-cell">
+                    <strong>0/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-D">
+                        ⚪ Niveau D
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status-filtered">
+                        Filtré
+                    </span>
+                </td>
+            </tr>
+            
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+        Scanner automatique — Asie centrale.
+        Classification basée sur les droits humains,
+        la politique intérieure et les événements
+        géopolitiques majeurs.
+    </footer>
+
+</main>
+
 </body>
 </html>
