@@ -1,37 +1,45 @@
-# keywords.py
+# ============================================================
+# KEYWORDS — VEILLE ASIE CENTRALE / ACTIVISTES / DROITS HUMAINS
+# ============================================================
 
 
 # ============================================================
-# GÉOGRAPHIE — ASIE CENTRALE
+# 1. GÉOGRAPHIE — ASIE CENTRALE
 # ============================================================
 
 CENTRAL_ASIA_TERMS = [
-
+    # Général
     "central asia",
     "central asian",
 
+    # Kazakhstan
     "kazakhstan",
     "kazakh",
     "kazakhs",
 
+    # Kyrgyzstan
     "kyrgyzstan",
     "kyrgyz",
     "kirghizstan",
     "kirghiz",
 
+    # Tajikistan
     "tajikistan",
     "tajik",
     "tadjikistan",
     "tadjik",
 
+    # Turkmenistan
     "turkmenistan",
     "turkmen",
 
+    # Uzbekistan
     "uzbekistan",
     "uzbek",
     "ouzbekistan",
     "ouzbek",
 
+    # Karakalpakstan
     "karakalpakstan",
     "karakalpak",
 
@@ -56,20 +64,16 @@ CENTRAL_ASIA_TERMS = [
 
 
 # ============================================================
-# GÉOGRAPHIE — CAUCASE
+# 2. GÉOGRAPHIE — CAUCASE
 # ============================================================
 
 CAUCASUS_TERMS = [
-
     "georgia",
     "georgian",
-
     "armenia",
     "armenian",
-
     "azerbaijan",
     "azerbaijani",
-
     "south caucasus",
     "caucasus",
 
@@ -86,11 +90,10 @@ CAUCASUS_TERMS = [
 
 
 # ============================================================
-# DROITS HUMAINS — SIGNAL GÉNÉRAL
+# 3. DROITS HUMAINS — GÉNÉRAL
 # ============================================================
 
 HUMAN_RIGHTS_TERMS = [
-
     "human rights",
     "human rights violation",
     "human rights violations",
@@ -104,23 +107,18 @@ HUMAN_RIGHTS_TERMS = [
     "freedom of speech",
     "freedom of assembly",
     "freedom of association",
-
     "freedom of religion",
     "freedom of movement",
 
     "press freedom",
     "freedom of the press",
     "media freedom",
-
     "freedom of information",
 
     "civil society",
 
     "human rights defender",
     "human rights defenders",
-
-    "human rights activist",
-    "human rights activists",
 
     # Russe
     "права человека",
@@ -143,11 +141,63 @@ HUMAN_RIGHTS_TERMS = [
 
 
 # ============================================================
-# RÉPRESSION — SIGNAL FORT
+# 4. ACTIVISTES / DISSIDENTS / SOCIÉTÉ CIVILE
+# ============================================================
+
+ACTIVIST_TERMS = [
+    "activist",
+    "activists",
+
+    "human rights activist",
+    "human rights activists",
+
+    "civil society activist",
+    "civil society activists",
+
+    "political activist",
+    "political activists",
+
+    "opposition activist",
+    "opposition activists",
+
+    "dissident",
+    "dissidents",
+
+    "human rights defender",
+    "human rights defenders",
+
+    "civil society organization",
+    "civil society organizations",
+
+    "civil society group",
+    "civil society groups",
+
+    "ngo",
+    "ngos",
+    "non-governmental organization",
+    "non-governmental organizations",
+
+    # Russe
+    "активист",
+    "активисты",
+    "правозащитник",
+    "правозащитники",
+    "диссидент",
+    "диссиденты",
+    "политический активист",
+    "политические активисты",
+    "общественный активист",
+    "общественные активисты",
+    "неправительственная организация",
+    "неправительственные организации",
+]
+
+
+# ============================================================
+# 5. RÉPRESSION — FORTE
 # ============================================================
 
 REPRESSION_TERMS = [
-
     # Arrestation / détention
     "arrested",
     "arrest",
@@ -172,7 +222,7 @@ REPRESSION_TERMS = [
     "sentenced",
     "sentence",
 
-    # Procédures pénales
+    # Justice pénale
     "criminal case",
     "criminal cases",
     "criminal prosecution",
@@ -206,7 +256,7 @@ REPRESSION_TERMS = [
     "forced disappearance",
     "missing in custody",
 
-    # Liberté de circulation
+    # Restrictions de mouvement
     "travel ban",
     "travel bans",
     "exit ban",
@@ -224,28 +274,6 @@ REPRESSION_TERMS = [
     "press crackdown",
     "opposition crackdown",
     "opposition repression",
-
-    # Répression des médias
-    "journalist arrested",
-    "journalists arrested",
-    "journalist detained",
-    "journalists detained",
-    "journalist imprisoned",
-    "journalists imprisoned",
-    "journalist prosecuted",
-    "journalists prosecuted",
-    "media outlet shut down",
-    "media outlet closed",
-
-    # Répression des militants
-    "activist arrested",
-    "activists arrested",
-    "activist detained",
-    "activists detained",
-    "activist prosecuted",
-    "activists prosecuted",
-    "activist imprisoned",
-    "activists imprisoned",
 
     # Censure / Internet
     "censorship",
@@ -296,11 +324,10 @@ REPRESSION_TERMS = [
 
 
 # ============================================================
-# RÉPRESSION JURIDIQUE
+# 6. RÉPRESSION JURIDIQUE / ADMINISTRATIVE
 # ============================================================
 
 LEGAL_REPRESSION_TERMS = [
-
     "extremism charges",
     "extremism charge",
     "extremism law",
@@ -322,7 +349,6 @@ LEGAL_REPRESSION_TERMS = [
     "insult to the president",
 
     "anti-government activity",
-
     "national security charges",
 
     "terrorism charges",
@@ -334,8 +360,9 @@ LEGAL_REPRESSION_TERMS = [
     "treason charges",
 
     "foreign agents law",
-    "foreign representative law",
+    "foreign agent law",
     "foreign representatives law",
+    "foreign representative law",
 
     "foreign funding restrictions",
 
@@ -367,11 +394,10 @@ LEGAL_REPRESSION_TERMS = [
 
 
 # ============================================================
-# JOURNALISTES / LIBERTÉ DE LA PRESSE
+# 7. JOURNALISTES / MÉDIAS
 # ============================================================
 
 JOURNALIST_TERMS = [
-
     "journalist",
     "journalists",
     "reporter",
@@ -392,10 +418,11 @@ JOURNALIST_TERMS = [
     "media worker",
     "media workers",
 
-    "editorial independence",
     "independent media",
     "independent outlet",
     "independent news outlet",
+
+    "editorial independence",
 
     # Russe
     "журналист",
@@ -414,63 +441,12 @@ JOURNALIST_TERMS = [
 
 
 # ============================================================
-# ACTIVISTES / SOCIÉTÉ CIVILE
-# ============================================================
-
-ACTIVIST_TERMS = [
-
-    "activist",
-    "activists",
-    "human rights activist",
-    "human rights activists",
-
-    "civil society activist",
-    "civil society activists",
-
-    "political activist",
-    "political activists",
-
-    "dissident",
-    "dissidents",
-
-    "opposition activist",
-    "opposition activists",
-
-    "human rights defender",
-    "human rights defenders",
-
-    "civil society organization",
-    "civil society organizations",
-
-    "ngo",
-    "ngos",
-    "non-governmental organization",
-
-    # Russe
-    "активист",
-    "активисты",
-    "правозащитник",
-    "правозащитники",
-    "диссидент",
-    "диссиденты",
-    "политический активист",
-    "политические активисты",
-    "общественный активист",
-    "общественные активисты",
-    "неправительственная организация",
-]
-
-
-# ============================================================
-# DROITS SPÉCIFIQUES
+# 8. DROITS SPÉCIFIQUES
 # ============================================================
 
 SPECIFIC_RIGHTS_TERMS = [
 
-    # --------------------------------------------------------
     # Femmes / genre
-    # --------------------------------------------------------
-
     "women's rights",
     "women rights",
     "gender equality",
@@ -479,21 +455,15 @@ SPECIFIC_RIGHTS_TERMS = [
     "gender-based violence",
     "violence against women",
     "violence against girls",
-
     "domestic violence",
     "sexual violence",
     "sexual harassment",
-
     "forced marriage",
     "child marriage",
-
     "feminist",
     "feminists",
 
-    # --------------------------------------------------------
     # LGBT
-    # --------------------------------------------------------
-
     "lgbt",
     "lgbti",
     "lgbtq",
@@ -505,42 +475,29 @@ SPECIFIC_RIGHTS_TERMS = [
     "same-sex relations",
     "same-sex conduct",
 
-    # --------------------------------------------------------
     # Minorités
-    # --------------------------------------------------------
-
     "minority rights",
     "ethnic minority",
     "ethnic minorities",
     "religious minority",
     "religious minorities",
-
     "ethnic discrimination",
     "religious discrimination",
 
-    # --------------------------------------------------------
     # Enfants
-    # --------------------------------------------------------
-
     "children's rights",
     "child rights",
     "child abuse",
     "child labor",
     "child labour",
 
-    # --------------------------------------------------------
     # Travail forcé
-    # --------------------------------------------------------
-
     "forced labor",
     "forced labour",
     "forced workers",
     "forced work",
 
-    # --------------------------------------------------------
-    # Migrants / réfugiés
-    # --------------------------------------------------------
-
+    # Migrants
     "migrant rights",
     "migrant workers",
     "labor migrants",
@@ -573,34 +530,25 @@ SPECIFIC_RIGHTS_TERMS = [
 
 
 # ============================================================
-# TERMES SPÉCIFIQUES ASIE CENTRALE / DROITS HUMAINS
+# 9. SIGNAUX SPÉCIFIQUES ASIE CENTRALE / DROITS HUMAINS
 # ============================================================
 
 CENTRAL_ASIA_HR_TERMS = [
 
-    # --------------------------------------------------------
     # Kazakhstan
-    # --------------------------------------------------------
-
     "january 2022",
     "january events",
     "bloody january",
     "qantar",
     "qantar events",
 
-    # --------------------------------------------------------
-    # Kirghizistan
-    # --------------------------------------------------------
-
+    # Kyrgyzstan
     "foreign representatives law",
     "foreign agent law",
     "media law",
     "kloop",
 
-    # --------------------------------------------------------
-    # Tadjikistan
-    # --------------------------------------------------------
-
+    # Tajikistan
     "gorno-badakhshan",
     "gorno badakhshan",
     "gb ao",
@@ -609,10 +557,7 @@ CENTRAL_ASIA_HR_TERMS = [
     "pamiris",
     "pamir",
 
-    # --------------------------------------------------------
-    # Turkménistan
-    # --------------------------------------------------------
-
+    # Turkmenistan
     "turkmen.news",
     "turkmenistan journalist",
     "turkmenistan activist",
@@ -621,10 +566,7 @@ CENTRAL_ASIA_HR_TERMS = [
     "internet censorship in turkmenistan",
     "vpn in turkmenistan",
 
-    # --------------------------------------------------------
-    # Ouzbékistan
-    # --------------------------------------------------------
-
+    # Uzbekistan
     "karakalpakstan",
     "karakalpak",
     "karakalpakstan protests",
@@ -647,17 +589,14 @@ CENTRAL_ASIA_HR_TERMS = [
 
 
 # ============================================================
-# POLITIQUE INTÉRIEURE
+# 10. POLITIQUE INTÉRIEURE
 # ============================================================
 
 DOMESTIC_POLITICAL_TERMS = [
-
     "election",
     "elections",
-
     "parliamentary election",
     "presidential election",
-
     "parliamentary vote",
 
     "parliament",
@@ -672,7 +611,6 @@ DOMESTIC_POLITICAL_TERMS = [
 
     "president",
     "presidential",
-
     "government",
 
     "cabinet reshuffle",
@@ -680,16 +618,13 @@ DOMESTIC_POLITICAL_TERMS = [
 
     "opposition party",
     "opposition parties",
-
     "political party",
     "political parties",
 
     "protest",
     "protests",
-
     "demonstration",
     "demonstrations",
-
     "rally",
     "rallies",
 
@@ -719,12 +654,10 @@ DOMESTIC_POLITICAL_TERMS = [
 
 
 # ============================================================
-# GÉOPOLITIQUE MAJEURE
+# 11. GÉOPOLITIQUE MAJEURE
 # ============================================================
 
 MAJOR_GEOPOLITICAL_TERMS = [
-
-    # SCO
     "shanghai cooperation organization",
     "sco summit",
     "sco leaders",
@@ -735,7 +668,6 @@ MAJOR_GEOPOLITICAL_TERMS = [
     "шанхайская организация сотрудничества",
     "шос",
 
-    # Guerre / conflit
     "war",
     "armed conflict",
     "major conflict",
@@ -753,12 +685,10 @@ MAJOR_GEOPOLITICAL_TERMS = [
     "terrorist attack",
     "terrorist attacks",
 
-    # Sanctions
     "major sanctions",
     "new sanctions",
     "sanctions imposed",
 
-    # Diplomatie
     "diplomatic crisis",
     "diplomatic rupture",
     "diplomatic dispute",
@@ -766,7 +696,6 @@ MAJOR_GEOPOLITICAL_TERMS = [
     "ambassador expelled",
     "expelled ambassador",
 
-    # Stratégique
     "strategic partnership",
     "strategic realignment",
     "major strategic shift",
@@ -778,21 +707,18 @@ MAJOR_GEOPOLITICAL_TERMS = [
 
 
 # ============================================================
-# GÉOPOLITIQUE ORDINAIRE
+# 12. GÉOPOLITIQUE / ÉCONOMIE ORDINAIRE
 # ============================================================
 
 ROUTINE_GEO_TERMS = [
-
     "trade",
     "trading",
-
     "investment",
     "investments",
 
     "gas",
     "oil",
     "uranium",
-
     "pipeline",
 
     "railway",
@@ -800,7 +726,6 @@ ROUTINE_GEO_TERMS = [
 
     "trade corridor",
     "transport corridor",
-
     "logistics",
 
     "energy cooperation",
@@ -808,29 +733,24 @@ ROUTINE_GEO_TERMS = [
 
     "business forum",
     "investment forum",
-
     "economic forum",
 
     "memorandum",
     "memorandum of understanding",
 
     "delegation",
-
     "official visit",
-
     "bilateral talks",
     "bilateral meeting",
-
     "economic partnership",
 ]
 
 
 # ============================================================
-# ACTEURS EXTÉRIEURS
+# 13. ACTEURS EXTÉRIEURS
 # ============================================================
 
 REGIONAL_ACTORS = [
-
     "russia",
     "russian",
     "kremlin",
@@ -859,76 +779,60 @@ REGIONAL_ACTORS = [
 
 
 # ============================================================
-# CONTENU HISTORIQUE / CULTUREL
+# 14. HISTOIRE / CULTURE
 # ============================================================
 
 HISTORICAL_TERMS = [
-
     "history",
     "historical",
     "historian",
-
     "century",
     "19th century",
     "20th century",
     "21st century",
-
     "ancient",
 
     "soviet era",
     "soviet period",
     "former soviet",
-
     "cold war",
 
     "biography",
     "biographical",
-
     "born in",
     "died in",
-
     "legacy",
-
     "heritage",
 
     "museum",
-
     "photography",
     "photographer",
-
     "book review",
     "film review",
-
     "archive",
     "archives",
 ]
 
 
 # ============================================================
-# CONTENU NON JOURNALISTIQUE
+# 15. CONTENU NON JOURNALISTIQUE
 # ============================================================
 
 NON_NEWS_TERMS = [
-
     "vacancy",
     "vacancies",
-
     "job opening",
     "job openings",
-
     "hiring",
     "we are hiring",
 
     "career",
     "careers",
-
     "employment opportunity",
     "job opportunity",
-
     "apply now",
 
     "call for applications",
-
     "project evaluator",
     "project evaluation",
 
@@ -946,7 +850,6 @@ NON_NEWS_TERMS = [
     "event registration",
 
     "project results",
-
     "annual report",
 
     # Russe
@@ -973,11 +876,10 @@ NON_NEWS_TERMS = [
 
 
 # ============================================================
-# BRUIT
+# 16. BRUIT
 # ============================================================
 
 NOISE_TERMS = [
-
     "football",
     "soccer",
     "basketball",
