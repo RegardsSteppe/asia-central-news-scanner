@@ -51,6 +51,7 @@ CENTRAL_ASIA_TERMS = [
     "узбекистан",
     "узбек",
     "каракалпакстан",
+    "каракалпак",
 ]
 
 
@@ -85,128 +86,175 @@ CAUCASUS_TERMS = [
 
 
 # ============================================================
-# DROITS HUMAINS — SIGNAL FAIBLE
+# DROITS HUMAINS — SIGNAL GÉNÉRAL
 # ============================================================
 
 HUMAN_RIGHTS_TERMS = [
 
     "human rights",
+    "human rights violation",
     "human rights violations",
+    "rights violation",
     "rights violations",
 
     "civil rights",
+    "political rights",
 
     "freedom of expression",
     "freedom of speech",
     "freedom of assembly",
     "freedom of association",
 
+    "freedom of religion",
+    "freedom of movement",
+
     "press freedom",
     "freedom of the press",
+    "media freedom",
 
-    "censorship",
+    "freedom of information",
 
     "civil society",
-
-    "activist",
-    "activists",
-
-    "dissident",
-    "dissidents",
-
-    "journalist",
-    "journalists",
-
-    "independent journalist",
-    "independent media",
-
-    "opposition",
 
     "human rights defender",
     "human rights defenders",
 
+    "human rights activist",
+    "human rights activists",
+
     # Russe
     "права человека",
+    "нарушение прав человека",
+    "нарушения прав человека",
+    "гражданские права",
+    "политические права",
+    "свобода слова",
+    "свобода выражения",
+    "свобода собраний",
+    "свобода объединений",
+    "свобода вероисповедания",
+    "свобода передвижения",
+    "свобода прессы",
+    "свобода информации",
     "правозащитник",
     "правозащитники",
-    "активист",
-    "активисты",
-    "диссидент",
-    "журналист",
-    "журналисты",
-    "оппозиция",
     "гражданское общество",
-    "цензура",
-    "свобода слова",
-    "свобода прессы",
 ]
 
 
 # ============================================================
-# SIGNAUX FORTS DE RÉPRESSION
+# RÉPRESSION — SIGNAL FORT
 # ============================================================
 
 REPRESSION_TERMS = [
 
-    "political prisoner",
-    "political prisoners",
-
-    "political arrest",
-    "political arrests",
-
-    "politically motivated arrest",
-
+    # Arrestation / détention
     "arrested",
     "arrest",
-
+    "arrests",
     "detained",
     "detention",
+    "detentions",
+    "taken into custody",
+    "held in custody",
 
+    # Prison
     "imprisoned",
     "imprisonment",
+    "jailed",
+    "jail",
+    "prison sentence",
+    "sentenced to prison",
 
+    # Condamnation
     "convicted",
     "conviction",
-
     "sentenced",
+    "sentence",
 
+    # Procédures pénales
     "criminal case",
     "criminal cases",
-
     "criminal prosecution",
-
+    "criminal prosecutions",
     "prosecuted",
     "prosecution",
+    "prosecutions",
+    "charged with",
+    "criminal charges",
 
-    "persecuted",
-    "persecution",
+    # Procès
+    "trial",
+    "trials",
+    "closed-door trial",
+    "closed door trial",
+    "secret trial",
 
+    # Torture / mauvais traitements
     "torture",
     "tortured",
-
     "ill-treatment",
+    "mistreatment",
+    "abuse in custody",
+    "police abuse",
+    "custodial abuse",
 
-    "forced confession",
+    # Disparitions
+    "disappeared",
+    "forcibly disappeared",
+    "enforced disappearance",
+    "forced disappearance",
+    "missing in custody",
 
+    # Liberté de circulation
     "travel ban",
     "travel bans",
-
     "exit ban",
+    "barred from leaving",
+    "prevented from leaving",
+    "passport confiscated",
+    "passport revoked",
 
+    # Répression politique
+    "political prisoner",
+    "political prisoners",
+    "political repression",
+    "political crackdown",
     "media crackdown",
     "press crackdown",
-
-    "political crackdown",
-
-    "political repression",
-
-    "repression of activists",
-
-    "repression of journalists",
-
     "opposition crackdown",
-
     "opposition repression",
+
+    # Répression des médias
+    "journalist arrested",
+    "journalists arrested",
+    "journalist detained",
+    "journalists detained",
+    "journalist imprisoned",
+    "journalists imprisoned",
+    "journalist prosecuted",
+    "journalists prosecuted",
+    "media outlet shut down",
+    "media outlet closed",
+
+    # Répression des militants
+    "activist arrested",
+    "activists arrested",
+    "activist detained",
+    "activists detained",
+    "activist prosecuted",
+    "activists prosecuted",
+    "activist imprisoned",
+    "activists imprisoned",
+
+    # Censure / Internet
+    "censorship",
+    "online censorship",
+    "internet censorship",
+    "website blocked",
+    "website blocked by authorities",
+    "social media blocked",
+    "internet shutdown",
 
     # Russe
     "политический заключенный",
@@ -216,19 +264,200 @@ REPRESSION_TERMS = [
     "арестован",
     "арестована",
     "арестованы",
+    "арест",
     "задержан",
     "задержана",
     "задержаны",
+    "задержание",
     "заключен",
+    "заключена",
+    "заключены",
     "осужден",
+    "осуждена",
+    "осуждены",
     "уголовное дело",
     "уголовные дела",
     "уголовное преследование",
-    "преследование",
+    "уголовные обвинения",
+    "пытка",
+    "пытки",
+    "жестокое обращение",
+    "насильственное исчезновение",
+    "исчезновение",
+    "запрет на выезд",
+    "конфискация паспорта",
+    "цензура",
+    "блокировка сайта",
+    "блокировка интернета",
+    "закрытие СМИ",
     "репрессии",
     "политические репрессии",
-    "пытки",
-    "запрет на выезд",
+]
+
+
+# ============================================================
+# RÉPRESSION JURIDIQUE
+# ============================================================
+
+LEGAL_REPRESSION_TERMS = [
+
+    "extremism charges",
+    "extremism charge",
+    "extremism law",
+    "extremist organization",
+    "extremist activity",
+
+    "inciting unrest",
+    "incitement to unrest",
+    "inciting mass unrest",
+    "mass unrest charges",
+
+    "false information",
+    "spreading false information",
+
+    "defamation",
+    "criminal defamation",
+
+    "insulting the president",
+    "insult to the president",
+
+    "anti-government activity",
+
+    "national security charges",
+
+    "terrorism charges",
+    "terrorist charges",
+
+    "separatism charges",
+    "separatist charges",
+
+    "treason charges",
+
+    "foreign agents law",
+    "foreign representative law",
+    "foreign representatives law",
+
+    "foreign funding restrictions",
+
+    "unauthorized protest",
+    "illegal protest",
+    "illegal assembly",
+
+    # Russe
+    "экстремизм",
+    "экстремистская деятельность",
+    "экстремистская организация",
+    "экстремистское сообщество",
+    "разжигание массовых беспорядков",
+    "массовые беспорядки",
+    "ложная информация",
+    "распространение ложной информации",
+    "клевета",
+    "уголовная клевета",
+    "оскорбление президента",
+    "антиправительственная деятельность",
+    "государственная измена",
+    "терроризм",
+    "сепаратизм",
+    "иностранные агенты",
+    "иностранный представитель",
+    "иностранное финансирование",
+    "несанкционированный митинг",
+]
+
+
+# ============================================================
+# JOURNALISTES / LIBERTÉ DE LA PRESSE
+# ============================================================
+
+JOURNALIST_TERMS = [
+
+    "journalist",
+    "journalists",
+    "reporter",
+    "reporters",
+    "editor",
+    "editors",
+
+    "independent journalist",
+    "independent journalists",
+
+    "investigative journalist",
+    "investigative journalists",
+
+    "photojournalist",
+    "blogger",
+    "bloggers",
+
+    "media worker",
+    "media workers",
+
+    "editorial independence",
+    "independent media",
+    "independent outlet",
+    "independent news outlet",
+
+    # Russe
+    "журналист",
+    "журналисты",
+    "репортер",
+    "репортеры",
+    "редактор",
+    "редакторы",
+    "блогер",
+    "блогеры",
+    "независимый журналист",
+    "независимые журналисты",
+    "независимое СМИ",
+    "независимые СМИ",
+]
+
+
+# ============================================================
+# ACTIVISTES / SOCIÉTÉ CIVILE
+# ============================================================
+
+ACTIVIST_TERMS = [
+
+    "activist",
+    "activists",
+    "human rights activist",
+    "human rights activists",
+
+    "civil society activist",
+    "civil society activists",
+
+    "political activist",
+    "political activists",
+
+    "dissident",
+    "dissidents",
+
+    "opposition activist",
+    "opposition activists",
+
+    "human rights defender",
+    "human rights defenders",
+
+    "civil society organization",
+    "civil society organizations",
+
+    "ngo",
+    "ngos",
+    "non-governmental organization",
+
+    # Russe
+    "активист",
+    "активисты",
+    "правозащитник",
+    "правозащитники",
+    "диссидент",
+    "диссиденты",
+    "политический активист",
+    "политические активисты",
+    "общественный активист",
+    "общественные активисты",
+    "неправительственная организация",
 ]
 
 
@@ -238,39 +467,182 @@ REPRESSION_TERMS = [
 
 SPECIFIC_RIGHTS_TERMS = [
 
-    # Femmes
+    # --------------------------------------------------------
+    # Femmes / genre
+    # --------------------------------------------------------
+
     "women's rights",
     "women rights",
+    "gender equality",
+    "gender discrimination",
+    "gender-based discrimination",
+    "gender-based violence",
+    "violence against women",
+    "violence against girls",
+
+    "domestic violence",
+    "sexual violence",
+    "sexual harassment",
+
+    "forced marriage",
+    "child marriage",
+
     "feminist",
     "feminists",
-    "gender rights",
 
+    # --------------------------------------------------------
     # LGBT
+    # --------------------------------------------------------
+
     "lgbt",
     "lgbti",
     "lgbtq",
+    "lgbt rights",
     "lgbti rights",
     "gay rights",
+    "sexual orientation",
+    "gender identity",
+    "same-sex relations",
+    "same-sex conduct",
 
+    # --------------------------------------------------------
     # Minorités
+    # --------------------------------------------------------
+
     "minority rights",
     "ethnic minority",
+    "ethnic minorities",
     "religious minority",
+    "religious minorities",
 
+    "ethnic discrimination",
+    "religious discrimination",
+
+    # --------------------------------------------------------
     # Enfants
+    # --------------------------------------------------------
+
     "children's rights",
     "child rights",
+    "child abuse",
+    "child labor",
+    "child labour",
 
-    # Migrants
+    # --------------------------------------------------------
+    # Travail forcé
+    # --------------------------------------------------------
+
+    "forced labor",
+    "forced labour",
+    "forced workers",
+    "forced work",
+
+    # --------------------------------------------------------
+    # Migrants / réfugiés
+    # --------------------------------------------------------
+
     "migrant rights",
+    "migrant workers",
+    "labor migrants",
+    "labour migrants",
     "refugee rights",
+    "refugee protection",
 
     # Russe
     "права женщин",
+    "гендерное равенство",
+    "гендерная дискриминация",
+    "насилие в отношении женщин",
+    "домашнее насилие",
+    "сексуальное насилие",
+    "принудительный брак",
+    "детский брак",
     "феминист",
     "феминистка",
     "лгбт",
     "права меньшинств",
+    "этническое меньшинство",
+    "религиозное меньшинство",
+    "дискриминация",
+    "права детей",
+    "детский труд",
+    "принудительный труд",
+    "трудовые мигранты",
+    "права мигрантов",
+]
+
+
+# ============================================================
+# TERMES SPÉCIFIQUES ASIE CENTRALE / DROITS HUMAINS
+# ============================================================
+
+CENTRAL_ASIA_HR_TERMS = [
+
+    # --------------------------------------------------------
+    # Kazakhstan
+    # --------------------------------------------------------
+
+    "january 2022",
+    "january events",
+    "bloody january",
+    "qantar",
+    "qantar events",
+
+    # --------------------------------------------------------
+    # Kirghizistan
+    # --------------------------------------------------------
+
+    "foreign representatives law",
+    "foreign agent law",
+    "media law",
+    "kloop",
+
+    # --------------------------------------------------------
+    # Tadjikistan
+    # --------------------------------------------------------
+
+    "gorno-badakhshan",
+    "gorno badakhshan",
+    "gb ao",
+    "gbao",
+    "pamiri",
+    "pamiris",
+    "pamir",
+
+    # --------------------------------------------------------
+    # Turkménistan
+    # --------------------------------------------------------
+
+    "turkmen.news",
+    "turkmenistan journalist",
+    "turkmenistan activist",
+    "turkmenistan dissident",
+    "political prisoner in turkmenistan",
+    "internet censorship in turkmenistan",
+    "vpn in turkmenistan",
+
+    # --------------------------------------------------------
+    # Ouzbékistan
+    # --------------------------------------------------------
+
+    "karakalpakstan",
+    "karakalpak",
+    "karakalpakstan protests",
+    "karakalpakstan unrest",
+    "forced psychiatric treatment",
+    "forced psychiatric detention",
+    "blogger in uzbekistan",
+    "journalist in uzbekistan",
+
+    # Russe
+    "январские события",
+    "январь 2022",
+    "кровавый январь",
+    "ГБАО",
+    "Горно-Бадахшан",
+    "памирцы",
+    "Каракалпакстан",
+    "каракалпаки",
 ]
 
 
@@ -319,11 +691,11 @@ DOMESTIC_POLITICAL_TERMS = [
     "demonstrations",
 
     "rally",
+    "rallies",
 
     "referendum",
 
     "political corruption",
-
     "corruption scandal",
 
     # Russe
@@ -341,6 +713,7 @@ DOMESTIC_POLITICAL_TERMS = [
     "протест",
     "протесты",
     "митинг",
+    "митинги",
     "референдум",
 ]
 
