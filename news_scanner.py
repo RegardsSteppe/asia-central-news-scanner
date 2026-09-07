@@ -12,37 +12,58 @@ from bs4 import BeautifulSoup
 # CONFIGURATION
 # ============================================================
 
-MAX_FEED_ENTRIES = 40
-MAX_HTML_ARTICLES = 30
+MAX_FEED_ENTRIES = 50
+MAX_HTML_ARTICLES = 50
 ARTICLES_TO_DISPLAY = 10
-ARTICLE_PAGE_FETCH_LIMIT = 20
-
 REQUEST_TIMEOUT = 20
 
 HEADERS = {
     "User-Agent": (
-        "Mozilla/5.0 (compatible; AsiaCentralNewsScanner/3.1; "
+        "Mozilla/5.0 (compatible; AsiaCentralNewsScanner/3.2; "
         "+https://github.com/RegardsSteppe/asia-central-news-scanner)"
     )
 }
 
 
+# Source-specific configuration.
+#
+# IMPORTANT:
+# We no longer guess rss.xml / feed.xml / atom.xml.
+# Each source has either known feeds or an HTML page.
+
 TOP_NEWS_SOURCES = [
     {
         "name": "Eurasianet",
-        "url": "https://eurasianet.org/",
+        "url": "https://eurasianet.org/latest",
+        "feeds": [],
     },
     {
         "name": "Cabar.asia",
         "url": "https://cabar.asia/en/",
+        "feeds": [
+            "https://cabar.asia/en/feed",
+        ],
     },
     {
         "name": "Radio Free Europe / Radio Liberty",
-        "url": "https://www.rferl.org/",
+        "url": "https://www.rferl.org/p/5549.html",
+        "feeds": [
+            # Kazakhstan
+            "https://www.rferl.org/api/zriiml-vomx-tpeogm_",
+            # Kyrgyzstan
+            "https://www.rferl.org/api/zqii_l-vomx-tpeigmy",
+            # Tajikistan
+            "https://www.rferl.org/api/z_iiol-vomx-tpevgmi",
+            # Turkmenistan
+            "https://www.rferl.org/api/ztiiml-vomx-tpekgm_",
+            # Uzbekistan
+            "https://www.rferl.org/api/ztukmrl-vomx-tpeki-mo",
+        ],
     },
     {
         "name": "Azernews",
-        "url": "https://www.azernews.az/",
+        "url": "https://www.azernews.az/latest/",
+        "feeds": [],
     },
 ]
 
@@ -52,7 +73,6 @@ TOP_NEWS_SOURCES = [
 # ============================================================
 
 CENTRAL_ASIA_TERMS = [
-    # Regional
     "central asia",
     "central asian",
     "центральная азия",
@@ -60,7 +80,6 @@ CENTRAL_ASIA_TERMS = [
     "центральную азию",
     "центральноазиат",
 
-    # Kazakhstan
     "kazakhstan",
     "kazakh",
     "kazakhstani",
@@ -70,7 +89,6 @@ CENTRAL_ASIA_TERMS = [
     "казахстанский",
     "казах",
 
-    # Kyrgyzstan
     "kyrgyzstan",
     "kyrgyz",
     "киргизия",
@@ -80,7 +98,6 @@ CENTRAL_ASIA_TERMS = [
     "кыргызский",
     "кыргыз",
 
-    # Tajikistan
     "tajikistan",
     "tajik",
     "таджикистан",
@@ -88,7 +105,6 @@ CENTRAL_ASIA_TERMS = [
     "таджикский",
     "таджик",
 
-    # Turkmenistan
     "turkmenistan",
     "turkmen",
     "туркменистан",
@@ -96,7 +112,6 @@ CENTRAL_ASIA_TERMS = [
     "туркменский",
     "туркмен",
 
-    # Uzbekistan
     "uzbekistan",
     "uzbek",
     "узбекистан",
@@ -105,7 +120,6 @@ CENTRAL_ASIA_TERMS = [
     "узбекский",
     "узбек",
 
-    # Optional broader regional context
     "tashkent",
     "ташкент",
     "astana",
@@ -124,7 +138,6 @@ CENTRAL_ASIA_TERMS = [
 ]
 
 
-# Level A: human rights / dissidence / repression
 STRONG_HR_TERMS = [
     "human rights",
     "human rights violation",
@@ -174,7 +187,6 @@ STRONG_HR_TERMS = [
     "protest crackdown",
     "protests repressed",
 
-    # Russian
     "права человека",
     "нарушение прав человека",
     "нарушения прав человека",
@@ -211,7 +223,6 @@ STRONG_HR_TERMS = [
 ]
 
 
-# Level A/B supporting human-rights signals
 SECONDARY_HR_TERMS = [
     "activist",
     "activists",
@@ -239,7 +250,6 @@ SECONDARY_HR_TERMS = [
     "rights group",
     "rights groups",
 
-    # Russian
     "активист",
     "активисты",
     "гражданское общество",
@@ -261,7 +271,6 @@ SECONDARY_HR_TERMS = [
 ]
 
 
-# Level B: meaningful domestic politics
 DOMESTIC_POLITICAL_TERMS = [
     "election",
     "elections",
@@ -292,7 +301,6 @@ DOMESTIC_POLITICAL_TERMS = [
     "cabinet reshuffle",
     "parliament",
     "parliamentary",
-    "civil society",
     "political corruption",
     "corruption scandal",
     "anti-corruption",
@@ -300,12 +308,10 @@ DOMESTIC_POLITICAL_TERMS = [
     "political party",
     "political parties",
 
-    # Russian
     "выборы",
     "президентские выборы",
     "парламентские выборы",
     "голосование",
-    "голосов",
     "конституция",
     "конституционная реформа",
     "конституционные поправки",
@@ -321,7 +327,6 @@ DOMESTIC_POLITICAL_TERMS = [
     "правительственный кризис",
     "перестановки в правительстве",
     "парламент",
-    "гражданское общество",
     "политическая коррупция",
     "коррупционный скандал",
     "борьба с коррупцией",
@@ -329,9 +334,6 @@ DOMESTIC_POLITICAL_TERMS = [
 ]
 
 
-# Exceptional regional events.
-# These terms are intentionally narrow: routine trade/gas/diplomatic
-# stories should NOT pass simply because they concern Central Asia.
 MAJOR_REGIONAL_EVENTS = [
     "shanghai cooperation organization",
     "sco summit",
@@ -341,6 +343,7 @@ MAJOR_REGIONAL_EVENTS = [
     "sco summit kicks off",
     "sco summit begins",
     "sco summit ends",
+    "shanghai grouping",
 
     "major conflict",
     "armed conflict",
@@ -357,10 +360,10 @@ MAJOR_REGIONAL_EVENTS = [
     "security crisis",
     "regional security crisis",
 
-    # Russian
     "шанхайская организация сотрудничества",
     "саммит шос",
     "саммит шанхайской организации сотрудничества",
+    "шанхайская группа",
     "вооруженный конфликт",
     "военный конфликт",
     "пограничный конфликт",
@@ -374,7 +377,6 @@ MAJOR_REGIONAL_EVENTS = [
 ]
 
 
-# Context only. These must never be sufficient for relevance.
 ROUTINE_GEO_TERMS = [
     "trade",
     "trading",
@@ -411,7 +413,6 @@ ROUTINE_GEO_TERMS = [
     "cooperation",
     "roadmap",
 
-    # Russian
     "торговля",
     "экспорт",
     "импорт",
@@ -472,7 +473,6 @@ REGIONAL_ACTORS = [
     "eu",
     "brussels",
 
-    # Russian
     "россия",
     "российский",
     "кремль",
@@ -539,25 +539,27 @@ def normalize_text(text):
 
 
 def phrase_present(text, phrase):
-    """
-    Search for a phrase with reasonable word boundaries.
-    """
     if not text or not phrase:
         return False
 
-    pattern = r"(?<!\w)" + re.escape(phrase.lower()) + r"(?!\w)"
-    return re.search(pattern, text.lower()) is not None
+    pattern = r"(?<!\w)" + re.escape(
+        phrase.lower()
+    ) + r"(?!\w)"
+
+    return re.search(
+        pattern,
+        text.lower(),
+    ) is not None
 
 
 def find_terms(text, terms):
     text = normalize_text(text).lower()
-    found = []
 
-    for term in terms:
-        if phrase_present(text, term):
-            found.append(term)
-
-    return found
+    return [
+        term
+        for term in terms
+        if phrase_present(text, term)
+    ]
 
 
 def canonical_url(url):
@@ -583,7 +585,10 @@ def is_valid_url(url):
 
     parsed = urlparse(url)
 
-    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+    return (
+        parsed.scheme in {"http", "https"}
+        and bool(parsed.netloc)
+    )
 
 
 def fetch_url(url):
@@ -595,79 +600,19 @@ def fetch_url(url):
         )
 
         response.raise_for_status()
+
         return response.text
 
     except requests.RequestException as exc:
-        print(f"[WARN] Failed to fetch {url}: {exc}")
+        print(
+            f"[WARN] Failed to fetch {url}: {exc}"
+        )
+
         return None
 
 
 # ============================================================
-# RSS DISCOVERY
-# ============================================================
-
-def discover_rss_urls(source_url):
-    """
-    Discover RSS/Atom feeds from a source homepage.
-    """
-    candidates = []
-
-    # Special handling for RFE/RL, which exposes many feeds.
-    if "rferl.org" in source_url:
-        candidates.append("https://www.rferl.org/rssfeeds")
-
-    page = fetch_url(source_url)
-
-    if page:
-        soup = BeautifulSoup(page, "html.parser")
-
-        for link in soup.find_all("link"):
-            rel = link.get("rel", [])
-            href = link.get("href")
-
-            if not href:
-                continue
-
-            rel_text = " ".join(rel).lower() if isinstance(rel, list) else str(rel).lower()
-
-            link_type = str(link.get("type", "")).lower()
-
-            if (
-                "alternate" in rel_text
-                and (
-                    "rss" in link_type
-                    or "atom" in link_type
-                    or "feed" in link_type
-                )
-            ):
-                candidates.append(urljoin(source_url, href))
-
-    # Common fallback feed locations.
-    for path in [
-        "rss.xml",
-        "feed.xml",
-        "rss",
-        "feed",
-        "atom.xml",
-    ]:
-        candidates.append(urljoin(source_url.rstrip("/") + "/", path))
-
-    # Deduplicate while preserving order.
-    seen = set()
-    result = []
-
-    for url in candidates:
-        url = canonical_url(url)
-
-        if url and url not in seen:
-            seen.add(url)
-            result.append(url)
-
-    return result
-
-
-# ============================================================
-# RSS PARSING
+# RSS
 # ============================================================
 
 def parse_feed(feed_url, source_name):
@@ -678,14 +623,20 @@ def parse_feed(feed_url, source_name):
 
     try:
         feed = feedparser.parse(raw)
+
     except Exception as exc:
-        print(f"[WARN] Could not parse feed {feed_url}: {exc}")
+        print(
+            f"[WARN] Could not parse feed {feed_url}: {exc}"
+        )
         return []
 
     articles = []
 
     for entry in feed.entries[:MAX_FEED_ENTRIES]:
-        title = normalize_text(entry.get("title", ""))
+        title = normalize_text(
+            entry.get("title", "")
+        )
+
         link = entry.get("link", "")
 
         if not title or not is_valid_url(link):
@@ -715,8 +666,9 @@ def parse_feed(feed_url, source_name):
                     *published_parsed[:6],
                     tzinfo=timezone.utc,
                 )
+
             except Exception:
-                published_dt = None
+                pass
 
         articles.append(
             {
@@ -734,21 +686,23 @@ def parse_feed(feed_url, source_name):
 
 
 # ============================================================
-# HTML FALLBACK
+# HTML EXTRACTION
 # ============================================================
 
-def extract_html_articles(source_url, source_name):
+def extract_html_articles(
+    source_url,
+    source_name,
+):
     page = fetch_url(source_url)
 
     if not page:
         return []
 
-    soup = BeautifulSoup(page, "html.parser")
+    soup = BeautifulSoup(
+        page,
+        "html.parser",
+    )
 
-    articles = []
-    seen_urls = set()
-
-    # Remove elements unlikely to contain article content.
     for tag in soup.find_all(
         [
             "script",
@@ -763,38 +717,86 @@ def extract_html_articles(source_url, source_name):
     ):
         tag.decompose()
 
-    for item in soup.find_all(["article", "h1", "h2", "h3"]):
+    articles = []
+    seen_urls = set()
+
+    for item in soup.find_all(
+        [
+            "article",
+            "h1",
+            "h2",
+            "h3",
+        ]
+    ):
         if len(articles) >= MAX_HTML_ARTICLES:
             break
 
         if item.name == "article":
-            heading = item.find(["h1", "h2", "h3", "h4"])
-            link_tag = item.find("a", href=True)
+            heading = item.find(
+                [
+                    "h1",
+                    "h2",
+                    "h3",
+                    "h4",
+                ]
+            )
+
+            link_tag = item.find(
+                "a",
+                href=True,
+            )
 
             if not heading or not link_tag:
                 continue
 
-            title = normalize_text(heading.get_text(" ", strip=True))
-            url = urljoin(source_url, link_tag.get("href", ""))
+            title = normalize_text(
+                heading.get_text(
+                    " ",
+                    strip=True,
+                )
+            )
+
+            url = urljoin(
+                source_url,
+                link_tag.get("href", ""),
+            )
 
             text = normalize_text(
-                item.get_text(" ", strip=True)
+                item.get_text(
+                    " ",
+                    strip=True,
+                )
             )
 
         else:
             title = normalize_text(
-                item.get_text(" ", strip=True)
+                item.get_text(
+                    " ",
+                    strip=True,
+                )
             )
 
-            link_tag = item.find_parent("a", href=True)
+            link_tag = item.find(
+                "a",
+                href=True,
+            )
 
             if not link_tag:
-                link_tag = item.find("a", href=True)
+                parent = item.find_parent(
+                    "a",
+                    href=True,
+                )
+
+                link_tag = parent
 
             if not link_tag:
                 continue
 
-            url = urljoin(source_url, link_tag.get("href", ""))
+            url = urljoin(
+                source_url,
+                link_tag.get("href", ""),
+            )
+
             text = title
 
         if not title or len(title) < 15:
@@ -808,7 +810,6 @@ def extract_html_articles(source_url, source_name):
         if url in seen_urls:
             continue
 
-        # Avoid generic navigation / section titles.
         if title.lower() in {
             "latest",
             "news",
@@ -836,7 +837,7 @@ def extract_html_articles(source_url, source_name):
 
 
 # ============================================================
-# ARTICLE PAGE ENRICHMENT
+# ARTICLE BODY
 # ============================================================
 
 def extract_article_body(url):
@@ -845,7 +846,10 @@ def extract_article_body(url):
     if not page:
         return ""
 
-    soup = BeautifulSoup(page, "html.parser")
+    soup = BeautifulSoup(
+        page,
+        "html.parser",
+    )
 
     for tag in soup.find_all(
         [
@@ -875,7 +879,12 @@ def extract_article_body(url):
         "main",
     ]:
         for node in soup.select(selector):
-            text = normalize_text(node.get_text(" ", strip=True))
+            text = normalize_text(
+                node.get_text(
+                    " ",
+                    strip=True,
+                )
+            )
 
             if len(text) >= 200:
                 candidates.append(text)
@@ -884,17 +893,27 @@ def extract_article_body(url):
         paragraphs = []
 
         for p in soup.find_all("p"):
-            text = normalize_text(p.get_text(" ", strip=True))
+            text = normalize_text(
+                p.get_text(
+                    " ",
+                    strip=True,
+                )
+            )
 
             if len(text) >= 50:
                 paragraphs.append(text)
 
-        candidates.append(" ".join(paragraphs))
+        candidates.append(
+            " ".join(paragraphs)
+        )
 
     if not candidates:
         return ""
 
-    return max(candidates, key=len)
+    return max(
+        candidates,
+        key=len,
+    )
 
 
 # ============================================================
@@ -902,12 +921,21 @@ def extract_article_body(url):
 # ============================================================
 
 def classify_article(article):
-    title = normalize_text(article.get("title", ""))
-    summary = normalize_text(article.get("summary", ""))
-    body = normalize_text(article.get("body", ""))
+    title = normalize_text(
+        article.get("title", "")
+    )
 
-    # First pass: title + summary.
-    headline_text = f"{title} {summary}".strip()
+    summary = normalize_text(
+        article.get("summary", "")
+    )
+
+    body = normalize_text(
+        article.get("body", "")
+    )
+
+    headline_text = (
+        f"{title} {summary}"
+    ).strip()
 
     geography = find_terms(
         headline_text,
@@ -950,15 +978,13 @@ def classify_article(article):
     )
 
     # --------------------------------------------------------
-    # Body confirmation.
+    # Body confirmation
     # --------------------------------------------------------
 
     confirmation_hr = []
     confirmation_politics = []
     confirmation_events = []
 
-    # Only fetch article pages when the headline itself looks
-    # potentially relevant. This avoids downloading every page.
     potentially_relevant = (
         bool(geography)
         and (
@@ -970,44 +996,73 @@ def classify_article(article):
     )
 
     if potentially_relevant and not body:
-        body = extract_article_body(article.get("url", ""))
+        body = extract_article_body(
+            article.get("url", "")
+        )
+
         article["body"] = body
 
     if body:
-        confirmation_hr = find_terms(body, STRONG_HR_TERMS)
-        confirmation_politics = find_terms(body, DOMESTIC_POLITICAL_TERMS)
-        confirmation_events = find_terms(body, MAJOR_REGIONAL_EVENTS)
+        confirmation_hr = find_terms(
+            body,
+            STRONG_HR_TERMS,
+        )
+
+        confirmation_politics = find_terms(
+            body,
+            DOMESTIC_POLITICAL_TERMS,
+        )
+
+        confirmation_events = find_terms(
+            body,
+            MAJOR_REGIONAL_EVENTS,
+        )
 
     # --------------------------------------------------------
-    # Classification hierarchy.
+    # CLASSIFICATION HIERARCHY
+    #
+    # A = Human rights / repression
+    # C = Exceptional regional geopolitics
+    # B = Domestic politics
+    #
+    # C deliberately comes BEFORE B so that an SCO summit
+    # cannot become "politique intérieure" just because the
+    # article contains the word "politics".
     # --------------------------------------------------------
 
-    level = "D"
-    classification = "Filtré"
-
-    # Level A — Human rights / repression / dissidence.
-    if geography and (strong_hr or confirmation_hr):
-        level = "A"
-        classification = "Droits humains / dissidence"
-
-    # Level B — Domestic politics.
-    elif geography and (
-        domestic_politics
-        or confirmation_politics
+    if geography and (
+        strong_hr
+        or confirmation_hr
     ):
-        level = "B"
-        classification = "Politique intérieure"
+        level = "A"
+        classification = (
+            "Droits humains / dissidence"
+        )
 
-    # Level C — Exceptional geopolitics.
     elif geography and (
         major_events
         or confirmation_events
     ):
         level = "C"
-        classification = "Géopolitique majeure"
+        classification = (
+            "Géopolitique majeure"
+        )
+
+    elif geography and (
+        domestic_politics
+        or confirmation_politics
+    ):
+        level = "B"
+        classification = (
+            "Politique intérieure"
+        )
+
+    else:
+        level = "D"
+        classification = "Filtré"
 
     # --------------------------------------------------------
-    # Score.
+    # SCORE
     # --------------------------------------------------------
 
     score = 0
@@ -1036,31 +1091,32 @@ def classify_article(article):
     if confirmation_events:
         score += 3
 
-    # Regional actors are contextual only.
     if regional_actors:
         score += 1
 
-    # Routine geopolitics should actively reduce the score.
     if routine_geo:
         score -= 4
 
-    # Business/sports/tech noise gets a strong penalty.
     if negative:
         score -= 10
 
-    score = max(0, min(score, 20))
+    score = max(
+        0,
+        min(score, 20),
+    )
 
-    # --------------------------------------------------------
-    # Strict relevance gate.
-    # --------------------------------------------------------
-
-    relevant = level in {"A", "B", "C"}
+    relevant = level in {
+        "A",
+        "B",
+        "C",
+    }
 
     reasons = []
 
     if geography:
         reasons.append(
-            "géographie: " + ", ".join(geography[:8])
+            "géographie: "
+            + ", ".join(geography[:8])
         )
 
     if strong_hr:
@@ -1106,13 +1162,19 @@ def classify_article(article):
         )
 
     if confirmation_hr:
-        reasons.append("confirmation article: droits humains")
+        reasons.append(
+            "confirmation article: droits humains"
+        )
 
     if confirmation_politics:
-        reasons.append("confirmation article: politique")
+        reasons.append(
+            "confirmation article: politique"
+        )
 
     if confirmation_events:
-        reasons.append("confirmation article: événement régional")
+        reasons.append(
+            "confirmation article: événement régional"
+        )
 
     article["level"] = level
     article["classification"] = classification
@@ -1124,24 +1186,17 @@ def classify_article(article):
 
 
 # ============================================================
-# DATE / DEDUPLICATION
+# DEDUPLICATION
 # ============================================================
-
-def article_timestamp(article):
-    dt = article.get("published_dt")
-
-    if dt:
-        return dt
-
-    return datetime.min.replace(tzinfo=timezone.utc)
-
 
 def deduplicate_articles(articles):
     seen = set()
     result = []
 
     for article in articles:
-        url = canonical_url(article.get("url", ""))
+        url = canonical_url(
+            article.get("url", "")
+        )
 
         if not url:
             continue
@@ -1155,8 +1210,19 @@ def deduplicate_articles(articles):
     return result
 
 
+def article_timestamp(article):
+    dt = article.get("published_dt")
+
+    if dt:
+        return dt
+
+    return datetime.min.replace(
+        tzinfo=timezone.utc
+    )
+
+
 # ============================================================
-# SCAN
+# SCANNER
 # ============================================================
 
 def scan_news():
@@ -1165,16 +1231,23 @@ def scan_news():
 
     for source in TOP_NEWS_SOURCES:
         name = source["name"]
-        url = source["url"]
+        source_url = source["url"]
+        feeds = source.get("feeds", [])
 
-        print(f"[INFO] Scanning {name}")
+        print(
+            f"[INFO] Scanning {name}"
+        )
 
         source_articles = []
 
-        feed_urls = discover_rss_urls(url)
+        # ----------------------------------------------------
+        # Known RSS feeds only.
+        # ----------------------------------------------------
 
-        for feed_url in feed_urls:
-            print(f"[INFO] Trying feed: {feed_url}")
+        for feed_url in feeds:
+            print(
+                f"[INFO] Trying known feed: {feed_url}"
+            )
 
             parsed = parse_feed(
                 feed_url,
@@ -1184,18 +1257,20 @@ def scan_news():
             if parsed:
                 source_articles.extend(parsed)
 
-                # Once a valid feed is found, there is usually
-                # no need to process every guessed feed.
-                if len(source_articles) >= 5:
-                    break
+        # ----------------------------------------------------
+        # HTML fallback.
+        # ----------------------------------------------------
 
-        # HTML fallback if RSS didn't produce enough material.
         if not source_articles:
-            print(f"[INFO] RSS unavailable for {name}, using HTML fallback")
+            print(
+                f"[INFO] Using HTML source for {name}"
+            )
 
-            source_articles = extract_html_articles(
-                url,
-                name,
+            source_articles = (
+                extract_html_articles(
+                    source_url,
+                    name,
+                )
             )
 
         if source_articles:
@@ -1206,6 +1281,7 @@ def scan_news():
                     "count": len(source_articles),
                 }
             )
+
         else:
             source_status.append(
                 {
@@ -1215,34 +1291,45 @@ def scan_news():
                 }
             )
 
-        raw_articles.extend(source_articles)
-
-    print(f"[INFO] Raw articles collected: {len(raw_articles)}")
-
-    articles = deduplicate_articles(raw_articles)
+        raw_articles.extend(
+            source_articles
+        )
 
     print(
-        f"[INFO] Articles after deduplication: {len(articles)}"
+        "[INFO] Raw articles collected: "
+        f"{len(raw_articles)}"
+    )
+
+    articles = deduplicate_articles(
+        raw_articles
+    )
+
+    print(
+        "[INFO] Articles after deduplication: "
+        f"{len(articles)}"
     )
 
     classified_articles = []
 
     for article in articles:
         try:
-            classified = classify_article(article)
-            classified_articles.append(classified)
+            classified_articles.append(
+                classify_article(article)
+            )
 
         except Exception as exc:
             print(
-                f"[WARN] Classification failed for "
+                "[WARN] Classification failed for "
                 f"{article.get('title', '')}: {exc}"
             )
 
     # --------------------------------------------------------
-    # Dashboard statistics.
+    # Statistics
     # --------------------------------------------------------
 
-    analyzed_count = len(classified_articles)
+    analyzed_count = len(
+        classified_articles
+    )
 
     retained_articles = [
         article
@@ -1260,17 +1347,25 @@ def scan_news():
     total_score = 0
 
     for article in classified_articles:
-        level = article.get("level", "D")
+        level = article.get(
+            "level",
+            "D",
+        )
 
         if level not in levels:
             level = "D"
 
         levels[level] += 1
-
-        total_score += article.get("score", 0)
+        total_score += article.get(
+            "score",
+            0,
+        )
 
     average_score = (
-        round(total_score / analyzed_count, 1)
+        round(
+            total_score / analyzed_count,
+            1,
+        )
         if analyzed_count
         else 0
     )
@@ -1299,17 +1394,24 @@ def scan_news():
         "average_score": average_score,
         "levels": levels,
         "sources_success": successful_sources,
-        "sources_total": len(TOP_NEWS_SOURCES),
+        "sources_total": len(
+            TOP_NEWS_SOURCES
+        ),
         "relevance_rate": relevance_rate,
     }
 
-    # Sort newest first.
+    # --------------------------------------------------------
+    # Selected articles: newest first
+    # --------------------------------------------------------
+
     retained_articles.sort(
         key=article_timestamp,
         reverse=True,
     )
 
-    selected = retained_articles[:ARTICLES_TO_DISPLAY]
+    selected = retained_articles[
+        :ARTICLES_TO_DISPLAY
+    ]
 
     print(
         "[INFO] Dashboard: "
@@ -1328,72 +1430,133 @@ def scan_news():
 
     return {
         "articles": selected,
+        "all_articles": classified_articles,
         "stats": stats,
         "source_status": source_status,
     }
 
 
 # ============================================================
-# HTML
+# HTML HELPERS
 # ============================================================
 
 def format_date(article):
-    dt = article.get("published_dt")
+    dt = article.get(
+        "published_dt"
+    )
 
     if dt:
-        return dt.strftime("%Y-%m-%d %H:%M UTC")
+        return dt.strftime(
+            "%Y-%m-%d %H:%M UTC"
+        )
 
-    published = article.get("published", "")
+    published = article.get(
+        "published",
+        "",
+    )
 
     if published:
-        return html.escape(published)
+        return html.escape(
+            published
+        )
 
     return "Date inconnue"
 
 
 def level_badge(level):
     labels = {
-        "A": "🟥 Niveau A — Droits humains",
-        "B": "🟧 Niveau B — Politique intérieure",
-        "C": "🟦 Niveau C — Géopolitique majeure",
-        "D": "⚪ Niveau D — Filtré",
+        "A": "🟥 Niveau A",
+        "B": "🟧 Niveau B",
+        "C": "🟦 Niveau C",
+        "D": "⚪ Niveau D",
     }
 
     return labels.get(
         level,
-        "⚪ Niveau D — Filtré",
+        "⚪ Niveau D",
     )
 
+
+# ============================================================
+# MAIN WEB PAGE
+# ============================================================
 
 def create_web_page(scan_result):
     articles = scan_result["articles"]
+    all_articles = scan_result[
+        "all_articles"
+    ]
     stats = scan_result["stats"]
 
-    scan_time = datetime.now(timezone.utc).strftime(
+    scan_time = datetime.now(
+        timezone.utc
+    ).strftime(
         "%Y-%m-%d %H:%M UTC"
     )
+
+    # --------------------------------------------------------
+    # Selected article cards
+    # --------------------------------------------------------
 
     cards = []
 
     for article in articles:
-        title = html.escape(article.get("title", "Sans titre"))
-        source = html.escape(article.get("source", "Source inconnue"))
-        url = html.escape(article.get("url", "#"), quote=True)
+        title = html.escape(
+            article.get(
+                "title",
+                "Sans titre",
+            )
+        )
+
+        source = html.escape(
+            article.get(
+                "source",
+                "Source inconnue",
+            )
+        )
+
+        url = html.escape(
+            article.get(
+                "url",
+                "#",
+            ),
+            quote=True,
+        )
 
         summary = html.escape(
-            article.get("summary", "")
+            article.get(
+                "summary",
+                "",
+            )
         )
 
         if len(summary) > 500:
-            summary = summary[:500].rstrip() + "…"
+            summary = (
+                summary[:500].rstrip()
+                + "…"
+            )
 
-        score = article.get("score", 0)
-        level = article.get("level", "D")
-        classification = html.escape(
-            article.get("classification", "Filtré")
+        score = article.get(
+            "score",
+            0,
         )
 
-        reasons = article.get("reasons", [])
+        level = article.get(
+            "level",
+            "D",
+        )
+
+        classification = html.escape(
+            article.get(
+                "classification",
+                "Filtré",
+            )
+        )
+
+        reasons = article.get(
+            "reasons",
+            [],
+        )
 
         reason_html = ""
 
@@ -1418,7 +1581,9 @@ def create_web_page(scan_result):
 
                 <div class="article-heading">
                     <h2>
-                        <a href="{url}" target="_blank" rel="noopener">
+                        <a href="{url}"
+                           target="_blank"
+                           rel="noopener">
                             {title}
                         </a>
                     </h2>
@@ -1429,8 +1594,13 @@ def create_web_page(scan_result):
                 </div>
 
                 <div class="score-line">
-                    <strong>Score : {score}/20</strong>
-                    <span>{classification}</span>
+                    <strong>
+                        Score : {score}/20
+                    </strong>
+
+                    <span>
+                        {classification}
+                    </span>
                 </div>
 
                 <p>{summary}</p>
@@ -1440,7 +1610,9 @@ def create_web_page(scan_result):
             """
         )
 
-    articles_html = "\n".join(cards)
+    articles_html = "\n".join(
+        cards
+    )
 
     if not articles_html:
         articles_html = """
@@ -1449,24 +1621,142 @@ def create_web_page(scan_result):
         </div>
         """
 
+    # --------------------------------------------------------
+    # Full audit table
+    # --------------------------------------------------------
+
+    audit_articles = sorted(
+        all_articles,
+        key=lambda article: (
+            article.get(
+                "score",
+                0,
+            ),
+            article_timestamp(article),
+        ),
+        reverse=True,
+    )
+
+    table_rows = []
+
+    for article in audit_articles:
+        title = html.escape(
+            article.get(
+                "title",
+                "Sans titre",
+            )
+        )
+
+        source = html.escape(
+            article.get(
+                "source",
+                "",
+            )
+        )
+
+        url = html.escape(
+            article.get(
+                "url",
+                "#",
+            ),
+            quote=True,
+        )
+
+        level = article.get(
+            "level",
+            "D",
+        )
+
+        score = article.get(
+            "score",
+            0,
+        )
+
+        status = (
+            "Retenu"
+            if article.get("relevant")
+            else "Filtré"
+        )
+
+        status_class = (
+            "status-retained"
+            if article.get("relevant")
+            else "status-filtered"
+        )
+
+        table_rows.append(
+            f"""
+            <tr>
+                <td>
+                    <a href="{url}"
+                       target="_blank"
+                       rel="noopener">
+                        {title}
+                    </a>
+                </td>
+
+                <td>{source}</td>
+
+                <td>
+                    {format_date(article)}
+                </td>
+
+                <td class="score-cell">
+                    <strong>{score}/20</strong>
+                </td>
+
+                <td>
+                    <span class="table-level level-{level}">
+                        {level_badge(level)}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="{status_class}">
+                        {status}
+                    </span>
+                </td>
+            </tr>
+            """
+        )
+
+    audit_table = "\n".join(
+        table_rows
+    )
+
+    if not audit_table:
+        audit_table = """
+        <tr>
+            <td colspan="6">
+                Aucun article analysé.
+            </td>
+        </tr>
+        """
+
     levels = stats["levels"]
+
+    # --------------------------------------------------------
+    # HTML
+    # --------------------------------------------------------
 
     return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Central Asia News Scanner</title>
 
     <style>
+
         :root {{
             --bg: #f5f7fa;
             --card: #ffffff;
             --text: #1f2937;
             --muted: #6b7280;
             --border: #e5e7eb;
-            --accent: #111827;
         }}
 
         * {{
@@ -1475,7 +1765,6 @@ def create_web_page(scan_result):
 
         body {{
             margin: 0;
-            padding: 0;
             background: var(--bg);
             color: var(--text);
             font-family:
@@ -1489,8 +1778,8 @@ def create_web_page(scan_result):
         }}
 
         .container {{
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 1250px;
+            margin: auto;
             padding: 32px 20px 60px;
         }}
 
@@ -1511,16 +1800,14 @@ def create_web_page(scan_result):
 
         .scan-time {{
             margin-top: 10px;
-            font-size: 0.9rem;
             color: var(--muted);
+            font-size: .9rem;
         }}
 
-        /* ====================================================
-           DASHBOARD
-           ==================================================== */
+        /* ================= DASHBOARD ================= */
 
         .dashboard {{
-            margin: 28px 0 32px;
+            margin: 28px 0 34px;
         }}
 
         .dashboard-title {{
@@ -1555,18 +1842,16 @@ def create_web_page(scan_result):
 
         .stat-label {{
             color: var(--muted);
-            font-size: 0.85rem;
+            font-size: .85rem;
         }}
 
         .dashboard-note {{
             margin-top: 12px;
             color: var(--muted);
-            font-size: 0.82rem;
+            font-size: .82rem;
         }}
 
-        /* ====================================================
-           ARTICLES
-           ==================================================== */
+        /* ================= ARTICLES ================= */
 
         .articles {{
             display: flex;
@@ -1599,7 +1884,7 @@ def create_web_page(scan_result):
             gap: 12px;
             margin-bottom: 12px;
             color: var(--muted);
-            font-size: 0.82rem;
+            font-size: .82rem;
         }}
 
         .article-heading {{
@@ -1629,7 +1914,7 @@ def create_web_page(scan_result):
             padding: 6px 9px;
             border-radius: 8px;
             background: #f3f4f6;
-            font-size: 0.78rem;
+            font-size: .78rem;
             white-space: nowrap;
         }}
 
@@ -1638,7 +1923,7 @@ def create_web_page(scan_result):
             gap: 14px;
             align-items: center;
             margin: 12px 0;
-            font-size: 0.9rem;
+            font-size: .9rem;
         }}
 
         .score-line span {{
@@ -1656,8 +1941,109 @@ def create_web_page(scan_result):
             padding-top: 12px;
             border-top: 1px solid var(--border);
             color: var(--muted);
-            font-size: 0.78rem;
+            font-size: .78rem;
             line-height: 1.5;
+        }}
+
+        /* ================= AUDIT TABLE ================= */
+
+        .audit {{
+            margin-top: 48px;
+        }}
+
+        .audit h2 {{
+            margin-bottom: 8px;
+            font-size: 1.35rem;
+        }}
+
+        .audit-description {{
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: .88rem;
+        }}
+
+        .table-wrapper {{
+            overflow-x: auto;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }}
+
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }}
+
+        th,
+        td {{
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: .85rem;
+            vertical-align: middle;
+        }}
+
+        th {{
+            background: #f9fafb;
+            color: var(--muted);
+            font-weight: 650;
+            position: sticky;
+            top: 0;
+        }}
+
+        tbody tr:last-child td {{
+            border-bottom: 0;
+        }}
+
+        tbody tr:hover {{
+            background: #fafafa;
+        }}
+
+        td:first-child {{
+            min-width: 350px;
+        }}
+
+        td a {{
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+        }}
+
+        td a:hover {{
+            text-decoration: underline;
+        }}
+
+        .score-cell {{
+            white-space: nowrap;
+        }}
+
+        .table-level {{
+            display: inline-block;
+            padding: 5px 7px;
+            border-radius: 7px;
+            background: #f3f4f6;
+            font-size: .75rem;
+            white-space: nowrap;
+        }}
+
+        .status-retained {{
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 7px;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: .75rem;
+            font-weight: 650;
+        }}
+
+        .status-filtered {{
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 7px;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: .75rem;
         }}
 
         .empty {{
@@ -1674,10 +2060,11 @@ def create_web_page(scan_result):
             padding-top: 20px;
             border-top: 1px solid var(--border);
             color: var(--muted);
-            font-size: 0.8rem;
+            font-size: .8rem;
         }}
 
         @media (max-width: 700px) {{
+
             .container {{
                 padding: 22px 14px 40px;
             }}
@@ -1699,134 +2086,213 @@ def create_web_page(scan_result):
                 white-space: normal;
             }}
         }}
+
     </style>
 </head>
 
 <body>
-    <main class="container">
 
-        <header>
-            <h1>Central Asia News Scanner</h1>
+<main class="container">
 
-            <p class="subtitle">
-                Actualités récentes d’Asie centrale —
-                politique, droits humains, dissidence,
-                sécurité, géopolitique et événements régionaux.
-            </p>
+    <header>
 
-            <div class="scan-time">
-                Dernier scan : {scan_time}
-            </div>
-        </header>
+        <h1>
+            Central Asia News Scanner
+        </h1>
 
-        <section class="dashboard">
-            <h2 class="dashboard-title">
-                Tableau de bord
-            </h2>
+        <p class="subtitle">
+            Actualités récentes d’Asie centrale —
+            politique, droits humains, dissidence,
+            sécurité, géopolitique et événements régionaux.
+        </p>
 
-            <div class="stats-grid">
+        <div class="scan-time">
+            Dernier scan : {scan_time}
+        </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        {stats["analyzed"]}
-                    </div>
-                    <div class="stat-label">
-                        📰 Articles analysés
-                    </div>
+    </header>
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <section class="dashboard">
+
+        <h2 class="dashboard-title">
+            Tableau de bord
+        </h2>
+
+        <div class="stats-grid">
+
+            <div class="stat">
+                <div class="stat-value">
+                    {stats["analyzed"]}
                 </div>
 
-                <div class="stat">
-                    <div class="stat-value">
-                        {stats["retained"]}
-                    </div>
-                    <div class="stat-label">
-                        🎯 Articles retenus
-                    </div>
+                <div class="stat-label">
+                    📰 Articles analysés
                 </div>
-
-                <div class="stat">
-                    <div class="stat-value">
-                        {stats["average_score"]}/20
-                    </div>
-                    <div class="stat-label">
-                        📊 Score moyen
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-value">
-                        {stats["sources_success"]}/{stats["sources_total"]}
-                    </div>
-                    <div class="stat-label">
-                        📡 Sources analysées
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-value">
-                        {levels["A"]}
-                    </div>
-                    <div class="stat-label">
-                        🟥 Niveau A
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-value">
-                        {levels["B"]}
-                    </div>
-                    <div class="stat-label">
-                        🟧 Niveau B
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-value">
-                        {levels["C"]}
-                    </div>
-                    <div class="stat-label">
-                        🟦 Niveau C
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-value">
-                        {levels["D"]}
-                    </div>
-                    <div class="stat-label">
-                        ⚪ Niveau D
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-value">
-                        {stats["relevance_rate"]}%
-                    </div>
-                    <div class="stat-label">
-                        📈 Taux de pertinence
-                    </div>
-                </div>
-
             </div>
 
-            <div class="dashboard-note">
-                Le score moyen est calculé sur l’ensemble des
-                articles analysés après déduplication, et non
-                uniquement sur les articles retenus.
+
+            <div class="stat">
+                <div class="stat-value">
+                    {stats["retained"]}
+                </div>
+
+                <div class="stat-label">
+                    🎯 Articles retenus
+                </div>
             </div>
-        </section>
 
-        <section class="articles">
-            {articles_html}
-        </section>
 
-        <footer>
-            Scanner automatique — Asie centrale.
-            Les articles sont classés selon leur pertinence
-            politique, droits humains et géopolitique.
-        </footer>
+            <div class="stat">
+                <div class="stat-value">
+                    {stats["average_score"]}/20
+                </div>
 
-    </main>
+                <div class="stat-label">
+                    📊 Score moyen
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    {stats["sources_success"]}/{stats["sources_total"]}
+                </div>
+
+                <div class="stat-label">
+                    📡 Sources analysées
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    {levels["A"]}
+                </div>
+
+                <div class="stat-label">
+                    🟥 Niveau A
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    {levels["B"]}
+                </div>
+
+                <div class="stat-label">
+                    🟧 Niveau B
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    {levels["C"]}
+                </div>
+
+                <div class="stat-label">
+                    🟦 Niveau C
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    {levels["D"]}
+                </div>
+
+                <div class="stat-label">
+                    ⚪ Niveau D
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div class="stat-value">
+                    {stats["relevance_rate"]}%
+                </div>
+
+                <div class="stat-label">
+                    📈 Taux de pertinence
+                </div>
+            </div>
+
+        </div>
+
+        <div class="dashboard-note">
+            Le score moyen est calculé sur l’ensemble des
+            articles analysés après déduplication.
+        </div>
+
+    </section>
+
+
+    <!-- ================= SELECTED ARTICLES ================= -->
+
+    <section class="articles">
+
+        {articles_html}
+
+    </section>
+
+
+    <!-- ================= AUDIT TABLE ================= -->
+
+    <section class="audit">
+
+        <h2>
+            Tableau d’analyse
+        </h2>
+
+        <p class="audit-description">
+            Tous les articles analysés, classés par score
+            décroissant. Les articles filtrés restent visibles
+            afin de permettre un contrôle du classement.
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Article</th>
+                        <th>Source</th>
+                        <th>Date</th>
+                        <th>Score</th>
+                        <th>Niveau</th>
+                        <th>Statut</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {audit_table}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+        Scanner automatique — Asie centrale.
+        Classification basée sur les droits humains,
+        la politique intérieure et les événements
+        géopolitiques majeurs.
+    </footer>
+
+</main>
+
 </body>
 </html>
 """
@@ -1837,11 +2303,13 @@ def create_web_page(scan_result):
 # ============================================================
 
 def main():
-    print("[INFO] Starting Asia Central News Scanner")
+    print(
+        "[INFO] Starting Asia Central News Scanner"
+    )
 
     scan_result = scan_news()
 
-    create_web_page_result = create_web_page(
+    page = create_web_page(
         scan_result
     )
 
@@ -1850,10 +2318,15 @@ def main():
         "w",
         encoding="utf-8",
     ) as f:
-        f.write(create_web_page_result)
+        f.write(page)
 
-    print("[INFO] index.html generated")
-    print("[INFO] Scan completed successfully")
+    print(
+        "[INFO] index.html generated"
+    )
+
+    print(
+        "[INFO] Scan completed successfully"
+    )
 
 
 if __name__ == "__main__":
