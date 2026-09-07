@@ -1,7 +1,9 @@
 # news_scanner.py
 
+import argparse
 import logging
 import re
+
 from datetime import datetime, timezone
 from urllib.parse import urljoin
 
@@ -11,6 +13,15 @@ from bs4 import BeautifulSoup
 
 from sources import SOURCES
 from scoring import classify_article
+from memory import (
+    load_memory,
+    save_memory,
+    is_source_cached,
+    mark_source_scanned,
+    save_articles,
+    get_all_articles,
+    get_memory_stats,
+)
 from html_template import create_web_page
 
 
@@ -22,7 +33,6 @@ MAX_FEED_ENTRIES = 100
 MAX_HTML_ARTICLES = 100
 
 ARTICLES_TO_DISPLAY = 20
-
 ARTICLE_PAGE_FETCH_LIMIT = 80
 
 REQUEST_TIMEOUT = 20
@@ -56,7 +66,6 @@ logger = logging.getLogger(__name__)
 def fetch_url(url):
 
     try:
-
         response = requests.get(
             url,
             headers=HEADERS,
@@ -98,9 +107,7 @@ def clean_text(text):
 
 def normalize_text(text):
 
-    return clean_text(
-        text
-    ).lower()
+    return clean_text(text).lower()
 
 
 # ============================================================
@@ -112,22 +119,16 @@ def parse_date(value):
     if not value:
         return None
 
-    if isinstance(
-        value,
-        datetime,
-    ):
+    if isinstance(value, datetime):
 
         if value.tzinfo is None:
-
             return value.replace(
                 tzinfo=timezone.utc
             )
 
         return value
 
-    value = str(
-        value
-    ).strip()
+    value = str(value).strip()
 
     try:
 
@@ -139,7 +140,6 @@ def parse_date(value):
         )
 
         if parsed.tzinfo is None:
-
             parsed = parsed.replace(
                 tzinfo=timezone.utc
             )
@@ -183,9 +183,7 @@ def extract_date_from_container(container):
     if not container:
         return None
 
-    time_tag = container.find(
-        "time"
-    )
+    time_tag = container.find("time")
 
     if time_tag:
 
@@ -197,9 +195,7 @@ def extract_date_from_container(container):
             )
         )
 
-        parsed = parse_date(
-            value
-        )
+        parsed = parse_date(value)
 
         if parsed:
             return parsed
@@ -223,7 +219,7 @@ def extract_date_from_container(container):
 
         itemprop = element.get(
             "itemprop",
-            ""
+            "",
         )
 
         text = element.get_text(
@@ -247,12 +243,8 @@ def extract_date_from_container(container):
         ):
 
             parsed = parse_date(
-                element.get(
-                    "datetime"
-                )
-                or element.get(
-                    "content"
-                )
+                element.get("datetime")
+                or element.get("content")
                 or text
             )
 
@@ -287,19 +279,13 @@ def is_probable_article_url(url):
 
     lowered = url.lower()
 
-    if lowered.startswith(
-        "#"
-    ):
+    if lowered.startswith("#"):
         return False
 
-    if lowered.startswith(
-        "javascript:"
-    ):
+    if lowered.startswith("javascript:"):
         return False
 
-    if lowered.startswith(
-        "mailto:"
-    ):
+    if lowered.startswith("mailto:"):
         return False
 
     ignored = [
@@ -326,7 +312,7 @@ def is_probable_article_url(url):
 
 
 # ============================================================
-# ARTICLE FACTORY
+# ARTICLE
 # ============================================================
 
 def build_article(
@@ -338,16 +324,12 @@ def build_article(
 ):
 
     return {
-        "title": clean_text(
-            title
-        ),
-
+        "title": clean_text(title),
         "url": url,
+        "summary": clean_text(summary),
 
-        "summary": clean_text(
-            summary
-        ),
-
+        # Le body sera récupéré plus tard
+        # uniquement pour les meilleurs candidats.
         "body": "",
 
         "date": date,
@@ -385,18 +367,14 @@ def parse_feed(
         feed_url,
     )
 
-    raw = fetch_url(
-        feed_url
-    )
+    raw = fetch_url(feed_url)
 
     if not raw:
         return []
 
     try:
 
-        parsed = feedparser.parse(
-            raw
-        )
+        parsed = feedparser.parse(raw)
 
     except Exception as exc:
 
@@ -500,9 +478,7 @@ def parse_feed(
 # HTML CONTAINERS
 # ============================================================
 
-def find_article_containers(
-    soup
-):
+def find_article_containers(soup):
 
     containers = []
 
@@ -544,31 +520,24 @@ def find_article_containers(
                 continue
 
     unique = []
-
     seen_ids = set()
 
     for container in containers:
 
-        identifier = id(
-            container
-        )
+        identifier = id(container)
 
         if identifier in seen_ids:
             continue
 
-        seen_ids.add(
-            identifier
-        )
+        seen_ids.add(identifier)
 
-        unique.append(
-            container
-        )
+        unique.append(container)
 
     return unique
 
 
 # ============================================================
-# EXTRACTION ARTICLE HTML
+# EXTRACTION HTML
 # ============================================================
 
 def extract_article_from_container(
@@ -620,7 +589,7 @@ def extract_article_from_container(
     if not candidates:
         return None
 
-    title, url, title_link = max(
+    title, url, _ = max(
         candidates,
         key=lambda item: len(
             item[0]
@@ -641,9 +610,7 @@ def extract_article_from_container(
         )
 
         if len(text) >= 40:
-            paragraphs.append(
-                text
-            )
+            paragraphs.append(text)
 
     summary = " ".join(
         paragraphs[:3]
@@ -658,13 +625,9 @@ def extract_article_from_container(
             )
         )
 
-        if len(local_text) > len(
-            title
-        ):
+        if len(local_text) > len(title):
 
-            summary = local_text[
-                :800
-            ]
+            summary = local_text[:800]
 
     date = extract_date_from_container(
         container
@@ -693,9 +656,7 @@ def parse_html_source(
         url,
     )
 
-    raw = fetch_url(
-        url
-    )
+    raw = fetch_url(url)
 
     if not raw:
         return []
@@ -706,7 +667,6 @@ def parse_html_source(
     )
 
     articles = []
-
     seen_urls = set()
 
     containers = find_article_containers(
@@ -732,9 +692,7 @@ def parse_html_source(
         if not article:
             continue
 
-        article_url = article[
-            "url"
-        ]
+        article_url = article["url"]
 
         if article_url in seen_urls:
             continue
@@ -829,16 +787,12 @@ def parse_html_source(
 
 
 # ============================================================
-# BODY ARTICLE
+# ARTICLE BODY
 # ============================================================
 
-def extract_article_body(
-    url
-):
+def extract_article_body(url):
 
-    raw = fetch_url(
-        url
-    )
+    raw = fetch_url(url)
 
     if not raw:
         return ""
@@ -884,9 +838,7 @@ def extract_article_body(
             pass
 
     if not candidates:
-        candidates = [
-            soup
-        ]
+        candidates = [soup]
 
     best_text = ""
 
@@ -906,31 +858,23 @@ def extract_article_body(
             )
 
             if len(text) >= 30:
-                paragraphs.append(
-                    text
-                )
+                paragraphs.append(text)
 
         text = " ".join(
             paragraphs
         )
 
-        if len(text) > len(
-            best_text
-        ):
+        if len(text) > len(best_text):
             best_text = text
 
-    return best_text[
-        :20000
-    ]
+    return best_text[:20000]
 
 
 # ============================================================
 # DEDUPLICATION
 # ============================================================
 
-def normalize_url_for_dedup(
-    url
-):
+def normalize_url_for_dedup(url):
 
     if not url:
         return ""
@@ -952,22 +896,21 @@ def normalize_url_for_dedup(
     return url.rstrip("/")
 
 
-def deduplicate_articles(
-    articles
-):
+def deduplicate_articles(articles):
 
     result = []
 
     seen_urls = set()
-
     seen_titles = set()
 
     for article in articles:
 
-        normalized_url = normalize_url_for_dedup(
-            article.get(
-                "url",
-                "",
+        normalized_url = (
+            normalize_url_for_dedup(
+                article.get(
+                    "url",
+                    "",
+                )
             )
         )
 
@@ -1008,12 +951,10 @@ def deduplicate_articles(
 
 
 # ============================================================
-# COLLECTE
+# SOURCE SCANNER
 # ============================================================
 
-def scan_source(
-    source
-):
+def scan_source(source):
 
     logger.info(
         "Scanning %s",
@@ -1022,9 +963,7 @@ def scan_source(
 
     articles = []
 
-    if source.get(
-        "type"
-    ) == "rss":
+    if source.get("type") == "rss":
 
         for feed_url in source.get(
             "feeds",
@@ -1048,9 +987,7 @@ def scan_source(
 
         if (
             not articles
-            and source.get(
-                "fallback"
-            )
+            and source.get("fallback")
         ):
 
             logger.info(
@@ -1064,13 +1001,9 @@ def scan_source(
                 source,
             )
 
-    elif source.get(
-        "type"
-    ) == "html":
+    elif source.get("type") == "html":
 
-        if source.get(
-            "url"
-        ):
+        if source.get("url"):
 
             articles = parse_html_source(
                 source["url"],
@@ -1079,9 +1012,7 @@ def scan_source(
 
     for article in articles:
 
-        article["source"] = source[
-            "name"
-        ]
+        article["source"] = source["name"]
 
         article["source_short"] = source.get(
             "short_name",
@@ -1106,13 +1037,40 @@ def scan_source(
     ]
 
 
-def collect_articles():
+# ============================================================
+# COLLECTE AVEC CACHE
+# ============================================================
+
+def collect_articles(memory):
 
     all_articles = []
 
     successful_sources = 0
+    skipped_sources = 0
 
     for source in SOURCES:
+
+        # ----------------------------------------------------
+        # CACHE 1 HEURE
+        # ----------------------------------------------------
+
+        if is_source_cached(
+            memory,
+            source,
+        ):
+
+            skipped_sources += 1
+
+            logger.info(
+                "CACHE: %s -> scan ignoré (< 1h)",
+                source["name"],
+            )
+
+            continue
+
+        # ----------------------------------------------------
+        # SCAN
+        # ----------------------------------------------------
 
         try:
 
@@ -1127,18 +1085,30 @@ def collect_articles():
                 articles
             )
 
+            mark_source_scanned(
+                memory,
+                source,
+                len(articles),
+            )
+
         except Exception:
 
             logger.exception(
                 "Source failed: %s",
-                source.get(
-                    "name"
-                ),
+                source.get("name"),
             )
+
+    logger.info(
+        "Sources scannées: %d | "
+        "sources ignorées par cache: %d",
+        successful_sources,
+        skipped_sources,
+    )
 
     return (
         all_articles,
         successful_sources,
+        skipped_sources,
     )
 
 
@@ -1146,19 +1116,7 @@ def collect_articles():
 # SCORING
 # ============================================================
 
-def classify_articles(
-    articles
-):
-
-    """
-    Le scanner délègue toute la logique
-    éditoriale à scoring.py.
-
-    1. Score titre + résumé
-    2. Sélection des meilleurs candidats
-    3. Récupération du body
-    4. Nouveau passage dans scoring.py
-    """
+def classify_articles(articles):
 
     audit = []
 
@@ -1179,7 +1137,7 @@ def classify_articles(
         )
 
     # --------------------------------------------------------
-    # CANDIDATS POUR BODY
+    # MEILLEURS CANDIDATS
     # --------------------------------------------------------
 
     minimum_date = datetime.min.replace(
@@ -1195,8 +1153,7 @@ def classify_articles(
             ),
             article.get(
                 "date"
-            )
-            or minimum_date,
+            ) or minimum_date,
         ),
         reverse=True,
     )
@@ -1206,14 +1163,12 @@ def classify_articles(
     ]
 
     candidate_urls = {
-        article.get(
-            "url"
-        )
+        article.get("url")
         for article in candidates
     }
 
     # --------------------------------------------------------
-    # SECOND PASS
+    # SECOND PASS AVEC BODY
     # --------------------------------------------------------
 
     for article in audit:
@@ -1235,8 +1190,6 @@ def classify_articles(
 
         article["body"] = body
 
-        # Le cerveau revoit maintenant
-        # l'article avec le texte intégral.
         classify_article(
             article
         )
@@ -1256,22 +1209,7 @@ LEVEL_PRIORITY = {
 }
 
 
-def sort_articles(
-    articles
-):
-
-    """
-    Priorité éditoriale :
-
-        A
-        puis B
-        puis C
-        puis D
-
-    À niveau égal :
-        score
-        puis date
-    """
+def sort_articles(articles):
 
     minimum_date = datetime.min.replace(
         tzinfo=timezone.utc
@@ -1295,8 +1233,7 @@ def sort_articles(
 
             article.get(
                 "date"
-            )
-            or minimum_date,
+            ) or minimum_date,
         ),
         reverse=True,
     )
@@ -1309,11 +1246,10 @@ def sort_articles(
 def build_stats(
     audit,
     successful_sources,
+    skipped_sources=0,
 ):
 
-    analyzed = len(
-        audit
-    )
+    analyzed = len(audit)
 
     retained = [
         article
@@ -1332,8 +1268,7 @@ def build_stats(
     ]
 
     avg_score = (
-        sum(scores)
-        / len(scores)
+        sum(scores) / len(scores)
         if scores
         else 0
     )
@@ -1359,10 +1294,7 @@ def build_stats(
 
     return {
         "analyzed": analyzed,
-
-        "retained": len(
-            retained
-        ),
+        "retained": len(retained),
 
         "avg_score": round(
             avg_score,
@@ -1371,7 +1303,7 @@ def build_stats(
 
         "levels": levels,
 
-        # Compatibilité avec html_template.py
+        # Compatibilité HTML
         "level_a": levels["A"],
         "level_b": levels["B"],
         "level_c": levels["C"],
@@ -1383,6 +1315,10 @@ def build_stats(
 
         "sources_total": len(
             SOURCES
+        ),
+
+        "sources_skipped_cache": (
+            skipped_sources
         ),
 
         "relevance_rate": round(
@@ -1399,7 +1335,123 @@ def build_stats(
 
 
 # ============================================================
-# SCANNER PRINCIPAL
+# CONSULTATION MÉMOIRE
+# ============================================================
+
+def show_memory():
+
+    memory = load_memory()
+
+    articles = get_all_articles(
+        memory
+    )
+
+    stats = get_memory_stats(
+        memory
+    )
+
+    print()
+    print("=" * 70)
+    print(" MÉMOIRE DU ASIA CENTRAL NEWS SCANNER")
+    print("=" * 70)
+    print()
+
+    print(
+        f"Articles mémorisés : {stats['articles']}"
+    )
+
+    print(
+        f"Sources mémorisées  : {stats['sources']}"
+    )
+
+    print()
+
+    print("Niveaux :")
+
+    print(
+        f"  A : {stats['levels']['A']}"
+    )
+
+    print(
+        f"  B : {stats['levels']['B']}"
+    )
+
+    print(
+        f"  C : {stats['levels']['C']}"
+    )
+
+    print(
+        f"  D : {stats['levels']['D']}"
+    )
+
+    print()
+    print("-" * 70)
+    print(" DERNIERS ARTICLES")
+    print("-" * 70)
+
+    # Trier la mémoire par dernière apparition
+    articles = sorted(
+        articles,
+        key=lambda article: (
+            article.get(
+                "last_seen",
+                "",
+            )
+        ),
+        reverse=True,
+    )
+
+    for article in articles[:30]:
+
+        level = article.get(
+            "level",
+            "D",
+        )
+
+        score = article.get(
+            "score",
+            0,
+        )
+
+        source = article.get(
+            "source_short"
+        ) or article.get(
+            "source",
+            "",
+        )
+
+        title = article.get(
+            "title",
+            "",
+        )
+
+        theme = article.get(
+            "theme",
+            "",
+        )
+
+        print()
+
+        print(
+            f"[{level}] {score}/20 | "
+            f"{source}"
+        )
+
+        print(
+            f"    {theme}"
+        )
+
+        print(
+            f"    {title}"
+        )
+
+    print()
+    print("=" * 70)
+    print()
+
+
+# ============================================================
+# SCAN PRINCIPAL
 # ============================================================
 
 def scan_news():
@@ -1409,20 +1461,40 @@ def scan_news():
     )
 
     # --------------------------------------------------------
-    # 1. COLLECTE
+    # MÉMOIRE
     # --------------------------------------------------------
 
-    raw_articles, successful_sources = (
-        collect_articles()
+    memory = load_memory()
+
+    memory_stats = get_memory_stats(
+        memory
     )
 
     logger.info(
-        "Raw articles collected: %d",
+        "Mémoire: %d articles | %d sources",
+        memory_stats["articles"],
+        memory_stats["sources"],
+    )
+
+    # --------------------------------------------------------
+    # COLLECTE
+    # --------------------------------------------------------
+
+    (
+        raw_articles,
+        successful_sources,
+        skipped_sources,
+    ) = collect_articles(
+        memory
+    )
+
+    logger.info(
+        "Articles collectés: %d",
         len(raw_articles),
     )
 
     # --------------------------------------------------------
-    # 2. DÉDOUBLONNAGE
+    # DÉDOUBLONNAGE
     # --------------------------------------------------------
 
     articles = deduplicate_articles(
@@ -1430,12 +1502,12 @@ def scan_news():
     )
 
     logger.info(
-        "Articles after deduplication: %d",
+        "Après déduplication: %d",
         len(articles),
     )
 
     # --------------------------------------------------------
-    # 3. SCORING
+    # SCORING
     # --------------------------------------------------------
 
     audit = classify_articles(
@@ -1443,7 +1515,24 @@ def scan_news():
     )
 
     # --------------------------------------------------------
-    # 4. TRI
+    # MÉMOIRE
+    # --------------------------------------------------------
+
+    save_articles(
+        memory,
+        audit,
+    )
+
+    save_memory(
+        memory
+    )
+
+    logger.info(
+        "Mémoire sauvegardée"
+    )
+
+    # --------------------------------------------------------
+    # TRI
     # --------------------------------------------------------
 
     sorted_audit = sort_articles(
@@ -1451,7 +1540,7 @@ def scan_news():
     )
 
     # --------------------------------------------------------
-    # 5. SÉLECTION
+    # SÉLECTION
     # --------------------------------------------------------
 
     selected = [
@@ -1467,12 +1556,13 @@ def scan_news():
     ]
 
     # --------------------------------------------------------
-    # 6. STATS
+    # STATS
     # --------------------------------------------------------
 
     stats = build_stats(
         sorted_audit,
         successful_sources,
+        skipped_sources,
     )
 
     logger.info(
@@ -1493,7 +1583,7 @@ def scan_news():
     )
 
     # --------------------------------------------------------
-    # 7. LOG DES ARTICLES
+    # LOG ARTICLES
     # --------------------------------------------------------
 
     for article in selected:
@@ -1527,7 +1617,7 @@ def scan_news():
         )
 
     # --------------------------------------------------------
-    # 8. HTML
+    # HTML
     # --------------------------------------------------------
 
     html = create_web_page(
@@ -1558,9 +1648,56 @@ def scan_news():
 
 
 # ============================================================
+# COMMAND LINE
+# ============================================================
+
+def main():
+
+    parser = argparse.ArgumentParser(
+        description=(
+            "Asia Central News Scanner"
+        )
+    )
+
+    parser.add_argument(
+        "--memory",
+        action="store_true",
+        help=(
+            "Consulter la mémoire "
+            "sans scanner les sites"
+        ),
+    )
+
+    parser.add_argument(
+        "--scan",
+        action="store_true",
+        help=(
+            "Forcer un scan des sources"
+        ),
+    )
+
+    args = parser.parse_args()
+
+    # --------------------------------------------------------
+    # CONSULTATION MÉMOIRE
+    # --------------------------------------------------------
+
+    if args.memory:
+
+        show_memory()
+
+        return
+
+    # --------------------------------------------------------
+    # SCAN
+    # --------------------------------------------------------
+
+    scan_news()
+
+
+# ============================================================
 # ENTRY POINT
 # ============================================================
 
 if __name__ == "__main__":
-
-    scan_news()
+    main()
