@@ -1694,9 +1694,7 @@ def build_stats(
     retained = [
         article
         for article in audit
-        if article.get(
-            "relevant"
-        )
+        if article.get("relevant")
     ]
 
     scores = [
@@ -1721,7 +1719,6 @@ def build_stats(
     }
 
     for article in audit:
-
         level = article.get(
             "level",
             "D",
@@ -1736,13 +1733,16 @@ def build_stats(
         "analyzed": analyzed,
         "retained": len(retained),
 
-        # IMPORTANT:
-        # html_template.py expects avg_score.
+        # Format attendu par html_template.py
         "avg_score": round(
             avg_score,
             1,
         ),
 
+        "levels": levels,
+
+        # Conservés également pour compatibilité
+        # avec d'éventuelles autres parties du template.
         "level_a": levels["A"],
         "level_b": levels["B"],
         "level_c": levels["C"],
@@ -1843,20 +1843,19 @@ def scan_news():
     )
 
     logger.info(
-        "Dashboard: %d analyzed / %d retained / average score %.1f",
-        stats["analyzed"],
-        stats["retained"],
-        stats["avg_score"],
+    "Dashboard: %d analyzed / %d retained / average score %.1f",
+    stats["analyzed"],
+    stats["retained"],
+    stats["avg_score"],
     )
-
+    
     logger.info(
-        "Levels: A=%d B=%d C=%d D=%d",
-        stats["level_a"],
-        stats["level_b"],
-        stats["level_c"],
-        stats["level_d"],
+    "Levels: A=%d B=%d C=%d D=%d",
+    stats["levels"]["A"],
+    stats["levels"]["B"],
+    stats["levels"]["C"],
+    stats["levels"]["D"],
     )
-
     # --------------------------------------------------------
     # Log selected articles
     # --------------------------------------------------------
