@@ -24,6 +24,7 @@ from article_ingestion import (
     HEADERS,
     REQUEST_TIMEOUT,
     build_article,
+    diagnose_source_content,
     extract_body,
     extract_links_from_html,
     parse_rss,
@@ -467,6 +468,7 @@ def run_scan(
                 cache_ttl=CACHE_TTL,
                 force_refresh=force_refresh,
             )
+            diagnose_source_content(source, content, url)
 
 
             source_type = str(
