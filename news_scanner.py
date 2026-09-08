@@ -899,7 +899,10 @@ def build_stats(
         "analyzed": len(articles),
         "retained": relevant,
         "avg_score": round(average, 1),
-        "levels": levels,
+        "level_a": levels["A"],
+        "level_b": levels["B"],
+        "level_c": levels["C"],
+        "level_d": levels["D"],
     }
 
 
@@ -1082,10 +1085,10 @@ def run_scan(
 
     print(
         "LEVELS | "
-        f"A={stats['levels']['A']} "
-        f"B={stats['levels']['B']} "
-        f"C={stats['levels']['C']} "
-        f"D={stats['levels']['D']}"
+        f"A={stats['level_a']} "
+        f"B={stats['level_b']} "
+        f"C={stats['level_c']} "
+        f"D={stats['level_d']}"
     )
 
     # --------------------------------------------------------
