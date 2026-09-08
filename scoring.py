@@ -400,17 +400,21 @@ def classify_article(article):
     # ========================================================
 
     confirmed_repression = (
-        strong_body_geography
+        regional_context
         and bool(
-            body_repression
+            repression
+            or legal_repression
+            or body_repression
             or body_legal_repression
         )
     )
 
     confirmed_rights = (
-        strong_body_geography
+        regional_context
         and bool(
-            body_human_rights
+            human_rights
+            or specific_rights
+            or body_human_rights
             or body_specific_rights
         )
     )
@@ -550,6 +554,8 @@ def classify_article(article):
         dict.fromkeys(
             repression
             + legal_repression
+            + body_repression
+            + body_legal_repression
         )
     )
 
@@ -634,6 +640,7 @@ def classify_article(article):
     rights_terms_all = list(
         dict.fromkeys(
             specific_rights
+            + body_specific_rights
         )
     )
 
@@ -1008,11 +1015,11 @@ def classify_article(article):
 
     severe_detected = any(
         normalize(term)
-        in [
+        in {
             normalize(x)
             for x in SEVERE_REPRESSION_TERMS
-        ]
-        for term in repression
+        }
+        for term in (repression + body_repression)
     )
 
     if (
@@ -1074,7 +1081,7 @@ def classify_article(article):
     # ========================================================
 
     if (
-        not central_asia
+        not regional_context
         or caucasus_only
         or non_news
         or noise
@@ -1203,7 +1210,7 @@ def classify_article(article):
     # ========================================================
 
     relevant = (
-        bool(central_asia)
+        regional_context
         and score >= 40
         and not non_news
         and not noise
