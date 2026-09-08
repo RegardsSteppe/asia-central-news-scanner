@@ -16,6 +16,17 @@ from text_utils import (
 )
 
 
+# ============================================================
+# CONFIGURATION DES CONSTANTES
+# ============================================================
+
+CACHE_TTL = 3600  # Cache timeout en secondes (1 heure)
+REQUEST_TIMEOUT = 30  # Timeout pour les requêtes en secondes
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+}
+
+
 def parse_rss(content: str, source: dict[str, Any]) -> list[dict[str, Any]]:
     feed = feedparser.parse(content)
 
