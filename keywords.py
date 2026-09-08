@@ -8,6 +8,32 @@
 # 1. GÉOGRAPHIE — ASIE CENTRALE
 # ============================================================
 
+HUMAN_RIGHTS_DEFENDER_TERMS = [
+    "правозащитник",
+    "правозащитница",
+    "правозащитник и журналист",
+    "правозащитница и журналист",
+    "human rights defender",
+    "human rights activist",
+    "rights defender",
+    "rights activist",
+]
+
+FORCED_LABOR_TERMS = [
+    "forced labor",
+    "forced labour",
+    "forced work",
+    "child labor",
+    "child labour",
+    "cotton quotas",
+    "forced cotton picking",
+    "принудительный труд",
+    "принудительный сбор хлопка",
+    "принудительный труд на сборе хлопка",
+    "квоты на производство и сбор хлопка",
+    "детский труд",
+]
+
 CENTRAL_ASIA_TERMS = [
     "central asia",
     "central asian",
@@ -695,6 +721,24 @@ SPECIFIC_RIGHTS_TERMS = [
     "refugee rights",
     "refugee protection",
 
+    # Liberté académique / universitaires
+    "academic freedom",
+    "academic freedoms",
+    "academic censorship",
+    "academic repression",
+    "academic freedom at risk",
+    "scholars at risk",
+    "professor arrested",
+    "professor detained",
+
+    # Russe
+    "академическая свобода",
+    "академические свободы",
+    "преследование ученых",
+    "преследование учёных",
+    "арест профессора",
+    "задержание профессора",
+
     # Russe
     "права женщин",
     "гендерное равенство",
@@ -1209,6 +1253,10 @@ SEVERE_REPRESSION_TERMS = [
     "произвольное задержание",
     "одиночное заключение",
     "пыточные условия",
+    "пыточных условиях",
+    "пыточном состоянии",
+    "шизо",
+    "карцер",
     "репрессии",
 ]
 
@@ -1355,6 +1403,16 @@ REPRESSION_WEIGHTS = {
     "угрозы": 4,
     "угрозы убийством": 6,
     "запугивание": 4,
+    "шизо": 8,
+    "карцер": 8,
+    "пыточные условия": 10,
+    "пыточных условиях": 10,
+    "одиночное заключение": 9,
+    "произвольное задержание": 9,
+    "за решеткой": 7,
+    "за решёткой": 7,
+    "отбывает срок": 7,
+    "отбывает наказание": 7,
 }
 
 
@@ -1363,6 +1421,21 @@ REPRESSION_WEIGHTS = {
 # ============================================================
 
 SPECIFIC_RIGHTS_WEIGHTS = {
+    "academic freedom": 7,
+    "academic freedoms": 7,
+    "academic censorship": 7,
+    "academic repression": 8,
+    "academic freedom at risk": 8,
+    "scholars at risk": 7,
+    "professor arrested": 6,
+    "professor detained": 6,
+    "академическая свобода": 7,
+    "академические свободы": 7,
+    "преследование ученых": 8,
+    "преследование учёных": 8,
+    "арест профессора": 7,
+    "задержание профессора": 7,
+
 
     "gender-based violence": 8,
     "violence against women": 8,
