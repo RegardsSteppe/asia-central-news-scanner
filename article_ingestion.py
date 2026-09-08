@@ -7,12 +7,7 @@ from urllib.parse import urljoin, urlparse
 import feedparser
 from bs4 import BeautifulSoup
 
-from http_utils import (
-    CACHE_TTL,
-    HEADERS,
-    REQUEST_TIMEOUT,
-    fetch_url,
-)
+from http_utils import fetch_url
 from text_utils import (
     clean_text,
     clean_title,
