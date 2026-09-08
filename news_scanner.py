@@ -20,6 +20,9 @@ from text_utils import (
 from http_utils import fetch_url
 
 from article_ingestion import (
+    CACHE_TTL,
+    HEADERS,
+    REQUEST_TIMEOUT,
     build_article,
     extract_body,
     extract_links_from_html,
@@ -459,11 +462,12 @@ def run_scan(
         try:
             content = fetch_url(
                 url,
-                headers=article_ingestion.HEADERS,
-                request_timeout=article_ingestion.REQUEST_TIMEOUT,
-                cache_ttl=article_ingestion.CACHE_TTL,
+                headers=HEADERS,
+                request_timeout=REQUEST_TIMEOUT,
+                cache_ttl=CACHE_TTL,
                 force_refresh=force_refresh,
             )
+
 
             source_type = str(
                 source.get(
