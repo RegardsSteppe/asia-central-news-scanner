@@ -1,163 +1,296 @@
-# Asia Central News Scanner - Quick Start Guide
+# Central Asia News Scanner — Quick Start
 
-Follow these steps to get your news scanner running in 5 minutes!
+Get the scanner running locally in a few minutes.
 
-## 1️⃣ Installation (2 minutes)
+## 1. Clone the repository
 
 ```bash
-# Clone the repository
 git clone https://github.com/RegardsSteppe/asia-central-news-scanner.git
 cd asia-central-news-scanner
+```
 
-# Install dependencies
+## 2. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-## 2️⃣ ProtonMail Setup (2 minutes)
+## 3. Run the scanner
 
-### Using ProtonMail Bridge (Recommended)
+For a normal scan:
 
-```bash
-# Download and install from https://proton.me/download/bridge
-# Then launch Bridge and sign in with your ProtonMail credentials
-
-# Create .env file
-cp .env.example .env
-
-# Edit .env with Bridge credentials
-nano .env
-# Add:
-# SENDER_EMAIL=your_email@proton.me
-# SENDER_PASSWORD=your_bridge_password
-# RECIPIENT_EMAIL=recipient@proton.me
-# SMTP_SERVER=127.0.0.1
-# SMTP_PORT=1025
-```
-
-### Without Bridge (Direct SMTP)
-
-```bash
-cp .env.example .env
-nano .env
-# Add your ProtonMail credentials:
-# SENDER_EMAIL=your_email@proton.me
-# SENDER_PASSWORD=your_protonmail_password
-# RECIPIENT_EMAIL=recipient@proton.me
-# SMTP_SERVER=smtp.protonmailrmez7hm6.onion
-# SMTP_PORT=1025
-```
-
-## 3️⃣ Test Configuration (1 minute)
-
-```bash
-python test_email.py
-```
-
-You should see:
-```
-🔧 Testing ProtonMail Configuration...
-📧 From: your_email@proton.me
-📧 To: recipient@proton.me
-🖥️  Server: 127.0.0.1:1025
-
-📤 Connecting to SMTP server...
-🔐 TLS connection established
-🔑 Authenticating...
-✅ Authentication successful
-📧 Sending test email...
-✅ Email sent successfully!
-
-🎉 All tests passed! Your configuration is ready.
-```
-
-## 4️⃣ Run the Scanner
-
-### Option A: Development Mode (Terminal)
 ```bash
 python news_scanner.py
 ```
 
-The script will wait until 8:00 AM Paris time and send the first email automatically.
-
-### Option B: Background Service (Linux)
+To force fresh requests:
 
 ```bash
-# Run in background
-nohup python news_scanner.py > news_scanner.log 2>&1 &
-
-# Check logs
-tail -f news_scanner.log
+python news_scanner.py --scan
 ```
 
-### Option C: Systemd Service (Linux - Persistent)
+## 4. What happens?
+
+The scanner runs the following pipeline:
+
+```text
+Sources
+   ↓
+RSS / HTML ingestion
+   ↓
+Text normalization
+   ↓
+Deduplication
+   ↓
+First scoring pass
+(title + summary)
+   ↓
+Best articles selected
+   ↓
+Full-body enrichment
+   ↓
+Second scoring pass
+   ↓
+A / B / C / D classification
+   ↓
+index.html
+```
+
+The generated dashboard is written to:
+
+```text
+index.html
+```
+
+## 5. Open the dashboard
+
+After the scan, open:
+
+```text
+index.html
+```
+
+in a browser.
+
+The dashboard displays:
+
+* scan statistics;
+* article scores;
+* A/B/C/D levels;
+* retained articles;
+* sources;
+* themes;
+* scoring reasons;
+* audit information.
+
+## 6. Understand the scoring
+
+The scanner uses a deterministic scoring system.
+
+It looks at signals such as:
+
+* Central Asian geography;
+* human-rights issues;
+* repression;
+* activists;
+* journalists;
+* specific rights issues;
+* geopolitical events;
+* freshness.
+
+The score is from:
+
+```text
+0 → 100
+```
+
+The resulting level is:
+
+```text
+A = very high relevance
+B = high relevance
+C = moderate relevance
+D = low relevance
+```
+
+The rules are defined in:
+
+```text
+keywords.py
+scoring.py
+```
+
+## 7. The scanner does not read every article in full
+
+The scanner first works with:
+
+```text
+title + summary
+```
+
+It then retrieves the full body only for the highest-scoring articles.
+
+The current limit is:
+
+```python
+ENRICH_LIMIT = 80
+```
+
+This keeps the scan lighter while giving the scoring system more context where it matters most.
+
+## 8. Sources
+
+The monitored sources are configured in:
+
+```text
+sources.py
+```
+
+To add or remove a source, modify that file.
+
+The scanner supports both:
+
+* RSS / Atom feeds;
+* HTML pages.
+
+## 9. Main files
+
+```text
+news_scanner.py
+    Main scanner and pipeline
+
+article_ingestion.py
+    RSS / HTML parsing and article construction
+
+text_utils.py
+    Text, date and URL normalization
+
+http_utils.py
+    HTTP requests and cache
+
+scoring.py
+    Relevance scoring
+
+keywords.py
+    Keywords and scoring vocabulary
+
+html_template.py
+    Dashboard generation
+
+sources.py
+    News source configuration
+
+memory_utils.py
+    Optional scanner memory
+```
+
+## 10. GitHub Actions
+
+The repository can run automatically through GitHub Actions.
+
+The workflow is located at:
+
+```text
+.github/workflows/news-scanner.yml
+```
+
+The automated process runs the scanner and publishes the generated dashboard.
+
+You do not need to keep your computer running for the GitHub Actions workflow.
+
+## 11. Force a fresh scan
+
+The scanner normally uses its HTTP cache during a run.
+
+To force fresh requests:
 
 ```bash
-# Create service file
-sudo nano /etc/systemd/system/news-scanner.service
+python news_scanner.py --scan
 ```
 
-Paste:
-```ini
-[Unit]
-Description=Asia Central News Scanner
-After=network.target
+## 12. If a source fails
 
-[Service]
-Type=simple
-User=your_username
-WorkingDirectory=/path/to/asia-central-news-scanner
-ExecStart=/usr/bin/python3 /path/to/asia-central-news-scanner/news_scanner.py
-Restart=on-failure
-RestartSec=10
+A source failure does not normally stop the scan.
 
-[Install]
-WantedBy=multi-user.target
+You may see:
+
+```text
+WARNING | Source Name | ERROR | ...
 ```
 
-Then:
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable news-scanner
-sudo systemctl start news-scanner
-sudo systemctl status news-scanner
+The scanner continues with the other sources.
+
+Possible causes include:
+
+* temporary HTTP errors;
+* SSL/TLS errors;
+* unavailable RSS feeds;
+* website changes;
+* temporary blocking.
+
+## 13. Typical output
+
+A successful run looks approximately like:
+
+```text
+MEMORY | vide — ignorée
+
+SOURCES | ... sources actives
+
+SOURCE | Example Source | ... articles
+SOURCE | Another Source | ... articles
+
+COLLECT | ... articles avant déduplication
+DEDUP | ... articles uniques
+
+SCORING | première passe title + summary
+
+VOCABULARY | ... mots de titres
+
+ENRICH | ... articles avec body complet
+
+STATS | analyzed=... | retained=... | avg=.../100
+
+LEVELS | A=... B=... C=... D=...
+
+HTML | génération de index.html
+HTML | index.html créé | ... octets
+
+SCAN | terminé | ... articles sélectionnés
 ```
 
-## 🎉 Done!
+## 14. Development
 
-Your news scanner is now set up and will:
-- ✅ Run every day at 8:00 AM Paris time
-- ✅ Scan 5 top Asian Central news websites
-- ✅ Send a beautiful HTML email summary via ProtonMail
-- ✅ Handle errors gracefully
+The project is being developed incrementally.
 
-## 📋 What You'll Receive
+The current priority is to keep the ingestion and normalization pipeline stable before making larger changes to the scoring taxonomy.
 
-Each morning at 8 AM you'll get an email with:
-- Top headlines from 5 news sources
-- Direct links to full articles
-- Formatted in a clean, readable HTML template
+Validated modules should not be modified accidentally when another module is changed.
 
-## 🔧 Troubleshooting
+The long-term pipeline is:
 
-**Email not sent?**
-1. Check if Bridge is running (if using Bridge)
-2. Verify `.env` file is in the correct location
-3. Run `python test_email.py` to diagnose
-4. Check `news_scanner.log` for errors
+```text
+Collect
+  ↓
+Normalize
+  ↓
+Deduplicate
+  ↓
+Simple deterministic filter
+  ↓
+Best candidates
+  ↓
+LLM analysis
+```
 
-**Script not running?**
-1. Ensure terminal is still open (for dev mode)
-2. For services: `sudo systemctl status news-scanner`
-3. Check logs: `tail -f news_scanner.log`
+The LLM stage is not part of the current scanner yet.
 
-## 📚 Next Steps
+## Dashboard
 
-- **Customize sources**: Edit `TOP_NEWS_SOURCES` in `news_scanner.py`
-- **Change time**: Modify schedule in `schedule_daily_job()`
-- **Add more articles**: Update the article limit in `fetch_news_from_source()`
+Live dashboard:
 
-See [README.md](README.md) for full documentation.
+https://regardssteppe.github.io/asia-central-news-scanner/
 
----
+## Repository
 
-**Need help?** Open an issue on GitHub or check the full README.
+https://github.com/RegardsSteppe/asia-central-news-scanner
