@@ -434,15 +434,15 @@ def build_audit(
 # SCAN
 # ============================================================
 
-def run_scan(
+def collect_articles(
     force_refresh: bool = False,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], int, int]:
+    """
+    Parcourt toutes les sources configurées, récupère leur contenu
+    et en extrait les articles bruts (non dédupliqués, non scorés).
 
-    show_memory()
-
-    print(
-        f"SOURCES | {len(SOURCES)} sources actives"
-    )
+    Retourne (articles, sources_successful, sources_total).
+    """
 
     all_articles: list[dict[str, Any]] = []
 
@@ -475,7 +475,6 @@ def run_scan(
                 force_refresh=force_refresh,
             )
             diagnose_source_content(source, content, url)
-
 
             source_type = str(
                 source.get(
@@ -514,6 +513,95 @@ def run_scan(
                 f"WARNING | {name} | ERROR | {exc}"
             )
 
+    return all_articles, sources_successful, sources_total
+
+
+def score_first_pass(
+    articles: list[dict[str, Any]],
+) -> None:
+    """
+    Premier passage de scoring sur titre + résumé uniquement
+    (avant enrichissement du corps de l'article).
+    """
+
+    print(
+        "SCORING | première passe title + summary"
+    )
+
+    for article in articles:
+        article["body"] = ""
+        classify_article(article)
+
+
+def export_html(
+    articles: list[dict[str, Any]],
+    audit: list[dict[str, Any]],
+    stats: dict[str, Any],
+    vocabulary: list[dict[str, Any]],
+) -> None:
+    """
+    Génère et écrit index.html. Toute erreur est journalisée puis
+    relancée pour que le workflow GitHub ne masque pas le problème.
+    """
+
+    print(
+        "HTML | génération de index.html"
+    )
+
+    try:
+        html_output = create_web_page(
+            articles=articles,
+            audit=audit,
+            stats=stats,
+            title_words=vocabulary,
+        )
+
+        if not isinstance(
+            html_output,
+            str,
+        ):
+            raise TypeError(
+                "create_web_page() n'a pas retourné une chaîne HTML"
+            )
+
+        OUTPUT_FILE.write_text(
+            html_output,
+            encoding="utf-8",
+        )
+
+        if OUTPUT_FILE.exists():
+            size = OUTPUT_FILE.stat().st_size
+
+            print(
+                f"HTML | index.html créé | {size} octets"
+            )
+        else:
+            print(
+                "ERROR | index.html n'a pas été créé"
+            )
+
+    except Exception as exc:
+        print(
+            f"ERROR | HTML | {type(exc).__name__}: {exc}"
+        )
+
+        raise
+
+
+def run_scan(
+    force_refresh: bool = False,
+) -> list[dict[str, Any]]:
+
+    show_memory()
+
+    print(
+        f"SOURCES | {len(SOURCES)} sources actives"
+    )
+
+    all_articles, sources_successful, sources_total = collect_articles(
+        force_refresh=force_refresh
+    )
+
     print(
         f"COLLECT | {len(all_articles)} articles avant déduplication"
     )
@@ -534,13 +622,7 @@ def run_scan(
     # Première passe : titre + résumé uniquement
     # --------------------------------------------------------
 
-    print(
-        "SCORING | première passe title + summary"
-    )
-
-    for article in all_articles:
-        article["body"] = ""
-        classify_article(article)
+    score_first_pass(all_articles)
 
     # --------------------------------------------------------
     # Vocabulaire
@@ -609,50 +691,12 @@ def run_scan(
     # Génération HTML
     # --------------------------------------------------------
 
-    print(
-        "HTML | génération de index.html"
+    export_html(
+        all_articles,
+        audit,
+        stats,
+        vocabulary,
     )
-
-    try:
-        html_output = create_web_page(
-            articles=all_articles,
-            audit=audit,
-            stats=stats,
-            title_words=vocabulary,
-        )
-
-        if not isinstance(
-            html_output,
-            str,
-        ):
-            raise TypeError(
-                "create_web_page() n'a pas retourné une chaîne HTML"
-            )
-
-        OUTPUT_FILE.write_text(
-            html_output,
-            encoding="utf-8",
-        )
-
-        if OUTPUT_FILE.exists():
-            size = OUTPUT_FILE.stat().st_size
-
-            print(
-                f"HTML | index.html créé | {size} octets"
-            )
-        else:
-            print(
-                "ERROR | index.html n'a pas été créé"
-            )
-
-    except Exception as exc:
-        print(
-            f"ERROR | HTML | {type(exc).__name__}: {exc}"
-        )
-
-        # On relance l'erreur pour que le workflow GitHub
-        # ne masque pas le problème.
-        raise
 
     return all_articles
 
