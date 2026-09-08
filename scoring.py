@@ -396,6 +396,16 @@ def classify_article(article):
     )
 
     # ========================================================
+    # CONTEXTE RÉGIONAL
+    # ========================================================
+    # Doit être défini AVANT les confirmations qui l'utilisent.
+    regional_context = bool(
+        central_asia
+        or body_has_geography
+        or caucasus
+    )
+
+    # ========================================================
     # CONFIRMATIONS
     # ========================================================
 
@@ -1046,12 +1056,6 @@ def classify_article(article):
     # le Caucase). Ceci évite qu'un article de géopolitique /
     # droits humains globale, sans lien régional réel, ne soit
     # classé comme prioritaire.
-
-    regional_context = bool(
-        central_asia
-        or body_has_geography
-        or caucasus
-    )
 
     if not regional_context:
 
