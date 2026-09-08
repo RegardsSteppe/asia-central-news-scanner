@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 from typing import Any
 from urllib.parse import urljoin, urlparse
@@ -66,6 +67,7 @@ def extract_links_from_html(
 ) -> list[dict[str, Any]]:
     soup = BeautifulSoup(content, "html.parser")
     articles: list[dict[str, Any]] = []
+    seen_urls: set[str] = set()
 
     for link in soup.find_all("a", href=True):
         href = urljoin(base_url, link.get("href", ""))
@@ -78,6 +80,14 @@ def extract_links_from_html(
         if parsed.scheme not in {"http", "https"}:
             continue
 
+        if not looks_like_article_link(href, title):
+            continue
+
+        normalized = normalize_url(href)
+        if normalized in seen_urls:
+            continue
+        seen_urls.add(normalized)
+
         articles.append(
             build_article(
                 source=source,
@@ -89,6 +99,157 @@ def extract_links_from_html(
         )
 
     return articles
+
+
+# ---------------------------------------------------------------------------
+# FILTRAGE DES LIENS D'ARTICLES
+# ---------------------------------------------------------------------------
+
+# Segments d'URL clairement non-liés à un article (navigation, utilitaires...).
+_NON_ARTICLE_PATH_PATTERNS = (
+    "/tag/",
+    "/tags/",
+    "/category/",
+    "/categories/",
+    "/author/",
+    "/authors/",
+    "/page/",
+    "/pages/",
+    "/search",
+    "/feed",
+    "/rss",
+    "/privacy",
+    "/contact",
+    "/about",
+    "/terms",
+    "/login",
+    "/signup",
+    "/register",
+    "/subscribe",
+    "/newsletter",
+    "/advertise",
+    "/careers",
+    "/sitemap",
+    "/archive",
+    "/archives",
+    "/wp-admin",
+    "/wp-login",
+    "/cart",
+    "/account",
+)
+
+# Segments d'URL qui indiquent plutôt une page d'article.
+_ARTICLE_PATH_PATTERNS = (
+    "/news/",
+    "/article/",
+    "/articles/",
+    "/stories/",
+    "/story/",
+    "/posts/",
+    "/post/",
+    "/opinion/",
+    "/blog/",
+)
+
+# Textes de lien trop génériques pour être considérés comme un titre d'article.
+_GENERIC_LINK_TEXTS = {
+    "read more",
+    "lire la suite",
+    "next",
+    "next page",
+    "previous",
+    "previous page",
+    "home",
+    "accueil",
+    "back",
+    "more",
+    "learn more",
+    "click here",
+    "here",
+    "login",
+    "log in",
+    "sign up",
+    "signup",
+    "register",
+    "subscribe",
+    "contact",
+    "contact us",
+    "about",
+    "about us",
+    "privacy",
+    "privacy policy",
+    "terms",
+    "terms of service",
+    "search",
+    "menu",
+    "share",
+    "tweet",
+    "facebook",
+    "twitter",
+    "print",
+    "comments",
+    "continue reading",
+    "...",
+    "»",
+    "«",
+    ">>",
+    "<<",
+}
+
+# Motif d'une date dans le chemin d'URL, ex. /2024/03/15/ ou /2024-03-15/
+_DATE_PATH_RE = re.compile(r"/(19|20)\d{2}[/-](0?[1-9]|1[0-2])[/-]")
+
+# Longueur minimale d'un titre de lien pour être considéré comme un article.
+_MIN_TITLE_LENGTH = 8
+_MIN_TITLE_WORDS = 2
+
+
+def looks_like_article_link(url: str, title: str) -> bool:
+    """
+    Heuristique conservatrice pour ne garder que les liens
+    ressemblant à de vrais articles.
+
+    Rejette les liens de navigation/catégories/tags/pages
+    utilitaires ainsi que les libellés de lien trop génériques.
+    """
+    if not url or not title:
+        return False
+
+    normalized_title = title.strip().lower()
+
+    if len(normalized_title) < _MIN_TITLE_LENGTH:
+        return False
+
+    if len(normalized_title.split()) < _MIN_TITLE_WORDS:
+        return False
+
+    if normalized_title in _GENERIC_LINK_TEXTS:
+        return False
+
+    parsed = urlparse(url)
+    path = parsed.path.lower()
+
+    if not path or path == "/":
+        return False
+
+    if any(pattern in path for pattern in _NON_ARTICLE_PATH_PATTERNS):
+        return False
+
+    if any(pattern in path for pattern in _ARTICLE_PATH_PATTERNS):
+        return True
+
+    if _DATE_PATH_RE.search(path):
+        return True
+
+    # Par défaut, accepter les chemins suffisamment spécifiques
+    # (au moins deux segments non vides) pour rester conservateur
+    # sans être trop restrictif sur les sites qui ne suivent pas
+    # les motifs ci-dessus.
+    segments = [segment for segment in path.split("/") if segment]
+    if len(segments) < 2:
+        return False
+
+    return True
 
 
 def extract_body(
