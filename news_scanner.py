@@ -896,6 +896,11 @@ def build_stats(
         if scores
         else 0
     )
+    relevance_rate = (
+        (relevant / len(articles)) * 100
+        if articles
+        else 0
+    )
 
     return {
         "analyzed": len(articles),
@@ -907,6 +912,7 @@ def build_stats(
         "level_d": levels["D"],
         "sources_successful": sources_successful,
         "sources_total": sources_total,
+        "relevance_rate": round(relevance_rate, 1)
     }
 
 
