@@ -3,19 +3,27 @@ import logging
 import re
 from collections import Counter
 from datetime import datetime, timezone
-from urllib.parse import urljoin, urlparse, parse_qsl, urlencode, urlunparse
+from urllib.parse import (
+    urljoin,
+    urlparse,
+    parse_qsl,
+    urlencode,
+    urlunparse,
+)
 
 import feedparser
 import requests
 from bs4 import BeautifulSoup
 
 from sources import SOURCES
-from keyword import classify_article
+from scoring import classify_article
+
 from memory import (
     load_memory,
     save_memory,
     mark_source_scanned,
 )
+
 from html_template import create_web_page
 
 
@@ -26,7 +34,6 @@ from html_template import create_web_page
 MAX_FEED_ENTRIES = 100
 MAX_HTML_ARTICLES = 100
 
-# Nombre d'articles affichés sur la page
 ARTICLES_TO_DISPLAY = 20
 
 # Nombre maximum d'articles dont on récupère le corps complet
@@ -34,12 +41,20 @@ ARTICLE_PAGE_FETCH_LIMIT = 80
 
 REQUEST_TIMEOUT = 20
 
-# Vocabulaire découvert dans les titres
+# ------------------------------------------------------------
+# Vocabulaire des titres
+# ------------------------------------------------------------
+
 TITLE_WORD_MIN_COUNT = 1
 TITLE_WORD_MAX = 300
 
 TITLE_PHRASE_MIN_COUNT = 1
 TITLE_PHRASE_MAX = 200
+
+
+# ============================================================
+# HTTP
+# ============================================================
 
 HEADERS = {
     "User-Agent": (
@@ -52,7 +67,9 @@ HEADERS = {
         "text/html,application/xhtml+xml,application/xml;"
         "q=0.9,text/plain;q=0.8,*/*;q=0.7"
     ),
-    "Accept-Language": "en-US,en;q=0.9,fr;q=0.8,ru;q=0.7",
+    "Accept-Language": (
+        "en-US,en;q=0.9,fr;q=0.8,ru;q=0.7"
+    ),
 }
 
 
@@ -65,87 +82,338 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(message)s",
 )
 
-logger = logging.getLogger("central-asia-scanner")
+logger = logging.getLogger(
+    "central-asia-scanner"
+)
 
 
 # ============================================================
-# STOPWORDS POUR LE VOCABULAIRE DES TITRES
+# STOPWORDS — VOCABULAIRE DES TITRES
 # ============================================================
 
 TITLE_STOPWORDS = {
+    # --------------------------------------------------------
     # English
-    "the", "a", "an", "and", "or", "but", "of", "to", "in", "on",
-    "at", "for", "from", "with", "without", "by", "as", "into",
-    "after", "before", "over", "under", "about", "against",
-    "between", "through", "during", "amid", "while", "than",
-    "this", "that", "these", "those", "their", "they", "them",
-    "his", "her", "its", "our", "your", "you", "we", "he", "she",
-    "is", "are", "was", "were", "be", "been", "being",
-    "has", "have", "had", "will", "would", "can", "could",
-    "may", "might", "should", "must",
-    "says", "said", "say", "new", "latest", "news",
-    "how", "why", "what", "when", "where", "who",
-    "all", "more", "most", "some", "many", "one", "two",
-    "first", "last", "now", "also", "just",
+    # --------------------------------------------------------
 
-    # Journalism / generic
-    "report", "reports", "reported", "according",
-    "video", "photos", "photo", "live", "update", "updates",
-    "story", "stories", "article", "read", "explained",
-    "week", "weekly", "month", "monthly", "year", "years",
-    "day", "days", "today", "yesterday", "tomorrow",
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "but",
+    "of",
+    "to",
+    "in",
+    "on",
+    "at",
+    "for",
+    "from",
+    "with",
+    "without",
+    "by",
+    "as",
+    "into",
+    "after",
+    "before",
+    "over",
+    "under",
+    "about",
+    "against",
+    "between",
+    "through",
+    "during",
+    "amid",
+    "while",
+    "than",
 
+    "this",
+    "that",
+    "these",
+    "those",
+
+    "their",
+    "they",
+    "them",
+    "his",
+    "her",
+    "its",
+    "our",
+    "your",
+    "you",
+    "we",
+    "he",
+    "she",
+
+    "is",
+    "are",
+    "was",
+    "were",
+    "be",
+    "been",
+    "being",
+
+    "has",
+    "have",
+    "had",
+
+    "will",
+    "would",
+    "can",
+    "could",
+    "may",
+    "might",
+    "should",
+    "must",
+
+    "how",
+    "why",
+    "what",
+    "when",
+    "where",
+    "who",
+
+    "all",
+    "more",
+    "most",
+    "some",
+    "many",
+    "one",
+    "two",
+
+    "first",
+    "last",
+    "now",
+    "also",
+    "just",
+
+    # --------------------------------------------------------
+    # Journalism anglais
+    # --------------------------------------------------------
+
+    "news",
+    "report",
+    "reports",
+    "reported",
+    "according",
+
+    "video",
+    "videos",
+    "photo",
+    "photos",
+    "pictures",
+
+    "live",
+    "update",
+    "updates",
+
+    "story",
+    "stories",
+    "article",
+    "articles",
+
+    "read",
+    "explained",
+
+    "week",
+    "weekly",
+    "month",
+    "monthly",
+    "year",
+    "years",
+    "day",
+    "days",
+
+    "today",
+    "yesterday",
+    "tomorrow",
+
+    # --------------------------------------------------------
     # Français
-    "le", "la", "les", "un", "une", "des", "du", "de", "et",
-    "ou", "mais", "dans", "sur", "pour", "avec", "sans",
-    "par", "entre", "après", "avant", "contre", "chez",
-    "ce", "cet", "cette", "ces", "son", "sa", "ses",
-    "leur", "leurs", "qui", "que", "quoi", "dont",
-    "est", "sont", "être", "avoir", "a", "ont", "été",
-    "sera", "seront", "plus", "moins", "très", "aussi",
-    "nouveau", "nouvelle", "nouvelles", "actualité",
-    "aujourd", "hui",
+    # --------------------------------------------------------
 
-    # Russe — mots grammaticaux courants
-    "и", "или", "но", "а", "в", "во", "на", "с", "со",
-    "к", "ко", "из", "от", "до", "по", "за", "для",
-    "о", "об", "обо", "у", "не", "ни", "да",
-    "это", "этот", "эта", "эти", "тот", "та", "те",
-    "как", "что", "кто", "где", "когда", "почему",
-    "его", "ее", "их", "ему", "ей", "им",
-    "он", "она", "они", "мы", "вы", "я",
-    "быть", "был", "была", "были", "есть",
-    "будет", "будут", "стал", "стала", "стали",
-    "также", "уже", "еще", "ещё", "только",
-    "новый", "новая", "новые", "новости",
-    "сегодня", "вчера", "завтра",
+    "le",
+    "la",
+    "les",
+    "un",
+    "une",
+    "des",
+    "du",
+    "de",
+    "et",
+    "ou",
+    "mais",
+    "dans",
+    "sur",
+    "pour",
+    "avec",
+    "sans",
+    "par",
+    "entre",
+    "après",
+    "avant",
+    "contre",
+    "chez",
 
-    # Termes éditoriaux russes
-    "сообщает", "сообщили", "сообщил", "заявил",
-    "заявила", "заявили", "рассказал", "рассказала",
-    "президент",  # volontairement retiré ? NON : important pour analyse
+    "ce",
+    "cet",
+    "cette",
+    "ces",
+
+    "son",
+    "sa",
+    "ses",
+    "leur",
+    "leurs",
+
+    "qui",
+    "que",
+    "quoi",
+    "dont",
+
+    "est",
+    "sont",
+    "être",
+    "avoir",
+    "a",
+    "ont",
+    "été",
+
+    "sera",
+    "seront",
+
+    "plus",
+    "moins",
+    "très",
+    "aussi",
+
+    "nouveau",
+    "nouvelle",
+    "nouvelles",
+
+    "actualité",
+    "actualités",
+
+    # --------------------------------------------------------
+    # Russe
+    # --------------------------------------------------------
+
+    "и",
+    "или",
+    "но",
+    "а",
+
+    "в",
+    "во",
+    "на",
+    "с",
+    "со",
+    "к",
+    "ко",
+    "из",
+    "от",
+    "до",
+    "по",
+    "за",
+    "для",
+    "о",
+    "об",
+    "обо",
+    "у",
+
+    "не",
+    "ни",
+    "да",
+
+    "это",
+    "этот",
+    "эта",
+    "эти",
+
+    "тот",
+    "та",
+    "те",
+
+    "как",
+    "что",
+    "кто",
+    "где",
+    "когда",
+    "почему",
+
+    "его",
+    "ее",
+    "её",
+    "их",
+    "ему",
+    "ей",
+    "им",
+
+    "он",
+    "она",
+    "они",
+    "мы",
+    "вы",
+    "я",
+
+    "быть",
+    "был",
+    "была",
+    "были",
+    "есть",
+    "будет",
+    "будут",
+
+    "также",
+    "уже",
+    "еще",
+    "ещё",
+    "только",
+
+    "новый",
+    "новая",
+    "новые",
+    "новости",
+
+    "сегодня",
+    "вчера",
+    "завтра",
+
+    # --------------------------------------------------------
+    # Verbes / formules journalistiques russes
+    # --------------------------------------------------------
+
+    "сообщает",
+    "сообщили",
+    "сообщил",
+    "заявил",
+    "заявила",
+    "заявили",
+    "рассказал",
+    "рассказала",
 }
 
 
-# On garde certains mots qui peuvent être importants
-# même s'ils sont fréquents dans le journalisme.
-TITLE_STOPWORDS.discard("president")
-
-
 # ============================================================
-# TEXTE / ENCODAGE
+# RÉPARATION ENCODAGE
 # ============================================================
 
 def repair_mojibake(text):
     """
-    Répare les cas classiques où du UTF-8 a été décodé en latin-1.
+    Répare les cas classiques de texte UTF-8 mal décodé.
 
     Exemple :
-        "ÐšÐ°Ð·Ð°Ñ…" -> "Каза…"
 
-    On ne force la conversion que si des marqueurs typiques
-    de mojibake sont détectés.
+        ÐšÐ°Ð·Ð°Ñ…ÑÑ‚Ð°Ð½
+
+    devient :
+
+        Казахстан
+
+    On ne tente la réparation que si des marqueurs
+    caractéristiques sont détectés.
     """
+
     if not text:
         return ""
 
@@ -161,22 +429,34 @@ def repair_mojibake(text):
         "â",
     )
 
-    if not any(marker in text for marker in bad_markers):
+    if not any(
+        marker in text
+        for marker in bad_markers
+    ):
         return text
 
     try:
-        repaired = text.encode("latin1").decode("utf-8")
+        repaired = (
+            text
+            .encode("latin1")
+            .decode("utf-8")
+        )
 
-        # On n'accepte la réparation que si elle semble réellement
-        # meilleure que le texte initial.
         if repaired != text:
             return repaired
 
-    except (UnicodeEncodeError, UnicodeDecodeError):
+    except (
+        UnicodeEncodeError,
+        UnicodeDecodeError,
+    ):
         pass
 
     return text
 
+
+# ============================================================
+# NETTOYAGE
+# ============================================================
 
 def clean_text(text):
     if not text:
@@ -184,19 +464,25 @@ def clean_text(text):
 
     text = repair_mojibake(text)
 
-    text = BeautifulSoup(str(text), "html.parser").get_text(
+    text = BeautifulSoup(
+        str(text),
+        "html.parser",
+    ).get_text(
         " ",
         strip=True,
     )
 
-    text = re.sub(r"\s+", " ", text)
+    text = re.sub(
+        r"\s+",
+        " ",
+        text,
+    )
 
     return text.strip()
 
 
 def normalize_text(text):
-    text = clean_text(text)
-    return text.lower().strip()
+    return clean_text(text).lower().strip()
 
 
 # ============================================================
@@ -205,18 +491,32 @@ def normalize_text(text):
 
 def extract_title_tokens(title):
     """
-    Extrait les tokens Unicode d'un titre.
+    Tokenisation Unicode.
 
-    Fonctionne avec :
-      - anglais
-      - français
-      - russe/cyrillique
-      - autres alphabets Unicode
+    Important :
+    on ne transforme PAS les mots découverts en keywords.
+
+    Cette fonction sert uniquement à observer le vocabulaire
+    présent dans les titres.
     """
-    title = repair_mojibake(title)
 
-    text = normalize_text(title)
+    title = repair_mojibake(
+        title
+    )
 
+    text = normalize_text(
+        title
+    )
+
+    # Lettres Unicode uniquement.
+    #
+    # Fonctionne notamment avec :
+    #   anglais
+    #   français
+    #   russe
+    #   kazakh
+    #   kirghiz
+    #   etc.
     tokens = re.findall(
         r"[^\W\d_]+",
         text,
@@ -226,6 +526,7 @@ def extract_title_tokens(title):
     result = []
 
     for token in tokens:
+
         token = token.strip()
 
         if len(token) < 2:
@@ -234,17 +535,26 @@ def extract_title_tokens(title):
         if token in TITLE_STOPWORDS:
             continue
 
-        result.append(token)
+        result.append(
+            token
+        )
 
     return result
 
 
 def extract_title_words(title):
     """
-    Alias simple pour compatibilité.
+    Alias de compatibilité.
     """
-    return extract_title_tokens(title)
 
+    return extract_title_tokens(
+        title
+    )
+
+
+# ============================================================
+# TOP MOTS DES TITRES
+# ============================================================
 
 def build_title_word_list(
     articles,
@@ -252,18 +562,32 @@ def build_title_word_list(
     max_words=TITLE_WORD_MAX,
 ):
     """
-    Construit le vocabulaire des mots présents dans les titres.
+    Construit une liste de mots fréquents dans les titres.
 
-    Important :
-    ce vocabulaire est DESCRIPTIF.
-    Il n'est pas injecté automatiquement dans le scoring.
+    Exemple :
+
+        uzbekistan       69
+        kazakhstan       48
+        kyrgyzstan       35
+        president        25
+
+    Cette liste est descriptive uniquement.
     """
+
     counter = Counter()
 
     for article in articles:
-        title = article.get("title", "")
 
-        for word in extract_title_tokens(title):
+        title = article.get(
+            "title",
+            "",
+        )
+
+        tokens = extract_title_tokens(
+            title
+        )
+
+        for word in tokens:
             counter[word] += 1
 
     words = [
@@ -286,7 +610,7 @@ def build_title_word_list(
 
 
 # ============================================================
-# PHRASES 2-3 MOTS
+# BIGRAMMES / TRIGRAMMES
 # ============================================================
 
 def build_title_phrases(
@@ -295,49 +619,78 @@ def build_title_phrases(
     max_phrases=TITLE_PHRASE_MAX,
 ):
     """
-    Extrait des bigrammes et trigrammes des titres.
+    Extrait les bigrammes et trigrammes des titres.
 
     Exemple :
+
         human rights
         political prisoner
         activist detained
-        journalist arrested
         forced labor
 
-    Les phrases sont plus utiles que les mots isolés
-    pour améliorer ensuite keyword.py.
+    Là encore :
+    aucune de ces expressions n'est injectée
+    automatiquement dans le scoring.
     """
 
     phrase_counter = Counter()
 
     for article in articles:
-        title = article.get("title", "")
 
-        tokens = extract_title_tokens(title)
+        title = article.get(
+            "title",
+            "",
+        )
+
+        tokens = extract_title_tokens(
+            title
+        )
 
         if len(tokens) < 2:
             continue
 
-        # Bigrams
-        for i in range(len(tokens) - 1):
-            phrase = f"{tokens[i]} {tokens[i + 1]}"
-            phrase_counter[phrase] += 1
+        # ----------------------------------------------------
+        # Bigrammes
+        # ----------------------------------------------------
 
-        # Trigrams
-        for i in range(len(tokens) - 2):
+        for i in range(
+            len(tokens) - 1
+        ):
+
+            phrase = (
+                f"{tokens[i]} "
+                f"{tokens[i + 1]}"
+            )
+
+            phrase_counter[
+                phrase
+            ] += 1
+
+        # ----------------------------------------------------
+        # Trigrammes
+        # ----------------------------------------------------
+
+        for i in range(
+            len(tokens) - 2
+        ):
+
             phrase = (
                 f"{tokens[i]} "
                 f"{tokens[i + 1]} "
                 f"{tokens[i + 2]}"
             )
-            phrase_counter[phrase] += 1
+
+            phrase_counter[
+                phrase
+            ] += 1
 
     phrases = [
         {
             "phrase": phrase,
             "count": count,
         }
-        for phrase, count in phrase_counter.items()
+        for phrase, count
+        in phrase_counter.items()
         if count >= min_count
     ]
 
@@ -348,21 +701,36 @@ def build_title_phrases(
         )
     )
 
-    return phrases[:max_phrases]
+    return phrases[
+        :max_phrases
+    ]
 
 
 # ============================================================
 # HTTP
 # ============================================================
 
-def fetch_url(url, source=None):
-    headers = dict(HEADERS)
+def fetch_url(
+    url,
+    source=None,
+):
+    headers = dict(
+        HEADERS
+    )
 
     if source:
-        source_headers = source.get("headers", {})
-        headers.update(source_headers)
+
+        source_headers = source.get(
+            "headers",
+            {},
+        )
+
+        headers.update(
+            source_headers
+        )
 
     try:
+
         response = requests.get(
             url,
             headers=headers,
@@ -378,6 +746,7 @@ def fetch_url(url, source=None):
         }
 
     except requests.RequestException as exc:
+
         return {
             "ok": False,
             "status": None,
@@ -395,17 +764,30 @@ def parse_date(value):
     if not value:
         return None
 
-    value = str(value).strip()
+    value = str(
+        value
+    ).strip()
 
     # ISO 8601
     try:
-        value_iso = value.replace("Z", "+00:00")
-        dt = datetime.fromisoformat(value_iso)
+
+        iso_value = value.replace(
+            "Z",
+            "+00:00",
+        )
+
+        dt = datetime.fromisoformat(
+            iso_value
+        )
 
         if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
+            dt = dt.replace(
+                tzinfo=timezone.utc
+            )
 
-        return dt.astimezone(timezone.utc)
+        return dt.astimezone(
+            timezone.utc
+        )
 
     except ValueError:
         pass
@@ -422,31 +804,50 @@ def parse_date(value):
     ]
 
     for fmt in formats:
+
         try:
-            dt = datetime.strptime(value, fmt)
-            return dt.replace(tzinfo=timezone.utc)
+
+            dt = datetime.strptime(
+                value,
+                fmt,
+            )
+
+            return dt.replace(
+                tzinfo=timezone.utc
+            )
+
         except ValueError:
             continue
 
     return None
 
 
-def extract_container_date(container):
-    # <time datetime="...">
-    time_tag = container.find("time")
+def extract_container_date(
+    container
+):
+    time_tag = container.find(
+        "time"
+    )
 
     if time_tag:
+
         value = (
-            time_tag.get("datetime")
-            or time_tag.get_text(" ", strip=True)
+            time_tag.get(
+                "datetime"
+            )
+            or time_tag.get_text(
+                " ",
+                strip=True,
+            )
         )
 
-        dt = parse_date(value)
+        dt = parse_date(
+            value
+        )
 
         if dt:
             return dt
 
-    # Classes / itemprop fréquents
     selectors = [
         '[itemprop="datePublished"]',
         '[itemprop="dateCreated"]',
@@ -460,18 +861,30 @@ def extract_container_date(container):
     ]
 
     for selector in selectors:
-        node = container.select_one(selector)
+
+        node = container.select_one(
+            selector
+        )
 
         if not node:
             continue
 
         value = (
-            node.get("datetime")
-            or node.get("content")
-            or node.get_text(" ", strip=True)
+            node.get(
+                "datetime"
+            )
+            or node.get(
+                "content"
+            )
+            or node.get_text(
+                " ",
+                strip=True,
+            )
         )
 
-        dt = parse_date(value)
+        dt = parse_date(
+            value
+        )
 
         if dt:
             return dt
@@ -483,20 +896,33 @@ def extract_container_date(container):
 # URL
 # ============================================================
 
-def absolute_url(base_url, href):
+def absolute_url(
+    base_url,
+    href,
+):
     if not href:
         return ""
 
-    return urljoin(base_url, href)
+    return urljoin(
+        base_url,
+        href,
+    )
 
 
-def is_probable_article_url(url):
+def is_probable_article_url(
+    url
+):
     if not url:
         return False
 
-    parsed = urlparse(url)
+    parsed = urlparse(
+        url
+    )
 
-    if parsed.scheme not in ("http", "https"):
+    if parsed.scheme not in (
+        "http",
+        "https",
+    ):
         return False
 
     path = parsed.path.lower()
@@ -519,17 +945,34 @@ def is_probable_article_url(url):
         "/page/",
     )
 
-    if any(part in path for part in rejected):
+    if any(
+        item in path
+        for item in rejected
+    ):
         return False
 
     return True
 
 
-def normalize_url(url):
+def normalize_url(
+    url
+):
     if not url:
         return ""
 
-    parsed = urlparse(url)
+    parsed = urlparse(
+        url
+    )
+
+    ignored_parameters = {
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content",
+        "fbclid",
+        "gclid",
+    }
 
     query = [
         (key, value)
@@ -537,27 +980,28 @@ def normalize_url(url):
             parsed.query,
             keep_blank_values=True,
         )
-        if key.lower() not in {
-            "utm_source",
-            "utm_medium",
-            "utm_campaign",
-            "utm_term",
-            "utm_content",
-            "fbclid",
-            "gclid",
-        }
+        if key.lower()
+        not in ignored_parameters
     ]
 
     normalized = parsed._replace(
         fragment="",
-        query=urlencode(query),
+        query=urlencode(
+            query
+        ),
     )
 
-    return urlunparse(normalized).lower().rstrip("/")
+    return (
+        urlunparse(
+            normalized
+        )
+        .lower()
+        .rstrip("/")
+    )
 
 
 # ============================================================
-# ARTICLES
+# ARTICLE
 # ============================================================
 
 def build_article(
@@ -571,23 +1015,46 @@ def build_article(
     source = source or {}
 
     return {
-        "title": clean_text(title),
+        "title": clean_text(
+            title
+        ),
+
         "url": url,
-        "summary": clean_text(summary),
-        "body": clean_text(body),
+
+        "summary": clean_text(
+            summary
+        ),
+
+        "body": clean_text(
+            body
+        ),
+
         "date": date,
-        "source": source.get("name", ""),
+
+        "source": source.get(
+            "name",
+            "",
+        ),
+
         "source_short": source.get(
             "short_name",
-            source.get("name", ""),
+            source.get(
+                "name",
+                "",
+            ),
         ),
+
         "source_profile": source.get(
             "profile",
             "",
         ),
+
         "source_label": source.get(
             "label",
-            source.get("name", ""),
+            source.get(
+                "name",
+                "",
+            ),
         ),
     }
 
@@ -596,29 +1063,53 @@ def build_article(
 # RSS
 # ============================================================
 
-def parse_feed(text, base_url, source):
-    feed = feedparser.parse(text)
+def parse_feed(
+    text,
+    base_url,
+    source,
+):
+    feed = feedparser.parse(
+        text
+    )
 
     articles = []
 
-    for entry in feed.entries[:MAX_FEED_ENTRIES]:
+    for entry in feed.entries[
+        :MAX_FEED_ENTRIES
+    ]:
+
         title = clean_text(
-            entry.get("title", "")
+            entry.get(
+                "title",
+                "",
+            )
         )
 
-        url = entry.get("link", "")
+        url = entry.get(
+            "link",
+            "",
+        )
 
         if not title or not url:
             continue
 
-        url = absolute_url(base_url, url)
+        url = absolute_url(
+            base_url,
+            url,
+        )
 
-        if not is_probable_article_url(url):
+        if not is_probable_article_url(
+            url
+        ):
             continue
 
         summary = (
-            entry.get("summary")
-            or entry.get("description")
+            entry.get(
+                "summary"
+            )
+            or entry.get(
+                "description"
+            )
             or ""
         )
 
@@ -629,7 +1120,13 @@ def parse_feed(text, base_url, source):
             "updated",
             "created",
         ):
-            date = parse_date(entry.get(field))
+
+            date = parse_date(
+                entry.get(
+                    field
+                )
+            )
+
             if date:
                 break
 
@@ -655,26 +1152,42 @@ def extract_article_from_container(
     base_url,
     source,
 ):
-    links = container.find_all("a", href=True)
+    links = container.find_all(
+        "a",
+        href=True,
+    )
 
     candidates = []
 
     for link in links:
+
         title = clean_text(
-            link.get_text(" ", strip=True)
+            link.get_text(
+                " ",
+                strip=True,
+            )
         )
 
         href = absolute_url(
             base_url,
-            link.get("href"),
+            link.get(
+                "href"
+            ),
         )
 
         if (
             len(title) >= 20
-            and is_probable_article_url(href)
+            and is_probable_article_url(
+                href
+            )
         ):
+
             candidates.append(
-                (len(title), title, href)
+                (
+                    len(title),
+                    title,
+                    href,
+                )
             )
 
     if not candidates:
@@ -687,19 +1200,29 @@ def extract_article_from_container(
 
     paragraphs = []
 
-    for paragraph in container.find_all("p"):
+    for paragraph in container.find_all(
+        "p"
+    ):
+
         text = clean_text(
-            paragraph.get_text(" ", strip=True)
+            paragraph.get_text(
+                " ",
+                strip=True,
+            )
         )
 
         if len(text) >= 40:
-            paragraphs.append(text)
+            paragraphs.append(
+                text
+            )
 
     summary = " ".join(
         paragraphs[:3]
     )
 
-    date = extract_container_date(container)
+    date = extract_container_date(
+        container
+    )
 
     return build_article(
         title=title,
@@ -710,7 +1233,11 @@ def extract_article_from_container(
     )
 
 
-def parse_html_source(text, base_url, source):
+def parse_html_source(
+    text,
+    base_url,
+    source,
+):
     soup = BeautifulSoup(
         text,
         "html.parser",
@@ -733,43 +1260,65 @@ def parse_html_source(text, base_url, source):
 
     for selector in selectors:
         containers.extend(
-            soup.select(selector)
+            soup.select(
+                selector
+            )
         )
 
-    # Déduplication des containers par id Python
     seen = set()
     unique_containers = []
 
     for container in containers:
-        marker = id(container)
+
+        marker = id(
+            container
+        )
 
         if marker in seen:
             continue
 
-        seen.add(marker)
-        unique_containers.append(container)
+        seen.add(
+            marker
+        )
+
+        unique_containers.append(
+            container
+        )
 
     articles = []
 
     for container in unique_containers:
-        article = extract_article_from_container(
-            container,
-            base_url,
-            source,
+
+        article = (
+            extract_article_from_container(
+                container,
+                base_url,
+                source,
+            )
         )
 
         if article:
-            articles.append(article)
+            articles.append(
+                article
+            )
 
-        if len(articles) >= MAX_HTML_ARTICLES:
+        if (
+            len(articles)
+            >= MAX_HTML_ARTICLES
+        ):
             break
 
-    # Fallback : scan direct des liens
+    # --------------------------------------------------------
+    # FALLBACK
+    # --------------------------------------------------------
+
     if not articles:
+
         for link in soup.find_all(
             "a",
             href=True,
         ):
+
             title = clean_text(
                 link.get_text(
                     " ",
@@ -779,13 +1328,18 @@ def parse_html_source(text, base_url, source):
 
             href = absolute_url(
                 base_url,
-                link.get("href"),
+                link.get(
+                    "href"
+                ),
             )
 
             if (
                 len(title) >= 20
-                and is_probable_article_url(href)
+                and is_probable_article_url(
+                    href
+                )
             ):
+
                 articles.append(
                     build_article(
                         title=title,
@@ -794,7 +1348,10 @@ def parse_html_source(text, base_url, source):
                     )
                 )
 
-            if len(articles) >= MAX_HTML_ARTICLES:
+            if (
+                len(articles)
+                >= MAX_HTML_ARTICLES
+            ):
                 break
 
     return articles
@@ -804,7 +1361,9 @@ def parse_html_source(text, base_url, source):
 # CORPS D'ARTICLE
 # ============================================================
 
-def extract_article_body(text):
+def extract_article_body(
+    text
+):
     if not text:
         return ""
 
@@ -830,37 +1389,43 @@ def extract_article_body(text):
 
     candidates = []
 
-    article_tags = soup.find_all(
-        "article"
+    candidates.extend(
+        soup.find_all(
+            "article"
+        )
     )
 
-    if article_tags:
-        candidates.extend(article_tags)
-
-    main_tags = soup.find_all(
-        "main"
+    candidates.extend(
+        soup.find_all(
+            "main"
+        )
     )
 
-    if main_tags:
-        candidates.extend(main_tags)
-
-    role_main = soup.select(
-        '[role="main"]'
+    candidates.extend(
+        soup.select(
+            '[role="main"]'
+        )
     )
-
-    candidates.extend(role_main)
 
     if not candidates:
-        candidates = [
-            soup.body
-        ] if soup.body else []
+
+        if soup.body:
+            candidates = [
+                soup.body
+            ]
+        else:
+            candidates = []
 
     best_text = ""
 
     for candidate in candidates:
+
         paragraphs = []
 
-        for p in candidate.find_all("p"):
+        for p in candidate.find_all(
+            "p"
+        ):
+
             value = clean_text(
                 p.get_text(
                     " ",
@@ -869,50 +1434,77 @@ def extract_article_body(text):
             )
 
             if len(value) >= 40:
-                paragraphs.append(value)
+                paragraphs.append(
+                    value
+                )
 
         candidate_text = " ".join(
             paragraphs
         )
 
-        if len(candidate_text) > len(best_text):
+        if len(candidate_text) > len(
+            best_text
+        ):
             best_text = candidate_text
 
-    return best_text[:20000]
+    return best_text[
+        :20000
+    ]
 
 
 # ============================================================
 # DEDUPLICATION
 # ============================================================
 
-def deduplicate_articles(articles):
+def deduplicate_articles(
+    articles
+):
     unique = []
 
     seen_urls = set()
     seen_titles = set()
 
     for article in articles:
+
         url = normalize_url(
-            article.get("url", "")
+            article.get(
+                "url",
+                "",
+            )
         )
 
         title = normalize_text(
-            article.get("title", "")
+            article.get(
+                "title",
+                "",
+            )
         )
 
-        if url and url in seen_urls:
+        if (
+            url
+            and url in seen_urls
+        ):
             continue
 
-        if title and title in seen_titles:
+        if (
+            title
+            and title in seen_titles
+        ):
             continue
 
         if url:
-            seen_urls.add(url)
+            seen_urls.add(
+                url
+            )
 
         if title:
-            seen_titles.add(title)
+            seen_titles.add(
+                title
+            )
 
-        unique.append(article)
+        unique.append(
+            article
+        )
 
     return unique
 
@@ -936,6 +1528,7 @@ def collect_articles(
     }
 
     for source in SOURCES:
+
         name = source.get(
             "name",
             "Unknown",
@@ -951,19 +1544,26 @@ def collect_articles(
 
         stats["attempted"] += 1
 
-        # Cache
+        # ----------------------------------------------------
+        # CACHE
+        # ----------------------------------------------------
+
         cached_articles = None
 
         if not force:
+
             cached_articles = cache.get(
                 name
             )
 
         if cached_articles:
+
             logger.info(
                 "CACHE | %s | %d articles",
                 name,
-                len(cached_articles),
+                len(
+                    cached_articles
+                ),
             )
 
             articles.extend(
@@ -971,7 +1571,12 @@ def collect_articles(
             )
 
             stats["cached"] += 1
+
             continue
+
+        # ----------------------------------------------------
+        # HTTP
+        # ----------------------------------------------------
 
         result = fetch_url(
             url,
@@ -979,6 +1584,7 @@ def collect_articles(
         )
 
         if not result["ok"]:
+
             logger.warning(
                 "ERROR | %s | status=%s | %s",
                 name,
@@ -997,6 +1603,7 @@ def collect_articles(
         html = result["text"]
 
         if not html.strip():
+
             logger.warning(
                 "EMPTY | %s",
                 name,
@@ -1010,18 +1617,25 @@ def collect_articles(
 
             continue
 
+        # ----------------------------------------------------
+        # PARSING
+        # ----------------------------------------------------
+
         source_type = source.get(
             "type",
             "html",
         )
 
         if source_type == "rss":
+
             parsed = parse_feed(
                 html,
                 result["url"],
                 source,
             )
+
         else:
+
             parsed = parse_html_source(
                 html,
                 result["url"],
@@ -1029,16 +1643,21 @@ def collect_articles(
             )
 
         if parsed:
+
             logger.info(
                 "OK | %s | %d articles",
                 name,
                 len(parsed),
             )
 
-            articles.extend(parsed)
+            articles.extend(
+                parsed
+            )
+
             stats["successful"] += 1
 
         else:
+
             logger.warning(
                 "EMPTY | %s | no articles",
                 name,
@@ -1050,31 +1669,39 @@ def collect_articles(
             name
         )
 
-    return articles, stats
+    return (
+        articles,
+        stats,
+    )
 
 
 # ============================================================
-# SCORING
+# CLASSIFICATION
 # ============================================================
 
-def classify_articles(articles):
+def classify_articles(
+    articles
+):
     """
-    Premier passage :
-        titre + résumé uniquement
+    Deux passages :
 
-    Puis :
-        récupération du corps complet pour les meilleurs candidats.
+    PASS 1
+        titre + résumé
 
-    Cela évite de télécharger inutilement tous les articles.
+    PASS 2
+        corps complet uniquement pour les meilleurs candidats
+
+    Le scoring est entièrement délégué à scoring.py.
     """
 
     audit = []
 
-    # --------------------------------------------------------
-    # PASS 1 : titre + résumé
-    # --------------------------------------------------------
+    # ========================================================
+    # PASS 1
+    # ========================================================
 
     for article in articles:
+
         result = classify_article(
             article
         )
@@ -1089,35 +1716,64 @@ def classify_articles(articles):
             "D",
         )
 
+        article["priority"] = result.get(
+            "priority",
+            "",
+        )
+
+        article["theme"] = result.get(
+            "theme",
+            "",
+        )
+
         article["reasons"] = result.get(
             "reasons",
             [],
         )
 
-        audit.append(article)
+        article["relevant"] = result.get(
+            "relevant",
+            False,
+        )
 
-    # --------------------------------------------------------
-    # Tri intermédiaire
-    # --------------------------------------------------------
+        article["signals"] = result.get(
+            "signals",
+            {},
+        )
+
+        audit.append(
+            article
+        )
+
+    # ========================================================
+    # TRI INTERMÉDIAIRE
+    # ========================================================
 
     audit.sort(
         key=lambda item: (
-            -item.get("score", 0),
-            item.get("date") or datetime.min.replace(
+            -item.get(
+                "score",
+                0,
+            ),
+            item.get(
+                "date"
+            )
+            or datetime.min.replace(
                 tzinfo=timezone.utc
             ),
         )
     )
 
-    # --------------------------------------------------------
-    # PASS 2 : corps complet des meilleurs
-    # --------------------------------------------------------
+    # ========================================================
+    # PASS 2
+    # ========================================================
 
     candidates = audit[
         :ARTICLE_PAGE_FETCH_LIMIT
     ]
 
     for article in candidates:
+
         url = article.get(
             "url",
             "",
@@ -1142,30 +1798,51 @@ def classify_articles(articles):
 
         article["body"] = body
 
-        rescored = classify_article(
+        # Reclassification avec le corps
+        result = classify_article(
             article
         )
 
-        article["score"] = rescored.get(
+        article["score"] = result.get(
             "score",
             0,
         )
 
-        article["level"] = rescored.get(
+        article["level"] = result.get(
             "level",
             "D",
         )
 
-        article["reasons"] = rescored.get(
+        article["priority"] = result.get(
+            "priority",
+            "",
+        )
+
+        article["theme"] = result.get(
+            "theme",
+            "",
+        )
+
+        article["reasons"] = result.get(
             "reasons",
             [],
+        )
+
+        article["relevant"] = result.get(
+            "relevant",
+            False,
+        )
+
+        article["signals"] = result.get(
+            "signals",
+            {},
         )
 
     return audit
 
 
 # ============================================================
-# TRI
+# TRI FINAL
 # ============================================================
 
 LEVEL_ORDER = {
@@ -1176,18 +1853,30 @@ LEVEL_ORDER = {
 }
 
 
-def sort_articles(articles):
+def sort_articles(
+    articles
+):
     return sorted(
         articles,
         key=lambda article: (
             LEVEL_ORDER.get(
-                article.get("level", "D"),
+                article.get(
+                    "level",
+                    "D",
+                ),
                 3,
             ),
-            -article.get("score", 0),
+            -article.get(
+                "score",
+                0,
+            ),
             -(
-                article.get("date").timestamp()
-                if article.get("date")
+                article.get(
+                    "date"
+                ).timestamp()
+                if article.get(
+                    "date"
+                )
                 else 0
             ),
         ),
@@ -1202,7 +1891,9 @@ def build_stats(
     articles,
     source_stats,
 ):
-    analyzed = len(articles)
+    analyzed = len(
+        articles
+    )
 
     levels = Counter(
         article.get(
@@ -1232,7 +1923,12 @@ def build_stats(
         if article.get(
             "level",
             "D",
-        ) in {"A", "B", "C"}
+        )
+        in {
+            "A",
+            "B",
+            "C",
+        }
     )
 
     relevance_rate = (
@@ -1243,18 +1939,35 @@ def build_stats(
 
     return {
         "analyzed": analyzed,
+
         "retained": retained,
+
         "avg_score": round(
             avg_score,
             1,
         ),
+
         "levels": {
-            "A": levels.get("A", 0),
-            "B": levels.get("B", 0),
-            "C": levels.get("C", 0),
-            "D": levels.get("D", 0),
+            "A": levels.get(
+                "A",
+                0,
+            ),
+            "B": levels.get(
+                "B",
+                0,
+            ),
+            "C": levels.get(
+                "C",
+                0,
+            ),
+            "D": levels.get(
+                "D",
+                0,
+            ),
         },
+
         "sources": source_stats,
+
         "relevance_rate": round(
             relevance_rate,
             1,
@@ -1266,11 +1979,15 @@ def build_stats(
 # MÉMOIRE
 # ============================================================
 
-def show_memory(memory):
+def show_memory(
+    memory
+):
     if not memory:
+
         logger.info(
             "MEMORY | aucune donnée"
         )
+
         return
 
     logger.info(
@@ -1279,19 +1996,26 @@ def show_memory(memory):
     )
 
     for article in memory[-10:]:
+
         logger.info(
             "  %s | %s",
-            article.get("level", "?"),
-            article.get("title", ""),
+            article.get(
+                "level",
+                "?",
+            ),
+            article.get(
+                "title",
+                "",
+            ),
         )
 
 
 # ============================================================
-# SCAN PRINCIPAL
+# SCAN
 # ============================================================
 
 def scan_news(
-    force=False,
+    force=False
 ):
     logger.info(
         "=================================================="
@@ -1305,17 +2029,25 @@ def scan_news(
         "=================================================="
     )
 
+    # --------------------------------------------------------
+    # MÉMOIRE
+    # --------------------------------------------------------
+
     memory = load_memory()
 
-    show_memory(memory)
+    show_memory(
+        memory
+    )
 
     # --------------------------------------------------------
     # COLLECTE
     # --------------------------------------------------------
 
-    articles, source_stats = collect_articles(
-        memory,
-        force=force,
+    articles, source_stats = (
+        collect_articles(
+            memory,
+            force=force,
+        )
     )
 
     logger.info(
@@ -1337,16 +2069,16 @@ def scan_news(
     )
 
     # --------------------------------------------------------
-    # SCORE
+    # CLASSIFICATION
     # --------------------------------------------------------
 
     audit = classify_articles(
         articles
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # VOCABULAIRE DES TITRES
-    # --------------------------------------------------------
+    # ========================================================
 
     title_words = build_title_word_list(
         audit,
@@ -1370,22 +2102,32 @@ def scan_news(
         len(title_phrases),
     )
 
+    # --------------------------------------------------------
+    # TOP WORDS
+    # --------------------------------------------------------
+
     logger.info(
-        "TOP WORDS:"
+        "TOP TITLE WORDS"
     )
 
     for item in title_words[:20]:
+
         logger.info(
             "  %-30s %d",
             item["word"],
             item["count"],
         )
 
+    # --------------------------------------------------------
+    # TOP PHRASES
+    # --------------------------------------------------------
+
     logger.info(
-        "TOP PHRASES:"
+        "TOP TITLE PHRASES"
     )
 
     for item in title_phrases[:20]:
+
         logger.info(
             "  %-45s %d",
             item["phrase"],
@@ -1408,14 +2150,22 @@ def scan_news(
         audit
     )
 
-    # Articles réellement retenus
+    # --------------------------------------------------------
+    # ARTICLES RETENUS
+    # --------------------------------------------------------
+
     selected = [
         article
         for article in sorted_audit
         if article.get(
             "level",
             "D",
-        ) in {"A", "B", "C"}
+        )
+        in {
+            "A",
+            "B",
+            "C",
+        }
     ]
 
     selected = selected[
@@ -1432,23 +2182,29 @@ def scan_news(
     )
 
     logger.info(
-        "STATS | analyzed=%d | retained=%d | avg=%.1f/100",
+        (
+            "STATS | analyzed=%d | "
+            "retained=%d | avg=%.1f/100"
+        ),
         stats["analyzed"],
         stats["retained"],
         stats["avg_score"],
     )
 
     logger.info(
-        "LEVELS | A=%d B=%d C=%d D=%d",
+        (
+            "LEVELS | A=%d B=%d "
+            "C=%d D=%d"
+        ),
         stats["levels"]["A"],
         stats["levels"]["B"],
         stats["levels"]["C"],
         stats["levels"]["D"],
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # PAGE WEB
-    # --------------------------------------------------------
+    # ========================================================
 
     create_web_page(
         selected,
@@ -1476,6 +2232,7 @@ def scan_news(
 # ============================================================
 
 def main():
+
     parser = argparse.ArgumentParser(
         description=(
             "Central Asia News Scanner"
@@ -1485,31 +2242,43 @@ def main():
     parser.add_argument(
         "--memory",
         action="store_true",
-        help="Afficher la mémoire récente",
+        help=(
+            "Afficher la mémoire récente"
+        ),
     )
 
     parser.add_argument(
         "--scan",
         action="store_true",
-        help="Lancer un scan",
+        help=(
+            "Lancer un scan"
+        ),
     )
 
     parser.add_argument(
         "--force",
         action="store_true",
         help=(
-            "Ignorer le cache et rescanner "
-            "toutes les sources"
+            "Ignorer le cache et "
+            "rescanner les sources"
         ),
     )
 
     args = parser.parse_args()
 
     if args.memory:
-        memory = load_memory()
-        show_memory(memory)
 
-    if args.scan or not args.memory:
+        memory = load_memory()
+
+        show_memory(
+            memory
+        )
+
+    if (
+        args.scan
+        or not args.memory
+    ):
+
         scan_news(
             force=args.force
         )
