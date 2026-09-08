@@ -1,11 +1,18 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
+from urllib.parse import urljoin, urlparse
 
-from bs4 import BeautifulSoup
 import feedparser
+from bs4 import BeautifulSoup
 
+from http_utils import (
+    CACHE_TTL,
+    HEADERS,
+    REQUEST_TIMEOUT,
+    fetch_url,
+)
 from text_utils import (
     clean_text,
     clean_title,
@@ -13,163 +20,64 @@ from text_utils import (
     parse_date,
 )
 
-from http_utils import fetch_url
 
-
-# ============================================================
-# CONFIGURATION HTTP
-# ============================================================
-
-CACHE_TTL = 3600
-
-USER_AGENT = (
-    "Mozilla/5.0 (compatible; CentralAsiaNewsScanner/1.0; "
-    "+https://regardssteppe.github.io/asia-central-news-scanner/)"
-)
-
-HEADERS = {
-    "User-Agent": USER_AGENT,
-    "Accept": (
-        "application/rss+xml, application/atom+xml, "
-        "application/xml, text/xml, text/html;q=0.9, */*;q=0.8"
-    ),
-}
-
-REQUEST_TIMEOUT = 25
-
-
-# ============================================================
-# EXTRACTION RSS
-# ============================================================
-
-def parse_rss(
-    source: dict[str, Any],
-    content: str,
-) -> list[dict[str, Any]]:
-
-    parsed = feedparser.parse(content)
+def parse_rss(content: str, source: dict[str, Any]) -> list[dict[str, Any]]:
+    feed = feedparser.parse(content)
 
     articles: list[dict[str, Any]] = []
 
-    for entry in parsed.entries:
-        title = clean_title(
-            entry.get("title", "")
+    for entry in feed.entries:
+        title = clean_title(entry.get("title", ""))
+        summary = clean_text(
+            entry.get("summary")
+            or entry.get("description")
+            or ""
         )
 
-        link = normalize_url(
-            entry.get("link", ""),
-            source.get("url", ""),
-        )
-
+        link = entry.get("link", "")
         if not title or not link:
             continue
-
-        summary = ""
-
-        for key in (
-            "summary",
-            "description",
-            "content",
-        ):
-            value = entry.get(key)
-
-            if isinstance(value, list):
-                parts = []
-
-                for item in value:
-                    if isinstance(item, dict):
-                        parts.append(
-                            item.get("value", "")
-                        )
-                    else:
-                        parts.append(str(item))
-
-                value = " ".join(parts)
-
-            if value:
-                summary = clean_text(value)
-                break
-
-        published = (
-            parse_date(entry.get("published_parsed"))
-            or parse_date(entry.get("updated_parsed"))
-            or parse_date(entry.get("published"))
-            or parse_date(entry.get("updated"))
-        )
 
         articles.append(
             build_article(
                 source=source,
                 title=title,
-                url=link,
                 summary=summary,
-                published=published,
+                url=link,
+                published=entry.get("published")
+                or entry.get("updated")
+                or entry.get("created"),
             )
         )
 
     return articles
 
 
-# ============================================================
-# EXTRACTION HTML
-# ============================================================
-
 def extract_links_from_html(
-    source: dict[str, Any],
     content: str,
+    base_url: str,
+    source: dict[str, Any],
 ) -> list[dict[str, Any]]:
-
-    soup = BeautifulSoup(
-        content,
-        "html.parser",
-    )
-
+    soup = BeautifulSoup(content, "html.parser")
     articles: list[dict[str, Any]] = []
 
-    selectors = source.get(
-        "article_selector",
-        "article a[href]",
-    )
+    for link in soup.find_all("a", href=True):
+        href = urljoin(base_url, link.get("href", ""))
+        title = clean_title(link.get_text(" ", strip=True))
 
-    try:
-        links = soup.select(selectors)
-    except Exception:
-        links = soup.select("a[href]")
-
-    seen_urls: set[str] = set()
-
-    for link_tag in links:
-        href = link_tag.get("href")
-
-        if not href:
+        if not title or not href:
             continue
 
-        url = normalize_url(
-            href,
-            source.get("url", ""),
-        )
-
-        if not url or url in seen_urls:
+        parsed = urlparse(href)
+        if parsed.scheme not in {"http", "https"}:
             continue
-
-        title = clean_title(
-            link_tag.get_text(
-                " ",
-                strip=True,
-            )
-        )
-
-        if len(title) < 10:
-            continue
-
-        seen_urls.add(url)
 
         articles.append(
             build_article(
                 source=source,
                 title=title,
-                url=url,
                 summary="",
+                url=href,
                 published=None,
             )
         )
@@ -177,33 +85,9 @@ def extract_links_from_html(
     return articles
 
 
-# ============================================================
-# BODY EXTRACTION
-# ============================================================
+def extract_body(content: str, url: str) -> str:
+    soup = BeautifulSoup(content, "html.parser")
 
-def extract_body(
-    url: str,
-    source: dict[str, Any],
-    force_refresh: bool = False,
-) -> str:
-
-    try:
-        content = fetch_url(
-            url,
-            headers=HEADERS,
-            request_timeout=REQUEST_TIMEOUT,
-            cache_ttl=CACHE_TTL,
-            force_refresh=force_refresh,
-        )
-    except Exception:
-        return ""
-
-    soup = BeautifulSoup(
-        content,
-        "html.parser",
-    )
-
-    # Suppression des éléments parasites.
     for tag in soup(
         [
             "script",
@@ -211,98 +95,192 @@ def extract_body(
             "noscript",
             "svg",
             "nav",
-            "footer",
             "header",
-            "form",
-            "aside",
+            "footer",
         ]
     ):
         tag.decompose()
 
-    selectors = []
-
-    if source.get("body_selector"):
-        selectors.append(
-            source["body_selector"]
-        )
-
-    selectors.extend(
-        [
-            "article",
-            "[itemprop='articleBody']",
-            ".article-body",
-            ".article-content",
-            ".entry-content",
-            ".post-content",
-            "main",
-        ]
+    main = (
+        soup.find("article")
+        or soup.find("main")
+        or soup.find("div", class_=lambda value: value and "article" in str(value).lower())
     )
 
-    body = ""
+    if main:
+        text = main.get_text(" ", strip=True)
+    else:
+        text = soup.get_text(" ", strip=True)
 
-    for selector in selectors:
-        try:
-            node = soup.select_one(selector)
-        except Exception:
-            node = None
+    return clean_text(text)
 
-        if node:
-            candidate = clean_text(
-                node.get_text(
-                    " ",
-                    strip=True,
-                )
-            )
-
-            if len(candidate) > len(body):
-                body = candidate
-
-    if not body:
-        body = clean_text(
-            soup.get_text(
-                " ",
-                strip=True,
-            )
-        )
-
-    return body
-
-
-# ============================================================
-# CONSTRUCTION ARTICLE
-# ============================================================
 
 def build_article(
     source: dict[str, Any],
     title: str,
-    url: str,
     summary: str,
-    published: datetime | None,
+    url: str,
+    published: Any,
 ) -> dict[str, Any]:
+    return {
+        "source": source.get("name", ""),
+        "source_label": source.get("label") or source.get("name", ""),
+        "title": clean_title(title),
+        "summary": clean_text(summary),
+        "url": normalize_url(url),
+        "date": parse_date(published),
+        "body": "",
+    }
 
-    # IMPORTANT :
-    # On conserve ici un datetime et NON une chaîne ISO.
-    #
-    # html_template.py appelle :
-    #     date.strftime(...)
-    #
-    # C'est la correction principale du bug actuel.
+
+# ---------------------------------------------------------------------------
+# DIAGNOSTICS
+# ---------------------------------------------------------------------------
+
+def diagnose_content(content: str) -> dict[str, Any]:
+    """
+    Retourne uniquement des informations de diagnostic.
+    Ne modifie pas le contenu et ne change pas le comportement du scanner.
+    """
+    content = content or ""
+
+    stripped = content.lstrip().lower()
+
+    looks_like_xml = (
+        stripped.startswith("<?xml")
+        or "<rss" in stripped[:1000]
+        or "<feed" in stripped[:1000]
+    )
+
+    looks_like_html = (
+        "<html" in stripped[:2000]
+        or "<!doctype html" in stripped[:2000]
+    )
 
     return {
-        "source": clean_text(
-            source.get("name", "Unknown")
-        ),
-        "source_url": normalize_url(
-            source.get("url", "")
-        ),
-        "title": clean_title(title),
-        "url": normalize_url(url),
-        "summary": clean_text(summary),
-        "body": "",
-        "date": published,
-        "score": 0,
-        "level": "D",
-        "priority": 0,
-        "relevant": False,
-        "signals": {},
+        "bytes": len(content.encode("utf-8", errors="ignore")),
+        "characters": len(content),
+        "looks_like_xml": looks_like_xml,
+        "looks_like_html": looks_like_html,
+        "has_title_tag": "<title" in stripped,
+        "has_article_tag": "<article" in stripped,
+        "has_main_tag": "<main" in stripped,
     }
+
+
+def diagnose_rss(
+    content: str,
+    source: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Analyse un flux RSS/Atom sans modifier parse_rss().
+    """
+    feed = feedparser.parse(content)
+
+    bozo = bool(getattr(feed, "bozo", False))
+    bozo_exception = getattr(feed, "bozo_exception", None)
+
+    return {
+        "source": source.get("name", ""),
+        "entries": len(feed.entries),
+        "bozo": bozo,
+        "bozo_exception": (
+            str(bozo_exception)
+            if bozo_exception
+            else ""
+        ),
+        "feed_title": str(
+            feed.feed.get("title", "")
+        ),
+    }
+
+
+def diagnose_html_links(
+    content: str,
+    base_url: str,
+) -> dict[str, Any]:
+    """
+    Compte les liens HTML et donne quelques exemples.
+    """
+    soup = BeautifulSoup(content, "html.parser")
+
+    all_links = soup.find_all("a", href=True)
+
+    valid_links = []
+    examples = []
+
+    for link in all_links:
+        href = urljoin(base_url, link.get("href", ""))
+        title = clean_title(link.get_text(" ", strip=True))
+
+        parsed = urlparse(href)
+
+        if parsed.scheme not in {"http", "https"}:
+            continue
+
+        valid_links.append(href)
+
+        if title and len(examples) < 5:
+            examples.append(
+                {
+                    "title": title[:120],
+                    "url": href,
+                }
+            )
+
+    return {
+        "all_links": len(all_links),
+        "valid_links": len(valid_links),
+        "examples": examples,
+    }
+
+
+def diagnose_source_content(
+    source: dict[str, Any],
+    content: str,
+    url: str,
+) -> None:
+    """
+    Affiche un diagnostic lisible d'une source déjà téléchargée.
+    """
+    name = source.get("name", "")
+
+    content_info = diagnose_content(content)
+
+    print(
+        f"DIAG | {name} | "
+        f"bytes={content_info['bytes']} | "
+        f"html={content_info['looks_like_html']} | "
+        f"xml={content_info['looks_like_xml']}"
+    )
+
+    if content_info["looks_like_xml"]:
+        rss_info = diagnose_rss(content, source)
+
+        print(
+            f"DIAG RSS | {name} | "
+            f"entries={rss_info['entries']} | "
+            f"bozo={rss_info['bozo']}"
+        )
+
+        if rss_info["bozo_exception"]:
+            print(
+                f"DIAG RSS ERROR | {name} | "
+                f"{rss_info['bozo_exception']}"
+            )
+
+    if content_info["looks_like_html"]:
+        html_info = diagnose_html_links(content, url)
+
+        print(
+            f"DIAG HTML | {name} | "
+            f"links={html_info['all_links']} | "
+            f"valid={html_info['valid_links']}"
+        )
+
+        for example in html_info["examples"]:
+            print(
+                f"DIAG LINK | {name} | "
+                f"{example['title']} | "
+                f"{example['url']}"
+            )
