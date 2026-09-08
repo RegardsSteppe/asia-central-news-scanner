@@ -141,6 +141,16 @@ def classify_article(article):
         article.get("body", "")
     )
 
+    # Source / URL: certains flux ont un titre sans pays,
+    # mais le média est lui-même géographiquement spécialisé.
+    source_text = normalize(
+        article.get("source", "")
+    )
+    link_text = normalize(
+        article.get("link", article.get("url", ""))
+    )
+    source_context = source_text + " " + link_text
+
     # --------------------------------------------------------
     # HEADLINE
     # --------------------------------------------------------
@@ -175,6 +185,34 @@ def classify_article(article):
     caucasus = find_terms(
         headline,
         CAUCASUS_TERMS,
+    )
+
+    # Signaux de géographie provenant de la source / URL.
+    # Ils ne donnent pas de points à eux seuls : ils servent uniquement
+    # à confirmer le contexte régional quand le titre ne nomme pas le pays.
+    central_asia_source_terms = [
+        "turkmen.news",
+        "turkmen news",
+        "the times of central asia",
+        "times of central asia",
+        "eurasianet",
+        "eurasianet.org",
+        "uzdaily",
+        "kabar",
+        "akipress",
+        "gazeta.uz",
+        "kun.uz",
+        "fergana.agency",
+        "fergana",
+        "ozodlik",
+        "radio free europe/ radio liberty",
+        "radio free europe",
+        "current time",
+        "ca-news",
+    ]
+    central_asia_source = find_terms(
+        source_context,
+        central_asia_source_terms,
     )
 
     human_rights = find_terms(
@@ -403,6 +441,7 @@ def classify_article(article):
         central_asia
         or body_has_geography
         or caucasus
+        or central_asia_source
     )
 
     # ========================================================
@@ -496,6 +535,12 @@ def classify_article(article):
 
         reasons.append(
             "géographie confirmée dans le corps"
+        )
+    elif central_asia_source and not central_asia:
+        geography_score = 10
+        reasons.append(
+            "source spécialisée Asie centrale: "
+            + ", ".join(central_asia_source[:4])
         )
 
     # Caucase seul : plafond
