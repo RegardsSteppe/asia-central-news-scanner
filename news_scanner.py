@@ -484,13 +484,14 @@ def run_scan(
                 "atom",
             }:
                 articles = parse_rss(
-                    source,
                     content,
+                    source,
                 )
             else:
                 articles = extract_links_from_html(
-                    source,
                     content,
+                    url,
+                    source,
                 )
 
             print(
