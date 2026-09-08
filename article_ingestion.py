@@ -91,7 +91,19 @@ def extract_links_from_html(
     return articles
 
 
-def extract_body(content: str, url: str) -> str:
+def extract_body(
+    url: str,
+    source: dict[str, Any] | None = None,
+    force_refresh: bool = False,
+) -> str:
+    content = fetch_url(
+        url,
+        headers=HEADERS,
+        request_timeout=REQUEST_TIMEOUT,
+        cache_ttl=CACHE_TTL,
+        force_refresh=force_refresh,
+    )
+
     soup = BeautifulSoup(content, "html.parser")
 
     for tag in soup(
