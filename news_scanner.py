@@ -71,6 +71,81 @@ logger = logging.getLogger(__name__)
 # HTTP
 # ============================================================
 
+def repair_mojibake(text):
+    """
+    Répare certains textes UTF-8 mal décodés en Latin-1/Windows-1252.
+
+    Exemple typique :
+
+        Ð ÐµÐ´Ð°ÐºÑÐ¸Ñ
+
+    devient :
+
+        Редакция
+
+    La fonction ne modifie le texte que lorsqu'un motif typique
+    de mojibake est détecté.
+    """
+
+    if not text:
+        return ""
+
+    text = str(text)
+
+    # Signatures fréquentes d'un UTF-8 mal interprété.
+    markers = (
+        "Ã",
+        "Â",
+        "Ð",
+        "Ñ",
+        "â€",
+        "â€™",
+        "â€œ",
+        "â€",
+        "â€“",
+        "â€”",
+        "â€¦",
+        "�",
+    )
+
+    if not any(
+        marker in text
+        for marker in markers
+    ):
+        return text
+
+    try:
+
+        repaired = text.encode(
+            "latin-1"
+        ).decode(
+            "utf-8"
+        )
+
+        # On ne garde la réparation que si elle semble
+        # réellement meilleure que le texte original.
+        original_bad = sum(
+            text.count(marker)
+            for marker in markers
+        )
+
+        repaired_bad = sum(
+            repaired.count(marker)
+            for marker in markers
+        )
+
+        if repaired_bad < original_bad:
+            return repaired
+
+    except (
+        UnicodeEncodeError,
+        UnicodeDecodeError,
+    ):
+        pass
+
+    return text
+
+
 def fetch_url(url, source=None):
     """
     Télécharge une URL.
@@ -81,17 +156,23 @@ def fetch_url(url, source=None):
     - timeout
     - erreur SSL
     - autre erreur
+
+    Gère également les cas où un site annonce un mauvais
+    encodage et sert pourtant du UTF-8.
     """
 
     headers = dict(HEADERS)
 
     if source:
+
         custom_headers = source.get(
             "headers",
             {},
         )
 
-        headers.update(custom_headers)
+        headers.update(
+            custom_headers
+        )
 
     try:
 
@@ -104,11 +185,49 @@ def fetch_url(url, source=None):
 
         response.raise_for_status()
 
+        # ----------------------------------------------------
+        # ENCODAGE
+        # ----------------------------------------------------
+
+        # Certains sites déclarent ISO-8859-1 ou Windows-1252
+        # alors que le contenu réel est UTF-8.
+        #
+        # On privilégie UTF-8 dans ces cas.
+        encoding = response.encoding
+
+        if (
+            not encoding
+            or encoding.lower()
+            in {
+                "iso-8859-1",
+                "latin-1",
+                "windows-1252",
+            }
+        ):
+
+            apparent = response.apparent_encoding
+
+            if apparent:
+                response.encoding = apparent
+
+            else:
+                response.encoding = "utf-8"
+
+        text = response.text
+
+        # ----------------------------------------------------
+        # RÉPARATION MOJIBAKE
+        # ----------------------------------------------------
+
+        text = repair_mojibake(
+            text
+        )
+
         return {
             "ok": True,
             "status": response.status_code,
             "url": response.url,
-            "text": response.text,
+            "text": text,
             "error": "",
         }
 
@@ -130,7 +249,11 @@ def fetch_url(url, source=None):
             "status": status,
             "url": url,
             "text": "",
-            "error": f"HTTP {status}" if status else str(exc),
+            "error": (
+                f"HTTP {status}"
+                if status
+                else str(exc)
+            ),
         }
 
     except requests.exceptions.Timeout:
@@ -205,6 +328,10 @@ def clean_text(text):
     if not text:
         return ""
 
+    text = repair_mojibake(
+        text
+    )
+
     text = re.sub(
         r"\s+",
         " ",
@@ -216,7 +343,150 @@ def clean_text(text):
 
 def normalize_text(text):
 
-    return clean_text(text).lower()
+    return clean_text(
+        text
+    ).lower()
+
+
+def remove_duplicate_title_from_summary(
+    title,
+    summary,
+):
+    """
+    Évite le cas où le résumé HTML commence par le titre.
+
+    Exemple :
+
+        titre = "Редакция Orda.kz полностью прекращает работу..."
+
+        résumé =
+        "Редакция Orda.kz полностью прекращает работу...
+         Решение принял учредитель..."
+
+    devient :
+
+        résumé =
+        "Решение принял учредитель..."
+    """
+
+    title = clean_text(
+        title
+    )
+
+    summary = clean_text(
+        summary
+    )
+
+    if not title or not summary:
+        return summary
+
+    normalized_title = normalize_text(
+        title
+    )
+
+    normalized_summary = normalize_text(
+        summary
+    )
+
+    # --------------------------------------------------------
+    # CAS 1 : le résumé commence exactement par le titre
+    # --------------------------------------------------------
+
+    if normalized_summary.startswith(
+        normalized_title
+    ):
+
+        remaining = summary[
+            len(title):
+        ].strip()
+
+        remaining = remaining.lstrip(
+            " .,:;!?-–—|"
+        )
+
+        return clean_text(
+            remaining
+        )
+
+    # --------------------------------------------------------
+    # CAS 2 : le HTML contient une légère variation
+    # du titre au début du résumé.
+    # --------------------------------------------------------
+
+    title_words = extract_title_words(
+        title
+    )
+
+    summary_words = extract_title_words(
+        summary[:1000]
+    )
+
+    if (
+        len(title_words) >= 4
+        and len(summary_words) >= len(
+            title_words
+        )
+    ):
+
+        matching = 0
+
+        for index, word in enumerate(
+            title_words
+        ):
+
+            if index >= len(
+                summary_words
+            ):
+                break
+
+            if summary_words[index] == word:
+                matching += 1
+
+        ratio = (
+            matching / len(title_words)
+            if title_words
+            else 0
+        )
+
+        if ratio >= 0.90:
+
+            # On essaie de supprimer le nombre
+            # correspondant de mots du texte brut.
+            words = summary.split()
+
+            removed = 0
+            kept = []
+
+            for word in words:
+
+                cleaned_word = extract_title_words(
+                    word
+                )
+
+                if (
+                    removed < len(title_words)
+                    and cleaned_word
+                    and cleaned_word[0]
+                    == title_words[removed]
+                ):
+                    removed += 1
+                    continue
+
+                kept.append(
+                    word
+                )
+
+            remaining = " ".join(
+                kept
+            )
+
+            return clean_text(
+                remaining
+            ).lstrip(
+                " .,:;!?-–—|"
+            )
+
+    return summary
 
 
 # ============================================================
@@ -337,10 +607,10 @@ def extract_title_words(title):
     if not title:
         return []
 
-    text = normalize_text(title)
+    text = normalize_text(
+        title
+    )
 
-    # Conserve les lettres Unicode.
-    # Les chiffres et la ponctuation sont supprimés.
     words = re.findall(
         r"[^\W\d_]+",
         text,
@@ -357,7 +627,9 @@ def extract_title_words(title):
         if word in TITLE_STOPWORDS:
             continue
 
-        result.append(word)
+        result.append(
+            word
+        )
 
     return result
 
@@ -384,11 +656,8 @@ def build_title_word_list(
         ...
     ]
 
-    min_count :
-        nombre minimum d'apparitions d'un mot.
-
-    max_words :
-        nombre maximum de mots retournés.
+    Chaque mot apparaît une seule fois avec son nombre
+    d'apparitions.
     """
 
     counts = {}
@@ -404,10 +673,14 @@ def build_title_word_list(
             title
         )
 
-        for word in words:
+        # Un mot ne compte qu'une seule fois par titre.
+        # Cela évite qu'un titre répétant un mot artificiellement
+        # fasse monter fortement son compteur.
+        for word in set(words):
 
             counts[word] = (
-                counts.get(word, 0) + 1
+                counts.get(word, 0)
+                + 1
             )
 
     vocabulary = [
@@ -498,12 +771,16 @@ def parse_date(value):
     return None
 
 
-def extract_date_from_container(container):
+def extract_date_from_container(
+    container
+):
 
     if not container:
         return None
 
-    time_tag = container.find("time")
+    time_tag = container.find(
+        "time"
+    )
 
     if time_tag:
 
@@ -515,7 +792,9 @@ def extract_date_from_container(container):
             )
         )
 
-        parsed = parse_date(value)
+        parsed = parse_date(
+            value
+        )
 
         if parsed:
             return parsed
@@ -592,7 +871,9 @@ def absolute_url(
     )
 
 
-def is_probable_article_url(url):
+def is_probable_article_url(
+    url
+):
 
     if not url:
         return False
@@ -602,10 +883,14 @@ def is_probable_article_url(url):
     if lowered.startswith("#"):
         return False
 
-    if lowered.startswith("javascript:"):
+    if lowered.startswith(
+        "javascript:"
+    ):
         return False
 
-    if lowered.startswith("mailto:"):
+    if lowered.startswith(
+        "mailto:"
+    ):
         return False
 
     ignored = [
@@ -644,10 +929,25 @@ def build_article(
     source,
 ):
 
+    title = clean_text(
+        title
+    )
+
+    summary = clean_text(
+        summary
+    )
+
+    summary = (
+        remove_duplicate_title_from_summary(
+            title,
+            summary,
+        )
+    )
+
     return {
-        "title": clean_text(title),
+        "title": title,
         "url": url,
-        "summary": clean_text(summary),
+        "summary": summary,
 
         # Le body sera récupéré uniquement
         # pour les meilleurs candidats.
@@ -700,7 +1000,9 @@ def parse_feed(
 
     try:
 
-        parsed = feedparser.parse(raw)
+        parsed = feedparser.parse(
+            raw
+        )
 
     except Exception as exc:
 
@@ -712,10 +1014,14 @@ def parse_feed(
 
         return [], {
             "ok": False,
-            "status": result.get("status"),
+            "status": result.get(
+                "status"
+            ),
             "url": feed_url,
             "text": "",
-            "error": f"feed parse: {exc}",
+            "error": (
+                f"feed parse: {exc}"
+            ),
         }
 
     articles = []
@@ -751,9 +1057,15 @@ def parse_feed(
         )
 
         published = (
-            entry.get("published")
-            or entry.get("updated")
-            or entry.get("created")
+            entry.get(
+                "published"
+            )
+            or entry.get(
+                "updated"
+            )
+            or entry.get(
+                "created"
+            )
             or ""
         )
 
@@ -810,7 +1122,9 @@ def parse_feed(
 # HTML CONTAINERS
 # ============================================================
 
-def find_article_containers(soup):
+def find_article_containers(
+    soup
+):
 
     containers = []
 
@@ -856,14 +1170,20 @@ def find_article_containers(soup):
 
     for container in containers:
 
-        identifier = id(container)
+        identifier = id(
+            container
+        )
 
         if identifier in seen_ids:
             continue
 
-        seen_ids.add(identifier)
+        seen_ids.add(
+            identifier
+        )
 
-        unique.append(container)
+        unique.append(
+            container
+        )
 
     return unique
 
@@ -942,7 +1262,19 @@ def extract_article_from_container(
         )
 
         if len(text) >= 40:
-            paragraphs.append(text)
+
+            # Évite de prendre le titre comme
+            # premier paragraphe de résumé.
+            if normalize_text(
+                text
+            ) == normalize_text(
+                title
+            ):
+                continue
+
+            paragraphs.append(
+                text
+            )
 
     summary = " ".join(
         paragraphs[:3]
@@ -957,9 +1289,20 @@ def extract_article_from_container(
             )
         )
 
-        if len(local_text) > len(title):
+        if len(local_text) > len(
+            title
+        ):
 
-            summary = local_text[:800]
+            summary = local_text[
+                :800
+            ]
+
+    summary = (
+        remove_duplicate_title_from_summary(
+            title,
+            summary,
+        )
+    )
 
     date = extract_date_from_container(
         container
@@ -1020,16 +1363,20 @@ def parse_html_source(
 
     for container in containers:
 
-        article = extract_article_from_container(
-            container,
-            url,
-            source,
+        article = (
+            extract_article_from_container(
+                container,
+                url,
+                source,
+            )
         )
 
         if not article:
             continue
 
-        article_url = article["url"]
+        article_url = article[
+            "url"
+        ]
 
         if article_url in seen_urls:
             continue
@@ -1089,8 +1436,10 @@ def parse_html_source(
 
             if parent:
 
-                paragraphs = parent.find_all(
-                    "p"
+                paragraphs = (
+                    parent.find_all(
+                        "p"
+                    )
                 )
 
                 summary = " ".join(
@@ -1103,8 +1452,17 @@ def parse_html_source(
                     for p in paragraphs[:2]
                 )
 
-            date = extract_date_from_container(
-                parent
+            summary = (
+                remove_duplicate_title_from_summary(
+                    title,
+                    summary,
+                )
+            )
+
+            date = (
+                extract_date_from_container(
+                    parent
+                )
             )
 
             articles.append(
@@ -1203,13 +1561,17 @@ def extract_article_body(
             )
 
             if len(text) >= 30:
-                paragraphs.append(text)
+                paragraphs.append(
+                    text
+                )
 
         text = " ".join(
             paragraphs
         )
 
-        if len(text) > len(best_text):
+        if len(text) > len(
+            best_text
+        ):
             best_text = text
 
     return best_text[:20000]
@@ -1219,7 +1581,9 @@ def extract_article_body(
 # DEDUPLICATION
 # ============================================================
 
-def normalize_url_for_dedup(url):
+def normalize_url_for_dedup(
+    url
+):
 
     if not url:
         return ""
@@ -1241,7 +1605,9 @@ def normalize_url_for_dedup(url):
     return url.rstrip("/")
 
 
-def deduplicate_articles(articles):
+def deduplicate_articles(
+    articles
+):
 
     result = []
 
@@ -1259,22 +1625,26 @@ def deduplicate_articles(articles):
             )
         )
 
-        normalized_title = normalize_text(
-            article.get(
-                "title",
-                "",
+        normalized_title = (
+            normalize_text(
+                article.get(
+                    "title",
+                    "",
+                )
             )
         )
 
         if (
             normalized_url
-            and normalized_url in seen_urls
+            and normalized_url
+            in seen_urls
         ):
             continue
 
         if (
             normalized_title
-            and normalized_title in seen_titles
+            and normalized_title
+            in seen_titles
         ):
             continue
 
@@ -1328,9 +1698,11 @@ def scan_source(source):
             [],
         ):
 
-            feed_articles, result = parse_feed(
-                feed_url,
-                source,
+            feed_articles, result = (
+                parse_feed(
+                    feed_url,
+                    source,
+                )
             )
 
             if result.get("ok"):
@@ -1360,7 +1732,9 @@ def scan_source(source):
 
         if (
             not articles
-            and source.get("fallbacks")
+            and source.get(
+                "fallbacks"
+            )
         ):
 
             for fallback in source.get(
@@ -1375,11 +1749,12 @@ def scan_source(source):
                     fallback,
                 )
 
-                fallback_articles, result = (
-                    parse_html_source(
-                        fallback,
-                        source,
-                    )
+                (
+                    fallback_articles,
+                    result,
+                ) = parse_html_source(
+                    fallback,
+                    source,
                 )
 
                 if result.get("ok"):
@@ -1422,11 +1797,12 @@ def scan_source(source):
 
         for url in urls:
 
-            html_articles, result = (
-                parse_html_source(
-                    url,
-                    source,
-                )
+            (
+                html_articles,
+                result,
+            ) = parse_html_source(
+                url,
+                source,
             )
 
             if result.get("ok"):
@@ -1453,21 +1829,29 @@ def scan_source(source):
 
     for article in articles:
 
-        article["source"] = source["name"]
-
-        article["source_short"] = source.get(
-            "short_name",
-            source["name"],
+        article["source"] = (
+            source["name"]
         )
 
-        article["source_profile"] = source.get(
-            "profile",
-            "",
+        article["source_short"] = (
+            source.get(
+                "short_name",
+                source["name"],
+            )
         )
 
-        article["source_label"] = source.get(
-            "label",
-            "",
+        article["source_profile"] = (
+            source.get(
+                "profile",
+                "",
+            )
+        )
+
+        article["source_label"] = (
+            source.get(
+                "label",
+                "",
+            )
         )
 
     articles = articles[
@@ -1496,8 +1880,11 @@ def scan_source(source):
     error_text = ""
 
     if errors:
+
         error_text = "; ".join(
-            dict.fromkeys(errors)
+            dict.fromkeys(
+                errors
+            )
         )
 
     return {
@@ -1511,7 +1898,9 @@ def scan_source(source):
 # COLLECTE AVEC CACHE
 # ============================================================
 
-def collect_articles(memory):
+def collect_articles(
+    memory
+):
 
     all_articles = []
 
@@ -1597,7 +1986,9 @@ def collect_articles(memory):
             stats["sources"].append({
                 "name": source["name"],
                 "status": status,
-                "articles": len(articles),
+                "articles": len(
+                    articles
+                ),
                 "error": error,
             })
 
@@ -1710,7 +2101,9 @@ def collect_articles(memory):
 # SCORING
 # ============================================================
 
-def classify_articles(articles):
+def classify_articles(
+    articles
+):
 
     audit = []
 
@@ -1778,7 +2171,9 @@ def classify_articles(articles):
             continue
 
         source = source_lookup.get(
-            article.get("source")
+            article.get(
+                "source"
+            )
         )
 
         body = extract_article_body(
@@ -1813,7 +2208,9 @@ LEVEL_PRIORITY = {
 }
 
 
-def sort_articles(articles):
+def sort_articles(
+    articles
+):
 
     minimum_date = datetime.min.replace(
         tzinfo=timezone.utc
@@ -1852,7 +2249,9 @@ def build_stats(
     source_stats,
 ):
 
-    analyzed = len(audit)
+    analyzed = len(
+        audit
+    )
 
     retained = [
         article
@@ -1897,7 +2296,9 @@ def build_stats(
 
     return {
         "analyzed": analyzed,
-        "retained": len(retained),
+        "retained": len(
+            retained
+        ),
 
         "avg_score": round(
             avg_score,
@@ -1915,33 +2316,45 @@ def build_stats(
         # SOURCES
         # ----------------------------------------------------
 
-        "sources_successful": source_stats[
-            "successful"
-        ],
+        "sources_successful": (
+            source_stats[
+                "successful"
+            ]
+        ),
 
         "sources_total": len(
             SOURCES
         ),
 
-        "sources_attempted": source_stats[
-            "attempted"
-        ],
+        "sources_attempted": (
+            source_stats[
+                "attempted"
+            ]
+        ),
 
-        "sources_empty": source_stats[
-            "empty"
-        ],
+        "sources_empty": (
+            source_stats[
+                "empty"
+            ]
+        ),
 
-        "sources_errors": source_stats[
-            "errors"
-        ],
+        "sources_errors": (
+            source_stats[
+                "errors"
+            ]
+        ),
 
-        "sources_skipped_cache": source_stats[
-            "cached"
-        ],
+        "sources_skipped_cache": (
+            source_stats[
+                "cached"
+            ]
+        ),
 
-        "source_details": source_stats[
-            "sources"
-        ],
+        "source_details": (
+            source_stats[
+                "sources"
+            ]
+        ),
 
         "relevance_rate": round(
             (
@@ -1974,16 +2387,20 @@ def show_memory():
 
     print()
     print("=" * 70)
-    print(" MÉMOIRE DU ASIA CENTRAL NEWS SCANNER")
+    print(
+        " MÉMOIRE DU ASIA CENTRAL NEWS SCANNER"
+    )
     print("=" * 70)
     print()
 
     print(
-        f"Articles mémorisés : {stats['articles']}"
+        f"Articles mémorisés : "
+        f"{stats['articles']}"
     )
 
     print(
-        f"Sources mémorisées  : {stats['sources']}"
+        f"Sources mémorisées  : "
+        f"{stats['sources']}"
     )
 
     print()
