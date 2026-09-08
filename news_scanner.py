@@ -864,6 +864,8 @@ def enrich_articles(
 
 def build_stats(
     articles: list[dict[str, Any]],
+    sources_successful: int = 0,
+    sources_total: int = 0,
 ) -> dict[str, Any]:
 
     scores = [
@@ -903,6 +905,8 @@ def build_stats(
         "level_b": levels["B"],
         "level_c": levels["C"],
         "level_d": levels["D"],
+        "sources_successful": sources_successful,
+        "sources_total": sources_total,
     }
 
 
@@ -953,6 +957,9 @@ def run_scan(
 
     all_articles: list[dict[str, Any]] = []
 
+    sources_successful = 0
+    sources_total = len(SOURCES)
+
     for source in SOURCES:
         name = source.get(
             "name",
@@ -996,6 +1003,8 @@ def run_scan(
                 f"SOURCE | {name} | "
                 f"{len(articles)} articles"
             )
+
+            sources_successful += 1
 
             all_articles.extend(articles)
 
@@ -1069,7 +1078,9 @@ def run_scan(
     # --------------------------------------------------------
 
     stats = build_stats(
-        all_articles
+        all_articles,
+        sources_successful=sources_successful,
+        sources_total=sources_total,
     )
 
     audit = build_audit(
