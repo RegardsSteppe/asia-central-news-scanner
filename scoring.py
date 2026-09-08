@@ -24,6 +24,8 @@ from keywords import (
     JOURNALIST_REPRESSION_RU_PATTERNS,
     REPRESSION_WEIGHTS,
     SPECIFIC_RIGHTS_WEIGHTS,
+    LEGAL_CONTEXT_TERMS,
+    LOW_SIGNAL_CONTEXT_TERMS,
 )
 
 
@@ -245,6 +247,16 @@ def classify_article(article):
         NOISE_TERMS,
     )
 
+    legal_context = find_terms(
+        headline,
+        LEGAL_CONTEXT_TERMS,
+    )
+
+    low_signal_context = find_terms(
+        headline,
+        LOW_SIGNAL_CONTEXT_TERMS,
+    )
+
     # ========================================================
     # BODY
     # ========================================================
@@ -282,6 +294,11 @@ def classify_article(article):
     body_activists = find_terms(
         body,
         ACTIVIST_TERMS,
+    )
+
+    body_legal_context = find_terms(
+        body,
+        LEGAL_CONTEXT_TERMS,
     )
 
     body_geo_count = len(
@@ -325,6 +342,11 @@ def classify_article(article):
     has_human_rights = bool(
         human_rights
         or body_human_rights
+    )
+
+    has_legal_context = bool(
+        legal_context
+        or body_legal_context
     )
 
     # --------------------------------------------------------
@@ -471,6 +493,22 @@ def classify_article(article):
             "journaliste / média ciblé"
         )
 
+    elif activist_relation and central_asia:
+
+        target_score = 16
+
+        reasons.append(
+            "relation activiste / répression détectée"
+        )
+
+    elif journalist_relation and central_asia:
+
+        target_score = 15
+
+        reasons.append(
+            "relation journaliste / répression détectée"
+        )
+
     elif has_activist:
 
         target_score = 10
@@ -539,6 +577,27 @@ def classify_article(article):
         repression_score = max(
             repression_score,
             8,
+        )
+
+    # Contexte juridique (cour, procureur, police...) : bonus
+    # modéré, uniquement si un signal de répression existe déjà.
+    # Seul, ce contexte ne doit rien apporter au score.
+    if (
+        has_legal_context
+        and repression_terms_all
+    ):
+
+        repression_score = capped_add(
+            repression_score,
+            min(3, len(legal_context or body_legal_context)),
+            30,
+        )
+
+        reasons.append(
+            "contexte judiciaire: "
+            + ", ".join(
+                (legal_context or body_legal_context)[:6]
+            )
         )
 
     # Confirmation dans le body
@@ -626,6 +685,13 @@ def classify_article(article):
     ):
 
         journalism_score = 7
+
+    elif (
+        activist_relation
+        or journalist_relation
+    ) and central_asia:
+
+        journalism_score = 6
 
     elif confirmed_repression:
 
@@ -920,6 +986,22 @@ def classify_article(article):
             "relation confirmée: journaliste + répression"
         )
 
+    elif activist_relation and central_asia:
+
+        score += 4
+
+        reasons.append(
+            "relation détectée: activiste + répression"
+        )
+
+    elif journalist_relation and central_asia:
+
+        score += 4
+
+        reasons.append(
+            "relation détectée: journaliste + répression"
+        )
+
     # ========================================================
     # BONUS GRAVE
     # ========================================================
@@ -946,6 +1028,33 @@ def classify_article(article):
 
         reasons.append(
             "signal de répression grave confirmé"
+        )
+
+    # ========================================================
+    # PORTE DE CONTEXTE RÉGIONAL
+    # ========================================================
+    #
+    # Un article ne peut pas obtenir un score élevé s'il n'a
+    # aucun ancrage géographique en Asie centrale (ni même dans
+    # le Caucase). Ceci évite qu'un article de géopolitique /
+    # droits humains globale, sans lien régional réel, ne soit
+    # classé comme prioritaire.
+
+    regional_context = bool(
+        central_asia
+        or body_has_geography
+        or caucasus
+    )
+
+    if not regional_context:
+
+        score = min(
+            score,
+            20,
+        )
+
+        reasons.append(
+            "porte de contexte régional: aucun ancrage Asie centrale / Caucase"
         )
 
     # ========================================================
@@ -1162,6 +1271,9 @@ def classify_article(article):
         "body_legal_repression": (
             body_legal_repression
         ),
+        "legal_context": legal_context,
+        "body_legal_context": body_legal_context,
+        "has_legal_context": has_legal_context,
 
         # Politique
         "domestic": domestic,
@@ -1177,6 +1289,8 @@ def classify_article(article):
         "historical": historical,
         "non_news": non_news,
         "noise": noise,
+        "low_signal_context": low_signal_context,
+        "regional_context": regional_context,
 
         # Relations
         "has_activist": has_activist,
