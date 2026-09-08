@@ -26,6 +26,8 @@ from keywords import (
     SPECIFIC_RIGHTS_WEIGHTS,
     LEGAL_CONTEXT_TERMS,
     LOW_SIGNAL_CONTEXT_TERMS,
+    HUMAN_RIGHTS_DEFENDER_TERMS,
+    FORCED_LABOR_TERMS
 )
 
 
@@ -170,6 +172,29 @@ def classify_article(article):
         + " "
         + body[:12000]
     ).strip()
+
+    # V6 additional human-rights signals
+    has_hr_defender = any(normalize(term) in full_text for term in HUMAN_RIGHTS_DEFENDER_TERMS)
+    forced_labor_detected = any(normalize(term) in full_text for term in FORCED_LABOR_TERMS)
+    has_detention = any(normalize(term) in full_text for term in [
+        "detained", "detention", "arrested", "arrest", "задержан", "задержание", "арестован", "арест",
+        "заключен", "заключена", "в заключении",
+    ])
+    has_imprisonment = any(normalize(term) in full_text for term in [
+        "imprisoned", "imprisonment", "prison sentence", "sentenced to",
+        "осужден", "осуждена", "приговорен", "приговорена", "лишения свободы",
+    ])
+    has_restriction = any(normalize(term) in full_text for term in [
+        "restriction", "restrictions", "restricted access", "access restriction",
+        "ограничение", "ограничения", "ограничен доступ", "запретили доступ",
+    ])
+    has_censorship = any(normalize(term) in full_text for term in [
+        "censorship", "censored", "цензура", "цензур",
+    ])
+    has_government_involvement = any(normalize(term) in full_text for term in [
+        "government", "authorities", "state", "government-backed", "ilo", "мот",
+        "правительство", "власти", "государство", "государственный", "государственные",
+    ])
 
     reasons = []
 
@@ -1176,6 +1201,33 @@ def classify_article(article):
         reasons.append(
             "porte de contexte régional: aucun ancrage Asie centrale / Caucase"
         )
+
+    # ========================================================
+    # V6 — SIGNAUX HR À FORTE VALEUR COMBINATOIRE
+    # ========================================================
+
+    if regional_context and has_hr_defender and (confirmed_repression or severe_detected):
+        score += 20
+        reasons.append("défenseur des droits confronté à une répression confirmée")
+
+    if regional_context and has_hr_defender and (prison_sentence_signal or has_detention or has_imprisonment):
+        score += 15
+        reasons.append("défenseur des droits arrêté, détenu ou condamné")
+
+    if regional_context and has_hr_defender and has_journalist:
+        score += 12
+        reasons.append("défenseur des droits et journaliste")
+
+    if regional_context and has_journalist and (confirmed_repression or severe_detected or has_restriction or has_censorship):
+        score += 18
+        reasons.append("journaliste confronté à restriction, censure ou répression")
+
+    if regional_context and forced_labor_detected:
+        score += 20
+        reasons.append("travail forcé / exploitation du travail")
+        if has_government_involvement:
+            score += 10
+            reasons.append("travail forcé impliquant les autorités ou l'État")
 
     # ========================================================
     # BORNE
