@@ -28,8 +28,8 @@ SOURCES = [
         ],
 
         "max_articles": 150,
-    }]
-'''
+    },
+
     {
         "name": "Eurasianet",
         "short_name": "Eurasianet",
@@ -555,4 +555,3 @@ SOURCE_PROFILES = {
         ),
     },
 }
-'''
