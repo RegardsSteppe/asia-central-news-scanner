@@ -287,19 +287,25 @@ def enrich_articles(
         selected,
         1,
     ):
-        body = extract_body(
-            article["url"],
-            next(
-                (
-                    source
-                    for source in SOURCES
-                    if source.get("name")
-                    == article.get("source")
+        try:
+            body = extract_body(
+                article["url"],
+                next(
+                    (
+                        source
+                        for source in SOURCES
+                        if source.get("name")
+                        == article.get("source")
+                    ),
+                    {},
                 ),
-                {},
-            ),
-            force_refresh=force_refresh,
-        )
+                force_refresh=force_refresh,
+            )
+        except Exception as exc:
+            print(
+                f"WARNING | {article.get('source')} | ENRICH ERROR | {exc}"
+            )
+            body = ""
 
         if body:
             article["body"] = body
