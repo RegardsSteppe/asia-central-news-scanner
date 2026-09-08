@@ -898,7 +898,7 @@ def build_stats(
     return {
         "analyzed": len(articles),
         "retained": relevant,
-        "average_score": round(average, 1),
+        "avg_score": round(average, 1),
         "levels": levels,
     }
 
