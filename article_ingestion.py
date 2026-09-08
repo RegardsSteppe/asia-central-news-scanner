@@ -29,19 +29,25 @@ HEADERS = {
 
 
 def parse_rss(content: str, source: dict[str, Any]) -> list[dict[str, Any]]:
-    feed = feedparser.parse(content)
+    feed = feedparser.parse(content or "")
 
     articles: list[dict[str, Any]] = []
 
-    for entry in feed.entries:
-        title = clean_title(entry.get("title", ""))
-        summary = clean_text(
-            entry.get("summary")
-            or entry.get("description")
-            or ""
-        )
+    for entry in getattr(feed, "entries", None) or []:
+        try:
+            title = clean_title(entry.get("title", ""))
+            summary = clean_text(
+                entry.get("summary")
+                or entry.get("description")
+                or ""
+            )
 
-        link = entry.get("link", "")
+            link = entry.get("link", "")
+        except AttributeError:
+            # Entrée mal formée (ne se comporte pas comme un dict) :
+            # on l'ignore sans faire échouer tout le flux.
+            continue
+
         if not title or not link:
             continue
 
