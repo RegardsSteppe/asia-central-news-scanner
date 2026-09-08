@@ -1077,7 +1077,7 @@ def run_scan(
         "STATS | "
         f"analyzed={stats['analyzed']} | "
         f"retained={stats['retained']} | "
-        f"avg={stats['average_score']}/100"
+        f"avg={stats['avg_score']}/100"
     )
 
     print(
