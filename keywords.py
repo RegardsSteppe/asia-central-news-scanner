@@ -43,6 +43,36 @@ CENTRAL_ASIA_TERMS = [
     "karakalpakstan",
     "karakalpak",
 
+    # Villes — Kazakhstan
+    "almaty",
+    "astana",
+    "nur-sultan",
+    "nur sultan",
+    "shymkent",
+
+    # Villes — Kyrgyzstan
+    "bishkek",
+    "osh",
+    "jalal-abad",
+    "jalalabad",
+
+    # Villes — Tajikistan
+    "dushanbe",
+    "khujand",
+    "khorog",
+
+    # Villes — Turkmenistan
+    "ashgabat",
+    "turkmenabat",
+
+    # Villes — Uzbekistan
+    "tashkent",
+    "samarkand",
+    "bukhara",
+    "fergana",
+    "andijan",
+    "nukus",
+
     # Russe
     "центральная азия",
     "центральноазиат",
@@ -61,6 +91,27 @@ CENTRAL_ASIA_TERMS = [
     "узбек",
     "каракалпакстан",
     "каракалпак",
+
+    # Villes — Russe (dont formes fléchies fréquentes)
+    "алматы",
+    "астана",
+    "шымкент",
+    "бишкек",
+    "ош",
+    "джалал-абад",
+    "душанбе",
+    "худжанд",
+    "хорог",
+    "ашхабад",
+    "туркменабат",
+    "ташкент",
+    "ташкенте",
+    "самарканд",
+    "бухара",
+    "фергана",
+    "ферганы",
+    "андижан",
+    "нукус",
 ]
 
 
@@ -210,11 +261,14 @@ REPRESSION_TERMS = [
     "held in custody",
 
     # Prison
+    "prison",
+    "prisons",
     "imprisoned",
     "imprisonment",
     "jailed",
     "jail",
     "prison sentence",
+    "prison term",
     "sentenced to prison",
 
     # Condamnation
@@ -249,6 +303,17 @@ REPRESSION_TERMS = [
     "abuse in custody",
     "police abuse",
     "custodial abuse",
+
+    # Violence physique / menaces
+    "attacked",
+    "physically attacked",
+    "assaulted",
+    "beaten",
+    "beaten up",
+    "threatened",
+    "death threats",
+    "intimidated",
+    "intimidation",
 
     # Disparitions
     "disappeared",
@@ -298,6 +363,8 @@ REPRESSION_TERMS = [
     "задержана",
     "задержаны",
     "задержание",
+    "тюрьма",
+    "тюрьме",
     "заключен",
     "заключена",
     "заключены",
@@ -311,6 +378,13 @@ REPRESSION_TERMS = [
     "пытка",
     "пытки",
     "жестокое обращение",
+    "избит",
+    "избита",
+    "избиты",
+    "нападение",
+    "угрозы",
+    "угрозы убийством",
+    "запугивание",
     "насильственное исчезновение",
     "исчезновение",
     "запрет на выезд",
@@ -391,6 +465,70 @@ LEGAL_REPRESSION_TERMS = [
     "иностранный представитель",
     "иностранное финансирование",
     "несанкционированный митинг",
+]
+
+
+# ============================================================
+# 6bis. CONTEXTE JURIDIQUE / JUDICIAIRE
+# ============================================================
+#
+# Termes juridiques génériques (cour, procureur, police, juge...)
+# qui, seuls, n'indiquent pas de répression, mais qui renforcent
+# la confiance quand ils accompagnent un signal de répression
+# ou une cible (activiste, journaliste).
+
+LEGAL_CONTEXT_TERMS = [
+    "court",
+    "courts",
+    "courtroom",
+    "prosecutor",
+    "prosecutors",
+    "prosecutor's office",
+    "judge",
+    "judges",
+    "verdict",
+    "appeal",
+    "appeals",
+    "police",
+    "law enforcement",
+    "investigator",
+    "investigators",
+    "interrogation",
+    "interrogated",
+    "case",
+    "case against",
+    "criminal case against",
+    "charges against",
+    "indictment",
+    "indicted",
+    "alleged",
+    "allegedly",
+    "illegal",
+    "illegally",
+    "unlawful",
+    "unlawfully",
+
+    # Russe
+    "суд",
+    "суды",
+    "прокурор",
+    "прокуратура",
+    "судья",
+    "приговор",
+    "апелляция",
+    "полиция",
+    "следователь",
+    "следователи",
+    "допрос",
+    "дело",
+    "дело против",
+    "обвинение",
+    "обвинения",
+    "предъявлено обвинение",
+    "предполагаемый",
+    "якобы",
+    "незаконно",
+    "незаконный",
 ]
 
 
@@ -740,11 +878,82 @@ ROUTINE_GEO_TERMS = [
     "memorandum",
     "memorandum of understanding",
 
+    "economic partnership",
+
+    "gdp",
+    "gdp growth",
+    "economic growth",
+    "export",
+    "exports",
+    "import",
+    "imports",
+    "currency",
+    "stock exchange",
+    "tourism",
+    "tourist",
+    "agriculture",
+    "harvest",
+
+    # Russe
+    "торговля",
+    "инвестиции",
+    "газ",
+    "нефть",
+    "уран",
+    "трубопровод",
+    "железная дорога",
+    "экономическое сотрудничество",
+    "бизнес-форум",
+    "меморандум",
+    "экспорт",
+    "импорт",
+    "туризм",
+]
+
+
+# ============================================================
+# 12bis. CONTEXTE GÉNÉRIQUE / FAIBLE SIGNAL
+# ============================================================
+#
+# Termes diplomatiques ou institutionnels génériques, différents
+# du "bruit" (NOISE_TERMS) : ils peuvent apparaître dans un article
+# pertinent, mais n'apportent qu'un contexte faible et ne doivent
+# jamais, à eux seuls, faire monter le score.
+
+LOW_SIGNAL_CONTEXT_TERMS = [
     "delegation",
     "official visit",
     "bilateral talks",
     "bilateral meeting",
-    "economic partnership",
+    "state visit",
+    "meeting",
+    "summit",
+    "forum",
+    "conference",
+    "ceremony",
+    "announcement",
+    "statement",
+    "international community",
+    "authorities",
+    "official",
+    "officials",
+
+    # Russe
+    "делегация",
+    "официальный визит",
+    "двусторонние переговоры",
+    "двусторонняя встреча",
+    "государственный визит",
+    "встреча",
+    "саммит",
+    "форум",
+    "конференция",
+    "церемония",
+    "заявление",
+    "международное сообщество",
+    "власти",
+    "официальный",
+    "официальные лица",
 ]
 
 
@@ -1000,7 +1209,11 @@ REPRESSION_WEIGHTS = {
     "imprisoned": 8,
     "imprisonment": 8,
     "jailed": 8,
+    "jail": 7,
+    "prison": 7,
+    "prisons": 7,
     "prison sentence": 8,
+    "prison term": 8,
     "sentenced to prison": 8,
 
     "arrested": 7,
@@ -1036,6 +1249,16 @@ REPRESSION_WEIGHTS = {
     "abuse in custody": 7,
     "custodial abuse": 7,
 
+    "attacked": 5,
+    "physically attacked": 6,
+    "assaulted": 6,
+    "beaten": 6,
+    "beaten up": 6,
+    "threatened": 4,
+    "death threats": 6,
+    "intimidated": 4,
+    "intimidation": 4,
+
     "репрессии": 8,
     "политические репрессии": 9,
     "пытка": 10,
@@ -1052,6 +1275,14 @@ REPRESSION_WEIGHTS = {
     "заключен": 8,
     "заключена": 8,
     "заключены": 8,
+    "тюрьма": 7,
+    "тюрьме": 7,
+    "избит": 6,
+    "избита": 6,
+    "избиты": 6,
+    "угрозы": 4,
+    "угрозы убийством": 6,
+    "запугивание": 4,
 }
 
 
