@@ -1,13 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Central Asia News Scanner
+
+Pipeline:
+
+    RSS / HTML
+        ↓
+    HTTP fetch
+        ↓
+    robust decoding
+        ↓
+    Unicode / mojibake repair
+        ↓
+    text cleaning
+        ↓
+    deduplication
+        ↓
+    simple deterministic scoring
+        ↓
+    full-body enrichment for top articles
+        ↓
+    final ranking
+        ↓
+    GitHub Pages HTML
+
+Memory is intentionally optional and NEVER blocks the scan.
+"""
+
+from __future__ import annotations
+
 import argparse
+import html
 import logging
 import re
-from collections import Counter
+import sys
+import time
+import unicodedata
 from datetime import datetime, timezone
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 from urllib.parse import (
-    urljoin,
-    urlparse,
     parse_qsl,
     urlencode,
+    urljoin,
+    urlparse,
     urlunparse,
 )
 
@@ -15,738 +52,408 @@ import feedparser
 import requests
 from bs4 import BeautifulSoup
 
+
+# ---------------------------------------------------------------------------
+# PROJECT IMPORTS
+# ---------------------------------------------------------------------------
+
 from sources import SOURCES
 from scoring import classify_article
-
-from memory import (
-    load_memory,
-    save_memory,
-    mark_source_scanned,
-)
-
+from memory import load_memory, save_memory
 from html_template import create_web_page
 
 
-# ============================================================
+# ---------------------------------------------------------------------------
 # CONFIGURATION
-# ============================================================
+# ---------------------------------------------------------------------------
 
 MAX_FEED_ENTRIES = 100
 MAX_HTML_ARTICLES = 100
 
+# Number of articles shown on the final page.
 ARTICLES_TO_DISPLAY = 20
 
-# Nombre maximum d'articles dont on récupère le corps complet
+# Number of promising articles for which we fetch the full article body.
 ARTICLE_PAGE_FETCH_LIMIT = 80
 
 REQUEST_TIMEOUT = 20
 
-# ------------------------------------------------------------
-# Vocabulaire des titres
-# ------------------------------------------------------------
+# Cache lifetime for normal scans.
+CACHE_TTL_SECONDS = 60 * 60
 
-TITLE_WORD_MIN_COUNT = 1
-TITLE_WORD_MAX = 300
-
-TITLE_PHRASE_MIN_COUNT = 1
-TITLE_PHRASE_MAX = 200
+# Title vocabulary.
+TITLE_VOCAB_MIN_COUNT = 1
+TITLE_VOCAB_MAX_WORDS = 300
 
 
-# ============================================================
-# HTTP
-# ============================================================
-
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (X11; Linux x86_64) "
-        "AppleWebKit/537.36 "
-        "(KHTML, like Gecko) "
-        "Chrome/131.0 Safari/537.36"
-    ),
-    "Accept": (
-        "text/html,application/xhtml+xml,application/xml;"
-        "q=0.9,text/plain;q=0.8,*/*;q=0.7"
-    ),
-    "Accept-Language": (
-        "en-US,en;q=0.9,fr;q=0.8,ru;q=0.7"
-    ),
-}
-
-
-# ============================================================
+# ---------------------------------------------------------------------------
 # LOGGING
-# ============================================================
+# ---------------------------------------------------------------------------
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
 )
 
-logger = logging.getLogger(
-    "central-asia-scanner"
-)
 
+# ---------------------------------------------------------------------------
+# HTTP
+# ---------------------------------------------------------------------------
 
-# ============================================================
-# STOPWORDS — VOCABULAIRE DES TITRES
-# ============================================================
-
-TITLE_STOPWORDS = {
-    # --------------------------------------------------------
-    # English
-    # --------------------------------------------------------
-
-    "the",
-    "a",
-    "an",
-    "and",
-    "or",
-    "but",
-    "of",
-    "to",
-    "in",
-    "on",
-    "at",
-    "for",
-    "from",
-    "with",
-    "without",
-    "by",
-    "as",
-    "into",
-    "after",
-    "before",
-    "over",
-    "under",
-    "about",
-    "against",
-    "between",
-    "through",
-    "during",
-    "amid",
-    "while",
-    "than",
-
-    "this",
-    "that",
-    "these",
-    "those",
-
-    "their",
-    "they",
-    "them",
-    "his",
-    "her",
-    "its",
-    "our",
-    "your",
-    "you",
-    "we",
-    "he",
-    "she",
-
-    "is",
-    "are",
-    "was",
-    "were",
-    "be",
-    "been",
-    "being",
-
-    "has",
-    "have",
-    "had",
-
-    "will",
-    "would",
-    "can",
-    "could",
-    "may",
-    "might",
-    "should",
-    "must",
-
-    "how",
-    "why",
-    "what",
-    "when",
-    "where",
-    "who",
-
-    "all",
-    "more",
-    "most",
-    "some",
-    "many",
-    "one",
-    "two",
-
-    "first",
-    "last",
-    "now",
-    "also",
-    "just",
-
-    # --------------------------------------------------------
-    # Journalism anglais
-    # --------------------------------------------------------
-
-    "news",
-    "report",
-    "reports",
-    "reported",
-    "according",
-
-    "video",
-    "videos",
-    "photo",
-    "photos",
-    "pictures",
-
-    "live",
-    "update",
-    "updates",
-
-    "story",
-    "stories",
-    "article",
-    "articles",
-
-    "read",
-    "explained",
-
-    "week",
-    "weekly",
-    "month",
-    "monthly",
-    "year",
-    "years",
-    "day",
-    "days",
-
-    "today",
-    "yesterday",
-    "tomorrow",
-
-    # --------------------------------------------------------
-    # Français
-    # --------------------------------------------------------
-
-    "le",
-    "la",
-    "les",
-    "un",
-    "une",
-    "des",
-    "du",
-    "de",
-    "et",
-    "ou",
-    "mais",
-    "dans",
-    "sur",
-    "pour",
-    "avec",
-    "sans",
-    "par",
-    "entre",
-    "après",
-    "avant",
-    "contre",
-    "chez",
-
-    "ce",
-    "cet",
-    "cette",
-    "ces",
-
-    "son",
-    "sa",
-    "ses",
-    "leur",
-    "leurs",
-
-    "qui",
-    "que",
-    "quoi",
-    "dont",
-
-    "est",
-    "sont",
-    "être",
-    "avoir",
-    "a",
-    "ont",
-    "été",
-
-    "sera",
-    "seront",
-
-    "plus",
-    "moins",
-    "très",
-    "aussi",
-
-    "nouveau",
-    "nouvelle",
-    "nouvelles",
-
-    "actualité",
-    "actualités",
-
-    # --------------------------------------------------------
-    # Russe
-    # --------------------------------------------------------
-
-    "и",
-    "или",
-    "но",
-    "а",
-
-    "в",
-    "во",
-    "на",
-    "с",
-    "со",
-    "к",
-    "ко",
-    "из",
-    "от",
-    "до",
-    "по",
-    "за",
-    "для",
-    "о",
-    "об",
-    "обо",
-    "у",
-
-    "не",
-    "ни",
-    "да",
-
-    "это",
-    "этот",
-    "эта",
-    "эти",
-
-    "тот",
-    "та",
-    "те",
-
-    "как",
-    "что",
-    "кто",
-    "где",
-    "когда",
-    "почему",
-
-    "его",
-    "ее",
-    "её",
-    "их",
-    "ему",
-    "ей",
-    "им",
-
-    "он",
-    "она",
-    "они",
-    "мы",
-    "вы",
-    "я",
-
-    "быть",
-    "был",
-    "была",
-    "были",
-    "есть",
-    "будет",
-    "будут",
-
-    "также",
-    "уже",
-    "еще",
-    "ещё",
-    "только",
-
-    "новый",
-    "новая",
-    "новые",
-    "новости",
-
-    "сегодня",
-    "вчера",
-    "завтра",
-
-    # --------------------------------------------------------
-    # Verbes / formules journalistiques russes
-    # --------------------------------------------------------
-
-    "сообщает",
-    "сообщили",
-    "сообщил",
-    "заявил",
-    "заявила",
-    "заявили",
-    "рассказал",
-    "рассказала",
+DEFAULT_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) "
+        "AppleWebKit/537.36 "
+        "(KHTML, like Gecko) "
+        "Chrome/126.0 Safari/537.36 "
+        "CentralAsiaNewsScanner/1.0"
+    ),
+    "Accept": (
+        "text/html,application/xhtml+xml,application/xml;"
+        "q=0.9,application/rss+xml;q=0.8,"
+        "application/atom+xml;q=0.8,*/*;q=0.5"
+    ),
+    "Accept-Language": (
+        "en-US,en;q=0.8,ru;q=0.7,fr;q=0.6"
+    ),
+    "Connection": "keep-alive",
 }
 
 
-# ============================================================
-# RÉPARATION ENCODAGE
-# ============================================================
+# ---------------------------------------------------------------------------
+# TEXT NORMALIZATION
+# ---------------------------------------------------------------------------
 
-def repair_mojibake(text):
+MOJIBAKE_MARKERS = (
+    "Ã",
+    "Â",
+    "Ð",
+    "Ñ",
+    "ð",
+    "ñ",
+    "â",
+    "�",
+)
+
+
+def repair_mojibake(text: Any) -> str:
     """
-    Répare les cas classiques de texte UTF-8 mal décodé.
+    Repairs common UTF-8 → Latin-1/Windows-1252 mojibake.
 
-    Exemple :
+    Examples of corruption this targets:
 
-        ÐšÐ°Ð·Ð°Ñ…ÑÑ‚Ð°Ð½
+        Рахмет → Рахмет        (already correct, untouched)
+        ÐšÐ°Ð·Ð°Ñ…ÑÑ‚Ð°Ð½ → Казахстан
+        Ã© → é
+        â€™ → ’
 
-    devient :
-
-        Казахстан
-
-    On ne tente la réparation que si des marqueurs
-    caractéristiques sont détectés.
+    The repair is deliberately conservative.
     """
 
-    if not text:
+    if text is None:
         return ""
 
     text = str(text)
 
-    bad_markers = (
-        "Ã",
-        "Â",
-        "Ð",
-        "Ñ",
-        "ð",
-        "ñ",
-        "â",
-    )
+    if not text:
+        return ""
 
-    if not any(
-        marker in text
-        for marker in bad_markers
-    ):
+    # Fast path: normal Unicode.
+    if not any(marker in text for marker in MOJIBAKE_MARKERS):
         return text
 
+    candidates = [text]
+
+    # Latin-1 round-trip is the classic UTF-8 mojibake repair.
     try:
-        repaired = (
-            text
-            .encode("latin1")
-            .decode("utf-8")
+        candidates.append(
+            text.encode("latin1").decode("utf-8")
         )
-
-        if repaired != text:
-            return repaired
-
-    except (
-        UnicodeEncodeError,
-        UnicodeDecodeError,
-    ):
+    except (UnicodeEncodeError, UnicodeDecodeError):
         pass
 
-    return text
+    # Windows-1252 catches curly quotes and related corruption.
+    try:
+        candidates.append(
+            text.encode("cp1252").decode("utf-8")
+        )
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass
+
+    def corruption_score(value: str) -> int:
+        score = 0
+
+        # Replacement character is strongly negative.
+        score += value.count("�") * 20
+
+        # Typical mojibake markers.
+        for marker in MOJIBAKE_MARKERS:
+            score += value.count(marker)
+
+        # UTF-8 corruption often creates these sequences.
+        for sequence in (
+            "Ð°",
+            "Ðµ",
+            "Ð¾",
+            "Ð¸",
+            "Ð°",
+            "Ñ‚",
+            "Ñ‹",
+            "ÑŒ",
+            "Ñ‹",
+            "â€™",
+            "â€œ",
+            "â€",
+        ):
+            score += value.count(sequence) * 2
+
+        return score
+
+    best = min(candidates, key=corruption_score)
+
+    return best
 
 
-# ============================================================
-# NETTOYAGE
-# ============================================================
+def normalize_unicode(text: Any) -> str:
+    """Normalize Unicode without destroying Cyrillic or accented characters."""
 
-def clean_text(text):
-    if not text:
+    if text is None:
         return ""
 
     text = repair_mojibake(text)
 
-    text = BeautifulSoup(
-        str(text),
-        "html.parser",
-    ).get_text(
-        " ",
-        strip=True,
+    try:
+        text = unicodedata.normalize("NFKC", text)
+    except (TypeError, ValueError):
+        text = str(text)
+
+    return text
+
+
+def clean_text(text: Any) -> str:
+    """
+    Main text-cleaning pipeline.
+
+    Important:
+    We repair encoding BEFORE tokenization/scoring.
+    """
+
+    text = normalize_unicode(text)
+
+    if not text:
+        return ""
+
+    # Decode HTML entities.
+    text = html.unescape(text)
+
+    # Normalize non-breaking spaces and invisible separators.
+    text = (
+        text.replace("\xa0", " ")
+        .replace("\u200b", "")
+        .replace("\u200c", "")
+        .replace("\u200d", "")
+        .replace("\ufeff", "")
     )
 
-    text = re.sub(
-        r"\s+",
-        " ",
-        text,
-    )
+    # Collapse whitespace.
+    text = re.sub(r"\s+", " ", text)
 
     return text.strip()
 
 
-def normalize_text(text):
-    return clean_text(text).lower().strip()
+def clean_title(text: Any) -> str:
+    """Clean a title while preserving useful punctuation."""
+
+    text = clean_text(text)
+
+    # Titles should not contain trailing whitespace.
+    return text.strip()
 
 
-# ============================================================
-# VOCABULAIRE DES TITRES
-# ============================================================
+# ---------------------------------------------------------------------------
+# RESPONSE DECODING
+# ---------------------------------------------------------------------------
 
-def extract_title_tokens(title):
-    """
-    Tokenisation Unicode.
+def _extract_charset_from_content_type(content_type: str) -> Optional[str]:
+    """Extract charset=... from Content-Type."""
 
-    Important :
-    on ne transforme PAS les mots découverts en keywords.
+    if not content_type:
+        return None
 
-    Cette fonction sert uniquement à observer le vocabulaire
-    présent dans les titres.
-    """
-
-    title = repair_mojibake(
-        title
+    match = re.search(
+        r"charset\s*=\s*[\"']?\s*([A-Za-z0-9._:-]+)",
+        content_type,
+        flags=re.I,
     )
 
-    text = normalize_text(
-        title
+    if not match:
+        return None
+
+    return match.group(1).strip()
+
+
+def _extract_charset_from_html(data: bytes) -> Optional[str]:
+    """Look for a charset declaration inside HTML bytes."""
+
+    if not data:
+        return None
+
+    sample = data[:10000].decode(
+        "ascii",
+        errors="ignore",
     )
 
-    # Lettres Unicode uniquement.
-    #
-    # Fonctionne notamment avec :
-    #   anglais
-    #   français
-    #   russe
-    #   kazakh
-    #   kirghiz
-    #   etc.
-    tokens = re.findall(
-        r"[^\W\d_]+",
-        text,
-        flags=re.UNICODE,
-    )
-
-    result = []
-
-    for token in tokens:
-
-        token = token.strip()
-
-        if len(token) < 2:
-            continue
-
-        if token in TITLE_STOPWORDS:
-            continue
-
-        result.append(
-            token
-        )
-
-    return result
-
-
-def extract_title_words(title):
-    """
-    Alias de compatibilité.
-    """
-
-    return extract_title_tokens(
-        title
-    )
-
-
-# ============================================================
-# TOP MOTS DES TITRES
-# ============================================================
-
-def build_title_word_list(
-    articles,
-    min_count=TITLE_WORD_MIN_COUNT,
-    max_words=TITLE_WORD_MAX,
-):
-    """
-    Construit une liste de mots fréquents dans les titres.
-
-    Exemple :
-
-        uzbekistan       69
-        kazakhstan       48
-        kyrgyzstan       35
-        president        25
-
-    Cette liste est descriptive uniquement.
-    """
-
-    counter = Counter()
-
-    for article in articles:
-
-        title = article.get(
-            "title",
-            "",
-        )
-
-        tokens = extract_title_tokens(
-            title
-        )
-
-        for word in tokens:
-            counter[word] += 1
-
-    words = [
-        {
-            "word": word,
-            "count": count,
-        }
-        for word, count in counter.items()
-        if count >= min_count
+    patterns = [
+        r'<meta[^>]+charset=["\']?\s*([A-Za-z0-9._:-]+)',
+        r'<meta[^>]+content=["\'][^"\']*charset\s*=\s*([A-Za-z0-9._:-]+)',
     ]
 
-    words.sort(
-        key=lambda item: (
-            -item["count"],
-            item["word"],
+    for pattern in patterns:
+        match = re.search(
+            pattern,
+            sample,
+            flags=re.I,
         )
+        if match:
+            return match.group(1).strip()
+
+    return None
+
+
+def decode_response(response: requests.Response) -> str:
+    """
+    Decode response bytes robustly.
+
+    Priority:
+
+    1. explicit HTTP charset
+    2. HTML meta charset
+    3. UTF-8
+    4. requests apparent encoding
+    5. cp1251
+    6. cp1252
+    7. latin-1
+
+    Then repair any remaining mojibake.
+    """
+
+    data = response.content
+
+    if not data:
+        return ""
+
+    candidates: List[str] = []
+
+    declared = _extract_charset_from_content_type(
+        response.headers.get("Content-Type", "")
     )
 
-    return words[:max_words]
+    html_charset = _extract_charset_from_html(data)
 
+    encodings: List[str] = []
 
-# ============================================================
-# BIGRAMMES / TRIGRAMMES
-# ============================================================
-
-def build_title_phrases(
-    articles,
-    min_count=TITLE_PHRASE_MIN_COUNT,
-    max_phrases=TITLE_PHRASE_MAX,
-):
-    """
-    Extrait les bigrammes et trigrammes des titres.
-
-    Exemple :
-
-        human rights
-        political prisoner
-        activist detained
-        forced labor
-
-    Là encore :
-    aucune de ces expressions n'est injectée
-    automatiquement dans le scoring.
-    """
-
-    phrase_counter = Counter()
-
-    for article in articles:
-
-        title = article.get(
-            "title",
-            "",
-        )
-
-        tokens = extract_title_tokens(
-            title
-        )
-
-        if len(tokens) < 2:
+    for encoding in (
+        declared,
+        html_charset,
+        "utf-8",
+        response.apparent_encoding,
+        "cp1251",
+        "cp1252",
+        "latin-1",
+    ):
+        if not encoding:
             continue
 
-        # ----------------------------------------------------
-        # Bigrammes
-        # ----------------------------------------------------
+        encoding = encoding.lower().strip()
 
-        for i in range(
-            len(tokens) - 1
-        ):
+        if encoding not in encodings:
+            encodings.append(encoding)
 
-            phrase = (
-                f"{tokens[i]} "
-                f"{tokens[i + 1]}"
+    for encoding in encodings:
+        try:
+            decoded = data.decode(
+                encoding,
+                errors="strict",
+            )
+            candidates.append(decoded)
+        except (LookupError, UnicodeDecodeError):
+            continue
+
+    if not candidates:
+        decoded = data.decode(
+            "utf-8",
+            errors="replace",
+        )
+    else:
+
+        def decode_quality(value: str) -> int:
+            score = 0
+
+            score += value.count("�") * 30
+
+            # Penalize obvious mojibake.
+            for marker in MOJIBAKE_MARKERS:
+                score += value.count(marker)
+
+            # Reward Cyrillic when it is actually present.
+            cyrillic = sum(
+                1
+                for char in value
+                if "CYRILLIC" in unicodedata.name(
+                    char,
+                    "",
+                )
             )
 
-            phrase_counter[
-                phrase
-            ] += 1
+            if cyrillic:
+                score -= min(cyrillic, 50)
 
-        # ----------------------------------------------------
-        # Trigrammes
-        # ----------------------------------------------------
+            return score
 
-        for i in range(
-            len(tokens) - 2
-        ):
-
-            phrase = (
-                f"{tokens[i]} "
-                f"{tokens[i + 1]} "
-                f"{tokens[i + 2]}"
-            )
-
-            phrase_counter[
-                phrase
-            ] += 1
-
-    phrases = [
-        {
-            "phrase": phrase,
-            "count": count,
-        }
-        for phrase, count
-        in phrase_counter.items()
-        if count >= min_count
-    ]
-
-    phrases.sort(
-        key=lambda item: (
-            -item["count"],
-            item["phrase"],
+        decoded = min(
+            candidates,
+            key=decode_quality,
         )
-    )
 
-    return phrases[
-        :max_phrases
-    ]
+    return repair_mojibake(decoded)
 
 
-# ============================================================
-# HTTP
-# ============================================================
+# ---------------------------------------------------------------------------
+# HTTP FETCH
+# ---------------------------------------------------------------------------
 
 def fetch_url(
-    url,
-    source=None,
-):
-    headers = dict(
-        HEADERS
-    )
+    url: str,
+    source: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Fetch a URL and return structured result."""
+
+    headers = dict(DEFAULT_HEADERS)
 
     if source:
-
-        source_headers = source.get(
-            "headers",
-            {},
-        )
-
-        headers.update(
-            source_headers
-        )
+        source_headers = source.get("headers", {})
+        if isinstance(source_headers, dict):
+            headers.update(source_headers)
 
     try:
-
         response = requests.get(
             url,
             headers=headers,
             timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
         )
+
+        text = decode_response(response)
 
         return {
             "ok": response.ok,
             "status": response.status_code,
             "url": response.url,
-            "text": response.text,
+            "text": text,
             "error": None,
         }
 
     except requests.RequestException as exc:
-
         return {
             "ok": False,
             "status": None,
@@ -756,168 +463,211 @@ def fetch_url(
         }
 
 
-# ============================================================
+# ---------------------------------------------------------------------------
 # DATES
-# ============================================================
+# ---------------------------------------------------------------------------
 
-def parse_date(value):
-    if not value:
+DATE_FORMATS = (
+    "%Y-%m-%dT%H:%M:%S%z",
+    "%Y-%m-%dT%H:%M:%S.%f%z",
+    "%Y-%m-%dT%H:%M:%S",
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%d",
+    "%d.%m.%Y",
+    "%d/%m/%Y",
+)
+
+
+def parse_date(value: Any) -> Optional[datetime]:
+    """Parse common RSS / HTML date formats."""
+
+    if value is None:
         return None
 
-    value = str(
-        value
-    ).strip()
+    if isinstance(value, datetime):
+        dt = value
+    else:
+        value = clean_text(value)
 
-    # ISO 8601
-    try:
+        if not value:
+            return None
 
-        iso_value = value.replace(
-            "Z",
-            "+00:00",
-        )
-
-        dt = datetime.fromisoformat(
-            iso_value
-        )
-
-        if dt.tzinfo is None:
-            dt = dt.replace(
-                tzinfo=timezone.utc
-            )
-
-        return dt.astimezone(
-            timezone.utc
-        )
-
-    except ValueError:
-        pass
-
-    formats = [
-        "%Y-%m-%d",
-        "%Y/%m/%d",
-        "%d/%m/%Y",
-        "%d-%m-%Y",
-        "%B %d, %Y",
-        "%b %d, %Y",
-        "%d %B %Y",
-        "%d %b %Y",
-    ]
-
-    for fmt in formats:
-
+        # ISO 8601.
         try:
-
-            dt = datetime.strptime(
-                value,
-                fmt,
+            normalized = value.replace(
+                "Z",
+                "+00:00",
             )
 
-            return dt.replace(
-                tzinfo=timezone.utc
-            )
+            dt = datetime.fromisoformat(normalized)
 
         except ValueError:
-            continue
 
-    return None
+            dt = None
+
+            for fmt in DATE_FORMATS:
+                try:
+                    dt = datetime.strptime(
+                        value,
+                        fmt,
+                    )
+                    break
+                except ValueError:
+                    continue
+
+            if dt is None:
+                return None
+
+    if dt.tzinfo is None:
+        dt = dt.replace(
+            tzinfo=timezone.utc,
+        )
+
+    return dt.astimezone(timezone.utc)
 
 
-def extract_container_date(
-    container
-):
-    time_tag = container.find(
-        "time"
-    )
+def extract_date_from_container(
+    container: Any,
+) -> Optional[datetime]:
+    """Extract date from common HTML structures."""
+
+    if container is None:
+        return None
+
+    # <time datetime="...">
+    time_tag = container.find("time")
 
     if time_tag:
+        for attr in (
+            "datetime",
+            "content",
+        ):
+            value = time_tag.get(attr)
 
-        value = (
-            time_tag.get(
-                "datetime"
-            )
-            or time_tag.get_text(
+            parsed = parse_date(value)
+
+            if parsed:
+                return parsed
+
+        parsed = parse_date(
+            time_tag.get_text(
                 " ",
                 strip=True,
             )
         )
 
-        dt = parse_date(
-            value
-        )
+        if parsed:
+            return parsed
 
-        if dt:
-            return dt
-
-    selectors = [
-        '[itemprop="datePublished"]',
-        '[itemprop="dateCreated"]',
-        ".date",
-        ".published",
-        ".publish-date",
-        ".post-date",
-        ".article-date",
-        ".timestamp",
-        ".time",
-    ]
-
-    for selector in selectors:
-
-        node = container.select_one(
-            selector
-        )
-
-        if not node:
-            continue
-
-        value = (
-            node.get(
-                "datetime"
+    # itemprop=datePublished etc.
+    for tag in container.find_all(
+        attrs={
+            "itemprop": re.compile(
+                r"datePublished|dateModified",
+                re.I,
             )
-            or node.get(
-                "content"
+        }
+    ):
+        for attr in (
+            "content",
+            "datetime",
+        ):
+            parsed = parse_date(
+                tag.get(attr)
             )
-            or node.get_text(
+
+            if parsed:
+                return parsed
+
+        parsed = parse_date(
+            tag.get_text(
                 " ",
                 strip=True,
             )
         )
 
-        dt = parse_date(
-            value
+        if parsed:
+            return parsed
+
+    # Common class names.
+    date_pattern = re.compile(
+        r"(date|time|published|publish|created|timestamp)",
+        re.I,
+    )
+
+    for tag in container.find_all(
+        class_=date_pattern
+    ):
+        parsed = parse_date(
+            tag.get_text(
+                " ",
+                strip=True,
+            )
         )
 
-        if dt:
-            return dt
+        if parsed:
+            return parsed
 
     return None
 
 
-# ============================================================
-# URL
-# ============================================================
+# ---------------------------------------------------------------------------
+# URL HELPERS
+# ---------------------------------------------------------------------------
+
+BAD_URL_PARTS = (
+    "/tag/",
+    "/tags/",
+    "/category/",
+    "/categories/",
+    "/author/",
+    "/authors/",
+    "/search",
+    "/about",
+    "/contact",
+    "/login",
+    "/subscribe",
+    "/privacy",
+    "/terms",
+    "/donate",
+)
+
 
 def absolute_url(
-    base_url,
-    href,
-):
-    if not href:
+    base_url: str,
+    url: str,
+) -> str:
+    """Make a URL absolute."""
+
+    if not url:
         return ""
 
     return urljoin(
         base_url,
-        href,
+        url.strip(),
     )
 
 
 def is_probable_article_url(
-    url
-):
+    url: str,
+) -> bool:
+    """Reject obvious non-article URLs."""
+
     if not url:
         return False
 
-    parsed = urlparse(
-        url
-    )
+    lowered = url.lower()
+
+    if lowered.startswith(
+        (
+            "javascript:",
+            "mailto:",
+            "#",
+        )
+    ):
+        return False
+
+    parsed = urlparse(url)
 
     if parsed.scheme not in (
         "http",
@@ -927,241 +677,252 @@ def is_probable_article_url(
 
     path = parsed.path.lower()
 
-    rejected = (
-        "/tag/",
-        "/tags/",
-        "/category/",
-        "/categories/",
-        "/author/",
-        "/authors/",
-        "/search",
-        "/about",
-        "/contact",
-        "/login",
-        "/subscribe",
-        "/privacy",
-        "/terms",
-        "/donate",
-        "/page/",
-    )
-
     if any(
-        item in path
-        for item in rejected
+        part in path
+        for part in BAD_URL_PARTS
+    ):
+        return False
+
+    # WordPress-style pagination.
+    if re.search(
+        r"/page/\d+/?$",
+        path,
     ):
         return False
 
     return True
 
 
-def normalize_url(
-    url
-):
+def normalize_url(url: str) -> str:
+    """Normalize URLs for deduplication."""
+
     if not url:
         return ""
 
-    parsed = urlparse(
-        url
-    )
+    parsed = urlparse(url)
 
-    ignored_parameters = {
-        "utm_source",
-        "utm_medium",
-        "utm_campaign",
-        "utm_term",
-        "utm_content",
-        "fbclid",
-        "gclid",
-    }
+    query = []
 
-    query = [
-        (key, value)
-        for key, value in parse_qsl(
-            parsed.query,
-            keep_blank_values=True,
+    for key, value in parse_qsl(
+        parsed.query,
+        keep_blank_values=True,
+    ):
+        key_lower = key.lower()
+
+        if key_lower in {
+            "utm_source",
+            "utm_medium",
+            "utm_campaign",
+            "utm_term",
+            "utm_content",
+            "fbclid",
+            "gclid",
+            "mc_cid",
+            "mc_eid",
+        }:
+            continue
+
+        query.append(
+            (key, value)
         )
-        if key.lower()
-        not in ignored_parameters
-    ]
+
+    normalized_query = urlencode(
+        sorted(query)
+    )
 
     normalized = parsed._replace(
+        scheme=parsed.scheme.lower(),
+        netloc=parsed.netloc.lower(),
         fragment="",
-        query=urlencode(
-            query
-        ),
+        query=normalized_query,
     )
 
-    return (
-        urlunparse(
-            normalized
-        )
-        .lower()
-        .rstrip("/")
-    )
+    return urlunparse(normalized).rstrip("/")
 
 
-# ============================================================
-# ARTICLE
-# ============================================================
+# ---------------------------------------------------------------------------
+# ARTICLE OBJECT
+# ---------------------------------------------------------------------------
 
 def build_article(
-    title,
-    url,
-    summary="",
-    body="",
-    date=None,
-    source=None,
-):
+    *,
+    title: str,
+    url: str,
+    summary: str = "",
+    body: str = "",
+    published: Optional[datetime] = None,
+    source: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Create a normalized article object."""
+
     source = source or {}
 
+    title = clean_title(title)
+    summary = clean_text(summary)
+    body = clean_text(body)
+
     return {
-        "title": clean_text(
-            title
+        "title": title,
+        "url": normalize_url(url),
+        "summary": summary,
+        "body": body,
+        "date": (
+            published.isoformat()
+            if published
+            else None
         ),
-
-        "url": url,
-
-        "summary": clean_text(
-            summary
-        ),
-
-        "body": clean_text(
-            body
-        ),
-
-        "date": date,
-
         "source": source.get(
             "name",
+            source.get("id", ""),
+        ),
+        "source_short": source.get(
+            "short",
             "",
         ),
-
-        "source_short": source.get(
-            "short_name",
-            source.get(
-                "name",
-                "",
-            ),
-        ),
-
         "source_profile": source.get(
             "profile",
             "",
         ),
-
         "source_label": source.get(
             "label",
             source.get(
                 "name",
-                "",
+                source.get("id", ""),
             ),
         ),
     }
 
 
-# ============================================================
-# RSS
-# ============================================================
+# ---------------------------------------------------------------------------
+# RSS / ATOM
+# ---------------------------------------------------------------------------
 
 def parse_feed(
-    text,
-    base_url,
-    source,
-):
-    feed = feedparser.parse(
-        text
-    )
+    text: str,
+    source: Dict[str, Any],
+    base_url: str = "",
+) -> List[Dict[str, Any]]:
+    """Parse an RSS/Atom feed from already decoded text."""
 
-    articles = []
+    if not text:
+        return []
 
-    for entry in feed.entries[
-        :MAX_FEED_ENTRIES
-    ]:
+    parsed = feedparser.parse(text)
 
-        title = clean_text(
+    articles: List[Dict[str, Any]] = []
+
+    for entry in parsed.entries[:MAX_FEED_ENTRIES]:
+
+        title = clean_title(
             entry.get(
                 "title",
                 "",
             )
         )
 
-        url = entry.get(
+        link = entry.get(
             "link",
             "",
         )
 
-        if not title or not url:
-            continue
-
-        url = absolute_url(
+        link = absolute_url(
             base_url,
-            url,
+            link,
         )
 
-        if not is_probable_article_url(
-            url
-        ):
+        if not title or not link:
+            continue
+
+        if not is_probable_article_url(link):
             continue
 
         summary = (
-            entry.get(
-                "summary"
-            )
-            or entry.get(
-                "description"
-            )
+            entry.get("summary")
+            or entry.get("description")
             or ""
         )
 
-        date = None
+        published = None
 
-        for field in (
-            "published",
-            "updated",
-            "created",
+        for key in (
+            "published_parsed",
+            "updated_parsed",
         ):
+            value = entry.get(key)
 
-            date = parse_date(
-                entry.get(
-                    field
+            if value:
+                try:
+                    published = datetime(
+                        *value[:6],
+                        tzinfo=timezone.utc,
+                    )
+                    break
+                except (TypeError, ValueError):
+                    pass
+
+        if published is None:
+            for key in (
+                "published",
+                "updated",
+            ):
+                published = parse_date(
+                    entry.get(key)
                 )
-            )
 
-            if date:
-                break
+                if published:
+                    break
 
-        articles.append(
-            build_article(
-                title=title,
-                url=url,
-                summary=summary,
-                date=date,
-                source=source,
-            )
+        article = build_article(
+            title=title,
+            url=link,
+            summary=summary,
+            body="",
+            published=published,
+            source=source,
         )
+
+        articles.append(article)
 
     return articles
 
 
-# ============================================================
-# HTML
-# ============================================================
+# ---------------------------------------------------------------------------
+# HTML PARSING
+# ---------------------------------------------------------------------------
+
+ARTICLE_CONTAINER_SELECTORS = (
+    "article",
+    "[itemtype*='Article']",
+    "[itemtype*='NewsArticle']",
+    ".article",
+    ".article-card",
+    ".post",
+    ".post-card",
+    ".story",
+    ".story-card",
+    ".news-item",
+    ".news-card",
+    ".item",
+)
+
 
 def extract_article_from_container(
-    container,
-    base_url,
-    source,
-):
-    links = container.find_all(
-        "a",
-        href=True,
-    )
+    container: Any,
+    source: Dict[str, Any],
+    base_url: str,
+) -> Optional[Dict[str, Any]]:
+    """Extract one article candidate from an HTML container."""
 
-    candidates = []
+    if container is None:
+        return None
+
+    links = container.find_all("a", href=True)
+
+    candidates: List[Tuple[str, str]] = []
 
     for link in links:
 
-        title = clean_text(
+        title = clean_title(
             link.get_text(
                 " ",
                 strip=True,
@@ -1170,57 +931,44 @@ def extract_article_from_container(
 
         href = absolute_url(
             base_url,
-            link.get(
-                "href"
-            ),
+            link.get("href", ""),
         )
 
         if (
             len(title) >= 20
-            and is_probable_article_url(
-                href
-            )
+            and is_probable_article_url(href)
         ):
-
             candidates.append(
-                (
-                    len(title),
-                    title,
-                    href,
-                )
+                (title, href)
             )
 
     if not candidates:
         return None
 
-    _, title, url = max(
+    # Prefer the longest meaningful title.
+    title, url = max(
         candidates,
-        key=lambda item: item[0],
+        key=lambda item: len(item[0]),
     )
 
     paragraphs = []
 
-    for paragraph in container.find_all(
-        "p"
-    ):
-
-        text = clean_text(
+    for paragraph in container.find_all("p"):
+        value = clean_text(
             paragraph.get_text(
                 " ",
                 strip=True,
             )
         )
 
-        if len(text) >= 40:
-            paragraphs.append(
-                text
-            )
+        if len(value) >= 40:
+            paragraphs.append(value)
 
     summary = " ".join(
         paragraphs[:3]
     )
 
-    date = extract_container_date(
+    published = extract_date_from_container(
         container
     )
 
@@ -1228,90 +976,65 @@ def extract_article_from_container(
         title=title,
         url=url,
         summary=summary,
-        date=date,
+        body="",
+        published=published,
         source=source,
     )
 
 
 def parse_html_source(
-    text,
-    base_url,
-    source,
-):
+    text: str,
+    source: Dict[str, Any],
+    base_url: str,
+) -> List[Dict[str, Any]]:
+    """Parse an HTML source page."""
+
+    if not text:
+        return []
+
     soup = BeautifulSoup(
         text,
         "html.parser",
     )
 
-    selectors = [
-        "article",
-        ".article",
-        ".post",
-        ".story",
-        ".news-item",
-        ".news-card",
-        ".post-item",
-        ".card",
-        ".item",
-        "li",
-    ]
+    articles: List[Dict[str, Any]] = []
+
+    seen_urls = set()
 
     containers = []
 
-    for selector in selectors:
-        containers.extend(
-            soup.select(
-                selector
+    for selector in ARTICLE_CONTAINER_SELECTORS:
+        try:
+            containers.extend(
+                soup.select(selector)
             )
-        )
-
-    seen = set()
-    unique_containers = []
+        except Exception:
+            continue
 
     for container in containers:
 
-        marker = id(
-            container
+        article = extract_article_from_container(
+            container,
+            source,
+            base_url,
         )
 
-        if marker in seen:
+        if not article:
             continue
 
-        seen.add(
-            marker
-        )
+        url = article["url"]
 
-        unique_containers.append(
-            container
-        )
+        if url in seen_urls:
+            continue
 
-    articles = []
+        seen_urls.add(url)
 
-    for container in unique_containers:
+        articles.append(article)
 
-        article = (
-            extract_article_from_container(
-                container,
-                base_url,
-                source,
-            )
-        )
-
-        if article:
-            articles.append(
-                article
-            )
-
-        if (
-            len(articles)
-            >= MAX_HTML_ARTICLES
-        ):
+        if len(articles) >= MAX_HTML_ARTICLES:
             break
 
-    # --------------------------------------------------------
-    # FALLBACK
-    # --------------------------------------------------------
-
+    # Fallback: scan links if article containers failed.
     if not articles:
 
         for link in soup.find_all(
@@ -1319,7 +1042,7 @@ def parse_html_source(
             href=True,
         ):
 
-            title = clean_text(
+            title = clean_title(
                 link.get_text(
                     " ",
                     strip=True,
@@ -1328,42 +1051,68 @@ def parse_html_source(
 
             href = absolute_url(
                 base_url,
-                link.get(
-                    "href"
-                ),
+                link.get("href", ""),
             )
 
             if (
-                len(title) >= 20
-                and is_probable_article_url(
-                    href
-                )
+                len(title) < 25
+                or not is_probable_article_url(href)
             ):
+                continue
 
-                articles.append(
-                    build_article(
-                        title=title,
-                        url=href,
-                        source=source,
-                    )
+            normalized = normalize_url(href)
+
+            if normalized in seen_urls:
+                continue
+
+            seen_urls.add(normalized)
+
+            articles.append(
+                build_article(
+                    title=title,
+                    url=href,
+                    summary="",
+                    body="",
+                    published=None,
+                    source=source,
                 )
+            )
 
-            if (
-                len(articles)
-                >= MAX_HTML_ARTICLES
-            ):
+            if len(articles) >= MAX_HTML_ARTICLES:
                 break
 
     return articles
 
 
-# ============================================================
-# CORPS D'ARTICLE
-# ============================================================
+# ---------------------------------------------------------------------------
+# ARTICLE BODY EXTRACTION
+# ---------------------------------------------------------------------------
+
+REMOVE_SELECTORS = (
+    "script",
+    "style",
+    "nav",
+    "header",
+    "footer",
+    "aside",
+    "form",
+    "noscript",
+    "iframe",
+    "svg",
+    "button",
+)
+
 
 def extract_article_body(
-    text
-):
+    text: str,
+) -> str:
+    """
+    Extract readable article text.
+
+    This function intentionally does not attempt semantic interpretation.
+    Its job is simply to feed clean text to scoring.py.
+    """
+
     if not text:
         return ""
 
@@ -1372,478 +1121,781 @@ def extract_article_body(
         "html.parser",
     )
 
-    for tag in soup(
-        [
-            "script",
-            "style",
-            "nav",
-            "header",
-            "footer",
-            "aside",
-            "form",
-            "noscript",
-            "iframe",
-        ]
-    ):
-        tag.decompose()
+    for selector in REMOVE_SELECTORS:
+        for tag in soup.select(selector):
+            tag.decompose()
 
     candidates = []
 
-    candidates.extend(
-        soup.find_all(
-            "article"
-        )
-    )
+    # Strong semantic containers first.
+    for selector in (
+        "article",
+        "main",
+        "[role='main']",
+    ):
+        for container in soup.select(selector):
 
-    candidates.extend(
-        soup.find_all(
-            "main"
-        )
-    )
+            paragraphs = []
 
-    candidates.extend(
-        soup.select(
-            '[role="main"]'
-        )
-    )
+            for paragraph in container.find_all("p"):
+                value = clean_text(
+                    paragraph.get_text(
+                        " ",
+                        strip=True,
+                    )
+                )
 
+                if len(value) >= 30:
+                    paragraphs.append(value)
+
+            if paragraphs:
+                candidates.append(
+                    " ".join(paragraphs)
+                )
+
+    # Generic paragraph fallback.
     if not candidates:
-
-        if soup.body:
-            candidates = [
-                soup.body
-            ]
-        else:
-            candidates = []
-
-    best_text = ""
-
-    for candidate in candidates:
 
         paragraphs = []
 
-        for p in candidate.find_all(
-            "p"
-        ):
-
+        for paragraph in soup.find_all("p"):
             value = clean_text(
-                p.get_text(
+                paragraph.get_text(
                     " ",
                     strip=True,
                 )
             )
 
-            if len(value) >= 40:
-                paragraphs.append(
-                    value
-                )
+            if len(value) >= 30:
+                paragraphs.append(value)
 
-        candidate_text = " ".join(
-            paragraphs
-        )
+        if paragraphs:
+            candidates.append(
+                " ".join(paragraphs)
+            )
 
-        if len(candidate_text) > len(
-            best_text
-        ):
-            best_text = candidate_text
+    if not candidates:
+        return ""
 
-    return best_text[
-        :20000
-    ]
+    body = max(
+        candidates,
+        key=len,
+    )
+
+    # Prevent pathological pages.
+    return body[:20000]
 
 
-# ============================================================
+# ---------------------------------------------------------------------------
 # DEDUPLICATION
-# ============================================================
+# ---------------------------------------------------------------------------
+
+def normalize_title_for_dedup(
+    title: str,
+) -> str:
+    """Normalize titles for duplicate detection."""
+
+    title = clean_title(title).lower()
+
+    title = re.sub(
+        r"[^\w\s]",
+        " ",
+        title,
+        flags=re.UNICODE,
+    )
+
+    title = re.sub(
+        r"\s+",
+        " ",
+        title,
+    )
+
+    return title.strip()
+
 
 def deduplicate_articles(
-    articles
-):
-    unique = []
+    articles: Iterable[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Deduplicate by URL and normalized title."""
+
+    result = []
 
     seen_urls = set()
     seen_titles = set()
 
     for article in articles:
 
-        url = normalize_url(
-            article.get(
-                "url",
-                "",
-            )
-        )
-
-        title = normalize_text(
-            article.get(
-                "title",
-                "",
-            )
-        )
-
-        if (
-            url
-            and url in seen_urls
-        ):
+        if not isinstance(article, dict):
             continue
 
-        if (
-            title
-            and title in seen_titles
-        ):
+        url = normalize_url(
+            article.get("url", "")
+        )
+
+        title = normalize_title_for_dedup(
+            article.get("title", "")
+        )
+
+        if not title:
+            continue
+
+        if url and url in seen_urls:
+            continue
+
+        if title in seen_titles:
             continue
 
         if url:
-            seen_urls.add(
-                url
-            )
+            seen_urls.add(url)
 
-        if title:
-            seen_titles.add(
-                title
-            )
+        seen_titles.add(title)
 
-        unique.append(
-            article
+        article["url"] = url
+        article["title"] = clean_title(
+            article.get("title", "")
+        )
+        article["summary"] = clean_text(
+            article.get("summary", "")
+        )
+        article["body"] = clean_text(
+            article.get("body", "")
         )
 
-    return unique
+        result.append(article)
+
+    return result
 
 
-# ============================================================
-# COLLECTE
-# ============================================================
+# ---------------------------------------------------------------------------
+# SOURCE HANDLING
+# ---------------------------------------------------------------------------
 
-def collect_articles(
-    cache,
-    force=False,
-):
-    articles = []
+def source_is_enabled(
+    source: Dict[str, Any],
+) -> bool:
+    """Check whether a source is enabled."""
 
-    stats = {
-        "attempted": 0,
-        "successful": 0,
-        "empty": 0,
-        "errors": 0,
-        "cached": 0,
-    }
+    if source.get("enabled", True) is False:
+        return False
 
-    for source in SOURCES:
+    return True
 
-        name = source.get(
-            "name",
-            "Unknown",
-        )
 
-        url = source.get(
-            "url",
-            "",
-        )
-
-        if not url:
-            continue
-
-        stats["attempted"] += 1
-
-        # ----------------------------------------------------
-        # CACHE
-        # ----------------------------------------------------
-
-        cached_articles = None
-
-        if not force:
-
-            cached_articles = cache.get(
-                name
-            )
-
-        if cached_articles:
-
-            logger.info(
-                "CACHE | %s | %d articles",
-                name,
-                len(
-                    cached_articles
-                ),
-            )
-
-            articles.extend(
-                cached_articles
-            )
-
-            stats["cached"] += 1
-
-            continue
-
-        # ----------------------------------------------------
-        # HTTP
-        # ----------------------------------------------------
-
-        result = fetch_url(
-            url,
-            source,
-        )
-
-        if not result["ok"]:
-
-            logger.warning(
-                "ERROR | %s | status=%s | %s",
-                name,
-                result["status"],
-                result["error"] or "",
-            )
-
-            stats["errors"] += 1
-
-            mark_source_scanned(
-                name
-            )
-
-            continue
-
-        html = result["text"]
-
-        if not html.strip():
-
-            logger.warning(
-                "EMPTY | %s",
-                name,
-            )
-
-            stats["empty"] += 1
-
-            mark_source_scanned(
-                name
-            )
-
-            continue
-
-        # ----------------------------------------------------
-        # PARSING
-        # ----------------------------------------------------
-
-        source_type = source.get(
-            "type",
-            "html",
-        )
-
-        if source_type == "rss":
-
-            parsed = parse_feed(
-                html,
-                result["url"],
-                source,
-            )
-
-        else:
-
-            parsed = parse_html_source(
-                html,
-                result["url"],
-                source,
-            )
-
-        if parsed:
-
-            logger.info(
-                "OK | %s | %d articles",
-                name,
-                len(parsed),
-            )
-
-            articles.extend(
-                parsed
-            )
-
-            stats["successful"] += 1
-
-        else:
-
-            logger.warning(
-                "EMPTY | %s | no articles",
-                name,
-            )
-
-            stats["empty"] += 1
-
-        mark_source_scanned(
-            name
-        )
+def source_url(
+    source: Dict[str, Any],
+) -> str:
+    """Get source URL from supported field names."""
 
     return (
-        articles,
-        stats,
+        source.get("rss")
+        or source.get("feed")
+        or source.get("url")
+        or source.get("homepage")
+        or ""
     )
 
 
-# ============================================================
-# CLASSIFICATION
-# ============================================================
+def source_type(
+    source: Dict[str, Any],
+) -> str:
+    """Determine RSS vs HTML source."""
 
-def classify_articles(
-    articles
-):
+    value = (
+        source.get("type")
+        or source.get("format")
+        or ""
+    )
+
+    return str(value).lower().strip()
+
+
+# ---------------------------------------------------------------------------
+# CACHE
+# ---------------------------------------------------------------------------
+
+_SOURCE_CACHE: Dict[str, Tuple[float, List[Dict[str, Any]]]] = {}
+
+
+def get_cached_source(
+    key: str,
+) -> Optional[List[Dict[str, Any]]]:
+    """Return cached source if still valid."""
+
+    cached = _SOURCE_CACHE.get(key)
+
+    if not cached:
+        return None
+
+    timestamp, articles = cached
+
+    if time.time() - timestamp > CACHE_TTL_SECONDS:
+        return None
+
+    return articles
+
+
+def set_cached_source(
+    key: str,
+    articles: List[Dict[str, Any]],
+) -> None:
+    """Cache source results."""
+
+    _SOURCE_CACHE[key] = (
+        time.time(),
+        articles,
+    )
+
+
+# ---------------------------------------------------------------------------
+# SOURCE SCANNING
+# ---------------------------------------------------------------------------
+
+def collect_from_source(
+    source: Dict[str, Any],
+    force_refresh: bool = False,
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """Collect articles from one source."""
+
+    name = source.get(
+        "name",
+        source.get("id", "unknown"),
+    )
+
+    url = source_url(source)
+
+    stats = {
+        "source": name,
+        "attempted": 0,
+        "success": 0,
+        "articles": 0,
+        "error": None,
+        "cached": False,
+    }
+
+    if not url:
+        stats["error"] = "No URL configured"
+        return [], stats
+
+    cache_key = normalize_url(url)
+
+    if not force_refresh:
+        cached = get_cached_source(
+            cache_key
+        )
+
+        if cached is not None:
+            stats["cached"] = True
+            stats["success"] = 1
+            stats["articles"] = len(cached)
+            return list(cached), stats
+
+    stats["attempted"] = 1
+
+    result = fetch_url(
+        url,
+        source=source,
+    )
+
+    if not result["ok"]:
+        stats["error"] = result.get(
+            "error"
+        ) or f"HTTP {result.get('status')}"
+
+        logging.warning(
+            "SOURCE | %s | ERROR | %s",
+            name,
+            stats["error"],
+        )
+
+        return [], stats
+
+    text = result.get(
+        "text",
+        "",
+    )
+
+    if not text:
+        stats["error"] = "Empty response"
+
+        logging.warning(
+            "SOURCE | %s | EMPTY",
+            name,
+        )
+
+        return [], stats
+
+    source_kind = source_type(
+        source
+    )
+
+    if (
+        source_kind in {
+            "rss",
+            "atom",
+            "feed",
+            "xml",
+        }
+        or "rss" in url.lower()
+        or "feed" in url.lower()
+        or "atom" in url.lower()
+    ):
+        articles = parse_feed(
+            text,
+            source,
+            result.get("url", url),
+        )
+
+    else:
+        articles = parse_html_source(
+            text,
+            source,
+            result.get("url", url),
+        )
+
+    set_cached_source(
+        cache_key,
+        articles,
+    )
+
+    stats["success"] = 1
+    stats["articles"] = len(articles)
+
+    logging.info(
+        "SOURCE | %s | %d articles",
+        name,
+        len(articles),
+    )
+
+    return articles, stats
+
+
+def collect_articles(
+    force_refresh: bool = False,
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """Collect all enabled sources."""
+
+    all_articles: List[Dict[str, Any]] = []
+    source_stats: List[Dict[str, Any]] = []
+
+    enabled_sources = [
+        source
+        for source in SOURCES
+        if isinstance(source, dict)
+        and source_is_enabled(source)
+    ]
+
+    logging.info(
+        "SOURCES | %d sources actives",
+        len(enabled_sources),
+    )
+
+    for source in enabled_sources:
+
+        articles, stats = collect_from_source(
+            source,
+            force_refresh=force_refresh,
+        )
+
+        all_articles.extend(
+            articles
+        )
+
+        source_stats.append(stats)
+
+    logging.info(
+        "COLLECT | %d articles avant déduplication",
+        len(all_articles),
+    )
+
+    return (
+        all_articles,
+        source_stats,
+    )
+
+
+# ---------------------------------------------------------------------------
+# TITLE VOCABULARY
+# ---------------------------------------------------------------------------
+
+TITLE_STOPWORDS = {
+    # English
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "but",
+    "for",
+    "with",
+    "from",
+    "into",
+    "after",
+    "before",
+    "over",
+    "under",
+    "about",
+    "between",
+    "against",
+    "amid",
+    "says",
+    "said",
+    "new",
+    "latest",
+    "report",
+    "reports",
+    "news",
+
+    # French
+    "le",
+    "la",
+    "les",
+    "un",
+    "une",
+    "des",
+    "de",
+    "du",
+    "et",
+    "ou",
+    "dans",
+    "sur",
+    "pour",
+    "avec",
+    "après",
+    "avant",
+    "entre",
+    "contre",
+    "nouveau",
+    "nouvelle",
+    "nouvelles",
+
+    # Russian
+    "и",
+    "или",
+    "в",
+    "во",
+    "на",
+    "с",
+    "со",
+    "для",
+    "по",
+    "из",
+    "от",
+    "до",
+    "после",
+    "как",
+    "что",
+    "это",
+    "новый",
+    "новая",
+    "новые",
+    "новости",
+    "сообщает",
+    "сообщили",
+}
+
+
+def extract_title_words(
+    title: str,
+) -> List[str]:
     """
-    Deux passages :
+    Unicode-aware word tokenizer.
 
-    PASS 1
-        titre + résumé
-
-    PASS 2
-        corps complet uniquement pour les meilleurs candidats
-
-    Le scoring est entièrement délégué à scoring.py.
+    Important:
+    This works with Latin AND Cyrillic.
     """
 
-    audit = []
+    title = clean_title(title)
 
-    # ========================================================
-    # PASS 1
-    # ========================================================
+    if not title:
+        return []
+
+    words = re.findall(
+        r"[^\W\d_]+(?:['’\-][^\W\d_]+)*",
+        title,
+        flags=re.UNICODE,
+    )
+
+    result = []
+
+    for word in words:
+
+        word = word.strip(
+            "'’-"
+        ).lower()
+
+        if not word:
+            continue
+
+        if word in TITLE_STOPWORDS:
+            continue
+
+        # Ignore extremely short fragments.
+        if len(word) < 2:
+            continue
+
+        result.append(word)
+
+    return result
+
+
+def build_title_word_list(
+    articles: Iterable[Dict[str, Any]],
+    min_count: int = TITLE_VOCAB_MIN_COUNT,
+    max_words: int = TITLE_VOCAB_MAX_WORDS,
+) -> List[Dict[str, Any]]:
+    """
+    Build a vocabulary from article titles.
+
+    This is diagnostic/discovery only.
+    It does NOT modify scoring.
+    """
+
+    counts: Dict[str, int] = {}
 
     for article in articles:
 
-        result = classify_article(
-            article
-        )
+        if not isinstance(article, dict):
+            continue
 
-        article["score"] = result.get(
-            "score",
-            0,
-        )
-
-        article["level"] = result.get(
-            "level",
-            "D",
-        )
-
-        article["priority"] = result.get(
-            "priority",
+        title = article.get(
+            "title",
             "",
         )
 
-        article["theme"] = result.get(
-            "theme",
-            "",
+        # clean_title repairs mojibake before tokenization.
+        words = extract_title_words(
+            title
         )
 
-        article["reasons"] = result.get(
-            "reasons",
-            [],
-        )
-
-        article["relevant"] = result.get(
-            "relevant",
-            False,
-        )
-
-        article["signals"] = result.get(
-            "signals",
-            {},
-        )
-
-        audit.append(
-            article
-        )
-
-    # ========================================================
-    # TRI INTERMÉDIAIRE
-    # ========================================================
-
-    audit.sort(
-        key=lambda item: (
-            -item.get(
-                "score",
-                0,
-            ),
-            item.get(
-                "date"
+        for word in words:
+            counts[word] = (
+                counts.get(word, 0) + 1
             )
-            or datetime.min.replace(
-                tzinfo=timezone.utc
-            ),
+
+    items = [
+        {
+            "word": word,
+            "count": count,
+        }
+        for word, count in counts.items()
+        if count >= min_count
+    ]
+
+    items.sort(
+        key=lambda item: (
+            -item["count"],
+            item["word"],
         )
     )
 
-    # ========================================================
-    # PASS 2
-    # ========================================================
+    return items[:max_words]
 
-    candidates = audit[
-        :ARTICLE_PAGE_FETCH_LIMIT
-    ]
 
-    for article in candidates:
+# ---------------------------------------------------------------------------
+# SCORING
+# ---------------------------------------------------------------------------
 
-        url = article.get(
-            "url",
-            "",
-        )
+def prepare_article_for_scoring(
+    article: Dict[str, Any],
+) -> Dict[str, Any]:
+    """
+    Make sure scoring.py receives clean Unicode.
 
-        if not url:
-            continue
+    We intentionally do not alter the scoring logic here.
+    """
 
-        result = fetch_url(
-            url
-        )
+    article["title"] = clean_title(
+        article.get("title", "")
+    )
 
-        if not result["ok"]:
-            continue
+    article["summary"] = clean_text(
+        article.get("summary", "")
+    )
 
-        body = extract_article_body(
-            result["text"]
-        )
+    article["body"] = clean_text(
+        article.get("body", "")
+    )
 
-        if not body:
-            continue
+    return article
 
-        article["body"] = body
 
-        # Reclassification avec le corps
-        result = classify_article(
+def score_articles(
+    articles: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Apply deterministic scoring."""
+
+    scored = []
+
+    for article in articles:
+
+        article = prepare_article_for_scoring(
             article
         )
 
-        article["score"] = result.get(
-            "score",
-            0,
+        try:
+            article = classify_article(
+                article
+            )
+        except Exception:
+            logging.exception(
+                "SCORING ERROR | %s",
+                article.get(
+                    "title",
+                    "(sans titre)",
+                ),
+            )
+
+            # Do not kill the complete scan because
+            # one malformed article failed.
+            article["score"] = 0
+            article["level"] = "D"
+            article["relevant"] = False
+
+        scored.append(article)
+
+    return scored
+
+
+# ---------------------------------------------------------------------------
+# FULL ARTICLE ENRICHMENT
+# ---------------------------------------------------------------------------
+
+def article_needs_body(
+    article: Dict[str, Any],
+) -> bool:
+    """Determine whether full-body fetching is worthwhile."""
+
+    score = article.get(
+        "score",
+        0,
+    )
+
+    try:
+        score = float(score)
+    except (TypeError, ValueError):
+        score = 0
+
+    return score > 0
+
+
+def enrich_article_body(
+    article: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Fetch and extract the full article body."""
+
+    url = article.get(
+        "url",
+        "",
+    )
+
+    if not url:
+        return article
+
+    source_name = article.get(
+        "source",
+        "",
+    )
+
+    result = fetch_url(
+        url
+    )
+
+    if not result["ok"]:
+        logging.debug(
+            "ARTICLE | body fetch failed | %s | %s",
+            source_name,
+            url,
         )
 
-        article["level"] = result.get(
-            "level",
-            "D",
-        )
+        return article
 
-        article["priority"] = result.get(
-            "priority",
+    body = extract_article_body(
+        result.get(
+            "text",
             "",
         )
+    )
 
-        article["theme"] = result.get(
-            "theme",
-            "",
+    if body:
+        article["body"] = body
+
+    return prepare_article_for_scoring(
+        article
+    )
+
+
+def enrich_top_articles(
+    articles: List[Dict[str, Any]],
+    limit: int = ARTICLE_PAGE_FETCH_LIMIT,
+) -> List[Dict[str, Any]]:
+    """
+    Fetch full bodies only for the most promising articles.
+
+    First-pass scoring uses title + summary.
+    Then top candidates receive full-body scoring.
+    """
+
+    ranked = sorted(
+        articles,
+        key=lambda article: (
+            float(
+                article.get(
+                    "score",
+                    0,
+                ) or 0
+            ),
+            article.get(
+                "date",
+                "",
+            ) or "",
+        ),
+        reverse=True,
+    )
+
+    candidates = [
+        article
+        for article in ranked
+        if article_needs_body(article)
+    ][:limit]
+
+    logging.info(
+        "ENRICH | %d articles avec body complet",
+        len(candidates),
+    )
+
+    candidate_ids = {
+        id(article)
+        for article in candidates
+    }
+
+    for index, article in enumerate(
+        candidates,
+        start=1,
+    ):
+
+        logging.info(
+            "ENRICH | %d/%d | %s",
+            index,
+            len(candidates),
+            article.get(
+                "title",
+                "(sans titre)",
+            )[:100],
         )
 
-        article["reasons"] = result.get(
-            "reasons",
-            [],
+        enrich_article_body(
+            article
         )
 
-        article["relevant"] = result.get(
-            "relevant",
-            False,
-        )
-
-        article["signals"] = result.get(
-            "signals",
-            {},
-        )
-
-    return audit
+    # Re-score everything because enriched candidates changed.
+    return score_articles(
+        articles
+    )
 
 
-# ============================================================
-# TRI FINAL
-# ============================================================
+# ---------------------------------------------------------------------------
+# RANKING
+# ---------------------------------------------------------------------------
 
 LEVEL_ORDER = {
     "A": 0,
@@ -1853,9 +1905,28 @@ LEVEL_ORDER = {
 }
 
 
+def article_date_timestamp(
+    article: Dict[str, Any],
+) -> float:
+    """Return publication timestamp for sorting."""
+
+    value = article.get(
+        "date"
+    )
+
+    parsed = parse_date(value)
+
+    if not parsed:
+        return 0
+
+    return parsed.timestamp()
+
+
 def sort_articles(
-    articles
-):
+    articles: Iterable[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Sort by level, score, then freshness."""
+
     return sorted(
         articles,
         key=lambda article: (
@@ -1866,373 +1937,467 @@ def sort_articles(
                 ),
                 3,
             ),
-            -article.get(
-                "score",
-                0,
-            ),
-            -(
+            -float(
                 article.get(
-                    "date"
-                ).timestamp()
-                if article.get(
-                    "date"
-                )
-                else 0
+                    "score",
+                    0,
+                ) or 0
+            ),
+            -article_date_timestamp(
+                article
             ),
         ),
     )
 
 
-# ============================================================
-# STATISTIQUES
-# ============================================================
+# ---------------------------------------------------------------------------
+# STATISTICS
+# ---------------------------------------------------------------------------
 
 def build_stats(
-    articles,
-    source_stats,
-):
-    analyzed = len(
-        articles
-    )
+    articles: List[Dict[str, Any]],
+    source_stats: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Build dashboard statistics."""
 
-    levels = Counter(
-        article.get(
+    scores = []
+
+    levels = {
+        "A": 0,
+        "B": 0,
+        "C": 0,
+        "D": 0,
+    }
+
+    relevant = 0
+
+    for article in articles:
+
+        try:
+            score = float(
+                article.get(
+                    "score",
+                    0,
+                ) or 0
+            )
+        except (TypeError, ValueError):
+            score = 0
+
+        scores.append(score)
+
+        level = article.get(
             "level",
             "D",
         )
-        for article in articles
-    )
 
-    scores = [
-        article.get(
-            "score",
-            0,
-        )
-        for article in articles
-    ]
+        if level in levels:
+            levels[level] += 1
 
-    avg_score = (
+        if article.get(
+            "relevant",
+            False,
+        ):
+            relevant += 1
+
+    average_score = (
         sum(scores) / len(scores)
         if scores
         else 0
     )
 
-    retained = sum(
-        1
-        for article in articles
-        if article.get(
-            "level",
-            "D",
-        )
-        in {
-            "A",
-            "B",
-            "C",
-        }
-    )
-
-    relevance_rate = (
-        retained / analyzed * 100
-        if analyzed
-        else 0
-    )
-
     return {
-        "analyzed": analyzed,
-
-        "retained": retained,
-
+        "analyzed": len(articles),
+        "retained": relevant,
         "avg_score": round(
-            avg_score,
+            average_score,
             1,
         ),
-
-        "levels": {
-            "A": levels.get(
-                "A",
-                0,
-            ),
-            "B": levels.get(
-                "B",
-                0,
-            ),
-            "C": levels.get(
-                "C",
-                0,
-            ),
-            "D": levels.get(
-                "D",
-                0,
-            ),
-        },
-
-        "sources": source_stats,
-
+        "levels": levels,
+        "source_stats": source_stats,
         "relevance_rate": round(
-            relevance_rate,
+            (
+                relevant / len(articles) * 100
+                if articles
+                else 0
+            ),
             1,
         ),
     }
 
 
-# ============================================================
-# MÉMOIRE
-# ============================================================
+# ---------------------------------------------------------------------------
+# MEMORY
+# ---------------------------------------------------------------------------
 
 def show_memory(
-    memory
-):
+    memory: Any,
+) -> None:
+    """
+    Memory is optional.
+
+    Empty memory is completely normal.
+    No memory-related error can stop the scanner.
+    """
+
     if not memory:
-
-        logger.info(
-            "MEMORY | aucune donnée"
+        logging.info(
+            "MEMORY | vide — ignorée"
         )
-
         return
 
-    logger.info(
+    if isinstance(memory, list):
+        articles = memory
+
+    elif isinstance(memory, dict):
+        articles = (
+            memory.get("articles")
+            or memory.get("items")
+            or memory.get("history")
+            or []
+        )
+
+    else:
+        logging.warning(
+            "MEMORY | format inattendu (%s) — ignorée",
+            type(memory).__name__,
+        )
+        return
+
+    if not isinstance(
+        articles,
+        list,
+    ) or not articles:
+
+        logging.info(
+            "MEMORY | vide — ignorée"
+        )
+        return
+
+    logging.info(
         "MEMORY | %d articles connus",
-        len(memory),
-    )
-
-    for article in memory[-10:]:
-
-        logger.info(
-            "  %s | %s",
-            article.get(
-                "level",
-                "?",
-            ),
-            article.get(
-                "title",
-                "",
-            ),
-        )
-
-
-# ============================================================
-# SCAN
-# ============================================================
-
-def scan_news(
-    force=False
-):
-    logger.info(
-        "=================================================="
-    )
-
-    logger.info(
-        "CENTRAL ASIA NEWS SCANNER"
-    )
-
-    logger.info(
-        "=================================================="
-    )
-
-    # --------------------------------------------------------
-    # MÉMOIRE
-    # --------------------------------------------------------
-
-    memory = load_memory()
-
-    show_memory(
-        memory
-    )
-
-    # --------------------------------------------------------
-    # COLLECTE
-    # --------------------------------------------------------
-
-    articles, source_stats = (
-        collect_articles(
-            memory,
-            force=force,
-        )
-    )
-
-    logger.info(
-        "COLLECT | %d articles bruts",
         len(articles),
     )
 
-    # --------------------------------------------------------
+    for article in articles[-10:]:
+
+        if not isinstance(
+            article,
+            dict,
+        ):
+            continue
+
+        logging.info(
+            "  • %s | score=%s",
+            article.get(
+                "title",
+                "(sans titre)",
+            )[:100],
+            article.get(
+                "score",
+                "?",
+            ),
+        )
+
+
+def safe_load_memory() -> Any:
+    """
+    Load memory without ever making it a hard dependency.
+
+    If the memory module/file is broken, scanning continues.
+    """
+
+    try:
+        memory = load_memory()
+    except Exception:
+        logging.exception(
+            "MEMORY | impossible à charger — scan poursuivi"
+        )
+        return {}
+
+    if memory is None:
+        return {}
+
+    return memory
+
+
+def safe_save_memory(
+    articles: List[Dict[str, Any]],
+) -> None:
+    """
+    Save memory if available.
+
+    Failure is logged but does not kill the scan.
+    """
+
+    try:
+        save_memory(
+            articles
+        )
+    except Exception:
+        logging.exception(
+            "MEMORY | sauvegarde impossible — scan terminé malgré tout"
+        )
+
+
+# ---------------------------------------------------------------------------
+# RELEVANCE
+# ---------------------------------------------------------------------------
+
+def is_relevant_article(
+    article: Dict[str, Any],
+) -> bool:
+    """Final relevance check."""
+
+    if article.get(
+        "relevant",
+        False,
+    ):
+        return True
+
+    score = article.get(
+        "score",
+        0,
+    )
+
+    try:
+        score = float(score)
+    except (TypeError, ValueError):
+        score = 0
+
+    return (
+        score >= 40
+        and not article.get(
+            "non_news",
+            False,
+        )
+        and not article.get(
+            "noise",
+            False,
+        )
+    )
+
+
+# ---------------------------------------------------------------------------
+# MAIN SCAN
+# ---------------------------------------------------------------------------
+
+def scan_news(
+    force_refresh: bool = False,
+    memory_enabled: bool = True,
+) -> Dict[str, Any]:
+
+    logging.info("=" * 50)
+    logging.info(
+        "CENTRAL ASIA NEWS SCANNER"
+    )
+    logging.info("=" * 50)
+
+    # ---------------------------------------------------------------
+    # MEMORY
+    # ---------------------------------------------------------------
+
+    memory = {}
+
+    if memory_enabled:
+        memory = safe_load_memory()
+        show_memory(memory)
+    else:
+        logging.info(
+            "MEMORY | désactivée"
+        )
+
+    # ---------------------------------------------------------------
+    # COLLECTION
+    # ---------------------------------------------------------------
+
+    articles, source_stats = collect_articles(
+        force_refresh=force_refresh
+    )
+
+    logging.info(
+        "COLLECT | %d articles récupérés",
+        len(articles),
+    )
+
+    # ---------------------------------------------------------------
     # DEDUP
-    # --------------------------------------------------------
+    # ---------------------------------------------------------------
 
     articles = deduplicate_articles(
         articles
     )
 
-    logger.info(
+    logging.info(
         "DEDUP | %d articles uniques",
         len(articles),
     )
 
-    # --------------------------------------------------------
-    # CLASSIFICATION
-    # --------------------------------------------------------
+    if not articles:
+        logging.warning(
+            "SCAN | aucun article récupéré"
+        )
 
-    audit = classify_articles(
+        stats = build_stats(
+            [],
+            source_stats,
+        )
+
+        try:
+            create_web_page(
+                [],
+                [],
+                stats,
+                [],
+            )
+        except Exception:
+            logging.exception(
+                "HTML | génération impossible"
+            )
+
+        return {
+            "articles": [],
+            "audit": [],
+            "stats": stats,
+        }
+
+    # ---------------------------------------------------------------
+    # FIRST PASS SCORING
+    # ---------------------------------------------------------------
+
+    logging.info(
+        "SCORING | première passe title + summary"
+    )
+
+    articles = score_articles(
         articles
     )
 
-    # ========================================================
-    # VOCABULAIRE DES TITRES
-    # ========================================================
-
-    title_words = build_title_word_list(
-        audit,
-        min_count=TITLE_WORD_MIN_COUNT,
-        max_words=TITLE_WORD_MAX,
+    first_pass = sort_articles(
+        articles
     )
 
-    title_phrases = build_title_phrases(
-        audit,
-        min_count=TITLE_PHRASE_MIN_COUNT,
-        max_phrases=TITLE_PHRASE_MAX,
+    # ---------------------------------------------------------------
+    # FULL BODY FOR TOP CANDIDATES
+    # ---------------------------------------------------------------
+
+    articles = enrich_top_articles(
+        articles,
+        limit=ARTICLE_PAGE_FETCH_LIMIT,
     )
 
-    logger.info(
-        "TITLE VOCABULARY | %d words",
-        len(title_words),
-    )
-
-    logger.info(
-        "TITLE PHRASES | %d phrases",
-        len(title_phrases),
-    )
-
-    # --------------------------------------------------------
-    # TOP WORDS
-    # --------------------------------------------------------
-
-    logger.info(
-        "TOP TITLE WORDS"
-    )
-
-    for item in title_words[:20]:
-
-        logger.info(
-            "  %-30s %d",
-            item["word"],
-            item["count"],
-        )
-
-    # --------------------------------------------------------
-    # TOP PHRASES
-    # --------------------------------------------------------
-
-    logger.info(
-        "TOP TITLE PHRASES"
-    )
-
-    for item in title_phrases[:20]:
-
-        logger.info(
-            "  %-45s %d",
-            item["phrase"],
-            item["count"],
-        )
-
-    # --------------------------------------------------------
-    # MÉMOIRE
-    # --------------------------------------------------------
-
-    save_memory(
-        audit
-    )
-
-    # --------------------------------------------------------
-    # TRI FINAL
-    # --------------------------------------------------------
+    # ---------------------------------------------------------------
+    # FINAL SORT
+    # ---------------------------------------------------------------
 
     sorted_audit = sort_articles(
-        audit
+        articles
     )
 
-    # --------------------------------------------------------
-    # ARTICLES RETENUS
-    # --------------------------------------------------------
+    # ---------------------------------------------------------------
+    # RELEVANT SELECTION
+    # ---------------------------------------------------------------
 
-    selected = [
+    relevant_articles = [
         article
         for article in sorted_audit
-        if article.get(
-            "level",
-            "D",
+        if is_relevant_article(
+            article
         )
-        in {
-            "A",
-            "B",
-            "C",
-        }
     ]
 
-    selected = selected[
+    selected = relevant_articles[
         :ARTICLES_TO_DISPLAY
     ]
 
-    # --------------------------------------------------------
-    # STATS
-    # --------------------------------------------------------
+    # ---------------------------------------------------------------
+    # STATISTICS
+    # ---------------------------------------------------------------
 
     stats = build_stats(
-        audit,
+        sorted_audit,
         source_stats,
     )
 
-    logger.info(
-        (
-            "STATS | analyzed=%d | "
-            "retained=%d | avg=%.1f/100"
-        ),
+    logging.info(
+        "STATS | analyzed=%d | retained=%d | avg=%.1f/100",
         stats["analyzed"],
         stats["retained"],
         stats["avg_score"],
     )
 
-    logger.info(
-        (
-            "LEVELS | A=%d B=%d "
-            "C=%d D=%d"
-        ),
+    logging.info(
+        "LEVELS | A=%d B=%d C=%d D=%d",
         stats["levels"]["A"],
         stats["levels"]["B"],
         stats["levels"]["C"],
         stats["levels"]["D"],
     )
 
-    # ========================================================
-    # PAGE WEB
-    # ========================================================
+    # ---------------------------------------------------------------
+    # TITLE VOCABULARY
+    # ---------------------------------------------------------------
 
-    create_web_page(
-        selected,
+    title_words = build_title_word_list(
         sorted_audit,
-        stats,
-        title_words,
-        title_phrases,
+        min_count=TITLE_VOCAB_MIN_COUNT,
+        max_words=TITLE_VOCAB_MAX_WORDS,
     )
 
-    logger.info(
-        "WEB | index.html généré"
+    logging.info(
+        "VOCABULARY | %d mots de titres",
+        len(title_words),
+    )
+
+    # ---------------------------------------------------------------
+    # MEMORY
+    # ---------------------------------------------------------------
+
+    if memory_enabled:
+        # For now we keep this deliberately conservative.
+        # The memory system is not part of scoring.
+        safe_save_memory(
+            selected
+        )
+
+    # ---------------------------------------------------------------
+    # HTML
+    # ---------------------------------------------------------------
+
+    try:
+        create_web_page(
+            selected,
+            sorted_audit,
+            stats,
+            title_words,
+        )
+
+        logging.info(
+            "HTML | page générée"
+        )
+
+    except Exception:
+        logging.exception(
+            "HTML | erreur pendant la génération"
+        )
+
+    logging.info(
+        "SCAN | terminé | %d articles sélectionnés",
+        len(selected),
     )
 
     return {
-        "articles": sorted_audit,
-        "selected": selected,
+        "articles": selected,
+        "audit": sorted_audit,
         "stats": stats,
         "title_words": title_words,
-        "title_phrases": title_phrases,
     }
 
 
-# ============================================================
+# ---------------------------------------------------------------------------
 # CLI
-# ============================================================
+# ---------------------------------------------------------------------------
 
-def main():
-
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "Central Asia News Scanner"
@@ -2240,48 +2405,80 @@ def main():
     )
 
     parser.add_argument(
-        "--memory",
-        action="store_true",
-        help=(
-            "Afficher la mémoire récente"
-        ),
-    )
-
-    parser.add_argument(
         "--scan",
         action="store_true",
         help=(
-            "Lancer un scan"
+            "Force un scan frais des sources"
         ),
     )
 
     parser.add_argument(
-        "--force",
+        "--memory",
         action="store_true",
         help=(
-            "Ignorer le cache et "
-            "rescanner les sources"
+            "Active la mémoire optionnelle"
         ),
     )
 
+    parser.add_argument(
+        "--no-memory",
+        action="store_true",
+        help=(
+            "Désactive complètement la mémoire"
+        ),
+    )
+
+    return parser
+
+
+def main() -> None:
+
+    parser = build_parser()
     args = parser.parse_args()
 
-    if args.memory:
+    # ---------------------------------------------------------------
+    # MEMORY MODE
+    # ---------------------------------------------------------------
 
-        memory = load_memory()
+    if args.no_memory:
+        memory_enabled = False
 
-        show_memory(
-            memory
-        )
+    elif args.memory:
+        memory_enabled = True
 
-    if (
+    else:
+        # Default: memory remains optional.
+        # It may be loaded if the project has one, but an empty
+        # memory is harmless.
+        memory_enabled = True
+
+    # ---------------------------------------------------------------
+    # REFRESH MODE
+    # ---------------------------------------------------------------
+
+    # Explicit --scan means:
+    # do not use the one-hour source cache.
+    force_refresh = bool(
         args.scan
-        or not args.memory
-    ):
+    )
 
+    try:
         scan_news(
-            force=args.force
+            force_refresh=force_refresh,
+            memory_enabled=memory_enabled,
         )
+
+    except KeyboardInterrupt:
+        logging.warning(
+            "SCAN | interrompu"
+        )
+        sys.exit(130)
+
+    except Exception:
+        logging.exception(
+            "SCAN | erreur fatale"
+        )
+        sys.exit(1)
 
 
 if __name__ == "__main__":
