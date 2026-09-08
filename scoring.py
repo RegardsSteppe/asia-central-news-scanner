@@ -112,7 +112,7 @@ def weighted_score(terms, weights, maximum):
 def classify_article(article):
 
     """
-    Classification V2.
+    Classification V4.
 
     Score global : 0-100
 
@@ -406,6 +406,25 @@ def classify_article(article):
     )
 
     # ========================================================
+    # SIGNALS GRAVES / MORPHOLOGIE RUSSE
+    # ========================================================
+    severe_morphology = bool(
+        re.search(
+            r"(?:пыточн(?:ые|ых|ом|ыми|ых)\s+услов(?:ия|иях|иям|иями)|\bшизо\b|\bкарцер\b|\bодиночн(?:ое|ом|ую)\s+заключен(?:ие|ии|ием)|произвольн(?:ое|ого|ому)\s+задержан(?:ие|ия|ием))",
+            full_text,
+            re.IGNORECASE,
+        )
+    )
+
+    prison_sentence_signal = bool(
+        re.search(
+            r"(?:\b(?:8|9|10|11|12|13|14|15|16|17|18|19|20)\s*(?:лет|года|год|years?)\b.{0,80}\b(?:тюрьм|заключ|лишен|лишени)|\b(?:приговорен|осужден|осуждён)\b.{0,80}\b(?:лет|года|год)\b)",
+            full_text,
+            re.IGNORECASE,
+        )
+    )
+
+    # ========================================================
     # CONFIRMATIONS
     # ========================================================
 
@@ -430,12 +449,12 @@ def classify_article(article):
     )
 
     confirmed_activist_pressure = (
-        strong_body_geography
+        regional_context
         and activist_relation
     )
 
     confirmed_journalist_pressure = (
-        strong_body_geography
+        regional_context
         and journalist_relation
     )
 
@@ -1023,13 +1042,16 @@ def classify_article(article):
     # BONUS GRAVE
     # ========================================================
 
-    severe_detected = any(
-        normalize(term)
-        in {
-            normalize(x)
-            for x in SEVERE_REPRESSION_TERMS
-        }
-        for term in (repression + body_repression)
+    severe_detected = (
+        severe_morphology
+        or any(
+            normalize(term)
+            in {
+                normalize(x)
+                for x in SEVERE_REPRESSION_TERMS
+            }
+            for term in (repression + body_repression)
+        )
     )
 
     if (
@@ -1045,6 +1067,48 @@ def classify_article(article):
 
         reasons.append(
             "signal de répression grave confirmé"
+        )
+
+    # ========================================================
+    # BONUS V4 — CAS HR CRITIQUE
+    # ========================================================
+    # Combinaison très spécifique : ancrage régional + activiste/
+    # défenseur + condamnation/détention + mauvais traitement grave.
+    # Ce bonus corrige les faux négatifs où les mots sont répartis
+    # entre titre et corps et où aucun mot isolé n'est suffisamment fort.
+    critical_hr_case = bool(
+        regional_context
+        and has_activist
+        and (
+            confirmed_repression
+            or severe_detected
+        )
+        and (
+            prison_sentence_signal
+            or has_repression
+        )
+    )
+
+    if critical_hr_case:
+        score += 25
+        reasons.append(
+            "CAS HR CRITIQUE: activiste + condamnation/détention + signal grave"
+        )
+
+    elif (
+        regional_context
+        and severe_detected
+        and has_repression
+    ):
+        score += 15
+        reasons.append(
+            "bonus répression grave confirmée"
+        )
+
+    if prison_sentence_signal and regional_context and has_activist:
+        score += 8
+        reasons.append(
+            "peine de prison liée à un activiste"
         )
 
     # ========================================================
