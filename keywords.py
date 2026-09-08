@@ -259,6 +259,11 @@ REPRESSION_TERMS = [
     "detentions",
     "taken into custody",
     "held in custody",
+    "held without charge",
+    "arbitrary detention",
+    "arbitrarily detained",
+    "detained without charge",
+    "in custody",
 
     # Prison
     "prison",
@@ -270,6 +275,15 @@ REPRESSION_TERMS = [
     "prison sentence",
     "prison term",
     "sentenced to prison",
+    "serving a sentence",
+    "serving a prison sentence",
+    "behind bars",
+    "solitary confinement",
+    "punitive isolation",
+    "prison conditions",
+    "detention conditions",
+    "inhuman conditions",
+    "torturous conditions",
 
     # Condamnation
     "convicted",
@@ -335,6 +349,10 @@ REPRESSION_TERMS = [
     "political prisoner",
     "political prisoners",
     "political repression",
+    "arbitrary detention",
+    "solitary confinement",
+    "inhuman conditions",
+    "torturous conditions",
     "political crackdown",
     "media crackdown",
     "press crackdown",
@@ -385,6 +403,20 @@ REPRESSION_TERMS = [
     "угрозы",
     "угрозы убийством",
     "запугивание",
+    "шизо",
+    "сизо",
+    "карцер",
+    "одиночное заключение",
+    "условия содержания",
+    "пыточные условия",
+    "жестокие условия содержания",
+    "за решеткой",
+    "за решёткой",
+    "отбывает срок",
+    "отбывает наказание",
+    "содержится в заключении",
+    "произвольное задержание",
+    "задержание без предъявления обвинения",
     "насильственное исчезновение",
     "исчезновение",
     "запрет на выезд",
@@ -395,6 +427,9 @@ REPRESSION_TERMS = [
     "закрытие СМИ",
     "репрессии",
     "политические репрессии",
+    "произвольное задержание",
+    "одиночное заключение",
+    "пыточные условия",
 ]
 
 
@@ -599,8 +634,24 @@ SPECIFIC_RIGHTS_TERMS = [
     "sexual harassment",
     "forced marriage",
     "child marriage",
+    "bride kidnapping",
+    "marriage by abduction",
+    "kidnapping for marriage",
+    "abduction for marriage",
     "feminist",
     "feminists",
+
+    # Liberté académique
+    "academic freedom",
+    "academic freedoms",
+    "academic repression",
+    "academic persecution",
+    "professor arrested",
+    "professor detained",
+    "scholar arrested",
+    "scholar detained",
+    "researcher arrested",
+    "researcher detained",
 
     # LGBT
     "lgbt",
@@ -651,8 +702,22 @@ SPECIFIC_RIGHTS_TERMS = [
     "насилие в отношении женщин",
     "домашнее насилие",
     "сексуальное насилие",
+    "академическая свобода",
+    "академические свободы",
+    "академические репрессии",
+    "преследование ученых",
+    "преследование учёных",
+    "профессор арестован",
+    "профессор задержан",
+    "ученый арестован",
+    "учёный арестован",
+    "ученый задержан",
+    "учёный задержан",
     "принудительный брак",
     "детский брак",
+    "похищение невесты",
+    "похищение девушки",
+    "похищение с целью брака",
     "феминист",
     "феминистка",
     "лгбт",
@@ -1127,6 +1192,10 @@ SEVERE_REPRESSION_TERMS = [
     "political prisoner",
     "political prisoners",
     "political repression",
+    "arbitrary detention",
+    "solitary confinement",
+    "inhuman conditions",
+    "torturous conditions",
     "political crackdown",
     "opposition crackdown",
 
@@ -1137,6 +1206,9 @@ SEVERE_REPRESSION_TERMS = [
     "политический заключенный",
     "политические заключенные",
     "политические репрессии",
+    "произвольное задержание",
+    "одиночное заключение",
+    "пыточные условия",
     "репрессии",
 ]
 
@@ -1146,14 +1218,14 @@ SEVERE_REPRESSION_TERMS = [
 # ============================================================
 
 ACTIVIST_REPRESSION_PATTERNS = [
-    r"\bactivist\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b",
-    r"\bactivists\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b",
+    r"\bactivist\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b",
+    r"\bactivists\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b",
 
-    r"\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b.{0,100}\bactivist\b",
-    r"\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b.{0,100}\bactivists\b",
+    r"\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b.{0,150}\bactivist\b",
+    r"\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b.{0,150}\bactivists\b",
 
-    r"\bhuman rights defender\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b",
-    r"\bhuman rights defenders\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced)\b",
+    r"\bhuman rights defender\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b",
+    r"\bhuman rights defenders\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b",
 ]
 
 
@@ -1162,14 +1234,14 @@ ACTIVIST_REPRESSION_PATTERNS = [
 # ============================================================
 
 JOURNALIST_REPRESSION_PATTERNS = [
-    r"\bjournalist\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
-    r"\bjournalists\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
+    r"\bjournalist\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
+    r"\bjournalists\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
 
-    r"\breporter\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
-    r"\breporters\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
+    r"\breporter\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
+    r"\breporters\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
 
-    r"\bjournalist\b.{0,100}\b(censorship|censored|blocked|banned)\b",
-    r"\bindependent media\b.{0,100}\b(blocked|banned|closed|shut down)\b",
+    r"\bjournalist\b.{0,150}\b(censorship|censored|blocked|banned)\b",
+    r"\bindependent media\b.{0,150}\b(blocked|banned|closed|shut down)\b",
 ]
 
 
@@ -1178,14 +1250,14 @@ JOURNALIST_REPRESSION_PATTERNS = [
 # ============================================================
 
 ACTIVIST_REPRESSION_RU_PATTERNS = [
-    r"(активист|активисты|правозащитник|правозащитники).{0,100}(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены)",
-    r"(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены).{0,100}(активист|активисты|правозащитник|правозащитники)",
+    r"(активист|активисты|правозащитник|правозащитники).{0,150}(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены|приговорен|приговорена|приговорены|отбывает|содержится|посажен|посажена)",
+    r"(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены|приговорен|приговорена|приговорены|отбывает|содержится|посажен|посажена).{0,150}(активист|активисты|правозащитник|правозащитники)",
 ]
 
 
 JOURNALIST_REPRESSION_RU_PATTERNS = [
-    r"(журналист|журналисты|репортер|репортеры).{0,100}(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены)",
-    r"(журналист|журналисты|репортер|репортеры).{0,100}(угрож|напад|избит|запрет|цензур|задерж)",
+    r"(журналист|журналисты|репортер|репортеры).{0,150}(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены|приговорен|приговорена|приговорены|отбывает|содержится|посажен|посажена)",
+    r"(журналист|журналисты|репортер|репортеры).{0,150}(угрож|напад|избит|запрет|цензур|задерж)",
 ]
 
 
