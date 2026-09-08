@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import re
 import time
@@ -39,6 +40,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 MEMORY_FILE = BASE_DIR / "memory.json"
 OUTPUT_FILE = BASE_DIR / "index.html"
+CSV_OUTPUT_FILE = BASE_DIR / "articles.csv"
 
 ENRICH_LIMIT = 80
 VOCABULARY_LIMIT = 300
@@ -430,6 +432,100 @@ def build_audit(
     return audit
 
 
+def keywords_used(article: dict[str, Any]) -> list[str]:
+    """Return the distinct keyword matches recorded by the scorer."""
+    result: list[str] = []
+    seen: set[str] = set()
+
+    for value in (article.get("signals") or {}).values():
+        if not isinstance(value, list):
+            continue
+
+        for keyword in value:
+            if not isinstance(keyword, str) or keyword in seen:
+                continue
+            seen.add(keyword)
+            result.append(keyword)
+
+    return result
+
+
+def build_csv_rows(
+    articles: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Build flat rows containing article data and scoring details."""
+    score_fields = (
+        "geography_score",
+        "target_score",
+        "repression_score",
+        "rights_score",
+        "journalism_score",
+        "geopolitical_score",
+        "freshness_score",
+    )
+    rows = []
+
+    for article in articles:
+        date = article.get("date")
+        signals = article.get("signals") or {}
+        row: dict[str, Any] = {
+            "date": date.isoformat() if hasattr(date, "isoformat") else date or "",
+            "source": article.get("source", ""),
+            "title": article.get("title", ""),
+            "url": article.get("url", ""),
+            "summary": article.get("summary", ""),
+            "score": article.get("score", 0),
+            "level": article.get("level", "D"),
+            "priority": article.get("priority", ""),
+            "relevant": article.get("relevant", False),
+            "theme": article.get("theme", ""),
+            "keywords": "; ".join(keywords_used(article)),
+            "reasons": "; ".join(article.get("reasons") or []),
+        }
+        row.update(
+            {
+                field: signals.get(field, 0)
+                for field in score_fields
+            }
+        )
+        rows.append(row)
+
+    return rows
+
+
+def export_csv(articles: list[dict[str, Any]]) -> None:
+    """Write the complete scan, including scores and matched keywords."""
+    rows = build_csv_rows(articles)
+    fieldnames = [
+        "date",
+        "source",
+        "title",
+        "url",
+        "summary",
+        "score",
+        "level",
+        "priority",
+        "relevant",
+        "theme",
+        "keywords",
+        "reasons",
+        "geography_score",
+        "target_score",
+        "repression_score",
+        "rights_score",
+        "journalism_score",
+        "geopolitical_score",
+        "freshness_score",
+    ]
+
+    with CSV_OUTPUT_FILE.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    print(f"CSV | {CSV_OUTPUT_FILE.name} créé | {len(rows)} articles")
+
+
 # ============================================================
 # SCAN
 # ============================================================
@@ -697,6 +793,7 @@ def run_scan(
         stats,
         vocabulary,
     )
+    export_csv(all_articles)
 
     return all_articles
 
