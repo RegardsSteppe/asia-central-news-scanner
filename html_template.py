@@ -41,6 +41,104 @@ def render_stat(
     """
 
 
+# ============================================================
+# VOCABULAIRE DES TITRES
+# ============================================================
+
+def render_title_vocabulary(
+    title_words,
+):
+    """
+    Render the most frequent words found in article titles.
+
+    title_words is expected to be:
+
+    [
+        {
+            "word": "kazakhstan",
+            "count": 42,
+        },
+        ...
+    ]
+    """
+
+    if not title_words:
+        return ""
+
+    words = []
+
+    for item in title_words:
+
+        word = item.get(
+            "word",
+            "",
+        )
+
+        count = item.get(
+            "count",
+            0,
+        )
+
+        if not word:
+            continue
+
+        words.append(
+            f"""
+            <span class="word-chip">
+
+                <span class="word">
+                    {esc(word)}
+                </span>
+
+                <span class="word-count">
+                    {esc(count)}
+                </span>
+
+            </span>
+            """
+        )
+
+    if not words:
+        return ""
+
+    return f"""
+    <section class="title-vocabulary">
+
+        <div class="title-vocabulary-header">
+
+            <div>
+
+                <h2>
+                    Mots fréquents dans les titres
+                </h2>
+
+                <p class="vocabulary-description">
+
+                    Vocabulaire extrait automatiquement
+                    des titres des articles analysés.
+                    Plus le nombre est élevé,
+                    plus le mot apparaît souvent.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="word-cloud">
+
+            {"".join(words)}
+
+        </div>
+
+    </section>
+    """
+
+
+# ============================================================
+# ARTICLE CARD
+# ============================================================
+
 def render_article_card(
     article,
 ):
@@ -112,7 +210,7 @@ def render_article_card(
             </span>
 
             <strong class="score">
-                {esc(score)}/20
+                {esc(score)}/100
             </strong>
 
         </div>
@@ -171,6 +269,10 @@ def render_article_card(
     """
 
 
+# ============================================================
+# LEVEL SECTION
+# ============================================================
+
 def render_level_section(
     level,
     articles,
@@ -216,6 +318,10 @@ def render_level_section(
     """
 
 
+# ============================================================
+# AUDIT ROW
+# ============================================================
+
 def render_audit_row(
     article,
 ):
@@ -257,7 +363,7 @@ def render_audit_row(
                         "score",
                         0,
                     )
-                )}/20
+                )}/100
             </strong>
 
         </td>
@@ -330,6 +436,10 @@ def render_audit_row(
     """
 
 
+# ============================================================
+# DASHBOARD
+# ============================================================
+
 def render_dashboard(
     stats,
 ):
@@ -349,7 +459,7 @@ def render_dashboard(
         )}
 
         {render_stat(
-            f'{stats["avg_score"]}/20',
+            f'{stats["avg_score"]}/100',
             "📊 Score moyen"
         )}
 
@@ -386,6 +496,10 @@ def render_dashboard(
     </div>
     """
 
+
+# ============================================================
+# CSS
+# ============================================================
 
 def render_css():
     """Return all website CSS."""
@@ -482,6 +596,111 @@ h1 {
     color: #666;
 
     font-size: 13px;
+}
+
+
+/* ========================================================
+   TITLE VOCABULARY
+======================================================== */
+
+.title-vocabulary {
+
+    margin:
+        35px 0 40px;
+
+    padding: 22px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 8px
+        rgba(0,0,0,.07);
+}
+
+.title-vocabulary h2 {
+
+    margin:
+        0 0 5px;
+}
+
+.vocabulary-description {
+
+    margin:
+        0 0 18px;
+
+    color: #666;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+.word-cloud {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.word-chip {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        7px 10px;
+
+    border-radius: 7px;
+
+    background: #f1f2f3;
+
+    font-size: 14px;
+
+    line-height: 1;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease;
+}
+
+.word-chip:hover {
+
+    transform:
+        translateY(-1px);
+
+    background: #e4e6e8;
+}
+
+.word {
+
+    font-weight: 600;
+}
+
+.word-count {
+
+    min-width: 20px;
+
+    padding:
+        3px 5px;
+
+    border-radius: 4px;
+
+    background: #d9dadd;
+
+    color: #555;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-align: center;
 }
 
 
@@ -775,23 +994,44 @@ footer {
             6px 0 0;
     }
 
+    .title-vocabulary {
+        padding: 16px;
+    }
+
+    .word-chip {
+        font-size: 13px;
+    }
+
 }
 
 </style>
 """
 
 
+# ============================================================
+# CREATE WEB PAGE
+# ============================================================
+
 def create_web_page(
     articles,
     audit,
     stats,
+    title_words=None,
 ):
     """
     Build the complete HTML page.
 
-    The scanner supplies only data.
+    The scanner supplies:
+    - selected articles
+    - complete audit
+    - statistics
+    - title vocabulary
+
     All HTML/CSS lives in this file.
     """
+
+    if title_words is None:
+        title_words = []
 
     now = datetime.now(
         timezone.utc
@@ -852,6 +1092,14 @@ def create_web_page(
                 article
             )
         )
+
+    # --------------------------------------------------------
+    # VOCABULAIRE
+    # --------------------------------------------------------
+
+    vocabulary_html = render_title_vocabulary(
+        title_words
+    )
 
     # --------------------------------------------------------
     # FINAL HTML
@@ -916,6 +1164,13 @@ Dernier scan :
 ========================================================= -->
 
 {render_dashboard(stats)}
+
+
+<!-- ========================================================
+     VOCABULAIRE DES TITRES
+========================================================= -->
+
+{vocabulary_html}
 
 
 <!-- ========================================================
