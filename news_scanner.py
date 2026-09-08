@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import requests
 from bs4 import BeautifulSoup
 import feedparser
 
@@ -22,6 +22,8 @@ from text_utils import (
     normalize_url,
     parse_date,
 )
+
+from http_utils import fetch_url
 
 
 # ============================================================
@@ -54,78 +56,14 @@ REQUEST_TIMEOUT = 25
 
 
 # ============================================================
-# CACHE MÉMOIRE
-# ============================================================
-
-_MEMORY_CACHE: dict[str, tuple[float, Any]] = {}
-
-
-def cache_get(key: str) -> Any | None:
-    item = _MEMORY_CACHE.get(key)
-
-    if not item:
-        return None
-
-    timestamp, value = item
-
-    if time.time() - timestamp > CACHE_TTL:
-        _MEMORY_CACHE.pop(key, None)
-        return None
-
-    return value
-
-
-def cache_set(key: str, value: Any) -> None:
-    _MEMORY_CACHE[key] = (time.time(), value)
-
-
-# ============================================================
-# HTTP
-# ============================================================
-
-def fetch_url(url: str, force_refresh: bool = False) -> str:
-    if not force_refresh:
-        cached = cache_get(url)
-
-        if cached is not None:
-            return cached
-
-    try:
-        response = requests.get(
-            url,
-            headers=HEADERS,
-            timeout=REQUEST_TIMEOUT,
-            allow_redirects=True,
-        )
-
-        response.raise_for_status()
-
-        # requests détecte généralement correctement l'encodage.
-        # On utilise apparent_encoding uniquement si nécessaire.
-        if not response.encoding or response.encoding.lower() == "iso-8859-1":
-            apparent = getattr(response, "apparent_encoding", None)
-
-            if apparent:
-                response.encoding = apparent
-
-        content = response.text
-
-        cache_set(url, content)
-
-        return content
-
-    except requests.exceptions.SSLError as exc:
-        raise RuntimeError(f"SSL/TLS error: {exc}") from exc
-
-    except requests.exceptions.RequestException as exc:
-        raise RuntimeError(f"HTTP error: {exc}") from exc
-
-
-# ============================================================
 # EXTRACTION RSS
 # ============================================================
 
-def parse_rss(source: dict[str, Any], content: str) -> list[dict[str, Any]]:
+def parse_rss(
+    source: dict[str, Any],
+    content: str,
+) -> list[dict[str, Any]]:
+
     parsed = feedparser.parse(content)
 
     articles: list[dict[str, Any]] = []
@@ -157,7 +95,9 @@ def parse_rss(source: dict[str, Any], content: str) -> list[dict[str, Any]]:
 
                 for item in value:
                     if isinstance(item, dict):
-                        parts.append(item.get("value", ""))
+                        parts.append(
+                            item.get("value", "")
+                        )
                     else:
                         parts.append(str(item))
 
@@ -195,7 +135,11 @@ def extract_links_from_html(
     source: dict[str, Any],
     content: str,
 ) -> list[dict[str, Any]]:
-    soup = BeautifulSoup(content, "html.parser")
+
+    soup = BeautifulSoup(
+        content,
+        "html.parser",
+    )
 
     articles: list[dict[str, Any]] = []
 
@@ -226,7 +170,10 @@ def extract_links_from_html(
             continue
 
         title = clean_title(
-            link_tag.get_text(" ", strip=True)
+            link_tag.get_text(
+                " ",
+                strip=True,
+            )
         )
 
         if len(title) < 10:
@@ -256,15 +203,22 @@ def extract_body(
     source: dict[str, Any],
     force_refresh: bool = False,
 ) -> str:
+
     try:
         content = fetch_url(
             url,
+            headers=HEADERS,
+            request_timeout=REQUEST_TIMEOUT,
+            cache_ttl=CACHE_TTL,
             force_refresh=force_refresh,
         )
     except Exception:
         return ""
 
-    soup = BeautifulSoup(content, "html.parser")
+    soup = BeautifulSoup(
+        content,
+        "html.parser",
+    )
 
     # Suppression des éléments parasites.
     for tag in soup(
@@ -285,7 +239,9 @@ def extract_body(
     selectors = []
 
     if source.get("body_selector"):
-        selectors.append(source["body_selector"])
+        selectors.append(
+            source["body_selector"]
+        )
 
     selectors.extend(
         [
@@ -309,7 +265,10 @@ def extract_body(
 
         if node:
             candidate = clean_text(
-                node.get_text(" ", strip=True)
+                node.get_text(
+                    " ",
+                    strip=True,
+                )
             )
 
             if len(candidate) > len(body):
@@ -317,7 +276,10 @@ def extract_body(
 
     if not body:
         body = clean_text(
-            soup.get_text(" ", strip=True)
+            soup.get_text(
+                " ",
+                strip=True,
+            )
         )
 
     return body
@@ -367,8 +329,13 @@ def build_article(
 # DÉDUPLICATION
 # ============================================================
 
-def canonical_article_key(article: dict[str, Any]) -> str:
-    url = normalize_url(article.get("url", ""))
+def canonical_article_key(
+    article: dict[str, Any],
+) -> str:
+
+    url = normalize_url(
+        article.get("url", "")
+    )
 
     if url:
         from urllib.parse import urlparse
@@ -380,12 +347,21 @@ def canonical_article_key(article: dict[str, Any]) -> str:
             + parsed.path.rstrip("/").lower()
         )
 
-    title = clean_title(article.get("title", "")).lower()
+    title = clean_title(
+        article.get("title", "")
+    ).lower()
 
-    import re
+    title = re.sub(
+        r"[^\w\s]",
+        " ",
+        title,
+    )
 
-    title = re.sub(r"[^\w\s]", " ", title)
-    title = re.sub(r"\s+", " ", title)
+    title = re.sub(
+        r"\s+",
+        " ",
+        title,
+    )
 
     return title.strip()
 
@@ -467,8 +443,6 @@ def build_title_vocabulary(
         "о",
     }
 
-    import re
-
     for article in articles:
         title = clean_title(
             article.get("title", "")
@@ -489,7 +463,9 @@ def build_title_vocabulary(
             if word in stopwords:
                 continue
 
-            counts[word] = counts.get(word, 0) + 1
+            counts[word] = (
+                counts.get(word, 0) + 1
+            )
 
     vocabulary = [
         {
@@ -536,6 +512,7 @@ def safe_load_memory() -> dict[str, Any]:
 def safe_save_memory(
     memory: dict[str, Any],
 ) -> None:
+
     try:
         with MEMORY_FILE.open(
             "w",
@@ -556,7 +533,9 @@ def show_memory() -> dict[str, Any]:
     memory = safe_load_memory()
 
     if not memory:
-        print("MEMORY | vide — ignorée")
+        print(
+            "MEMORY | vide — ignorée"
+        )
     else:
         print(
             f"MEMORY | {len(memory)} éléments"
@@ -589,7 +568,10 @@ def enrich_articles(
         f"ENRICH | {len(selected)} articles avec body complet"
     )
 
-    for index, article in enumerate(selected, 1):
+    for index, article in enumerate(
+        selected,
+        1,
+    ):
         body = extract_body(
             article["url"],
             next(
@@ -641,7 +623,10 @@ def build_stats(
     relevant = 0
 
     for article in articles:
-        level = article.get("level", "D")
+        level = article.get(
+            "level",
+            "D",
+        )
 
         if level in levels:
             levels[level] += 1
@@ -664,14 +649,20 @@ def build_stats(
     return {
         "analyzed": len(articles),
         "retained": relevant,
-        "avg_score": round(average, 1),
+        "avg_score": round(
+            average,
+            1,
+        ),
         "level_a": levels["A"],
         "level_b": levels["B"],
         "level_c": levels["C"],
         "level_d": levels["D"],
         "sources_successful": sources_successful,
         "sources_total": sources_total,
-        "relevance_rate": round(relevance_rate, 1),
+        "relevance_rate": round(
+            relevance_rate,
+            1,
+        ),
     }
 
 
@@ -688,10 +679,22 @@ def build_audit(
     for article in articles:
         audit.append(
             {
-                "title": article.get("title", ""),
-                "source": article.get("source", ""),
-                "score": article.get("score", 0),
-                "level": article.get("level", "D"),
+                "title": article.get(
+                    "title",
+                    "",
+                ),
+                "source": article.get(
+                    "source",
+                    "",
+                ),
+                "score": article.get(
+                    "score",
+                    0,
+                ),
+                "level": article.get(
+                    "level",
+                    "D",
+                ),
                 "relevant": article.get(
                     "relevant",
                     False,
@@ -731,7 +734,10 @@ def run_scan(
             "Unknown",
         )
 
-        url = source.get("url", "")
+        url = source.get(
+            "url",
+            "",
+        )
 
         if not url:
             print(
@@ -742,11 +748,17 @@ def run_scan(
         try:
             content = fetch_url(
                 url,
+                headers=HEADERS,
+                request_timeout=REQUEST_TIMEOUT,
+                cache_ttl=CACHE_TTL,
                 force_refresh=force_refresh,
             )
 
             source_type = str(
-                source.get("type", "rss")
+                source.get(
+                    "type",
+                    "rss",
+                )
             ).lower()
 
             if source_type in {
@@ -782,7 +794,9 @@ def run_scan(
         f"COLLECT | {len(all_articles)} articles avant déduplication"
     )
 
-    all_articles = deduplicate(all_articles)
+    all_articles = deduplicate(
+        all_articles
+    )
 
     print(
         f"COLLECT | {len(all_articles)} articles récupérés"
@@ -871,7 +885,9 @@ def run_scan(
     # Génération HTML
     # --------------------------------------------------------
 
-    print("HTML | génération de index.html")
+    print(
+        "HTML | génération de index.html"
+    )
 
     try:
         html_output = create_web_page(
@@ -881,7 +897,10 @@ def run_scan(
             title_words=vocabulary,
         )
 
-        if not isinstance(html_output, str):
+        if not isinstance(
+            html_output,
+            str,
+        ):
             raise TypeError(
                 "create_web_page() n'a pas retourné une chaîne HTML"
             )
