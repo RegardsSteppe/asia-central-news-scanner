@@ -34,6 +34,7 @@ jobs:
         run: |
           mkdir -p public
           cp index.html public/
+          cp articles.csv public/
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v4

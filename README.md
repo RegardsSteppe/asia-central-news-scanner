@@ -23,7 +23,7 @@ https://regardssteppe.github.io/asia-central-news-scanner/
 * 📝 **Audit information** — the dashboard exposes scoring and classification information for inspection
 * 📚 **Title vocabulary** — frequently occurring title words are extracted for monitoring and analysis
 * 🛡️ **Fault tolerance** — a failing source does not stop the complete scan
-* 🌐 **GitHub Pages output** — the final `index.html` is published as a static dashboard
+* 🌐 **GitHub Pages output** — the final `index.html` and `articles.csv` are published as static outputs
 
 ## How it works
 
@@ -52,7 +52,7 @@ A / B / C / D classification
         ↓
 Audit + statistics
         ↓
-index.html
+index.html + articles.csv
         ↓
 GitHub Pages
 ```
@@ -135,6 +135,7 @@ asia-central-news-scanner/
 ├── text_utils.py                 # Text, date and URL normalization
 │
 ├── index.html                    # Generated dashboard
+├── articles.csv                  # Generated article data, scores and matched keywords
 ├── memory.json                   # Optional local scanner memory
 ├── requirements.txt              # Python dependencies
 ├── .gitignore

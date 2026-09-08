@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from news_scanner import canonical_article_key, deduplicate
+from news_scanner import build_csv_rows, canonical_article_key, deduplicate
 
 
 class CanonicalArticleKeyTests(unittest.TestCase):
@@ -39,6 +39,37 @@ class DeduplicateTests(unittest.TestCase):
 
     def test_empty_list(self):
         self.assertEqual(deduplicate([]), [])
+
+
+class CsvExportTests(unittest.TestCase):
+    def test_rows_include_article_data_scores_and_keywords(self):
+        rows = build_csv_rows(
+            [
+                {
+                    "date": None,
+                    "source": "Example",
+                    "title": "A title",
+                    "url": "https://example.com/article",
+                    "summary": "Summary",
+                    "score": 82,
+                    "level": "A",
+                    "priority": "high",
+                    "relevant": True,
+                    "theme": "Rights",
+                    "reasons": ["human rights"],
+                    "signals": {
+                        "human_rights": ["freedom"],
+                        "repression": ["arrested", "freedom"],
+                        "geography_score": 12,
+                    },
+                }
+            ]
+        )
+
+        self.assertEqual(rows[0]["title"], "A title")
+        self.assertEqual(rows[0]["score"], 82)
+        self.assertEqual(rows[0]["keywords"], "freedom; arrested")
+        self.assertEqual(rows[0]["geography_score"], 12)
 
 
 if __name__ == "__main__":
