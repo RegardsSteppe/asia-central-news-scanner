@@ -27,54 +27,196 @@ from keywords import (
     LEGAL_CONTEXT_TERMS,
     LOW_SIGNAL_CONTEXT_TERMS,
     HUMAN_RIGHTS_DEFENDER_TERMS,
-    FORCED_LABOR_TERMS
+    FORCED_LABOR_TERMS,
 )
 
 
-# Signaux V7 volontairement courts et forts : utilisés pour déterminer
-# si les droits humains constituent réellement le sujet principal.
-REPRESSION_TERMS_V7 = [
-    "torture", "tortured", "political prisoner", "political repression",
-    "political crackdown", "under pressure", "under threat", "persecution",
-    "pressure on journalists", "imprisoned", "imprisonment", "jailed",
-    "behind bars", "prison sentence", "sentenced to prison", "sentenced",
-    "arrested", "detained", "convicted", "convicts", "criminal prosecution",
-    "censorship", "press freedom",
-    "пытки", "пыточные условия", "шизо", "карцер", "политический заключенный",
-    "политические репрессии", "преследование", "преследуют", "давление на журналистов",
-    "за решеткой", "арестован", "задержан", "осужден", "осуждён", "приговорен",
-    "заключен", "цензура", "содержится в шизо",
+# ============================================================
+# V9 — SIGNAUX ADDITIONNELS
+# ============================================================
+
+REPRESSION_TERMS_V9 = [
+    "torture", "tortured", "torture allegations", "political prisoner",
+    "political prisoners", "political repression", "political crackdown",
+    "persecution", "persecuted", "arbitrary detention", "arbitrarily detained",
+    "imprisoned", "imprisonment", "jailed", "prison sentence",
+    "sentenced to prison", "arrested", "detained", "convicted",
+    "criminal prosecution", "censorship", "media blocked", "website blocked",
+    "internet shutdown", "online censorship", "press restrictions",
+    "media restrictions", "forced marriage", "child marriage",
+    "forced labor", "forced labour", "forced picking", "forced cotton harvesting",
+    "mobilized for cotton", "mandatory cotton picking", "forced recruitment",
+    "labor mobilization", "labour mobilization",
+    "преследован", "преследование", "задержан", "задержание", "арестован",
+    "арест", "осужден", "осуждён", "приговорен", "приговорён",
+    "заключен", "заключён", "репресс", "пытк", "цензур", "запрет",
+    "политический заключенный", "политическое преследование",
+    "политически мотивирован", "произвольное задержание",
+    "принудительный труд", "трудовая мобилизация", "принудительная уборка хлопка",
 ]
 
-SPECIFIC_RIGHTS_TERMS_V7 = [
+CENTRAL_ASIA_HR_EVENT_TERMS_V9 = [
+    "bloody january", "january events", "qantar", "qantar events",
+    "nukus protests", "nukus protest", "nukus events",
+    "karakalpakstan protests", "karakalpakstan protest",
+    "july 2022 karakalpakstan", "gorno-badakhshan", "gbao",
+    "gbao protests", "khorog protests", "khorog protest",
+    "pamiri protests", "uzbekistan crackdown",
+    "january 2022 kazakhstan", "kazakhstan january 2022",
+    "январские события", "январь 2022", "кровавый январь",
+    "кантар", "нукусские события", "протесты в нукусе",
+    "каракалпакстан протесты", "события в каракалпакстане",
+    "горно-бадахшанская область", "гбао", "протесты в хоруге",
+]
+
+POLITICAL_RIGHTS_TERMS_V9 = [
+    "rule of law", "judicial independence", "independent judiciary",
+    "due process", "fair trial", "checks and balances",
+    "concentration of power", "concentrate power", "power concentration",
+    "lifetime immunity", "immunity from prosecution",
+    "politically motivated charges", "politically motivated prosecution",
+    "selective prosecution", "abuse of process", "constitutional court",
+    "political prosecution", "political charges",
+    "верховенство закона", "независимость судебной системы",
+    "независимый суд", "справедливый суд", "право на справедливое судебное разбирательство",
+    "сосредоточение власти", "концентрация власти",
+    "пожизненный иммунитет", "иммунитет от уголовного преследования",
+    "политически мотивированные обвинения", "политическое преследование",
+    "избирательное правосудие",
+]
+
+PRESS_REPRESSION_TERMS_V9 = [
+    "journalist detained", "journalist arrested", "journalist imprisoned",
+    "journalist sentenced", "reporter detained", "reporter arrested",
+    "media outlet closed", "media outlet shut down", "outlet closed",
+    "outlet shut down", "media blocked", "website blocked",
+    "internet shutdown", "online censorship", "press restrictions",
+    "media restrictions", "press crackdown", "journalist harassment",
+    "журналист задержан", "журналист арестован", "журналист осужден",
+    "журналист приговорен", "журналист заключен", "СМИ заблокировано",
+    "сайт заблокирован", "интернет отключили", "интернет отключение",
+    "цензура в интернете", "ограничения для СМИ", "давление на журналистов",
+]
+
+GENDER_VIOLENCE_TERMS_V9 = [
+    "domestic violence", "intimate partner violence", "marital violence",
+    "violence against women", "gender-based violence", "gender violence",
+    "coercive control", "forced marriage", "child marriage",
+    "abuse of women", "abuse of daughters-in-law", "daughters-in-law",
+    "daughter-in-law", "silent suffering", "bride kidnapping",
+    "women subjected to violence", "насилие в семье", "домашнее насилие",
+    "насилие в отношении женщин", "гендерное насилие", "принудительный брак",
+    "детский брак", "насилие над женщинами", "невестка", "невестки",
+    "насилие над невестками", "принуждение",
+]
+
+TRANSNATIONAL_REPRESSION_TERMS_V9 = [
+    "transnational repression", "targeted abroad", "threatened abroad",
+    "surveillance abroad", "dissidents abroad", "extradition request",
+    "extradited", "extradition", "deported", "rendition",
+    "kidnapped abroad", "abducted abroad", "forced return",
+    "transnational persecution", "транснациональные репрессии",
+    "преследование за рубежом", "преследование за границей",
+    "экстрадиция", "экстрадирован", "депортирован", "похищен за рубежом",
+    "принудительное возвращение", "преследование диссидентов за рубежом",
+]
+
+POLITICAL_PRISONER_TERMS_V9 = [
+    "political prisoner", "political prisoners", "prisoner of conscience",
+    "prisoners of conscience", "political prosecution", "political charges",
+    "politically motivated charges", "politically motivated prosecution",
+    "political imprisonment", "политический заключенный",
+    "политические заключенные", "узник совести", "политическое заключение",
+    "политическое преследование", "политически мотивированное обвинение",
+]
+
+DEMOCRACY_CIVIC_SPACE_TERMS_V9 = [
+    "democracy score", "democratic decline", "democracy decline",
+    "civic space", "shrinking civic space", "civil society restrictions",
+    "political pluralism", "political participation", "democratic backsliding",
+    "демократия", "снижение демократии", "гражданское пространство",
+    "ограничение гражданского общества", "политический плюрализм",
+]
+
+TARGET_TERMS_V9 = [
+    "activist", "activists", "human rights defender", "human rights defenders",
+    "dissident", "dissidents", "journalist", "journalists", "reporter",
+    "reporters", "lawyer", "lawyers", "blogger", "bloggers",
+    "civil society", "ngo", "ngos", "правозащитник", "правозащитники",
+    "активист", "активисты", "диссидент", "диссиденты", "журналист",
+    "журналисты", "блогер", "блогеры", "адвокат", "адвокаты",
+]
+
+EXPLICIT_HR_ACTION_TERMS_V9 = [
+    "arrested", "detained", "imprisoned", "jailed", "prosecuted",
+    "convicted", "sentenced", "tortured", "persecuted", "harassed",
+    "threatened", "censored", "blocked", "banned", "deported",
+    "extradited", "abducted", "forced", "задержан", "арестован",
+    "осужден", "приговорен", "заключен", "пытал", "преследовал",
+    "преследуется", "угрожал", "запрещен", "заблокирован", "депортирован",
+    "экстрадирован", "похищен", "принужден",
+]
+
+STRONG_PRIMARY_RIGHTS_V9 = [
     "human rights violation", "human rights violations", "rights violation",
     "freedom of expression", "freedom of speech", "freedom of assembly",
-    "press freedom", "media freedom", "women's rights", "gender discrimination",
-    "gender-based violence", "violence against women", "forced marriage",
-    "child marriage", "lgbt rights", "lgbti rights", "lgbt", "ethnic discrimination",
+    "press freedom", "media freedom", "gender-based violence",
+    "violence against women", "domestic violence", "coercive control",
+    "forced marriage", "child marriage", "ethnic discrimination",
     "religious discrimination", "academic freedom", "academic censorship",
-    "forced labor", "forced labour", "child labor", "child labour",
-    "silent suffering", "violence against daughters-in-law",
-    "права человека", "нарушение прав человека", "свобода слова", "свобода прессы",
-    "права женщин", "гендерная дискриминация", "насилие в отношении женщин",
-    "лgbt", "академическая свобода", "принудительный труд", "детский труд",
+    "forced labor", "forced labour", "forced picking",
+    "forced cotton harvesting", "child labor", "child labour",
+    "lgbt rights", "lgbti rights", "нарушение прав человека",
+    "свобода слова", "свобода прессы", "насилие в отношении женщин",
+    "насилие в семье", "гендерное насилие", "принудительный труд",
+    "принудительный брак", "детский труд", "этническая дискриминация",
+    "религиозная дискриминация",
 ]
 
-JOURNALIST_TERMS_V7 = [
-    "journalist", "journalists", "reporter", "reporters", "журналист", "журналисты",
+STRONG_POLITICAL_CONTEXT_V9 = [
+    "lifetime immunity", "immunity from prosecution", "judicial independence",
+    "rule of law", "due process", "fair trial", "checks and balances",
+    "concentration of power", "politically motivated prosecution",
+    "selective prosecution", "пожизненный иммунитет",
+    "иммунитет от уголовного преследования", "независимость судебной системы",
+    "верховенство закона", "справедливый суд", "сосредоточение власти",
+    "концентрация власти", "политическое преследование",
 ]
 
-ACADEMIC_HR_TERMS_V7 = [
+REPRESSION_MORPHOLOGY_PATTERNS_V9 = [
+    r"\bзадерж\w*",
+    r"\bарест\w*",
+    r"\bосужден\w*",
+    r"\bосуждён\w*",
+    r"\bприговор\w*",
+    r"\bзаключ\w*",
+    r"\bпреследован\w*",
+    r"\bрепресс\w*",
+    r"\bпыт\w*",
+    r"\bцензур\w*",
+    r"\bзапрещ\w*",
+]
+
+BODY_CONFIRMATION_TERMS_V9 = [
+    "according to", "rights group", "human rights group",
+    "amnesty international", "human rights watch", "civil society",
+    "witnesses", "court documents", "prosecutors", "authorities",
+    "arbitrary", "politically motivated", "torture", "detained",
+    "arrested", "imprisoned", "sentenced", "задержан", "арестован",
+    "пытки", "репресс", "правозащитники", "власти",
+]
+
+ACADEMIC_HR_TERMS_V9 = [
     "academic freedom", "academic censorship", "academic repression",
-    "academic freedom at risk", "professor arrested", "professor detained",
-    "scholar arrested", "scholar detained", "академическая свобода",
-    "преследование ученых", "арест профессора", "задержание профессора",
+    "professor arrested", "professor detained", "scholar arrested",
+    "scholar detained", "академическая свобода", "преследование ученых",
+    "арест профессора", "задержание профессора",
 ]
 
 GENERIC_REFORM_TERMS_V7 = [
-    "democratic reform", "democratic reforms", "political reform", "political reforms",
-    "development programs", "social stability", "constitutional reform",
-    "political development", "political traditions",
+    "democratic reform", "democratic reforms", "political reform",
+    "political reforms", "development programs", "social stability",
+    "constitutional reform", "political development", "political traditions",
 ]
 
 NON_HR_TOPIC_TERMS_V7 = [
@@ -85,901 +227,438 @@ NON_HR_TOPIC_TERMS_V7 = [
     "state visit", "sco summit", "nomad games",
 ]
 
+REPRESSION_TERMS_V7 = REPRESSION_TERMS_V9
+JOURNALIST_TERMS_V7 = JOURNALIST_TERMS
+ACTIVIST_TERMS_V7 = ACTIVIST_TERMS
 
-# ============================================================
-# OUTILS
-# ============================================================
 
 def normalize(text):
     if not text:
         return ""
-
-    return re.sub(
-        r"\s+",
-        " ",
-        str(text),
-    ).strip().lower()
+    return re.sub(r"\s+", " ", str(text)).strip().lower()
 
 
 def phrase_present(text, phrase):
     if not text or not phrase:
         return False
-
-    phrase = normalize(phrase)
-
-    pattern = (
-        r"(?<!\w)"
-        + re.escape(phrase)
-        + r"(?!\w)"
-    )
-
-    return bool(re.search(pattern, text))
+    return bool(re.search(
+        r"(?<!\w)" + re.escape(normalize(phrase)) + r"(?!\w)",
+        text
+    ))
 
 
 def find_terms(text, terms):
-    return [
-        term
-        for term in terms
-        if phrase_present(text, term)
-    ]
+    return [term for term in terms if phrase_present(text, term)]
 
 
 def capped_add(current, value, maximum):
-    return min(
-        current + value,
-        maximum,
-    )
+    return min(current + value, maximum)
 
 
 def contains_pattern(text, patterns):
-    for pattern in patterns:
-        if re.search(pattern, text):
-            return True
-
-    return False
+    return any(re.search(pattern, text, re.I | re.S) for pattern in patterns)
 
 
 def weighted_score(terms, weights, maximum):
-    """
-    Calcule un score pondéré sans double compter
-    plusieurs occurrences du même signal.
-    """
     score = 0
-
     for term in terms:
-        normalized = normalize(term)
-
-        value = weights.get(
-            normalized,
-            2,
-        )
-
-        score += value
-
-    return min(
-        score,
-        maximum,
-    )
+        score += weights.get(normalize(term), 2)
+    return min(score, maximum)
 
 
-# ============================================================
-# CLASSIFICATION
-# ============================================================
+def relation_present(text, targets, actions, window=140):
+    for target in targets:
+        for action in actions:
+            a = re.escape(normalize(target))
+            b = re.escape(normalize(action))
+            if re.search(rf"{a}.{{0,{window}}}{b}", text, re.I | re.S):
+                return True
+            if re.search(rf"{b}.{{0,{window}}}{a}", text, re.I | re.S):
+                return True
+    return False
+
+
+def has_russian_repression_morphology(text):
+    return contains_pattern(text, REPRESSION_MORPHOLOGY_PATTERNS_V9)
+
 
 def classify_article(article):
+    title = normalize(article.get("title", ""))
+    summary = normalize(article.get("summary", ""))
+    body = normalize(article.get("body", ""))
 
-    """
-    Classification V7.
-
-    Score global : 0-100
-
-    Dimensions :
-
-        geography_score       /15
-        target_score          /20
-        repression_score      /30
-        rights_score          /10
-        journalism_score      /10
-        geopolitical_score    /10
-        freshness_score       /5
-
-        TOTAL                  /100
-    """
-
-    title = normalize(
-        article.get("title", "")
-    )
-
-    summary = normalize(
-        article.get("summary", "")
-    )
-
-    body = normalize(
-        article.get("body", "")
-    )
-
-    # Source / URL: certains flux ont un titre sans pays,
-    # mais le média est lui-même géographiquement spécialisé.
-    source_text = normalize(
-        article.get("source", "")
-    )
-    link_text = normalize(
-        article.get("link", article.get("url", ""))
-    )
+    source_text = normalize(article.get("source", ""))
+    link_text = normalize(article.get("link", article.get("url", "")))
     source_context = source_text + " " + link_text
 
-    # --------------------------------------------------------
-    # HEADLINE
-    # --------------------------------------------------------
-
-    headline = (
-        title
-        + " "
-        + summary[:3000]
-    ).strip()
-
-    # --------------------------------------------------------
-    # FULL TEXT
-    # --------------------------------------------------------
-
-    full_text = (
-        headline
-        + " "
-        + body[:12000]
-    ).strip()
-
-    # V7 additional human-rights signals
-    has_hr_defender = any(normalize(term) in full_text for term in HUMAN_RIGHTS_DEFENDER_TERMS)
-    forced_labor_detected = any(normalize(term) in full_text for term in FORCED_LABOR_TERMS)
-    has_detention = any(normalize(term) in full_text for term in [
-        "detained", "detention", "arrested", "arrest", "задержан", "задержание", "арестован", "арест",
-        "заключен", "заключена", "в заключении",
-    ])
-    has_imprisonment = any(normalize(term) in full_text for term in [
-        "imprisoned", "imprisonment", "prison sentence", "sentenced to",
-        "осужден", "осуждена", "приговорен", "приговорена", "лишения свободы",
-    ])
-    has_restriction = any(normalize(term) in full_text for term in [
-        "restriction", "restrictions", "restricted access", "access restriction",
-        "ограничение", "ограничения", "ограничен доступ", "запретили доступ",
-    ])
-    has_censorship = any(normalize(term) in full_text for term in [
-        "censorship", "censored", "цензура", "цензур",
-    ])
-    has_government_involvement = any(normalize(term) in full_text for term in [
-        "government", "authorities", "state", "government-backed", "ilo", "мот",
-        "правительство", "власти", "государство", "государственный", "государственные",
-    ])
+    headline = (title + " " + summary[:3000]).strip()
+    primary_hr_text = (title + " " + summary[:1600]).strip()
+    full_text = (headline + " " + body[:12000]).strip()
 
     reasons = []
 
-    # ========================================================
-    # DÉTECTION DES SIGNAUX
-    # ========================================================
+    central_asia = find_terms(headline, CENTRAL_ASIA_TERMS)
+    caucasus = find_terms(headline, CAUCASUS_TERMS)
 
-    central_asia = find_terms(
-        headline,
-        CENTRAL_ASIA_TERMS,
-    )
-
-    caucasus = find_terms(
-        headline,
-        CAUCASUS_TERMS,
-    )
-
-    # Signaux de géographie provenant de la source / URL.
-    # Ils ne donnent pas de points à eux seuls : ils servent uniquement
-    # à confirmer le contexte régional quand le titre ne nomme pas le pays.
     central_asia_source_terms = [
-        "turkmen.news",
-        "turkmen news",
-        "the times of central asia",
-        "times of central asia",
-        "eurasianet",
-        "eurasianet.org",
-        "uzdaily",
-        "kabar",
-        "akipress",
-        "gazeta.uz",
-        "kun.uz",
-        "fergana.agency",
-        "fergana",
-        "ozodlik",
-        "radio free europe/ radio liberty",
-        "radio free europe",
-        "current time",
-        "ca-news",
+        "turkmen.news", "turkmen news", "the times of central asia",
+        "times of central asia", "eurasianet", "eurasianet.org",
+        "uzdaily", "kabar", "akipress", "gazeta.uz", "kun.uz",
+        "fergana.agency", "fergana", "ozodlik", "radio free europe",
+        "current time", "ca-news", "novastan",
     ]
-    central_asia_source = find_terms(
-        source_context,
-        central_asia_source_terms,
+    central_asia_source = find_terms(source_context, central_asia_source_terms)
+
+    body_geography = find_terms(body, CENTRAL_ASIA_TERMS + CAUCASUS_TERMS)
+    regional_context = bool(central_asia or body_geography or caucasus or central_asia_source)
+
+    caucasus_only = bool(caucasus and not central_asia)
+
+    human_rights = find_terms(headline, HUMAN_RIGHTS_TERMS)
+    repression = find_terms(headline, REPRESSION_TERMS)
+    legal_repression = find_terms(headline, LEGAL_REPRESSION_TERMS)
+    specific_rights = find_terms(headline, SPECIFIC_RIGHTS_TERMS)
+    journalists = find_terms(headline, JOURNALIST_TERMS)
+    activists = find_terms(headline, ACTIVIST_TERMS)
+    central_asia_hr = find_terms(headline, CENTRAL_ASIA_HR_TERMS)
+    domestic = find_terms(headline, DOMESTIC_POLITICAL_TERMS)
+    major_geo = find_terms(headline, MAJOR_GEOPOLITICAL_TERMS)
+    routine_geo = find_terms(headline, ROUTINE_GEO_TERMS)
+    actors = find_terms(headline, REGIONAL_ACTORS)
+    historical = find_terms(headline, HISTORICAL_TERMS)
+    non_news = find_terms(headline, NON_NEWS_TERMS)
+    noise = find_terms(headline, NOISE_TERMS)
+    legal_context = find_terms(headline, LEGAL_CONTEXT_TERMS)
+    low_signal_context = find_terms(headline, LOW_SIGNAL_CONTEXT_TERMS)
+
+    body_repression = find_terms(body, REPRESSION_TERMS)
+    body_legal_repression = find_terms(body, LEGAL_REPRESSION_TERMS)
+    body_specific_rights = find_terms(body, SPECIFIC_RIGHTS_TERMS)
+    body_human_rights = find_terms(body, HUMAN_RIGHTS_TERMS)
+    body_journalists = find_terms(body, JOURNALIST_TERMS)
+    body_activists = find_terms(body, ACTIVIST_TERMS)
+    body_legal_context = find_terms(body, LEGAL_CONTEXT_TERMS)
+
+    body_geo_count = len(body_geography)
+    body_has_geography = body_geo_count >= 1
+    strong_body_geography = body_geo_count >= 2
+
+    has_hr_defender = any(normalize(x) in full_text for x in HUMAN_RIGHTS_DEFENDER_TERMS)
+    forced_labor_detected = any(normalize(x) in full_text for x in FORCED_LABOR_TERMS)
+
+    has_detention = bool(re.search(
+        r"\b(detained|detention|arrested|arrest|задерж\w*|арест\w*)\b",
+        full_text, re.I
+    ))
+    has_imprisonment = bool(re.search(
+        r"\b(imprisoned|imprisonment|prison sentence|sentenced|осужден\w*|приговор\w*|заключ\w*)\b",
+        full_text, re.I
+    ))
+    has_censorship = bool(re.search(r"(censorship|censored|цензур\w*)", full_text, re.I))
+    has_government_involvement = bool(re.search(
+        r"\b(government|authorities|state|government-backed|ilo|правительство|власти|государств\w*)\b",
+        full_text, re.I
+    ))
+
+    has_restriction = bool(re.search(
+        r"(restriction|restrictions|restricted access|ограничени\w*|запрет\w*)",
+        full_text, re.I
+    ))
+
+    # --------------------------------------------------------
+    # V9 — PRIMARY SIGNALS
+    # --------------------------------------------------------
+
+    event_terms = find_terms(primary_hr_text, CENTRAL_ASIA_HR_EVENT_TERMS_V9)
+    primary_event_anchor = bool(event_terms)
+
+    primary_repression = bool(
+        find_terms(primary_hr_text, REPRESSION_TERMS_V9)
+        or has_russian_repression_morphology(primary_hr_text)
+        or contains_pattern(primary_hr_text, [
+            r"\bconvicted\b", r"\bsentenced\b", r"\bbehind bars\b",
+            r"\bunder threat\b", r"\bunder pressure\b",
+        ])
     )
 
-    human_rights = find_terms(
-        headline,
-        HUMAN_RIGHTS_TERMS,
+    primary_defender = bool(find_terms(primary_hr_text, HUMAN_RIGHTS_DEFENDER_TERMS))
+    primary_forced_labor = bool(
+        find_terms(primary_hr_text, FORCED_LABOR_TERMS)
+        or find_terms(primary_hr_text, [
+            "forced picking", "forced cotton harvesting",
+            "mobilized for cotton", "mandatory cotton picking",
+            "labor mobilization", "labour mobilization",
+        ])
     )
 
-    repression = find_terms(
-        headline,
-        REPRESSION_TERMS,
+    primary_specific_right = bool(find_terms(
+        primary_hr_text, STRONG_PRIMARY_RIGHTS_V9
+    ))
+
+    primary_press = bool(find_terms(primary_hr_text, PRESS_REPRESSION_TERMS_V9))
+    primary_gender = bool(find_terms(primary_hr_text, GENDER_VIOLENCE_TERMS_V9))
+    primary_transnational = bool(find_terms(
+        primary_hr_text, TRANSNATIONAL_REPRESSION_TERMS_V9
+    ))
+    primary_political_prisoner = bool(find_terms(
+        primary_hr_text, POLITICAL_PRISONER_TERMS_V9
+    ))
+    primary_political_context = bool(find_terms(
+        primary_hr_text, STRONG_POLITICAL_CONTEXT_V9
+    ))
+    primary_democracy = bool(find_terms(
+        primary_hr_text, DEMOCRACY_CIVIC_SPACE_TERMS_V9
+    ))
+
+    primary_journalist_pressure = bool(
+        find_terms(primary_hr_text, JOURNALIST_TERMS_V7)
+        and (
+            primary_repression
+            or primary_press
+            or has_censorship
+            or has_restriction
+        )
     )
 
-    legal_repression = find_terms(
-        headline,
-        LEGAL_REPRESSION_TERMS,
+    primary_academic_case = bool(
+        find_terms(primary_hr_text, ACADEMIC_HR_TERMS_V9)
+        and (primary_repression or has_detention or has_imprisonment)
     )
 
-    specific_rights = find_terms(
-        headline,
-        SPECIFIC_RIGHTS_TERMS,
+    primary_defender_case = bool(
+        primary_defender
+        and (
+            primary_repression
+            or has_detention
+            or has_imprisonment
+        )
     )
 
-    journalists = find_terms(
-        headline,
-        JOURNALIST_TERMS,
+    primary_lgbt_pressure = bool(
+        re.search(r"\blgbt\w*|\bqueer\b", primary_hr_text, re.I)
+        and (primary_repression or primary_specific_right or primary_press)
     )
 
-    activists = find_terms(
-        headline,
-        ACTIVIST_TERMS,
-    )
-
-    central_asia_hr = find_terms(
-        headline,
-        CENTRAL_ASIA_HR_TERMS,
-    )
-
-    domestic = find_terms(
-        headline,
-        DOMESTIC_POLITICAL_TERMS,
-    )
-
-    major_geo = find_terms(
-        headline,
-        MAJOR_GEOPOLITICAL_TERMS,
-    )
-
-    routine_geo = find_terms(
-        headline,
-        ROUTINE_GEO_TERMS,
-    )
-
-    actors = find_terms(
-        headline,
-        REGIONAL_ACTORS,
-    )
-
-    historical = find_terms(
-        headline,
-        HISTORICAL_TERMS,
-    )
-
-    non_news = find_terms(
-        headline,
-        NON_NEWS_TERMS,
-    )
-
-    noise = find_terms(
-        headline,
-        NOISE_TERMS,
-    )
-
-    legal_context = find_terms(
-        headline,
-        LEGAL_CONTEXT_TERMS,
-    )
-
-    low_signal_context = find_terms(
-        headline,
-        LOW_SIGNAL_CONTEXT_TERMS,
-    )
-
-    # ========================================================
-    # BODY
-    # ========================================================
-
-    body_geography = find_terms(
-        body,
-        CENTRAL_ASIA_TERMS + CAUCASUS_TERMS,
-    )
-
-    body_repression = find_terms(
-        body,
-        REPRESSION_TERMS,
-    )
-
-    body_legal_repression = find_terms(
-        body,
-        LEGAL_REPRESSION_TERMS,
-    )
-
-    body_specific_rights = find_terms(
-        body,
-        SPECIFIC_RIGHTS_TERMS,
-    )
-
-    body_human_rights = find_terms(
-        body,
-        HUMAN_RIGHTS_TERMS,
-    )
-
-    body_journalists = find_terms(
-        body,
-        JOURNALIST_TERMS,
-    )
-
-    body_activists = find_terms(
-        body,
-        ACTIVIST_TERMS,
-    )
-
-    body_legal_context = find_terms(
-        body,
-        LEGAL_CONTEXT_TERMS,
-    )
-
-    body_geo_count = len(
-        body_geography
-    )
-
-    body_has_geography = (
-        body_geo_count >= 1
-    )
-
-    strong_body_geography = (
-        body_geo_count >= 2
-    )
-
-    # ========================================================
-    # RELATIONS
-    # ========================================================
-
-    has_repression = bool(
-        repression
-        or legal_repression
-        or body_repression
-        or body_legal_repression
-    )
-
-    has_activist = bool(
-        activists
-        or body_activists
-    )
-
-    has_journalist = bool(
-        journalists
-        or body_journalists
-    )
-
-    has_specific_rights = bool(
-        specific_rights
-        or body_specific_rights
-    )
-
-    has_human_rights = bool(
-        human_rights
-        or body_human_rights
-    )
-
-    has_legal_context = bool(
-        legal_context
-        or body_legal_context
+    primary_hr_anchor = bool(
+        primary_repression
+        or primary_defender_case
+        or primary_forced_labor
+        or primary_specific_right
+        or primary_press
+        or primary_gender
+        or primary_transnational
+        or primary_political_prisoner
+        or primary_journalist_pressure
+        or primary_academic_case
+        or primary_lgbt_pressure
+        or primary_event_anchor
     )
 
     # --------------------------------------------------------
-    # Relation explicite activiste -> répression
+    # V9 — BODY CONFIRMATION
+    # --------------------------------------------------------
+
+    body_v9_repression = find_terms(body, REPRESSION_TERMS_V9)
+    body_v9_rights = find_terms(body, STRONG_PRIMARY_RIGHTS_V9)
+    body_v9_press = find_terms(body, PRESS_REPRESSION_TERMS_V9)
+    body_v9_gender = find_terms(body, GENDER_VIOLENCE_TERMS_V9)
+    body_v9_transnational = find_terms(body, TRANSNATIONAL_REPRESSION_TERMS_V9)
+    body_v9_political = find_terms(body, STRONG_POLITICAL_CONTEXT_V9)
+    body_v9_prisoner = find_terms(body, POLITICAL_PRISONER_TERMS_V9)
+    body_v9_actions = find_terms(body, EXPLICIT_HR_ACTION_TERMS_V9)
+    body_v9_events = find_terms(body, CENTRAL_ASIA_HR_EVENT_TERMS_V9)
+
+    body_morphology = has_russian_repression_morphology(body[:12000])
+
+    body_strong_hr_confirmation = bool(
+        body_v9_repression
+        or body_v9_rights
+        or body_v9_press
+        or body_v9_gender
+        or body_v9_transnational
+        or body_v9_political
+        or body_v9_prisoner
+        or body_v9_actions
+        or body_morphology
+    )
+
+    # --------------------------------------------------------
+    # V9 — TARGET / ACTION RELATIONS
     # --------------------------------------------------------
 
     activist_relation = (
-        contains_pattern(
-            headline,
-            ACTIVIST_REPRESSION_PATTERNS,
-        )
-        or contains_pattern(
-            body[:12000],
-            ACTIVIST_REPRESSION_PATTERNS,
-        )
-        or contains_pattern(
-            headline,
-            ACTIVIST_REPRESSION_RU_PATTERNS,
-        )
-        or contains_pattern(
-            body[:12000],
-            ACTIVIST_REPRESSION_RU_PATTERNS,
-        )
+        contains_pattern(headline, ACTIVIST_REPRESSION_PATTERNS)
+        or contains_pattern(body[:12000], ACTIVIST_REPRESSION_PATTERNS)
+        or contains_pattern(headline, ACTIVIST_REPRESSION_RU_PATTERNS)
+        or contains_pattern(body[:12000], ACTIVIST_REPRESSION_RU_PATTERNS)
+        or relation_present(full_text, ACTIVIST_TERMS, EXPLICIT_HR_ACTION_TERMS_V9)
     )
-
-    # --------------------------------------------------------
-    # Relation explicite journaliste -> répression
-    # --------------------------------------------------------
 
     journalist_relation = (
-        contains_pattern(
-            headline,
-            JOURNALIST_REPRESSION_PATTERNS,
-        )
-        or contains_pattern(
-            body[:12000],
-            JOURNALIST_REPRESSION_PATTERNS,
-        )
-        or contains_pattern(
-            headline,
-            JOURNALIST_REPRESSION_RU_PATTERNS,
-        )
-        or contains_pattern(
-            body[:12000],
-            JOURNALIST_REPRESSION_RU_PATTERNS,
-        )
+        contains_pattern(headline, JOURNALIST_REPRESSION_PATTERNS)
+        or contains_pattern(body[:12000], JOURNALIST_REPRESSION_PATTERNS)
+        or contains_pattern(headline, JOURNALIST_REPRESSION_RU_PATTERNS)
+        or contains_pattern(body[:12000], JOURNALIST_REPRESSION_RU_PATTERNS)
+        or relation_present(full_text, JOURNALIST_TERMS, EXPLICIT_HR_ACTION_TERMS_V9)
     )
+
+    target_repression_relation = relation_present(
+        full_text, TARGET_TERMS_V9, EXPLICIT_HR_ACTION_TERMS_V9
+    )
+
+    has_activist = bool(activists or body_activists or primary_defender)
+    has_journalist = bool(journalists or body_journalists)
+    has_specific_rights = bool(specific_rights or body_specific_rights or primary_specific_right)
+    has_human_rights = bool(human_rights or body_human_rights)
+    has_repression = bool(
+        repression or legal_repression or body_repression or body_legal_repression
+        or primary_repression or body_v9_repression
+    )
+    has_legal_context = bool(legal_context or body_legal_context)
+
+    confirmed_repression = regional_context and has_repression
+    confirmed_rights = regional_context and has_specific_rights
+    confirmed_activist_pressure = regional_context and activist_relation
+    confirmed_journalist_pressure = regional_context and journalist_relation
+
+    severe_morphology = bool(re.search(
+        r"(?:пыточ\w*\s+услов\w*|\bшизо\b|\bкарцер\b|произволь\w*\s+задерж\w*)",
+        full_text, re.I
+    ))
+
+    severe_detected = bool(
+        severe_morphology
+        or any(normalize(x) in full_text for x in SEVERE_REPRESSION_TERMS)
+    )
+
+    prison_sentence_signal = bool(re.search(
+        r"(?:\b(?:8|9|10|11|12|13|14|15|16|17|18|19|20)\s*(?:лет|года|год|years?)\b.{0,80}"
+        r"\b(?:тюрьм|заключ|лишен|лишени)|\b(?:приговорен|осужден|осуждён)\b.{0,80}"
+        r"\b(?:лет|года|год)\b)",
+        full_text, re.I
+    ))
 
     # ========================================================
-    # CONTEXTE RÉGIONAL
-    # ========================================================
-    # Doit être défini AVANT les confirmations qui l'utilisent.
-    regional_context = bool(
-        central_asia
-        or body_has_geography
-        or caucasus
-        or central_asia_source
-    )
-
-    # ========================================================
-    # SIGNALS GRAVES / MORPHOLOGIE RUSSE
-    # ========================================================
-    severe_morphology = bool(
-        re.search(
-            r"(?:пыточн(?:ые|ых|ом|ыми|ых)\s+услов(?:ия|иях|иям|иями)|\bшизо\b|\bкарцер\b|\bодиночн(?:ое|ом|ую)\s+заключен(?:ие|ии|ием)|произвольн(?:ое|ого|ому)\s+задержан(?:ие|ия|ием))",
-            full_text,
-            re.IGNORECASE,
-        )
-    )
-
-    prison_sentence_signal = bool(
-        re.search(
-            r"(?:\b(?:8|9|10|11|12|13|14|15|16|17|18|19|20)\s*(?:лет|года|год|years?)\b.{0,80}\b(?:тюрьм|заключ|лишен|лишени)|\b(?:приговорен|осужден|осуждён)\b.{0,80}\b(?:лет|года|год)\b)",
-            full_text,
-            re.IGNORECASE,
-        )
-    )
-
-    # ========================================================
-    # CONFIRMATIONS
-    # ========================================================
-
-    confirmed_repression = (
-        regional_context
-        and bool(
-            repression
-            or legal_repression
-            or body_repression
-            or body_legal_repression
-        )
-    )
-
-    confirmed_rights = (
-        regional_context
-        and bool(
-            human_rights
-            or specific_rights
-            or body_human_rights
-            or body_specific_rights
-        )
-    )
-
-    confirmed_activist_pressure = (
-        regional_context
-        and activist_relation
-    )
-
-    confirmed_journalist_pressure = (
-        regional_context
-        and journalist_relation
-    )
-
-    # ========================================================
-    # SOUS-SCORE 1 — GÉOGRAPHIE /15
+    # SOUS-SCORES
     # ========================================================
 
     geography_score = 0
-
     if central_asia:
-
         geography_score = 12
-
-        reasons.append(
-            "Asie centrale: "
-            + ", ".join(
-                central_asia[:6]
-            )
-        )
-
+        reasons.append("Asie centrale: " + ", ".join(central_asia[:6]))
     elif caucasus:
-
         geography_score = 3
-
-        reasons.append(
-            "Caucase: "
-            + ", ".join(
-                caucasus[:6]
-            )
-        )
+        reasons.append("Caucase: " + ", ".join(caucasus[:6]))
+    elif central_asia_source:
+        geography_score = 10
+        reasons.append("source spécialisée Asie centrale")
 
     if central_asia and body_has_geography:
-
-        geography_score = capped_add(
-            geography_score,
-            3,
-            15,
-        )
-
-        reasons.append(
-            "géographie confirmée dans le corps"
-        )
-    elif central_asia_source and not central_asia:
-        geography_score = 10
-        reasons.append(
-            "source spécialisée Asie centrale: "
-            + ", ".join(central_asia_source[:4])
-        )
-
-    # Caucase seul : plafond
-    caucasus_only = (
-        bool(caucasus)
-        and not bool(central_asia)
-    )
-
-    # ========================================================
-    # SOUS-SCORE 2 — CIBLE /20
-    # ========================================================
+        geography_score = capped_add(geography_score, 3, 15)
+        reasons.append("géographie confirmée dans le corps")
 
     target_score = 0
-
     if confirmed_activist_pressure:
-
         target_score = 20
-
-        reasons.append(
-            "activiste / défenseur des droits ciblé"
-        )
-
+        reasons.append("activiste / défenseur des droits ciblé")
     elif confirmed_journalist_pressure:
-
         target_score = 18
-
-        reasons.append(
-            "journaliste / média ciblé"
-        )
-
-    elif activist_relation and central_asia:
-
-        target_score = 16
-
-        reasons.append(
-            "relation activiste / répression détectée"
-        )
-
-    elif journalist_relation and central_asia:
-
-        target_score = 15
-
-        reasons.append(
-            "relation journaliste / répression détectée"
-        )
-
+        reasons.append("journaliste / média ciblé")
     elif has_activist:
-
         target_score = 10
-
-        reasons.append(
-            "activistes / dissidents: "
-            + ", ".join(
-                (activists or body_activists)[:6]
-            )
-        )
-
     elif has_journalist:
-
         target_score = 7
-
-        reasons.append(
-            "journaliste / média"
-        )
-
-    elif (
-        "civil society" in headline
-        or "ngo" in headline
-        or "ngos" in headline
-    ):
-
+    elif "civil society" in headline or "ngo" in headline or "ngos" in headline:
         target_score = 5
 
-        reasons.append(
-            "société civile / ONG"
-        )
+    repression_terms_all = list(dict.fromkeys(
+        repression + legal_repression + body_repression + body_legal_repression
+        + body_v9_repression
+    ))
+    repression_score = weighted_score(
+        repression_terms_all, REPRESSION_WEIGHTS, 25
+    ) if repression_terms_all else 0
 
-    # ========================================================
-    # SOUS-SCORE 3 — RÉPRESSION /30
-    # ========================================================
+    if legal_repression and repression_score < 10:
+        repression_score = 8
 
-    repression_score = 0
-
-    repression_terms_all = list(
-        dict.fromkeys(
-            repression
-            + legal_repression
-            + body_repression
-            + body_legal_repression
-        )
-    )
-
-    if repression_terms_all:
-
-        repression_score = weighted_score(
-            repression_terms_all,
-            REPRESSION_WEIGHTS,
-            25,
-        )
-
-        reasons.append(
-            "répression: "
-            + ", ".join(
-                repression_terms_all[:8]
-            )
-        )
-
-    # Répression juridique sans terme fort
-    if (
-        legal_repression
-        and repression_score < 10
-    ):
-
-        repression_score = max(
-            repression_score,
-            8,
-        )
-
-    # Contexte juridique (cour, procureur, police...) : bonus
-    # modéré, uniquement si un signal de répression existe déjà.
-    # Seul, ce contexte ne doit rien apporter au score.
-    if (
-        has_legal_context
-        and repression_terms_all
-    ):
-
+    if has_legal_context and repression_terms_all:
         repression_score = capped_add(
             repression_score,
             min(3, len(legal_context or body_legal_context)),
             30,
         )
 
-        reasons.append(
-            "contexte judiciaire: "
-            + ", ".join(
-                (legal_context or body_legal_context)[:6]
-            )
-        )
-
-    # Confirmation dans le body
     if confirmed_repression:
+        repression_score = capped_add(repression_score, 5, 30)
 
-        repression_score = capped_add(
-            repression_score,
-            5,
-            30,
-        )
+    if confirmed_activist_pressure or confirmed_journalist_pressure:
+        repression_score = capped_add(repression_score, 5, 30)
 
-        reasons.append(
-            "répression confirmée dans le corps"
-        )
+    rights_terms_all = list(dict.fromkeys(
+        specific_rights + body_specific_rights + body_v9_rights
+    ))
+    rights_score = weighted_score(
+        rights_terms_all, SPECIFIC_RIGHTS_WEIGHTS, 8
+    ) if rights_terms_all else 0
 
-    # Relation explicite victime -> répression
-    if (
-        confirmed_activist_pressure
-        or confirmed_journalist_pressure
-    ):
-
-        repression_score = capped_add(
-            repression_score,
-            5,
-            30,
-        )
-
-    # ========================================================
-    # SOUS-SCORE 4 — DROITS SPÉCIFIQUES /10
-    # ========================================================
-
-    rights_score = 0
-
-    rights_terms_all = list(
-        dict.fromkeys(
-            specific_rights
-            + body_specific_rights
-        )
-    )
-
-    if rights_terms_all:
-
-        rights_score = weighted_score(
-            rights_terms_all,
-            SPECIFIC_RIGHTS_WEIGHTS,
-            8,
-        )
-
-        reasons.append(
-            "droits spécifiques: "
-            + ", ".join(
-                rights_terms_all[:8]
-            )
-        )
-
-    elif has_human_rights:
-
+    if has_human_rights and rights_score == 0:
         rights_score = 4
 
-        reasons.append(
-            "droits humains"
-        )
-
     if confirmed_rights:
-
-        rights_score = capped_add(
-            rights_score,
-            2,
-            10,
-        )
-
-        reasons.append(
-            "droits humains confirmés dans le corps"
-        )
-
-    # ========================================================
-    # SOUS-SCORE 5 — IMPORTANCE JOURNALISTIQUE /10
-    # ========================================================
+        rights_score = capped_add(rights_score, 2, 10)
 
     journalism_score = 0
-
-    # Article original avec événement concret
-    if (
-        confirmed_activist_pressure
-        or confirmed_journalist_pressure
-    ):
-
+    if confirmed_activist_pressure or confirmed_journalist_pressure:
         journalism_score = 7
-
-    elif (
-        activist_relation
-        or journalist_relation
-    ) and central_asia:
-
+    elif journalist_relation and regional_context:
         journalism_score = 6
-
     elif confirmed_repression:
-
         journalism_score = 6
-
     elif major_geo:
-
         journalism_score = 5
-
-    elif domestic and (
-        has_human_rights
-        or has_repression
-        or has_specific_rights
-    ):
-
+    elif domestic and (has_human_rights or has_repression or has_specific_rights):
         journalism_score = 4
-
     elif has_human_rights:
-
         journalism_score = 3
-
     elif domestic:
-
         journalism_score = 2
 
-    # ========================================================
-    # SOUS-SCORE 6 — GÉOPOLITIQUE /10
-    # ========================================================
-
     geopolitical_score = 0
-
     if major_geo:
-
         geopolitical_score = 7
-
-        reasons.append(
-            "géopolitique majeure: "
-            + ", ".join(
-                major_geo[:6]
-            )
-        )
-
     elif routine_geo:
-
         geopolitical_score = 2
 
-    # SCO seul : signal contextuel faible
-    has_sco = any(
-        phrase_present(
-            full_text,
-            term,
-        )
-        for term in [
-            "sco",
-            "shanghai cooperation organization",
-            "shanghai cooperation organisation",
-            "sco summit",
-        ]
-    )
-
-    if (
-        has_sco
-        and major_geo
-    ):
-
-        geopolitical_score = capped_add(
-            geopolitical_score,
-            3,
-            10,
-        )
-
-        reasons.append(
-            "Organisation de coopération de Shanghai"
-        )
-
-    # ========================================================
-    # SOUS-SCORE 7 — FRAÎCHEUR /5
-    # ========================================================
+    has_sco = bool(re.search(
+        r"\b(sco|shanghai cooperation organization|shanghai cooperation organisation)\b",
+        full_text, re.I
+    ))
+    if has_sco and major_geo:
+        geopolitical_score = capped_add(geopolitical_score, 3, 10)
 
     freshness_score = 0
-
-    # Si ton scraper fournit déjà un âge en jours,
-    # on l'utilise.
-    age_days = article.get(
-        "age_days"
-    )
-
+    age_days = article.get("age_days")
     if age_days is not None:
-
         try:
-            age_days = float(
-                age_days
-            )
-
+            age_days = float(age_days)
             if age_days <= 1:
                 freshness_score = 5
-
             elif age_days <= 3:
                 freshness_score = 4
-
             elif age_days <= 7:
                 freshness_score = 3
-
             elif age_days <= 14:
                 freshness_score = 2
-
             elif age_days <= 30:
                 freshness_score = 1
-
-        except (
-            TypeError,
-            ValueError,
-        ):
-            freshness_score = 0
-
-    # ========================================================
-    # SCORE BRUT
-    # ========================================================
+        except (TypeError, ValueError):
+            pass
 
     score = (
-        geography_score
-        + target_score
-        + repression_score
-        + rights_score
-        + journalism_score
-        + geopolitical_score
-        + freshness_score
+        geography_score + target_score + repression_score
+        + rights_score + journalism_score
+        + geopolitical_score + freshness_score
     )
 
     # ========================================================
@@ -988,563 +667,260 @@ def classify_article(article):
 
     penalties = 0
 
-    # --------------------------------------------------------
-    # Économie / géopolitique ordinaire
-    # --------------------------------------------------------
-
-    if (
-        routine_geo
-        and not (
-            has_activist
-            or has_journalist
-            or has_specific_rights
-            or has_repression
-            or has_human_rights
-        )
+    if routine_geo and not (
+        has_activist or has_journalist or has_specific_rights
+        or has_repression or has_human_rights
     ):
-
         penalties += 10
+        reasons.append("géopolitique / économie ordinaire")
 
-        reasons.append(
-            "géopolitique / économie ordinaire"
-        )
-
-    # --------------------------------------------------------
-    # Histoire / culture
-    # --------------------------------------------------------
-
-    if (
-        historical
-        and not (
-            has_activist
-            or has_journalist
-            or has_repression
-            or has_specific_rights
-            or has_human_rights
-        )
+    if historical and not (
+        has_activist or has_journalist or has_repression
+        or has_specific_rights or has_human_rights
+        or primary_event_anchor
     ):
-
         penalties += 12
+        reasons.append("histoire / culture")
 
-        reasons.append(
-            "histoire / culture"
-        )
-
-    # --------------------------------------------------------
-    # Acteur extérieur seul
-    # --------------------------------------------------------
-
-    if (
-        actors
-        and not (
-            central_asia
-            and (
-                has_activist
-                or has_journalist
-                or has_repression
-                or has_specific_rights
-                or domestic
-                or major_geo
-            )
+    if actors and not (
+        central_asia and (
+            has_activist or has_journalist or has_repression
+            or has_specific_rights or domestic or major_geo
         )
     ):
-
         penalties += 5
 
-        reasons.append(
-            "acteur extérieur sans enjeu régional clair"
-        )
-
-    # --------------------------------------------------------
-    # Caucase seul
-    # --------------------------------------------------------
-
     if caucasus_only:
-
         penalties += 10
-
-        reasons.append(
-            "Caucase uniquement"
-        )
-
-    # --------------------------------------------------------
-    # Non-news
-    # --------------------------------------------------------
+        reasons.append("Caucase uniquement")
 
     if non_news:
-
-        score = min(
-            score,
-            5,
-        )
-
-        reasons.append(
-            "contenu non journalistique: "
-            + ", ".join(
-                non_news[:8]
-            )
-        )
-
-    # --------------------------------------------------------
-    # Bruit
-    # --------------------------------------------------------
+        score = min(score, 5)
+        reasons.append("contenu non journalistique")
 
     if noise:
-
         score = 0
-
-        reasons.append(
-            "bruit: "
-            + ", ".join(
-                noise[:8]
-            )
-        )
-
+        reasons.append("bruit")
     else:
-
         score -= penalties
 
     # ========================================================
-    # BONUS SIGNAL SPÉCIFIQUE ASIE CENTRALE
+    # V9 — BONUS INTELLIGENTS
     # ========================================================
 
-    if central_asia_hr:
-
-        # Bonus limité.
-        # Le signal ne peut pas à lui seul transformer
-        # un article banal en article prioritaire.
-        bonus = min(
-            4,
-            len(central_asia_hr) * 2,
-        )
-
-        score += bonus
-
+    # Événement HR régional reconnu.
+    if regional_context and primary_event_anchor:
+        score += 12
         reasons.append(
-            "signal spécifique Asie centrale: "
-            + ", ".join(
-                central_asia_hr[:8]
-            )
+            "ancre événement HR régional: " + ", ".join(event_terms[:4])
         )
 
-    # ========================================================
-    # BONUS RELATION FORTE
-    # ========================================================
+        if body_v9_events and body_strong_hr_confirmation:
+            score += 10
+            reasons.append("événement HR confirmé dans le body")
 
-    if confirmed_activist_pressure:
+        if primary_repression or body_v9_repression or body_morphology:
+            score += 18
+            reasons.append("événement régional + répression")
 
+        if target_repression_relation or activist_relation or journalist_relation:
+            score += 14
+            reasons.append("événement régional + cible réprimée")
+
+    # Cible + action : beaucoup plus fiable qu'un mot isolé.
+    if activist_relation and regional_context:
+        score += 18
+        reasons.append("activiste/HRD + action répressive")
+
+    if journalist_relation and regional_context:
+        score += 20
+        reasons.append("journaliste + action répressive")
+
+    if primary_political_prisoner:
+        score += 22
+        reasons.append("prisonnier politique / détenu politique")
+
+    if primary_transnational:
+        score += 18
+        reasons.append("répression transnationale")
+
+    if primary_gender:
+        score += 12
+        reasons.append("violence / droits des femmes")
+        if body_v9_gender:
+            score += 5
+
+    if primary_press:
+        score += 15
+        reasons.append("restriction de presse / média")
+
+    if primary_political_context:
         score += 8
+        reasons.append("état de droit / concentration du pouvoir")
+        if body_v9_political:
+            score += 5
 
-        reasons.append(
-            "relation confirmée: activiste + répression"
-        )
-
-    elif confirmed_journalist_pressure:
-
-        score += 7
-
-        reasons.append(
-            "relation confirmée: journaliste + répression"
-        )
-
-    elif activist_relation and central_asia:
-
-        score += 4
-
-        reasons.append(
-            "relation détectée: activiste + répression"
-        )
-
-    elif journalist_relation and central_asia:
-
-        score += 4
-
-        reasons.append(
-            "relation détectée: journaliste + répression"
-        )
-
-    # ========================================================
-    # V7 — ANCRAGE HR PRINCIPAL
-    # ========================================================
-    # Les mentions HR lointaines dans le corps ne doivent pas
-    # transformer un article économique/culturel en priorité A.
-    # Un signal fort doit apparaître dans le titre/résumé court.
-    primary_hr_text = (title + " " + summary[:1200]).strip()
-
-    primary_repression = any(
-        phrase_present(primary_hr_text, term)
-        for term in REPRESSION_TERMS_V7
-    ) or bool(re.search(
-        r"(?:\bconvicts?\b|\bconvicted\b|\bsentenced\b|\bunder pressure\b|\bunder threat\b|\bpressure on journalists\b|\bbehind bars\b|\bза решеткой\b|\bпреследует\b|\bпреследование\b)",
-        primary_hr_text,
-        re.IGNORECASE,
-    ))
-    primary_hr_defender = any(
-        phrase_present(primary_hr_text, term)
-        for term in HUMAN_RIGHTS_DEFENDER_TERMS
-    )
-    primary_forced_labor = any(
-        phrase_present(primary_hr_text, term)
-        for term in FORCED_LABOR_TERMS
-    )
-    # V8: seuls les droits explicitement menacés/violés constituent
-    # un ancrage HR fort. Les mentions génériques (women's rights,
-    # democratic reforms, politics, etc.) ne suffisent pas.
-    STRONG_PRIMARY_RIGHTS_V8 = [
-        "human rights violation", "human rights violations",
-        "rights violation", "lgbt rights", "lgbti rights",
-        "gender-based violence", "violence against women",
-        "forced marriage", "child marriage",
-        "ethnic discrimination", "religious discrimination",
-        "forced labor", "forced labour", "child labor", "child labour",
-        "принудительный труд", "детский труд",
-        "нарушение прав человека", "нарушения прав человека",
-        "насилие в отношении женщин", "гендерная дискриминация",
-        "свобода прессы", "свобода слова",
-    ]
-    primary_specific_right = any(
-        phrase_present(primary_hr_text, term)
-        for term in STRONG_PRIMARY_RIGHTS_V8
-    )
-    primary_lgbt_pressure = (
-        any(phrase_present(primary_hr_text, term) for term in ["lgbt", "lgbti", "lgbt rights", "lgbti rights", "queer"])
-        and (primary_repression or "under pressure" in primary_hr_text or "under threat" in primary_hr_text)
-    )
-    primary_journalist_pressure = (
-        any(phrase_present(primary_hr_text, term) for term in JOURNALIST_TERMS_V7)
-        and (primary_repression or any(phrase_present(primary_hr_text, term) for term in [
-            "censorship", "censored", "press freedom", "media freedom",
-            "restricted access", "access restriction", "pressure on journalists",
-            "запретили доступ", "давление на журналистов",
-            "цензура", "цензур"
-        ]))
-    )
-    primary_academic_case = (
-        any(phrase_present(primary_hr_text, term) for term in ACADEMIC_HR_TERMS_V7)
-        and (has_detention or has_imprisonment or primary_repression)
-    )
-
-    primary_defender_case = (
-        primary_hr_defender
-        and (
-            primary_repression
-            or prison_sentence_signal
-            or has_detention
-            or has_imprisonment
-            or severe_morphology
-        )
-    )
-
-    primary_hr_anchor = bool(
-        primary_repression
-        or primary_defender_case
-        or primary_forced_labor
-        or primary_specific_right
-        or primary_lgbt_pressure
-        or primary_journalist_pressure
-        or primary_academic_case
-    )
-
-    # ========================================================
-    # BONUS GRAVE
-    # ========================================================
-
-    severe_detected = (
-        severe_morphology
-        or any(
-            normalize(term)
-            in {
-                normalize(x)
-                for x in SEVERE_REPRESSION_TERMS
-            }
-            for term in (repression + body_repression)
-        )
-    )
-
-    if (
-        severe_detected
-        and (
-            confirmed_repression
-            or confirmed_activist_pressure
-            or confirmed_journalist_pressure
-        )
-    ):
-
+    if primary_democracy and regional_context:
         score += 5
+        reasons.append("dégradation démocratique / espace civique")
 
-        reasons.append(
-            "signal de répression grave confirmé"
-        )
+    if primary_specific_right:
+        score += 8
+        reasons.append("droit spécifique fortement signalé")
 
-    # ========================================================
-    # BONUS V4 — CAS HR CRITIQUE
-    # ========================================================
-    # Combinaison très spécifique : ancrage régional + activiste/
-    # défenseur + condamnation/détention + mauvais traitement grave.
-    # Ce bonus corrige les faux négatifs où les mots sont répartis
-    # entre titre et corps et où aucun mot isolé n'est suffisamment fort.
+    if primary_hr_anchor and body_strong_hr_confirmation:
+        score += 8
+        reasons.append("signal HR confirmé par le corps")
+
+    if severe_detected and regional_context and has_repression:
+        score += 15
+        reasons.append("répression grave confirmée")
+
+    if prison_sentence_signal and regional_context and has_activist:
+        score += 8
+        reasons.append("peine de prison liée à un activiste")
+
+    # Cas HR critique.
     critical_hr_case = bool(
         regional_context
         and (has_activist or has_hr_defender)
-        and (primary_repression or primary_defender_case or primary_forced_labor or primary_journalist_pressure or primary_academic_case)
         and (
-            confirmed_repression
-            or primary_repression
-            or severe_detected
+            primary_repression or primary_defender_case
+            or primary_forced_labor or primary_journalist_pressure
+            or primary_academic_case
         )
-        and (
-            prison_sentence_signal
-            or has_repression
-        )
+        and (confirmed_repression or severe_detected)
+        and (prison_sentence_signal or has_repression)
     )
 
     if critical_hr_case:
         score += 25
-        reasons.append(
-            "CAS HR CRITIQUE: activiste + condamnation/détention + signal grave"
-        )
-
-        if has_activist and primary_repression and primary_specific_right:
-            score += 15
-            reasons.append("cible militante + condamnation + droit spécifique")
-
-    elif (
-        regional_context
-        and severe_detected
-        and has_repression
-    ):
-        score += 15
-        reasons.append(
-            "bonus répression grave confirmée"
-        )
-
-    if prison_sentence_signal and regional_context and has_activist:
-        score += 8
-        reasons.append(
-            "peine de prison liée à un activiste"
-        )
+        reasons.append("CAS HR CRITIQUE")
 
     # ========================================================
-    # PORTE DE CONTEXTE RÉGIONAL
+    # V9 — SMART CAPS
     # ========================================================
-    #
-    # Un article ne peut pas obtenir un score élevé s'il n'a
-    # aucun ancrage géographique en Asie centrale (ni même dans
-    # le Caucase). Ceci évite qu'un article de géopolitique /
-    # droits humains globale, sans lien régional réel, ne soit
-    # classé comme prioritaire.
 
     if not regional_context:
+        score = min(score, 20)
+        reasons.append("porte régionale: aucun ancrage régional")
 
-        score = min(
-            score,
-            20,
-        )
+    if regional_context and primary_event_anchor:
+        # Un événement HR connu est un ancrage valide.
+        score = max(score, 42)
 
-        reasons.append(
-            "porte de contexte régional: aucun ancrage Asie centrale / Caucase"
-        )
+        if body_strong_hr_confirmation:
+            score = max(score, 55)
 
-    # ========================================================
-    # V7 — SIGNAUX HR À FORTE VALEUR COMBINATOIRE
-    # ========================================================
-    # Bonus mutuellement contrôlés : on évite l'empilement
-    # défenseur + journaliste + détention + répression + rights
-    # qui produisait des faux 90-100 sur des articles généraux.
-
-    v7_combo_bonus = 0
-
-    if regional_context and primary_forced_labor:
-        v7_combo_bonus += 37
-        reasons.append("travail forcé au cœur du sujet")
-        if has_government_involvement:
-            v7_combo_bonus += 8
-            reasons.append("travail forcé impliquant les autorités ou l'État")
-
-    elif regional_context and primary_defender_case and (confirmed_repression or severe_detected):
-        v7_combo_bonus += 16
-        reasons.append("défenseur des droits confronté à une répression")
-        if prison_sentence_signal or has_detention or has_imprisonment:
-            v7_combo_bonus += 8
-            reasons.append("défenseur des droits arrêté, détenu ou condamné")
-
-    elif regional_context and primary_defender_case and has_journalist:
-        v7_combo_bonus += 25
-        reasons.append("défenseur des droits et journaliste au cœur du sujet")
-
-    elif regional_context and primary_hr_defender and has_journalist:
-        v7_combo_bonus += 12
-        reasons.append("défenseur des droits et journaliste")
-
-    elif regional_context and primary_journalist_pressure:
-        v7_combo_bonus += 35
-        reasons.append("journaliste confronté à restriction, censure ou répression")
-
-    elif regional_context and primary_academic_case:
-        v7_combo_bonus += 26
-        reasons.append("liberté académique menacée avec arrestation/détention")
-
-    elif regional_context and primary_lgbt_pressure:
-        v7_combo_bonus += 45
-        reasons.append("personnes LGBT/queer confrontées à une pression ou répression")
-
-    elif regional_context and primary_specific_right:
-        v7_combo_bonus += 8
-        reasons.append("atteinte à un droit spécifique au cœur du sujet")
-
-    score += min(v7_combo_bonus, 45)
-
-    # V8 — cas militant explicitement condamné/visé : la combinaison
-    # titre/résumé suffit à confirmer une affaire HR forte, même si le
-    # scraper ne retrouve pas de terme juridique dans le body.
-    if regional_context and has_activist and primary_repression and primary_specific_right:
-        score += 20
-        reasons.append("militant + répression + droit spécifique dans le sujet principal")
-
-    # V8 — pression ciblant directement les personnes LGBT/queer.
-    if regional_context and primary_lgbt_pressure:
-        score += 15
-        reasons.append("pression ciblant les personnes LGBT/queer")
-
-    # --------------------------------------------------------
-    # V7 — PLAFOND ANTI-FAUX-POSITIFS
-    # --------------------------------------------------------
-    # Si aucun signal HR fort n'est présent dans le titre/résumé,
-    # le corps seul ne peut pas faire passer un article général
-    # en haute priorité.
-    if regional_context and not primary_hr_anchor:
-        if primary_hr_defender:
-            score = min(score, 50)
-            reasons.append("plafond V8: défenseur cité sans acte répressif principal")
-        elif any(phrase_present(primary_hr_text, term) for term in GENERIC_REFORM_TERMS_V7):
+    elif regional_context and not primary_hr_anchor:
+        # Le body peut maintenant sauver un article si une vraie
+        # action HR y est confirmée, mais avec un plafond prudent.
+        if target_repression_relation or body_strong_hr_confirmation:
+            score = min(score, 55)
+            reasons.append("plafond V9: confirmation HR dans le body")
+        elif any(phrase_present(primary_hr_text, x) for x in GENERIC_REFORM_TERMS_V7):
             score = min(score, 35)
-            reasons.append("plafond V8: réforme/politique générale sans atteinte HR explicite")
-        elif any(phrase_present(primary_hr_text, term) for term in NON_HR_TOPIC_TERMS_V7):
+            reasons.append("plafond V9: réforme générale")
+        elif any(phrase_present(primary_hr_text, x) for x in NON_HR_TOPIC_TERMS_V7):
             score = min(score, 28)
-            reasons.append("plafond V8: sujet culturel/économique/général sans signal HR principal")
+            reasons.append("plafond V9: sujet non-HR")
         else:
             score = min(score, 35)
-            reasons.append("plafond V8: aucun événement HR principal dans titre/résumé")
+            reasons.append("plafond V9: aucun ancrage HR principal")
 
-    # ========================================================
-    # V8 — PLAFONDS ÉDITORIAUX FINAUX
-    # ========================================================
-    # Les scores élevés exigent désormais un événement HR identifiable
-    # dans le titre/résumé, et non simplement des mots HR dans le body.
+    # Politique/rule-of-law sans véritable affaire HR.
+    only_political_context = (
+        regional_context
+        and primary_political_context
+        and not (
+            primary_repression or primary_event_anchor
+            or primary_specific_right or primary_political_prisoner
+            or primary_press or primary_gender
+            or primary_transnational
+        )
+    )
+    if only_political_context:
+        score = min(score, 48)
+
+    # Plafonds éditoriaux.
     if regional_context:
         if primary_forced_labor:
-            # Travail forcé : priorité élevée, sans empiler artificiellement
-            # tous les signaux du body.
             score = min(score, 82 if has_government_involvement else 76)
         elif primary_academic_case:
             score = min(score, 82)
-        elif primary_journalist_pressure:
+        elif primary_journalist_pressure or primary_press:
             score = min(score, 85)
         elif primary_defender_case or critical_hr_case:
             score = min(score, 100)
         elif primary_lgbt_pressure:
             score = min(score, 85)
+        elif primary_transnational:
+            score = min(score, 85)
         elif primary_repression:
             score = min(score, 78)
-        elif primary_specific_right:
+        elif primary_event_anchor and body_strong_hr_confirmation:
+            score = min(score, 72)
+        elif primary_specific_right or primary_gender:
             score = min(score, 65)
 
-    # Les droits des femmes/politique/réformes sans violence, contrainte,
-    # condamnation ou répression explicite restent des sujets secondaires.
+    # Sujet femmes/réformes sans violence ou contrainte explicite.
     if regional_context and not (
         primary_defender_case
         or primary_forced_labor
         or primary_journalist_pressure
+        or primary_press
         or primary_academic_case
         or primary_lgbt_pressure
         or primary_repression
+        or primary_event_anchor
+        or primary_gender
     ):
         if any(phrase_present(primary_hr_text, term) for term in [
-            "women's rights", "prawa kobiet", "права женщин",
+            "women's rights", "права женщин",
             "democratic reform", "democratic reforms",
             "political reform", "political reforms",
-            "more women in", "social stability"
+            "social stability",
         ]):
             score = min(score, 48)
-            reasons.append("plafond V8: sujet droits/politique sans événement répressif")
+            reasons.append("plafond V9: politique/droits sans événement concret")
+
+    score = max(0, min(round(score), 100))
 
     # ========================================================
-    # BORNE
+    # NIVEAU
     # ========================================================
 
-    score = max(
-        0,
-        min(
-            round(score),
-            100,
-        ),
-    )
-
-    # ========================================================
-    # NIVEAU ÉDITORIAL
-    # ========================================================
-
-    if (
-        not regional_context
-        or caucasus_only
-        or non_news
-        or noise
-    ):
-
+    if not regional_context or caucasus_only or non_news or noise:
         level = "D"
-
-    elif (
-        score >= 75
-        and (
-            confirmed_activist_pressure
-            or confirmed_journalist_pressure
-            or severe_detected
-            or confirmed_repression
-            or (has_activist and primary_repression and primary_specific_right)
-            or primary_lgbt_pressure
-        )
+    elif score >= 75 and (
+        confirmed_activist_pressure
+        or confirmed_journalist_pressure
+        or severe_detected
+        or confirmed_repression
+        or primary_forced_labor
+        or primary_lgbt_pressure
+        or primary_press
+        or critical_hr_case
     ):
-
         level = "A"
-
     elif score >= 55:
-
         level = "B"
-
     elif score >= 35:
-
         level = "C"
-
     else:
-
         level = "D"
-
-    # ========================================================
-    # PRIORITÉ
-    # ========================================================
 
     if score >= 90:
-
         priority = "ABSOLUE"
-
     elif score >= 75:
-
         priority = "TRÈS HAUTE"
-
     elif score >= 60:
-
         priority = "HAUTE"
-
     elif score >= 40:
-
         priority = "MOYENNE"
-
     elif score >= 20:
-
         priority = "FAIBLE"
-
     else:
-
         priority = "BRUIT"
 
     # ========================================================
@@ -1552,152 +928,87 @@ def classify_article(article):
     # ========================================================
 
     if confirmed_activist_pressure:
-
-        theme = (
-            "Activistes / dissidents sous pression"
-        )
-
+        theme = "Activistes / dissidents sous pression"
     elif confirmed_journalist_pressure:
-
-        theme = (
-            "Journalistes sous pression"
-        )
-
+        theme = "Journalistes sous pression"
+    elif primary_event_anchor:
+        theme = "Événement HR / répression régionale"
+    elif primary_transnational:
+        theme = "Répression transnationale"
+    elif primary_gender:
+        theme = "Droits des femmes / violences"
     elif confirmed_repression:
-
-        theme = (
-            "Répression / droits humains"
-        )
-
+        theme = "Répression / droits humains"
     elif has_specific_rights:
-
-        theme = (
-            "Droits spécifiques"
-        )
-
+        theme = "Droits spécifiques"
+    elif primary_political_context or primary_democracy:
+        theme = "État de droit / espace civique"
     elif domestic:
-
-        theme = (
-            "Politique intérieure"
-        )
-
+        theme = "Politique intérieure"
     elif major_geo:
-
-        theme = (
-            "Géopolitique majeure"
-        )
-
+        theme = "Géopolitique majeure"
     elif historical:
-
-        theme = (
-            "Histoire / culture / contexte"
-        )
-
+        theme = "Histoire / culture / contexte"
     elif non_news:
-
-        theme = (
-            "Contenu institutionnel"
-        )
-
+        theme = "Contenu institutionnel"
     elif routine_geo:
-
-        theme = (
-            "Économie / géopolitique ordinaire"
-        )
-
+        theme = "Économie / géopolitique ordinaire"
     else:
+        theme = "Faible priorité"
 
-        theme = (
-            "Faible priorité"
-        )
-
-    # ========================================================
-    # PERTINENCE
-    # ========================================================
-
-    relevant = (
+    relevant = bool(
         regional_context
         and score >= 40
         and not non_news
         and not noise
         and (
-            has_activist
-            or has_journalist
-            or has_repression
-            or has_specific_rights
-            or has_human_rights
-            or major_geo
+            has_activist or has_journalist or has_repression
+            or has_specific_rights or has_human_rights
+            or major_geo or primary_event_anchor
+            or primary_gender or primary_political_context
+            or primary_democracy
         )
     )
 
-    # Cas très fort
-    if (
-        confirmed_activist_pressure
-        and not non_news
-        and not noise
-    ):
-
-        relevant = True
-
-    if (
-        confirmed_journalist_pressure
-        and not non_news
-        and not noise
-    ):
-
+    if confirmed_activist_pressure or confirmed_journalist_pressure:
         relevant = True
 
     # ========================================================
-    # SIGNALS — AUDIT
+    # AUDIT
     # ========================================================
 
     signals = {
-
-        # Géographie
         "central_asia": central_asia,
         "caucasus": caucasus,
         "body_geography": body_geography,
         "body_geo_count": body_geo_count,
-        "strong_body_geography": (
-            strong_body_geography
-        ),
+        "strong_body_geography": strong_body_geography,
         "caucasus_only": caucasus_only,
 
-        # Activistes
         "activists": activists,
         "body_activists": body_activists,
-
-        # Journalistes
         "journalists": journalists,
         "body_journalists": body_journalists,
 
-        # Droits
         "human_rights": human_rights,
         "body_human_rights": body_human_rights,
         "specific_rights": specific_rights,
         "body_specific_rights": body_specific_rights,
 
-        # Répression
         "repression": repression,
         "legal_repression": legal_repression,
         "body_repression": body_repression,
-        "body_legal_repression": (
-            body_legal_repression
-        ),
+        "body_legal_repression": body_legal_repression,
         "legal_context": legal_context,
         "body_legal_context": body_legal_context,
         "has_legal_context": has_legal_context,
 
-        # Politique
         "domestic": domestic,
-
-        # Géopolitique
         "major_geo": major_geo,
         "routine_geo": routine_geo,
         "actors": actors,
         "has_sco": has_sco,
 
-        # Contexte
         "central_asia_hr": central_asia_hr,
         "historical": historical,
         "non_news": non_news,
@@ -1705,7 +1016,6 @@ def classify_article(article):
         "low_signal_context": low_signal_context,
         "regional_context": regional_context,
 
-        # Relations
         "has_activist": has_activist,
         "has_journalist": has_journalist,
         "has_repression": has_repression,
@@ -1714,26 +1024,35 @@ def classify_article(article):
 
         "activist_relation": activist_relation,
         "journalist_relation": journalist_relation,
+        "target_repression_relation": target_repression_relation,
 
-        "confirmed_repression": (
-            confirmed_repression
-        ),
-
-        "confirmed_rights": (
-            confirmed_rights
-        ),
-
-        "confirmed_activist_pressure": (
-            confirmed_activist_pressure
-        ),
-
-        "confirmed_journalist_pressure": (
-            confirmed_journalist_pressure
-        ),
+        "confirmed_repression": confirmed_repression,
+        "confirmed_rights": confirmed_rights,
+        "confirmed_activist_pressure": confirmed_activist_pressure,
+        "confirmed_journalist_pressure": confirmed_journalist_pressure,
 
         "severe_detected": severe_detected,
 
-        # Scores
+        # V9 audit
+        "primary_hr_anchor": primary_hr_anchor,
+        "primary_event_anchor": primary_event_anchor,
+        "event_terms": event_terms,
+        "primary_repression": primary_repression,
+        "primary_specific_right": primary_specific_right,
+        "primary_forced_labor": primary_forced_labor,
+        "primary_press": primary_press,
+        "primary_gender": primary_gender,
+        "primary_transnational": primary_transnational,
+        "primary_political_prisoner": primary_political_prisoner,
+        "primary_political_context": primary_political_context,
+        "primary_democracy": primary_democracy,
+        "body_strong_hr_confirmation": body_strong_hr_confirmation,
+        "body_v9_repression": body_v9_repression,
+        "body_v9_rights": body_v9_rights,
+        "body_v9_press": body_v9_press,
+        "body_v9_gender": body_v9_gender,
+        "body_v9_events": body_v9_events,
+
         "geography_score": geography_score,
         "target_score": target_score,
         "repression_score": repression_score,
@@ -1741,13 +1060,8 @@ def classify_article(article):
         "journalism_score": journalism_score,
         "geopolitical_score": geopolitical_score,
         "freshness_score": freshness_score,
-
         "penalties": penalties,
     }
-
-    # ========================================================
-    # SORTIE
-    # ========================================================
 
     article["score"] = score
     article["level"] = level
