@@ -4,6 +4,8 @@
 # Logs
 *.log
 news_scanner.log
+http_cache.json
+memory.json
 
 # Python
 __pycache__/

@@ -171,6 +171,52 @@ Force fresh HTTP requests instead of using the scanner cache:
 python news_scanner.py --scan
 ```
 
+## Performance tuning
+
+The scanner now exposes conservative runtime knobs via environment variables:
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `SCANNER_FETCH_WORKERS` | `6` | Max concurrent source fetch/parse workers |
+| `SCANNER_ENRICH_WORKERS` | `4` | Max concurrent body-enrichment workers |
+| `SCANNER_HTTP_CONNECT_TIMEOUT` | `5` | Per-request connect timeout (seconds) |
+| `SCANNER_HTTP_READ_TIMEOUT` | `30` | Per-request read timeout (seconds) |
+| `SCANNER_HTTP_MAX_ATTEMPTS` | `3` | Retry attempts for transient HTTP errors |
+| `SCANNER_HTTP_RETRY_BACKOFF_BASE` | `1.0` | Exponential backoff base delay |
+| `SCANNER_SKIP_PREVIOUSLY_SEEN` | `1` | Skip already-seen article keys early |
+| `SCANNER_MAX_PERSISTED_SEEN_KEYS` | `5000` | Max number of persisted seen keys |
+
+Examples:
+
+```bash
+SCANNER_FETCH_WORKERS=8 SCANNER_ENRICH_WORKERS=6 python news_scanner.py
+SCANNER_HTTP_CONNECT_TIMEOUT=3 SCANNER_HTTP_READ_TIMEOUT=20 python news_scanner.py --scan
+```
+
+### Runtime visibility
+
+Each run logs:
+
+* per-source timings (`fetch`, `parse`, `total`);
+* stage timings (`fetch+parse`, `deduplicate`, `enrichment`, exports, etc.);
+* global runtime (`PERF | total-runtime | ...s`).
+
+### Conditional HTTP cache metadata
+
+HTTP responses now persist ETag/Last-Modified metadata and cached source content in `http_cache.json` to support conditional requests (`If-None-Match`, `If-Modified-Since`) across runs.
+
+### Persistence/index note
+
+This repository currently persists scan output to flat files (`index.html`, `articles.csv`) rather than a relational database. Persistence remains batched (`writerows` for CSV + single HTML write), so no DB index migration is required for this optimization pass.
+
+### Before/after comparison
+
+To compare runtime improvements safely:
+
+1. run once with current defaults and keep `PERF | total-runtime`;
+2. run again with adjusted worker/timeouts;
+3. compare both total runtime and per-stage/per-source timings.
+
 The scanner will:
 
 1. load the optional memory;

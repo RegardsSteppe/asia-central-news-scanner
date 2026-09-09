@@ -1,10 +1,17 @@
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from news_scanner import build_csv_rows, canonical_article_key, deduplicate
+from news_scanner import (
+    build_csv_rows,
+    canonical_article_key,
+    collect_articles,
+    deduplicate,
+    load_seen_keys,
+)
 
 
 class CanonicalArticleKeyTests(unittest.TestCase):
@@ -70,6 +77,45 @@ class CsvExportTests(unittest.TestCase):
         self.assertEqual(rows[0]["score"], 82)
         self.assertEqual(rows[0]["keywords"], "freedom; arrested")
         self.assertEqual(rows[0]["geography_score"], 12)
+
+
+class MemorySeenKeysTests(unittest.TestCase):
+    def test_load_seen_keys_filters_invalid_entries(self):
+        memory = {"seen_article_keys": ["a", "", None, 42, "b"]}
+        self.assertEqual(load_seen_keys(memory), {"a", "b"})
+
+
+class CollectArticlesTests(unittest.TestCase):
+    @patch("news_scanner.diagnose_source_content")
+    @patch("news_scanner.parse_rss")
+    @patch("news_scanner.fetch_url")
+    def test_skips_previously_seen_keys_early(
+        self,
+        mock_fetch,
+        mock_parse,
+        mock_diag,
+    ):
+        with patch(
+            "news_scanner.SOURCES",
+            new=[
+                {"name": "S1", "url": "https://example.com/rss", "type": "rss"},
+            ],
+        ):
+            mock_fetch.return_value = "<rss></rss>"
+            mock_parse.return_value = [
+                {"url": "https://example.com/keep", "title": "Keep"},
+                {"url": "https://example.com/old", "title": "Old"},
+            ]
+
+            articles, ok, total, skipped = collect_articles(
+                seen_keys={"example.com/old"}
+            )
+
+        self.assertEqual(ok, 1)
+        self.assertEqual(total, 1)
+        self.assertEqual(skipped, 1)
+        self.assertEqual(len(articles), 1)
+        self.assertEqual(articles[0]["url"], "https://example.com/keep")
 
 
 if __name__ == "__main__":

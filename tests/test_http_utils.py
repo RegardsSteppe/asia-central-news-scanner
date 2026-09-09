@@ -1,4 +1,5 @@
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
@@ -34,6 +35,12 @@ class IsRetryableErrorTests(unittest.TestCase):
 class FetchUrlTests(unittest.TestCase):
     def setUp(self):
         http_utils._MEMORY_CACHE.clear()
+        http_utils._CACHE_META = {}
+        self._tmpdir = tempfile.TemporaryDirectory()
+        http_utils._CACHE_FILE = Path(self._tmpdir.name) / "http_cache.json"
+
+    def tearDown(self):
+        self._tmpdir.cleanup()
 
     @patch("http_utils.time.sleep", return_value=None)
     @patch("http_utils.requests.get")
@@ -102,6 +109,42 @@ class FetchUrlTests(unittest.TestCase):
 
         self.assertEqual(first, second)
         self.assertEqual(mock_get.call_count, 1)
+
+    @patch("http_utils.requests.get")
+    def test_uses_conditional_request_headers_from_persisted_cache(self, mock_get):
+        first_response = MagicMock()
+        first_response.status_code = 200
+        first_response.raise_for_status.return_value = None
+        first_response.encoding = "utf-8"
+        first_response.text = "fresh content"
+        first_response.headers = {
+            "ETag": '"abc123"',
+            "Last-Modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+        }
+
+        not_modified_response = MagicMock()
+        not_modified_response.status_code = 304
+        not_modified_response.raise_for_status.return_value = None
+        not_modified_response.encoding = "utf-8"
+        not_modified_response.text = ""
+        not_modified_response.headers = {}
+
+        mock_get.side_effect = [first_response, not_modified_response]
+
+        url = "https://example.com/feed"
+        result_1 = fetch_url(url, headers={}, request_timeout=5, cache_ttl=60)
+        http_utils._MEMORY_CACHE.clear()
+        result_2 = fetch_url(url, headers={}, request_timeout=5, cache_ttl=0)
+
+        self.assertEqual(result_1, "fresh content")
+        self.assertEqual(result_2, "fresh content")
+        self.assertEqual(mock_get.call_count, 2)
+        second_call_headers = mock_get.call_args_list[1].kwargs["headers"]
+        self.assertEqual(second_call_headers["If-None-Match"], '"abc123"')
+        self.assertEqual(
+            second_call_headers["If-Modified-Since"],
+            "Mon, 01 Jan 2024 00:00:00 GMT",
+        )
 
 
 if __name__ == "__main__":
