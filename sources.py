@@ -14,6 +14,7 @@ SOURCES = [
         "profile": "international_independent",
         "label": "International · indépendant",
         "type": "rss",
+        "language": "multi",
 
         "url": "https://www.rferl.org/",
 
@@ -38,6 +39,7 @@ SOURCES = [
         "profile": "independent",
         "label": "Indépendant · régional",
         "type": "html",
+        "language": "en",
 
         "url": "https://eurasianet.org/latest",
 
@@ -54,6 +56,7 @@ SOURCES = [
         "profile": "independent",
         "label": "Indépendant · Asie centrale",
         "type": "rss",
+        "language": "en",
 
         "url": "https://cabar.asia/en/",
 
@@ -69,11 +72,29 @@ SOURCES = [
     },
 
     {
+        "name": "Cabar.asia — russe",
+        "short_name": "CABAR RU",
+        "profile": "independent",
+        "label": "Indépendant · Asie centrale · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://cabar.asia/ru/",
+
+        "fallbacks": [
+            "https://cabar.asia/ru/category/ru",
+        ],
+
+        "max_articles": 120,
+    },
+
+    {
         "name": "The Diplomat",
         "short_name": "The Diplomat",
         "profile": "international_analysis",
         "label": "International · analyse",
         "type": "html",
+        "language": "en",
 
         "url": "https://thediplomat.com/regions/central-asia/",
 
@@ -94,6 +115,7 @@ SOURCES = [
         "profile": "investigative",
         "label": "International · investigation",
         "type": "html",
+        "language": "en",
 
         "url": "https://www.occrp.org/en/",
 
@@ -110,6 +132,7 @@ SOURCES = [
         "profile": "human_rights",
         "label": "International · droits humains",
         "type": "html",
+        "language": "en",
 
         "url": "https://www.hrw.org/asia/",
 
@@ -121,13 +144,66 @@ SOURCES = [
     },
 
     {
+        "name": "Human Rights Watch — français",
+        "short_name": "HRW FR",
+        "profile": "human_rights",
+        "label": "International · droits humains · français",
+        "type": "html",
+        "language": "fr",
+
+        "url": "https://www.hrw.org/fr/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Human Rights Watch — russe",
+        "short_name": "HRW RU",
+        "profile": "human_rights",
+        "label": "International · droits humains · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://www.hrw.org/ru/",
+
+        "max_articles": 80,
+    },
+
+    {
         "name": "Amnesty International",
         "short_name": "Amnesty",
         "profile": "human_rights",
         "label": "International · droits humains",
         "type": "html",
+        "language": "en",
 
         "url": "https://www.amnesty.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Amnesty International — français",
+        "short_name": "Amnesty FR",
+        "profile": "human_rights",
+        "label": "International · droits humains · français",
+        "type": "html",
+        "language": "fr",
+
+        "url": "https://www.amnesty.org/fr/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Amnesty International — russe",
+        "short_name": "Amnesty RU",
+        "profile": "human_rights",
+        "label": "International · droits humains · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://www.amnesty.org/ru/",
 
         "max_articles": 80,
     },
@@ -138,8 +214,22 @@ SOURCES = [
         "profile": "press_freedom",
         "label": "International · liberté de la presse",
         "type": "html",
+        "language": "en",
 
         "url": "https://cpj.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Committee to Protect Journalists — russe",
+        "short_name": "CPJ RU",
+        "profile": "press_freedom",
+        "label": "International · liberté de la presse · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://cpj.org/ru/",
 
         "max_articles": 80,
     },
@@ -150,8 +240,9 @@ SOURCES = [
         "profile": "press_freedom",
         "label": "International · liberté de la presse",
         "type": "html",
+        "language": "fr",
 
-        "url": "https://rsf.org/",
+        "url": "https://rsf.org/fr/",
 
         "max_articles": 80,
     },
@@ -166,20 +257,52 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · indépendant",
         "type": "html",
+        "language": "en",
 
         "url": "https://timesca.com/",
 
         "max_articles": 100,
     },
 
+    # ========================================================
+    # NOVASTAN — MULTILINGUE
+    # ========================================================
+
     {
-        "name": "Novastan",
-        "short_name": "Novastan",
+        "name": "Novastan — français",
+        "short_name": "Novastan FR",
         "profile": "regional_independent",
-        "label": "Régional · indépendant",
+        "label": "Régional · indépendant · français",
         "type": "html",
+        "language": "fr",
+
+        "url": "https://novastan.org/fr/",
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Novastan — anglais",
+        "short_name": "Novastan EN",
+        "profile": "regional_independent",
+        "label": "Régional · indépendant · anglais",
+        "type": "html",
+        "language": "en",
 
         "url": "https://novastan.org/en/",
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Novastan — allemand",
+        "short_name": "Novastan DE",
+        "profile": "regional_independent",
+        "label": "Régional · indépendant · allemand",
+        "type": "html",
+        "language": "de",
+
+        "url": "https://novastan.org/de/",
 
         "max_articles": 100,
     },
@@ -190,6 +313,7 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Ouzbékistan",
         "type": "html",
+        "language": "en",
 
         "url": "https://uznews.uz/en",
 
@@ -202,6 +326,7 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · indépendant",
         "type": "html",
+        "language": "multi",
 
         "url": "https://sarpa.media/",
 
@@ -214,6 +339,7 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · business & politique",
         "type": "html",
+        "language": "en",
 
         "url": "https://kz.kursiv.media/en/",
 
@@ -225,13 +351,27 @@ SOURCES = [
     # ========================================================
 
     {
-        "name": "Vlast",
-        "short_name": "Vlast",
+        "name": "Vlast — russe",
+        "short_name": "Vlast RU",
         "profile": "regional_independent",
-        "label": "Régional · Kazakhstan",
+        "label": "Régional · Kazakhstan · russe",
         "type": "html",
+        "language": "ru",
 
         "url": "https://vlast.kz/",
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Vlast — anglais",
+        "short_name": "Vlast EN",
+        "profile": "regional_independent",
+        "label": "Régional · Kazakhstan · anglais",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://vlast.kz/english/",
 
         "max_articles": 100,
     },
@@ -242,6 +382,7 @@ SOURCES = [
         "profile": "international_independent",
         "label": "International · Kazakhstan",
         "type": "html",
+        "language": "kk",
 
         "url": "https://www.azattyq.org/",
 
@@ -249,13 +390,27 @@ SOURCES = [
     },
 
     {
-        "name": "Orda.kz",
-        "short_name": "Orda",
+        "name": "Orda.kz — russe",
+        "short_name": "Orda RU",
         "profile": "regional_independent",
-        "label": "Indépendant · Kazakhstan",
+        "label": "Indépendant · Kazakhstan · russe",
         "type": "html",
+        "language": "ru",
 
         "url": "https://orda.kz/",
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "Orda.kz — anglais",
+        "short_name": "Orda EN",
+        "profile": "regional_independent",
+        "label": "Indépendant · Kazakhstan · anglais",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://en.orda.kz/",
 
         "max_articles": 100,
     },
@@ -266,6 +421,7 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Média régional · Kazakhstan",
         "type": "html",
+        "language": "en",
 
         "url": "https://en.tengrinews.kz/",
 
@@ -282,6 +438,7 @@ SOURCES = [
         "profile": "investigative",
         "label": "Investigation · Kirghizistan",
         "type": "html",
+        "language": "ru",
 
         "url": "https://kloop.kg/",
 
@@ -289,13 +446,27 @@ SOURCES = [
     },
 
     {
-        "name": "24.kg",
-        "short_name": "24.kg",
+        "name": "24.kg — russe",
+        "short_name": "24kg RU",
         "profile": "regional_media",
-        "label": "Régional · Kirghizistan",
+        "label": "Régional · Kirghizistan · russe",
         "type": "html",
+        "language": "ru",
 
         "url": "https://24.kg/",
+
+        "max_articles": 100,
+    },
+
+    {
+        "name": "24.kg — anglais",
+        "short_name": "24kg EN",
+        "profile": "regional_media",
+        "label": "Régional · Kirghizistan · anglais",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://24.kg/english/",
 
         "max_articles": 100,
     },
@@ -306,6 +477,7 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Indépendant · Kirghizistan",
         "type": "html",
+        "language": "ru",
 
         "url": "https://kaktus.media/",
 
@@ -318,6 +490,7 @@ SOURCES = [
         "profile": "state_media",
         "label": "Agence officielle · Kirghizistan",
         "type": "html",
+        "language": "en",
 
         "url": "https://en.kabar.kg/",
 
@@ -334,6 +507,7 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · Tadjikistan",
         "type": "html",
+        "language": "en",
 
         "url": "https://asiaplustj.info/en",
 
@@ -346,6 +520,7 @@ SOURCES = [
         "profile": "international_independent",
         "label": "International · Tadjikistan",
         "type": "html",
+        "language": "tg",
 
         "url": "https://www.ozodi.org/",
 
@@ -362,6 +537,7 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Ouzbékistan",
         "type": "html",
+        "language": "en",
 
         "url": "https://www.gazeta.uz/en/",
 
@@ -374,6 +550,7 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Ouzbékistan",
         "type": "html",
+        "language": "en",
 
         "url": "https://kun.uz/en",
 
@@ -386,6 +563,7 @@ SOURCES = [
         "profile": "economic_media",
         "label": "Économie · Ouzbékistan",
         "type": "html",
+        "language": "en",
 
         "url": "https://www.spot.uz/en/",
 
@@ -402,6 +580,7 @@ SOURCES = [
         "profile": "human_rights",
         "label": "Indépendant · Turkménistan",
         "type": "html",
+        "language": "ru",
 
         "url": "https://turkmen.news/",
 
@@ -414,6 +593,7 @@ SOURCES = [
         "profile": "human_rights",
         "label": "Indépendant · Turkménistan",
         "type": "html",
+        "language": "ru",
 
         "url": "https://hronikatm.com/",
 
@@ -430,6 +610,7 @@ SOURCES = [
         "profile": "regional_independent",
         "label": "Régional · transfrontalier",
         "type": "html",
+        "language": "en",
 
         "url": "https://fergana.agency/",
 
@@ -442,6 +623,7 @@ SOURCES = [
         "profile": "regional_analysis",
         "label": "Régional · analyse",
         "type": "html",
+        "language": "en",
 
         "url": "https://www.cacianalyst.org/",
 
@@ -458,6 +640,7 @@ SOURCES = [
         "profile": "regional_media",
         "label": "Régional · Caucase",
         "type": "html",
+        "language": "en",
 
         "url": "https://www.azernews.az/latest/",
 
