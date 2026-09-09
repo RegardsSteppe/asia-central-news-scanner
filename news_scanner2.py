@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import re
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from text_utils import article_date_timestamp, clean_title
 
 BASE_DIR = Path(__file__).resolve().parent
 OUTPUT_FILE = BASE_DIR / "index2.html"
+CSV_OUTPUT_FILE = BASE_DIR / "articles2.csv"
 STOPWORDS = {
     "the",
     "and",
@@ -102,6 +104,74 @@ def build_audit(articles: list[dict[str, object]]) -> list[dict[str, object]]:
     ]
 
 
+def build_csv_rows(articles: list[dict[str, object]]) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+
+    for article in articles:
+        date = article.get("date")
+        signals = article.get("signals")
+        if not isinstance(signals, dict):
+            signals = {}
+
+        rows.append(
+            {
+                "date": date.isoformat() if hasattr(date, "isoformat") else date or "",
+                "source": article.get("source", ""),
+                "source_label": article.get("source_label", ""),
+                "title": article.get("title", ""),
+                "url": article.get("url", ""),
+                "summary": article.get("summary", ""),
+                "score": article.get("score", 0),
+                "level": article.get("level", "D"),
+                "priority": article.get("priority", ""),
+                "relevant": article.get("relevant", False),
+                "theme": article.get("theme", ""),
+                "reasons": "; ".join(article.get("reasons") or []),
+                "geography_score": signals.get("geography_score", 0),
+                "target_score": signals.get("target_score", 0),
+                "repression_score": signals.get("repression_score", 0),
+                "rights_score": signals.get("rights_score", 0),
+                "journalism_score": signals.get("journalism_score", 0),
+                "geopolitical_score": signals.get("geopolitical_score", 0),
+                "freshness_score": signals.get("freshness_score", 0),
+            }
+        )
+
+    return rows
+
+
+def export_csv(articles: list[dict[str, object]]) -> None:
+    rows = build_csv_rows(articles)
+    fieldnames = [
+        "date",
+        "source",
+        "source_label",
+        "title",
+        "url",
+        "summary",
+        "score",
+        "level",
+        "priority",
+        "relevant",
+        "theme",
+        "reasons",
+        "geography_score",
+        "target_score",
+        "repression_score",
+        "rights_score",
+        "journalism_score",
+        "geopolitical_score",
+        "freshness_score",
+    ]
+
+    with CSV_OUTPUT_FILE.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    print(f"CSV | {CSV_OUTPUT_FILE.name} créé | {len(rows)} articles")
+
+
 def main() -> None:
     articles = load_articles()
 
@@ -124,6 +194,7 @@ def main() -> None:
         sources_total=len(SOURCES),
     )
     audit = build_audit(articles)
+    export_csv(articles)
 
     html_output = create_web_page(
         articles=articles,
