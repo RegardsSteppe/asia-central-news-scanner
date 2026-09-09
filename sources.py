@@ -15,6 +15,8 @@ SOURCES = [
         "label": "International · indépendant",
         "type": "rss",
 
+        "url": "https://www.rferl.org/",
+
         "feeds": [
             "https://www.rferl.org/api/zriiml-vomx-tpeogm_",
             "https://www.rferl.org/api/zqii_l-vomx-tpeigmy",
@@ -52,6 +54,8 @@ SOURCES = [
         "profile": "independent",
         "label": "Indépendant · Asie centrale",
         "type": "rss",
+
+        "url": "https://cabar.asia/en/",
 
         "feeds": [
             "https://cabar.asia/en/feed",
@@ -411,11 +415,7 @@ SOURCES = [
         "label": "Indépendant · Turkménistan",
         "type": "html",
 
-        "url": "https://en.hronikatm.com/",
-
-        "fallbacks": [
-            "https://hronikatm.com/",
-        ],
+        "url": "https://hronikatm.com/",
 
         "max_articles": 100,
     },
