@@ -205,6 +205,10 @@ Each run logs:
 
 HTTP responses now persist ETag/Last-Modified metadata and cached source content in `http_cache.json` to support conditional requests (`If-None-Match`, `If-Modified-Since`) across runs.
 
+### Persistence/index note
+
+This repository currently persists scan output to flat files (`index.html`, `articles.csv`) rather than a relational database. Persistence remains batched (`writerows` for CSV + single HTML write), so no DB index migration is required for this optimization pass.
+
 ### Before/after comparison
 
 To compare runtime improvements safely:
