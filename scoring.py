@@ -31,6 +31,61 @@ from keywords import (
 )
 
 
+# Signaux V7 volontairement courts et forts : utilisés pour déterminer
+# si les droits humains constituent réellement le sujet principal.
+REPRESSION_TERMS_V7 = [
+    "torture", "tortured", "political prisoner", "political repression",
+    "political crackdown", "under pressure", "under threat", "persecution",
+    "pressure on journalists", "imprisoned", "imprisonment", "jailed",
+    "behind bars", "prison sentence", "sentenced to prison", "sentenced",
+    "arrested", "detained", "convicted", "convicts", "criminal prosecution",
+    "censorship", "press freedom",
+    "пытки", "пыточные условия", "шизо", "карцер", "политический заключенный",
+    "политические репрессии", "преследование", "преследуют", "давление на журналистов",
+    "за решеткой", "арестован", "задержан", "осужден", "осуждён", "приговорен",
+    "заключен", "цензура", "содержится в шизо",
+]
+
+SPECIFIC_RIGHTS_TERMS_V7 = [
+    "human rights violation", "human rights violations", "rights violation",
+    "freedom of expression", "freedom of speech", "freedom of assembly",
+    "press freedom", "media freedom", "women's rights", "gender discrimination",
+    "gender-based violence", "violence against women", "forced marriage",
+    "child marriage", "lgbt rights", "lgbti rights", "lgbt", "ethnic discrimination",
+    "religious discrimination", "academic freedom", "academic censorship",
+    "forced labor", "forced labour", "child labor", "child labour",
+    "silent suffering", "violence against daughters-in-law",
+    "права человека", "нарушение прав человека", "свобода слова", "свобода прессы",
+    "права женщин", "гендерная дискриминация", "насилие в отношении женщин",
+    "лgbt", "академическая свобода", "принудительный труд", "детский труд",
+]
+
+JOURNALIST_TERMS_V7 = [
+    "journalist", "journalists", "reporter", "reporters", "журналист", "журналисты",
+]
+
+ACADEMIC_HR_TERMS_V7 = [
+    "academic freedom", "academic censorship", "academic repression",
+    "academic freedom at risk", "professor arrested", "professor detained",
+    "scholar arrested", "scholar detained", "академическая свобода",
+    "преследование ученых", "арест профессора", "задержание профессора",
+]
+
+GENERIC_REFORM_TERMS_V7 = [
+    "democratic reform", "democratic reforms", "political reform", "political reforms",
+    "development programs", "social stability", "constitutional reform",
+    "political development", "political traditions",
+]
+
+NON_HR_TOPIC_TERMS_V7 = [
+    "diaspora", "hidden economy", "travelogue", "night train", "dombra",
+    "metallica", "k-pop", "hip-hop", "classical repertoire", "album",
+    "music", "culture", "cultural", "tourism", "economic", "economy",
+    "data center", "investors", "bonds", "gold reserves", "strategic partnership",
+    "state visit", "sco summit", "nomad games",
+]
+
+
 # ============================================================
 # OUTILS
 # ============================================================
@@ -114,7 +169,7 @@ def weighted_score(terms, weights, maximum):
 def classify_article(article):
 
     """
-    Classification V4.
+    Classification V7.
 
     Score global : 0-100
 
@@ -173,7 +228,7 @@ def classify_article(article):
         + body[:12000]
     ).strip()
 
-    # V6 additional human-rights signals
+    # V7 additional human-rights signals
     has_hr_defender = any(normalize(term) in full_text for term in HUMAN_RIGHTS_DEFENDER_TERMS)
     forced_labor_detected = any(normalize(term) in full_text for term in FORCED_LABOR_TERMS)
     has_detention = any(normalize(term) in full_text for term in [
@@ -1109,6 +1164,88 @@ def classify_article(article):
         )
 
     # ========================================================
+    # V7 — ANCRAGE HR PRINCIPAL
+    # ========================================================
+    # Les mentions HR lointaines dans le corps ne doivent pas
+    # transformer un article économique/culturel en priorité A.
+    # Un signal fort doit apparaître dans le titre/résumé court.
+    primary_hr_text = (title + " " + summary[:1200]).strip()
+
+    primary_repression = any(
+        phrase_present(primary_hr_text, term)
+        for term in REPRESSION_TERMS_V7
+    ) or bool(re.search(
+        r"(?:\bconvicts?\b|\bconvicted\b|\bsentenced\b|\bunder pressure\b|\bunder threat\b|\bpressure on journalists\b|\bbehind bars\b|\bза решеткой\b|\bпреследует\b|\bпреследование\b)",
+        primary_hr_text,
+        re.IGNORECASE,
+    ))
+    primary_hr_defender = any(
+        phrase_present(primary_hr_text, term)
+        for term in HUMAN_RIGHTS_DEFENDER_TERMS
+    )
+    primary_forced_labor = any(
+        phrase_present(primary_hr_text, term)
+        for term in FORCED_LABOR_TERMS
+    )
+    # V8: seuls les droits explicitement menacés/violés constituent
+    # un ancrage HR fort. Les mentions génériques (women's rights,
+    # democratic reforms, politics, etc.) ne suffisent pas.
+    STRONG_PRIMARY_RIGHTS_V8 = [
+        "human rights violation", "human rights violations",
+        "rights violation", "lgbt rights", "lgbti rights",
+        "gender-based violence", "violence against women",
+        "forced marriage", "child marriage",
+        "ethnic discrimination", "religious discrimination",
+        "forced labor", "forced labour", "child labor", "child labour",
+        "принудительный труд", "детский труд",
+        "нарушение прав человека", "нарушения прав человека",
+        "насилие в отношении женщин", "гендерная дискриминация",
+        "свобода прессы", "свобода слова",
+    ]
+    primary_specific_right = any(
+        phrase_present(primary_hr_text, term)
+        for term in STRONG_PRIMARY_RIGHTS_V8
+    )
+    primary_lgbt_pressure = (
+        any(phrase_present(primary_hr_text, term) for term in ["lgbt", "lgbti", "lgbt rights", "lgbti rights", "queer"])
+        and (primary_repression or "under pressure" in primary_hr_text or "under threat" in primary_hr_text)
+    )
+    primary_journalist_pressure = (
+        any(phrase_present(primary_hr_text, term) for term in JOURNALIST_TERMS_V7)
+        and (primary_repression or any(phrase_present(primary_hr_text, term) for term in [
+            "censorship", "censored", "press freedom", "media freedom",
+            "restricted access", "access restriction", "pressure on journalists",
+            "запретили доступ", "давление на журналистов",
+            "цензура", "цензур"
+        ]))
+    )
+    primary_academic_case = (
+        any(phrase_present(primary_hr_text, term) for term in ACADEMIC_HR_TERMS_V7)
+        and (has_detention or has_imprisonment or primary_repression)
+    )
+
+    primary_defender_case = (
+        primary_hr_defender
+        and (
+            primary_repression
+            or prison_sentence_signal
+            or has_detention
+            or has_imprisonment
+            or severe_morphology
+        )
+    )
+
+    primary_hr_anchor = bool(
+        primary_repression
+        or primary_defender_case
+        or primary_forced_labor
+        or primary_specific_right
+        or primary_lgbt_pressure
+        or primary_journalist_pressure
+        or primary_academic_case
+    )
+
+    # ========================================================
     # BONUS GRAVE
     # ========================================================
 
@@ -1148,9 +1285,11 @@ def classify_article(article):
     # entre titre et corps et où aucun mot isolé n'est suffisamment fort.
     critical_hr_case = bool(
         regional_context
-        and has_activist
+        and (has_activist or has_hr_defender)
+        and (primary_repression or primary_defender_case or primary_forced_labor or primary_journalist_pressure or primary_academic_case)
         and (
             confirmed_repression
+            or primary_repression
             or severe_detected
         )
         and (
@@ -1164,6 +1303,10 @@ def classify_article(article):
         reasons.append(
             "CAS HR CRITIQUE: activiste + condamnation/détention + signal grave"
         )
+
+        if has_activist and primary_repression and primary_specific_right:
+            score += 15
+            reasons.append("cible militante + condamnation + droit spécifique")
 
     elif (
         regional_context
@@ -1203,31 +1346,127 @@ def classify_article(article):
         )
 
     # ========================================================
-    # V6 — SIGNAUX HR À FORTE VALEUR COMBINATOIRE
+    # V7 — SIGNAUX HR À FORTE VALEUR COMBINATOIRE
     # ========================================================
+    # Bonus mutuellement contrôlés : on évite l'empilement
+    # défenseur + journaliste + détention + répression + rights
+    # qui produisait des faux 90-100 sur des articles généraux.
 
-    if regional_context and has_hr_defender and (confirmed_repression or severe_detected):
-        score += 20
-        reasons.append("défenseur des droits confronté à une répression confirmée")
+    v7_combo_bonus = 0
 
-    if regional_context and has_hr_defender and (prison_sentence_signal or has_detention or has_imprisonment):
-        score += 15
-        reasons.append("défenseur des droits arrêté, détenu ou condamné")
+    if regional_context and primary_forced_labor:
+        v7_combo_bonus += 37
+        reasons.append("travail forcé au cœur du sujet")
+        if has_government_involvement:
+            v7_combo_bonus += 8
+            reasons.append("travail forcé impliquant les autorités ou l'État")
 
-    if regional_context and has_hr_defender and has_journalist:
-        score += 12
+    elif regional_context and primary_defender_case and (confirmed_repression or severe_detected):
+        v7_combo_bonus += 16
+        reasons.append("défenseur des droits confronté à une répression")
+        if prison_sentence_signal or has_detention or has_imprisonment:
+            v7_combo_bonus += 8
+            reasons.append("défenseur des droits arrêté, détenu ou condamné")
+
+    elif regional_context and primary_defender_case and has_journalist:
+        v7_combo_bonus += 25
+        reasons.append("défenseur des droits et journaliste au cœur du sujet")
+
+    elif regional_context and primary_hr_defender and has_journalist:
+        v7_combo_bonus += 12
         reasons.append("défenseur des droits et journaliste")
 
-    if regional_context and has_journalist and (confirmed_repression or severe_detected or has_restriction or has_censorship):
-        score += 18
+    elif regional_context and primary_journalist_pressure:
+        v7_combo_bonus += 35
         reasons.append("journaliste confronté à restriction, censure ou répression")
 
-    if regional_context and forced_labor_detected:
+    elif regional_context and primary_academic_case:
+        v7_combo_bonus += 26
+        reasons.append("liberté académique menacée avec arrestation/détention")
+
+    elif regional_context and primary_lgbt_pressure:
+        v7_combo_bonus += 45
+        reasons.append("personnes LGBT/queer confrontées à une pression ou répression")
+
+    elif regional_context and primary_specific_right:
+        v7_combo_bonus += 8
+        reasons.append("atteinte à un droit spécifique au cœur du sujet")
+
+    score += min(v7_combo_bonus, 45)
+
+    # V8 — cas militant explicitement condamné/visé : la combinaison
+    # titre/résumé suffit à confirmer une affaire HR forte, même si le
+    # scraper ne retrouve pas de terme juridique dans le body.
+    if regional_context and has_activist and primary_repression and primary_specific_right:
         score += 20
-        reasons.append("travail forcé / exploitation du travail")
-        if has_government_involvement:
-            score += 10
-            reasons.append("travail forcé impliquant les autorités ou l'État")
+        reasons.append("militant + répression + droit spécifique dans le sujet principal")
+
+    # V8 — pression ciblant directement les personnes LGBT/queer.
+    if regional_context and primary_lgbt_pressure:
+        score += 15
+        reasons.append("pression ciblant les personnes LGBT/queer")
+
+    # --------------------------------------------------------
+    # V7 — PLAFOND ANTI-FAUX-POSITIFS
+    # --------------------------------------------------------
+    # Si aucun signal HR fort n'est présent dans le titre/résumé,
+    # le corps seul ne peut pas faire passer un article général
+    # en haute priorité.
+    if regional_context and not primary_hr_anchor:
+        if primary_hr_defender:
+            score = min(score, 50)
+            reasons.append("plafond V8: défenseur cité sans acte répressif principal")
+        elif any(phrase_present(primary_hr_text, term) for term in GENERIC_REFORM_TERMS_V7):
+            score = min(score, 35)
+            reasons.append("plafond V8: réforme/politique générale sans atteinte HR explicite")
+        elif any(phrase_present(primary_hr_text, term) for term in NON_HR_TOPIC_TERMS_V7):
+            score = min(score, 28)
+            reasons.append("plafond V8: sujet culturel/économique/général sans signal HR principal")
+        else:
+            score = min(score, 35)
+            reasons.append("plafond V8: aucun événement HR principal dans titre/résumé")
+
+    # ========================================================
+    # V8 — PLAFONDS ÉDITORIAUX FINAUX
+    # ========================================================
+    # Les scores élevés exigent désormais un événement HR identifiable
+    # dans le titre/résumé, et non simplement des mots HR dans le body.
+    if regional_context:
+        if primary_forced_labor:
+            # Travail forcé : priorité élevée, sans empiler artificiellement
+            # tous les signaux du body.
+            score = min(score, 82 if has_government_involvement else 76)
+        elif primary_academic_case:
+            score = min(score, 82)
+        elif primary_journalist_pressure:
+            score = min(score, 85)
+        elif primary_defender_case or critical_hr_case:
+            score = min(score, 100)
+        elif primary_lgbt_pressure:
+            score = min(score, 85)
+        elif primary_repression:
+            score = min(score, 78)
+        elif primary_specific_right:
+            score = min(score, 65)
+
+    # Les droits des femmes/politique/réformes sans violence, contrainte,
+    # condamnation ou répression explicite restent des sujets secondaires.
+    if regional_context and not (
+        primary_defender_case
+        or primary_forced_labor
+        or primary_journalist_pressure
+        or primary_academic_case
+        or primary_lgbt_pressure
+        or primary_repression
+    ):
+        if any(phrase_present(primary_hr_text, term) for term in [
+            "women's rights", "prawa kobiet", "права женщин",
+            "democratic reform", "democratic reforms",
+            "political reform", "political reforms",
+            "more women in", "social stability"
+        ]):
+            score = min(score, 48)
+            reasons.append("plafond V8: sujet droits/politique sans événement répressif")
 
     # ========================================================
     # BORNE
@@ -1261,6 +1500,8 @@ def classify_article(article):
             or confirmed_journalist_pressure
             or severe_detected
             or confirmed_repression
+            or (has_activist and primary_repression and primary_specific_right)
+            or primary_lgbt_pressure
         )
     ):
 
