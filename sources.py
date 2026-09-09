@@ -107,7 +107,7 @@ SOURCES = [
         "label": "International · droits humains",
         "type": "html",
 
-        "url": "https://www.hrw.org/",
+        "url": "https://www.hrw.org/asia/",
 
         "fallbacks": [
             "https://www.hrw.org/asia",
@@ -412,6 +412,10 @@ SOURCES = [
         "type": "html",
 
         "url": "https://en.hronikatm.com/",
+
+        "fallbacks": [
+            "https://hronikatm.com/",
+        ],
 
         "max_articles": 100,
     },
