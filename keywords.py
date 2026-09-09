@@ -1,600 +1,414 @@
 # ============================================================
-# KEYWORDS — VEILLE ASIE CENTRALE / ACTIVISTES / DROITS HUMAINS
+# keywords.py — Central Asia News Scanner V9
 # ============================================================
 
-
-# ============================================================
-# 1. GÉOGRAPHIE — ASIE CENTRALE
-# ============================================================
+# ------------------------------------------------------------
+# 1. HUMAN RIGHTS DEFENDERS
+# ------------------------------------------------------------
 
 HUMAN_RIGHTS_DEFENDER_TERMS = [
-    "правозащитник",
-    "правозащитница",
-    "правозащитник и журналист",
-    "правозащитница и журналист",
     "human rights defender",
-    "human rights activist",
+    "human rights defenders",
     "rights defender",
-    "rights activist",
+    "rights defenders",
+    "defender",
+    "activist",
+    "activists",
+    "civil society activist",
+    "civil society activists",
+    "human rights activist",
+    "human rights activists",
+    "ngo worker",
+    "ngo workers",
+    "civil society",
+    "rights group",
+    "rights groups",
+    "human rights group",
+    "human rights groups",
+    "dissident",
+    "dissidents",
+    "opposition activist",
+    "opposition activists",
+    "political activist",
+    "political activists",
+    "pro-democracy activist",
+    "pro-democracy activists",
+    "peaceful activist",
+    "peaceful activists",
 ]
+
+# ------------------------------------------------------------
+# 2. FORCED LABOR
+# ------------------------------------------------------------
 
 FORCED_LABOR_TERMS = [
     "forced labor",
     "forced labour",
     "forced work",
-    "child labor",
-    "child labour",
-    "cotton quotas",
+    "forced recruitment",
+    "forced recruitment of workers",
+    "forced picking",
     "forced cotton picking",
+    "forced cotton harvesting",
+    "cotton picking",
+    "cotton harvesting",
+    "mandatory cotton picking",
+    "mandatory cotton harvesting",
+    "mobilized for cotton",
+    "mobilised for cotton",
+    "labor mobilization",
+    "labour mobilisation",
+    "labor mobilisation",
+    "state-imposed quotas",
+    "state imposed quotas",
+    "compulsory labor",
+    "compulsory labour",
+    "work under coercion",
+    "coerced labor",
+    "coerced labour",
+    "unpaid labor",
+    "unpaid labour",
+    "forced agricultural work",
+
+    # Russian
     "принудительный труд",
+    "принудительный труд работников",
+    "принудительная работа",
+    "принудительная уборка",
     "принудительный сбор хлопка",
-    "принудительный труд на сборе хлопка",
-    "квоты на производство и сбор хлопка",
-    "детский труд",
+    "обязательный сбор хлопка",
+    "принудительная уборка хлопка",
+    "трудовая мобилизация",
+    "принудительная мобилизация",
+    "принудительное привлечение к труду",
+    "обязательный труд",
+    "бесплатный труд",
 ]
+
+# ------------------------------------------------------------
+# 3. CENTRAL ASIA
+# ------------------------------------------------------------
 
 CENTRAL_ASIA_TERMS = [
     "central asia",
     "central asian",
-
-    # Kazakhstan
     "kazakhstan",
-    "kazakh",
-    "kazakhs",
-
-    # Kyrgyzstan
+    "uzbekistan",
     "kyrgyzstan",
-    "kyrgyz",
-    "kirghizstan",
-    "kirghiz",
-
-    # Tajikistan
+    "kyrgyz republic",
     "tajikistan",
-    "tajik",
-    "tadjikistan",
-    "tadjik",
-
-    # Turkmenistan
     "turkmenistan",
+
+    # common country adjectives / forms
+    "kazakh",
+    "uzbek",
+    "kyrgyz",
+    "tajik",
     "turkmen",
 
-    # Uzbekistan
-    "uzbekistan",
-    "uzbek",
-    "ouzbekistan",
-    "ouzbek",
-
-    # Karakalpakstan
-    "karakalpakstan",
-    "karakalpak",
-
-    # Villes — Kazakhstan
-    "almaty",
-    "astana",
-    "nur-sultan",
-    "nur sultan",
-    "shymkent",
-
-    # Villes — Kyrgyzstan
-    "bishkek",
-    "osh",
-    "jalal-abad",
-    "jalalabad",
-
-    # Villes — Tajikistan
-    "dushanbe",
-    "khujand",
-    "khorog",
-
-    # Villes — Turkmenistan
-    "ashgabat",
-    "turkmenabat",
-
-    # Villes — Uzbekistan
-    "tashkent",
-    "samarkand",
-    "bukhara",
-    "fergana",
-    "andijan",
-    "nukus",
-
-    # Russe
+    # Russian
     "центральная азия",
-    "центральноазиат",
+    "центральноазиатский",
     "казахстан",
-    "казах",
-    "казахи",
-    "киргизстан",
-    "кыргызстан",
-    "киргиз",
-    "кыргыз",
-    "таджикистан",
-    "таджик",
-    "туркменистан",
-    "туркмен",
     "узбекистан",
-    "узбек",
-    "каракалпакстан",
-    "каракалпак",
-
-    # Villes — Russe (dont formes fléchies fréquentes)
-    "алматы",
-    "астана",
-    "шымкент",
-    "бишкек",
-    "ош",
-    "джалал-абад",
-    "душанбе",
-    "худжанд",
-    "хорог",
-    "ашхабад",
-    "туркменабат",
-    "ташкент",
-    "ташкенте",
-    "самарканд",
-    "бухара",
-    "фергана",
-    "ферганы",
-    "андижан",
-    "нукус",
+    "кыргызстан",
+    "киргизия",
+    "таджикистан",
+    "туркменистан",
 ]
 
-
-# ============================================================
-# 2. GÉOGRAPHIE — CAUCASE
-# ============================================================
+# ------------------------------------------------------------
+# 4. CAUCASUS
+# ------------------------------------------------------------
 
 CAUCASUS_TERMS = [
-    "georgia",
-    "georgian",
-    "armenia",
-    "armenian",
-    "azerbaijan",
-    "azerbaijani",
-    "south caucasus",
     "caucasus",
+    "south caucasus",
+    "north caucasus",
+    "armenia",
+    "azerbaijan",
+    "georgia",
+    "chechnya",
+    "dagestan",
+    "north ossetia",
+    "ingushetia",
 
-    # Russe
-    "грузия",
-    "грузин",
-    "армения",
-    "армян",
-    "азербайджан",
-    "азербайджанский",
-    "южный кавказ",
+    # Russian
     "кавказ",
+    "южный кавказ",
+    "северный кавказ",
+    "армения",
+    "азербайджан",
+    "грузия",
+    "чечня",
+    "дагестан",
+    "ингушетия",
 ]
 
-
-# ============================================================
-# 3. DROITS HUMAINS — GÉNÉRAL
-# ============================================================
+# ------------------------------------------------------------
+# 5. GENERAL HUMAN RIGHTS
+# ------------------------------------------------------------
 
 HUMAN_RIGHTS_TERMS = [
     "human rights",
-    "human rights violation",
     "human rights violations",
-    "rights violation",
     "rights violations",
-
+    "rights abuse",
+    "abuse of rights",
     "civil rights",
     "political rights",
-
+    "fundamental rights",
     "freedom of expression",
     "freedom of speech",
     "freedom of assembly",
     "freedom of association",
     "freedom of religion",
+    "freedom of belief",
+    "freedom of conscience",
     "freedom of movement",
+    "right to protest",
+    "right to privacy",
+    "due process",
+    "fair trial",
+    "rule of law",
+    "civic space",
+    "shrinking civic space",
+    "civil liberties",
 
-    "press freedom",
-    "freedom of the press",
-    "media freedom",
-    "freedom of information",
-
-    "civil society",
-
-    "human rights defender",
-    "human rights defenders",
-
-    # Russe
+    # Russian
     "права человека",
     "нарушение прав человека",
-    "нарушения прав человека",
+    "нарушения прав",
     "гражданские права",
     "политические права",
+    "основные права",
+    "свобода выражения мнения",
     "свобода слова",
-    "свобода выражения",
     "свобода собраний",
     "свобода объединений",
     "свобода вероисповедания",
+    "свобода совести",
     "свобода передвижения",
-    "свобода прессы",
-    "свобода информации",
-    "правозащитник",
-    "правозащитники",
-    "гражданское общество",
+    "право на протест",
+    "право на частную жизнь",
+    "надлежащая правовая процедура",
+    "справедливый суд",
+    "верховенство закона",
+    "гражданское пространство",
+    "гражданские свободы",
 ]
 
-
-# ============================================================
-# 4. ACTIVISTES / DISSIDENTS / SOCIÉTÉ CIVILE
-# ============================================================
+# ------------------------------------------------------------
+# 6. ACTIVISTS
+# ------------------------------------------------------------
 
 ACTIVIST_TERMS = [
     "activist",
     "activists",
-
     "human rights activist",
     "human rights activists",
-
-    "civil society activist",
-    "civil society activists",
-
     "political activist",
     "political activists",
-
+    "civil society activist",
+    "civil society activists",
+    "pro-democracy activist",
+    "pro-democracy activists",
     "opposition activist",
     "opposition activists",
-
     "dissident",
     "dissidents",
+    "opposition figure",
+    "opposition figures",
+    "civil society leader",
+    "civil society leaders",
 
-    "human rights defender",
-    "human rights defenders",
-
-    "civil society organization",
-    "civil society organizations",
-
-    "civil society group",
-    "civil society groups",
-
-    "ngo",
-    "ngos",
-    "non-governmental organization",
-    "non-governmental organizations",
-
-    # Russe
+    # Russian morphology
     "активист",
     "активисты",
+    "активиста",
+    "активистов",
     "правозащитник",
     "правозащитники",
+    "правозащитника",
+    "правозащитников",
+    "оппозиционер",
+    "оппозиционеры",
+    "оппозиционера",
+    "оппозиционеров",
     "диссидент",
     "диссиденты",
-    "политический активист",
-    "политические активисты",
-    "общественный активист",
-    "общественные активисты",
-    "неправительственная организация",
-    "неправительственные организации",
 ]
 
-
-# ============================================================
-# 5. RÉPRESSION — FORTE
-# ============================================================
+# ------------------------------------------------------------
+# 7. REPRESSION
+# ------------------------------------------------------------
 
 REPRESSION_TERMS = [
-    # Arrestation / détention
-    "arrested",
-    "arrest",
-    "arrests",
-    "detained",
-    "detention",
-    "detentions",
-    "taken into custody",
-    "held in custody",
-    "held without charge",
-    "arbitrary detention",
-    "arbitrarily detained",
-    "detained without charge",
-    "in custody",
-
-    # Prison
-    "prison",
-    "prisons",
-    "imprisoned",
-    "imprisonment",
-    "jailed",
-    "jail",
-    "prison sentence",
-    "prison term",
-    "sentenced to prison",
-    "serving a sentence",
-    "serving a prison sentence",
-    "behind bars",
-    "solitary confinement",
-    "punitive isolation",
-    "prison conditions",
-    "detention conditions",
-    "inhuman conditions",
-    "torturous conditions",
-
-    # Condamnation
-    "convicted",
-    "conviction",
-    "sentenced",
-    "sentence",
-
-    # Justice pénale
-    "criminal case",
-    "criminal cases",
-    "criminal prosecution",
-    "criminal prosecutions",
-    "prosecuted",
-    "prosecution",
-    "prosecutions",
-    "charged with",
-    "criminal charges",
-
-    # Procès
-    "trial",
-    "trials",
-    "closed-door trial",
-    "closed door trial",
-    "secret trial",
-
-    # Torture / mauvais traitements
-    "torture",
-    "tortured",
-    "ill-treatment",
-    "mistreatment",
-    "abuse in custody",
-    "police abuse",
-    "custodial abuse",
-
-    # Violence physique / menaces
-    "attacked",
-    "physically attacked",
-    "assaulted",
-    "beaten",
-    "beaten up",
-    "threatened",
-    "death threats",
-    "intimidated",
+    "repression",
+    "repressive",
+    "crackdown",
+    "crackdown on",
+    "political repression",
+    "state repression",
+    "government repression",
+    "persecution",
+    "persecuted",
+    "persecute",
+    "harassment",
     "intimidation",
+    "threatened",
+    "threats",
+    "retaliation",
+    "reprisal",
+    "reprisals",
+    "punished for speaking out",
+    "silencing",
+    "suppression",
+    "suppression of dissent",
+    "political persecution",
+    "political pressure",
+    "state pressure",
+    "government pressure",
+    "abuse of power",
+    "state abuse",
 
-    # Disparitions
-    "disappeared",
-    "forcibly disappeared",
-    "enforced disappearance",
-    "forced disappearance",
-    "missing in custody",
+    # Russian stems / morphology handled by substring matching
+    "репресс",
+    "преследован",
+    "преследова",
+    "давлен",
+    "запугив",
+    "угроз",
+    "подавлен",
+    "подавля",
+    "гонен",
+    "притеснен",
+    "притесн",
+    "давлени",
+    "репрессив",
+]
 
-    # Restrictions de mouvement
-    "travel ban",
-    "travel bans",
-    "exit ban",
-    "barred from leaving",
-    "prevented from leaving",
-    "passport confiscated",
-    "passport revoked",
+# ------------------------------------------------------------
+# 8. LEGAL / POLITICAL REPRESSION
+# ------------------------------------------------------------
 
-    # Répression politique
+LEGAL_REPRESSION_TERMS = [
+    "political prosecution",
+    "politically motivated prosecution",
+    "politically motivated charges",
+    "political charges",
+    "political case",
+    "politically motivated case",
+    "politically motivated trial",
+    "selective prosecution",
+    "selective justice",
+    "abuse of criminal law",
+    "abuse of the law",
+    "criminalization of dissent",
+    "criminalisation of dissent",
+    "criminalized for",
+    "criminalised for",
+    "prosecuted for criticizing",
+    "prosecuted for criticising",
+    "prosecuted for speaking out",
+    "charged for criticizing",
+    "charged for criticising",
+    "charged over a protest",
+    "convicted for protest",
+    "convicted for activism",
+    "prisoner of conscience",
+    "prisoners of conscience",
     "political prisoner",
     "political prisoners",
-    "political repression",
+    "political detainee",
+    "political detainees",
     "arbitrary detention",
-    "solitary confinement",
-    "inhuman conditions",
-    "torturous conditions",
-    "political crackdown",
-    "media crackdown",
-    "press crackdown",
-    "opposition crackdown",
-    "opposition repression",
+    "arbitrarily detained",
+    "arbitrary arrest",
+    "arbitrarily arrested",
+    "unlawful detention",
+    "unlawful arrest",
 
-    # Censure / Internet
-    "censorship",
-    "online censorship",
-    "internet censorship",
-    "website blocked",
-    "website blocked by authorities",
-    "social media blocked",
-    "internet shutdown",
-
-    # Russe
+    # Russian
+    "политическое преследование",
+    "политическое дело",
+    "политически мотивированное дело",
+    "политически мотивированное обвинение",
+    "политически мотивированное преследование",
+    "политически мотивированный приговор",
+    "политзаключенный",
+    "политзаключенные",
     "политический заключенный",
     "политические заключенные",
-    "политический арест",
-    "политические аресты",
-    "арестован",
-    "арестована",
-    "арестованы",
-    "арест",
-    "задержан",
-    "задержана",
-    "задержаны",
-    "задержание",
-    "тюрьма",
-    "тюрьме",
-    "заключен",
-    "заключена",
-    "заключены",
+    "узник совести",
+    "узники совести",
+    "произвольное задержание",
+    "произвольный арест",
+    "незаконное задержание",
+    "незаконный арест",
+]
+
+# ------------------------------------------------------------
+# 9. LEGAL / RULE OF LAW CONTEXT
+# ------------------------------------------------------------
+
+LEGAL_CONTEXT_TERMS = [
+    "trial",
+    "court",
+    "court ruling",
+    "court decision",
+    "judiciary",
+    "judicial independence",
+    "independent judiciary",
+    "rule of law",
+    "constitutional court",
+    "constitution",
+    "due process",
+    "fair trial",
+    "legal proceedings",
+    "prosecution",
+    "prosecutor",
+    "prosecutors",
+    "charges",
+    "conviction",
+    "convicted",
+    "sentenced",
+    "sentence",
+    "imprisoned",
+    "detained",
+    "detention",
+    "arrest",
+    "arrested",
+
+    # Russian
+    "суд",
+    "судебное решение",
+    "судебное разбирательство",
+    "судебная система",
+    "независимость судебной системы",
+    "верховенство закона",
+    "конституционный суд",
+    "конституция",
+    "правосудие",
+    "обвинение",
+    "обвинения",
+    "приговор",
     "осужден",
     "осуждена",
     "осуждены",
-    "уголовное дело",
-    "уголовные дела",
-    "уголовное преследование",
-    "уголовные обвинения",
-    "пытка",
-    "пытки",
-    "жестокое обращение",
-    "избит",
-    "избита",
-    "избиты",
-    "нападение",
-    "угрозы",
-    "угрозы убийством",
-    "запугивание",
-    "шизо",
-    "сизо",
-    "карцер",
-    "одиночное заключение",
-    "условия содержания",
-    "пыточные условия",
-    "жестокие условия содержания",
-    "за решеткой",
-    "за решёткой",
-    "отбывает срок",
-    "отбывает наказание",
-    "содержится в заключении",
-    "произвольное задержание",
-    "задержание без предъявления обвинения",
-    "насильственное исчезновение",
-    "исчезновение",
-    "запрет на выезд",
-    "конфискация паспорта",
-    "цензура",
-    "блокировка сайта",
-    "блокировка интернета",
-    "закрытие СМИ",
-    "репрессии",
-    "политические репрессии",
-    "произвольное задержание",
-    "одиночное заключение",
-    "пыточные условия",
+    "задержан",
+    "задержана",
+    "задержание",
+    "арест",
+    "арестован",
+    "арестована",
+    "заключен",
+    "заключена",
 ]
 
-
-# ============================================================
-# 6. RÉPRESSION JURIDIQUE / ADMINISTRATIVE
-# ============================================================
-
-LEGAL_REPRESSION_TERMS = [
-    "extremism charges",
-    "extremism charge",
-    "extremism law",
-    "extremist organization",
-    "extremist activity",
-
-    "inciting unrest",
-    "incitement to unrest",
-    "inciting mass unrest",
-    "mass unrest charges",
-
-    "false information",
-    "spreading false information",
-
-    "defamation",
-    "criminal defamation",
-
-    "insulting the president",
-    "insult to the president",
-
-    "anti-government activity",
-    "national security charges",
-
-    "terrorism charges",
-    "terrorist charges",
-
-    "separatism charges",
-    "separatist charges",
-
-    "treason charges",
-
-    "foreign agents law",
-    "foreign agent law",
-    "foreign representatives law",
-    "foreign representative law",
-
-    "foreign funding restrictions",
-
-    "unauthorized protest",
-    "illegal protest",
-    "illegal assembly",
-
-    # Russe
-    "экстремизм",
-    "экстремистская деятельность",
-    "экстремистская организация",
-    "экстремистское сообщество",
-    "разжигание массовых беспорядков",
-    "массовые беспорядки",
-    "ложная информация",
-    "распространение ложной информации",
-    "клевета",
-    "уголовная клевета",
-    "оскорбление президента",
-    "антиправительственная деятельность",
-    "государственная измена",
-    "терроризм",
-    "сепаратизм",
-    "иностранные агенты",
-    "иностранный представитель",
-    "иностранное финансирование",
-    "несанкционированный митинг",
-]
-
-
-# ============================================================
-# 6bis. CONTEXTE JURIDIQUE / JUDICIAIRE
-# ============================================================
-#
-# Termes juridiques génériques (cour, procureur, police, juge...)
-# qui, seuls, n'indiquent pas de répression, mais qui renforcent
-# la confiance quand ils accompagnent un signal de répression
-# ou une cible (activiste, journaliste).
-
-LEGAL_CONTEXT_TERMS = [
-    "court",
-    "courts",
-    "courtroom",
-    "prosecutor",
-    "prosecutors",
-    "prosecutor's office",
-    "judge",
-    "judges",
-    "verdict",
-    "appeal",
-    "appeals",
-    "police",
-    "law enforcement",
-    "investigator",
-    "investigators",
-    "interrogation",
-    "interrogated",
-    "case",
-    "case against",
-    "criminal case against",
-    "charges against",
-    "indictment",
-    "indicted",
-    "alleged",
-    "allegedly",
-    "illegal",
-    "illegally",
-    "unlawful",
-    "unlawfully",
-
-    # Russe
-    "суд",
-    "суды",
-    "прокурор",
-    "прокуратура",
-    "судья",
-    "приговор",
-    "апелляция",
-    "полиция",
-    "следователь",
-    "следователи",
-    "допрос",
-    "дело",
-    "дело против",
-    "обвинение",
-    "обвинения",
-    "предъявлено обвинение",
-    "предполагаемый",
-    "якобы",
-    "незаконно",
-    "незаконный",
-]
-
-
-# ============================================================
-# 7. JOURNALISTES / MÉDIAS
-# ============================================================
+# ------------------------------------------------------------
+# 10. JOURNALISTS / PRESS FREEDOM
+# ------------------------------------------------------------
 
 JOURNALIST_TERMS = [
     "journalist",
@@ -603,914 +417,1539 @@ JOURNALIST_TERMS = [
     "reporters",
     "editor",
     "editors",
-
+    "media outlet",
+    "media outlets",
+    "news outlet",
+    "news outlets",
+    "independent media",
     "independent journalist",
     "independent journalists",
+    "press freedom",
+    "media freedom",
+    "freedom of the press",
+    "censorship",
+    "self-censorship",
+    "online censorship",
+    "internet censorship",
+    "media restrictions",
+    "press restrictions",
+    "media crackdown",
+    "media blocked",
+    "website blocked",
+    "website blocking",
+    "internet shutdown",
+    "internet blackout",
+    "outlet closed",
+    "outlet shut down",
+    "media outlet closed",
+    "journalist detained",
+    "journalist arrested",
+    "journalist sentenced",
+    "journalist imprisoned",
+    "journalist prosecuted",
+    "journalist harassed",
+    "journalist threatened",
 
-    "investigative journalist",
-    "investigative journalists",
-
-    "photojournalist",
-    "blogger",
-    "bloggers",
-
-    "media worker",
-    "media workers",
-
-    "independent media",
-    "independent outlet",
-    "independent news outlet",
-
-    "editorial independence",
-
-    # Russe
+    # Russian
     "журналист",
     "журналисты",
+    "журналиста",
+    "журналистов",
     "репортер",
     "репортеры",
-    "редактор",
-    "редакторы",
-    "блогер",
-    "блогеры",
-    "независимый журналист",
-    "независимые журналисты",
-    "независимое СМИ",
+    "СМИ",
     "независимые СМИ",
+    "независимый журналист",
+    "свобода прессы",
+    "свобода слова",
+    "цензура",
+    "интернет-цензура",
+    "ограничение СМИ",
+    "ограничения для СМИ",
+    "блокировка сайта",
+    "заблокирован сайт",
+    "отключение интернета",
+    "закрытие СМИ",
+    "СМИ закрыли",
+    "журналист задержан",
+    "журналист арестован",
+    "журналист осужден",
+    "журналист заключен",
+    "журналист преследуется",
+    "журналисту угрожали",
 ]
 
-
-# ============================================================
-# 8. DROITS SPÉCIFIQUES
-# ============================================================
+# ------------------------------------------------------------
+# 11. SPECIFIC RIGHTS
+# ------------------------------------------------------------
 
 SPECIFIC_RIGHTS_TERMS = [
-
-    # Femmes / genre
-    "women's rights",
-    "women rights",
-    "gender equality",
-    "gender discrimination",
-    "gender-based discrimination",
+    "torture",
+    "tortured",
+    "ill-treatment",
+    "mistreatment",
+    "abuse in custody",
+    "custodial abuse",
+    "police abuse",
+    "police brutality",
+    "forced disappearance",
+    "enforced disappearance",
+    "disappeared",
+    "missing after detention",
+    "extrajudicial killing",
+    "unlawful killing",
+    "death in custody",
+    "custody death",
+    "religious persecution",
+    "religious repression",
+    "religious freedom",
+    "minority rights",
+    "ethnic discrimination",
+    "ethnic persecution",
+    "discrimination",
     "gender-based violence",
+    "gender violence",
+    "domestic violence",
+    "domestic abuse",
+    "intimate partner violence",
+    "marital violence",
+    "sexual violence",
+    "sexual abuse",
     "violence against women",
     "violence against girls",
-    "domestic violence",
-    "sexual violence",
-    "sexual harassment",
+    "coercive control",
     "forced marriage",
     "child marriage",
-    "bride kidnapping",
-    "marriage by abduction",
-    "kidnapping for marriage",
-    "abduction for marriage",
-    "feminist",
-    "feminists",
+    "early marriage",
+    "forced sterilization",
+    "reproductive rights",
+    "women's rights",
+    "women rights",
+    "girls' rights",
+    "girls rights",
+    "LGBT rights",
+    "LGBTQ rights",
+    "LGBT persecution",
+    "anti-LGBT",
+    "homophobia",
+    "transphobia",
 
-    # Liberté académique
-    "academic freedom",
-    "academic freedoms",
-    "academic repression",
-    "academic persecution",
-    "professor arrested",
-    "professor detained",
-    "scholar arrested",
-    "scholar detained",
-    "researcher arrested",
-    "researcher detained",
-
-    # LGBT
-    "lgbt",
-    "lgbti",
-    "lgbtq",
-    "lgbt rights",
-    "lgbti rights",
-    "gay rights",
-    "sexual orientation",
-    "gender identity",
-    "same-sex relations",
-    "same-sex conduct",
-
-    # Minorités
-    "minority rights",
-    "ethnic minority",
-    "ethnic minorities",
-    "religious minority",
-    "religious minorities",
-    "ethnic discrimination",
-    "religious discrimination",
-
-    # Enfants
-    "children's rights",
-    "child rights",
-    "child abuse",
-    "child labor",
-    "child labour",
-
-    # Travail forcé
-    "forced labor",
-    "forced labour",
-    "forced workers",
-    "forced work",
-
-    # Migrants
-    "migrant rights",
-    "migrant workers",
-    "labor migrants",
-    "labour migrants",
-    "refugee rights",
-    "refugee protection",
-
-    # Liberté académique / universitaires
-    "academic freedom",
-    "academic freedoms",
-    "academic censorship",
-    "academic repression",
-    "academic freedom at risk",
-    "scholars at risk",
-    "professor arrested",
-    "professor detained",
-
-    # Russe
-    "академическая свобода",
-    "академические свободы",
-    "преследование ученых",
-    "преследование учёных",
-    "арест профессора",
-    "задержание профессора",
-
-    # Russe
-    "права женщин",
-    "гендерное равенство",
-    "гендерная дискриминация",
-    "насилие в отношении женщин",
+    # Russian
+    "пытк",
+    "истязани",
+    "жестокое обращение",
+    "насилие в местах лишения свободы",
+    "полицейское насилие",
+    "насилие полиции",
+    "насильственное исчезновение",
+    "насильственно исчез",
+    "исчезнувш",
+    "внесудебное убийство",
+    "смерть в заключении",
+    "смерть в полиции",
+    "религиозные преследования",
+    "религиозная свобода",
+    "дискриминаци",
+    "этническая дискриминация",
+    "гендерное насилие",
     "домашнее насилие",
+    "семейное насилие",
+    "насилие в семье",
+    "насилие над женщинами",
+    "насилие над детьми",
     "сексуальное насилие",
-    "академическая свобода",
-    "академические свободы",
-    "академические репрессии",
-    "преследование ученых",
-    "преследование учёных",
-    "профессор арестован",
-    "профессор задержан",
-    "ученый арестован",
-    "учёный арестован",
-    "ученый задержан",
-    "учёный задержан",
+    "сексуальное насилие",
     "принудительный брак",
+    "ранний брак",
     "детский брак",
-    "похищение невесты",
-    "похищение девушки",
-    "похищение с целью брака",
-    "феминист",
-    "феминистка",
-    "лгбт",
-    "права меньшинств",
-    "этническое меньшинство",
-    "религиозное меньшинство",
-    "дискриминация",
-    "права детей",
-    "детский труд",
-    "принудительный труд",
-    "трудовые мигранты",
-    "права мигрантов",
+    "принудительная стерилизация",
+    "репродуктивные права",
+    "права женщин",
+    "права девушек",
+    "ЛГБТ",
+    "гомофоб",
+    "трансфоб",
 ]
 
-
-# ============================================================
-# 9. SIGNAUX SPÉCIFIQUES ASIE CENTRALE / DROITS HUMAINS
-# ============================================================
+# ------------------------------------------------------------
+# 12. CENTRAL ASIA HR TERMS
+# ------------------------------------------------------------
 
 CENTRAL_ASIA_HR_TERMS = [
+    "human rights in kazakhstan",
+    "human rights in uzbekistan",
+    "human rights in kyrgyzstan",
+    "human rights in tajikistan",
+    "human rights in turkmenistan",
+    "rights violations in kazakhstan",
+    "rights violations in uzbekistan",
+    "rights violations in kyrgyzstan",
+    "rights violations in tajikistan",
+    "rights violations in turkmenistan",
+    "political repression in kazakhstan",
+    "political repression in uzbekistan",
+    "political repression in kyrgyzstan",
+    "political repression in tajikistan",
+    "political repression in turkmenistan",
+]
+
+# ------------------------------------------------------------
+# 13. NEW V9 — CENTRAL ASIA REPRESSION EVENTS
+# ------------------------------------------------------------
+
+CENTRAL_ASIA_HR_EVENT_TERMS = [
 
     # Kazakhstan
-    "january 2022",
-    "january events",
     "bloody january",
-    "bloody january events",
+    "bloody january 2022",
+    "january events",
+    "january 2022",
     "qantar",
     "qantar events",
+    "almaty january",
+    "january massacre",
+    "january crackdown",
+    "january protests",
 
-    # Kyrgyzstan
-    "foreign representatives law",
-    "foreign agent law",
-    "media law",
-    "kloop",
+    # Uzbekistan
+    "nukus protests",
+    "nukus protest",
+    "nukus events",
+    "nukus crackdown",
+    "karakalpakstan protests",
+    "karakalpakstan protest",
+    "karakalpakstan crackdown",
+    "july 2022 karakalpakstan",
+    "karakalpakstan events",
 
     # Tajikistan
     "gorno-badakhshan",
     "gorno badakhshan",
     "gbao",
-    "pamiri",
-    "pamiris",
-    "pamir",
+    "khorog protests",
+    "khorog protest",
+    "gbao crackdown",
+    "pamiri crackdown",
+    "pamiri repression",
+
+    # Kyrgyzstan
+    "kempir-abad",
+    "kempir abad",
+    "kempir-abad case",
+    "kempir abad case",
+    "october 2020 protests",
+    "2020 protests kyrgyzstan",
 
     # Turkmenistan
-    "turkmen.news",
-    "turkmenistan journalist",
-    "turkmenistan activist",
-    "turkmenistan dissident",
-    "political prisoner in turkmenistan",
-    "internet censorship in turkmenistan",
-    "vpn in turkmenistan",
+    "turkmenistan political prisoners",
+    "turkmenistan crackdown",
+    "turkmenistan repression",
 
-    # Uzbekistan
-    "karakalpakstan protests",
-    "karakalpakstan unrest",
-    "forced psychiatric treatment",
-    "forced psychiatric detention",
-    "blogger in uzbekistan",
-    "journalist in uzbekistan",
+    # General
+    "central asian crackdown",
+    "central asia crackdown",
+    "central asia repression",
+    "central asian repression",
 
-    # Russe
+    # Russian
+    "кровавый январь",
     "январские события",
     "январь 2022",
-    "кровавый январь",
-    "гбaо",
-    "горно-бадахшан",
-    "памирцы",
+    "кантар",
+    "кантарские события",
+    "протесты в нукусе",
+    "события в нукусе",
+    "беспорядки в нукусе",
+    "разгон протестов в нукусе",
     "каракалпакстан",
-    "каракалпаки",
+    "протесты в каракалпакстане",
+    "события в каракалпакстане",
+    "горно-бадахшан",
+    "гбао",
+    "протесты в хороге",
+    "памирцы",
+    "репрессии в горно-бадахшане",
+    "кемпир-абад",
 ]
 
+# ------------------------------------------------------------
+# 14. NEW V9 — POLITICAL / RULE OF LAW
+# ------------------------------------------------------------
 
-# ============================================================
-# 10. POLITIQUE INTÉRIEURE
-# ============================================================
+POLITICAL_RIGHTS_TERMS_V9 = [
+    "lifetime immunity",
+    "immunity from prosecution",
+    "immunity from criminal prosecution",
+    "presidential immunity",
+    "political immunity",
+    "judicial independence",
+    "lack of judicial independence",
+    "political control of courts",
+    "political interference in judiciary",
+    "executive interference",
+    "rule of law",
+    "weak rule of law",
+    "erosion of rule of law",
+    "checks and balances",
+    "concentration of power",
+    "concentrate power",
+    "concentration of executive power",
+    "abuse of presidential power",
+    "abuse of executive power",
+    "constitutional changes",
+    "constitutional amendment",
+    "constitutional amendments",
+    "authoritarian rule",
+    "authoritarianism",
+    "one-party rule",
+    "political monopoly",
+    "lack of accountability",
+    "absence of accountability",
+    "impunity",
+    "official impunity",
 
-# IMPORTANT :
-# Les termes très génériques comme "president", "government"
-# ne doivent pas produire beaucoup de points à eux seuls.
+    # Russian
+    "пожизненный иммунитет",
+    "пожизненная неприкосновенность",
+    "иммунитет от уголовного преследования",
+    "президентская неприкосновенность",
+    "судебная независимость",
+    "независимость судов",
+    "зависимость судов",
+    "политическое влияние на суд",
+    "вмешательство в работу суда",
+    "верховенство закона",
+    "ослабление верховенства закона",
+    "концентрация власти",
+    "концентрация исполнительной власти",
+    "злоупотребление властью",
+    "злоупотребление полномочиями",
+    "расширение полномочий президента",
+    "отсутствие подотчетности",
+    "безнаказанность",
+    "политическая монополия",
+    "авторитарное правление",
+]
+
+# ------------------------------------------------------------
+# 15. NEW V9 — PRESS REPRESSION
+# ------------------------------------------------------------
+
+PRESS_REPRESSION_TERMS_V9 = [
+    "journalist detained",
+    "journalist arrested",
+    "journalist imprisoned",
+    "journalist sentenced",
+    "journalist prosecuted",
+    "journalist charged",
+    "journalist convicted",
+    "journalist attacked",
+    "journalist assaulted",
+    "journalist disappeared",
+    "journalist threatened",
+    "journalist harassed",
+    "editor arrested",
+    "editor detained",
+    "media outlet blocked",
+    "media outlet shut down",
+    "news website blocked",
+    "website blocked",
+    "internet shutdown",
+    "internet blackout",
+    "online censorship",
+    "press censorship",
+    "media censorship",
+    "media restrictions",
+    "press restrictions",
+    "ban on independent media",
+    "independent media banned",
+    "foreign agent law",
+    "foreign agents law",
+
+    # Russian
+    "журналист задержан",
+    "журналист арестован",
+    "журналист заключен",
+    "журналист осужден",
+    "журналист привлечен",
+    "журналист обвинен",
+    "журналист атакован",
+    "журналист избит",
+    "журналист исчез",
+    "журналисту угрожали",
+    "журналиста преследуют",
+    "редактор арестован",
+    "редактор задержан",
+    "СМИ заблокировано",
+    "СМИ закрыто",
+    "сайт заблокирован",
+    "блокировка сайта",
+    "отключение интернета",
+    "интернет отключили",
+    "интернет-цензура",
+    "цензура СМИ",
+    "ограничение СМИ",
+    "запрет независимых СМИ",
+]
+
+# ------------------------------------------------------------
+# 16. NEW V9 — GENDER-BASED VIOLENCE
+# ------------------------------------------------------------
+
+GENDER_VIOLENCE_TERMS_V9 = [
+    "gender-based violence",
+    "gender based violence",
+    "domestic violence",
+    "domestic abuse",
+    "family violence",
+    "intimate partner violence",
+    "marital violence",
+    "violence against women",
+    "violence against girls",
+    "violence against wives",
+    "violence against daughters-in-law",
+    "abuse of women",
+    "abuse of girls",
+    "coercive control",
+    "forced marriage",
+    "arranged marriage under coercion",
+    "child marriage",
+    "early marriage",
+    "honor violence",
+    "honour violence",
+    "sexual violence",
+    "sexual abuse",
+    "rape",
+    "marital rape",
+    "women's rights",
+    "women rights",
+    "girls' rights",
+    "girls rights",
+    "daughters-in-law",
+    "daughter-in-law",
+    "bride abuse",
+    "bride violence",
+
+    # Russian
+    "гендерное насилие",
+    "домашнее насилие",
+    "семейное насилие",
+    "насилие в семье",
+    "насилие над женщинами",
+    "насилие над девушками",
+    "насилие над женами",
+    "насилие над невестками",
+    "насилие над снохами",
+    "жестокое обращение с женщинами",
+    "принудительный брак",
+    "принудительное замужество",
+    "ранний брак",
+    "детский брак",
+    "насилие в браке",
+    "сексуальное насилие",
+    "сексуальное насилие над женщинами",
+    "изнасилование",
+    "супружеское изнасилование",
+    "права женщин",
+    "права девушек",
+    "невестка",
+    "сноха",
+    "насилие над невестками",
+]
+
+# ------------------------------------------------------------
+# 17. NEW V9 — TRANSNATIONAL REPRESSION
+# ------------------------------------------------------------
+
+TRANSNATIONAL_REPRESSION_TERMS_V9 = [
+    "transnational repression",
+    "transnational persecution",
+    "targeted abroad",
+    "harassed abroad",
+    "threatened abroad",
+    "surveillance abroad",
+    "dissidents abroad",
+    "activists abroad",
+    "opposition abroad",
+    "extradition request",
+    "extradition request against",
+    "extradited",
+    "deported",
+    "deportation",
+    "rendition",
+    "kidnapped abroad",
+    "abducted abroad",
+    "detained abroad",
+    "arrested abroad",
+    "forced return",
+    "forced repatriation",
+    "political asylum",
+    "asylum seeker",
+    "asylum seekers",
+
+    # Russian
+    "транснациональные репрессии",
+    "транснациональные репрессии",
+    "преследование за рубежом",
+    "преследуется за рубежом",
+    "угрозы за рубежом",
+    "слежка за рубежом",
+    "диссиденты за рубежом",
+    "активисты за рубежом",
+    "оппозиция за рубежом",
+    "запрос на экстрадицию",
+    "экстрадиция",
+    "экстрадирован",
+    "депортирован",
+    "депортация",
+    "похищен за рубежом",
+    "задержан за рубежом",
+    "арестован за рубежом",
+    "принудительное возвращение",
+    "политическое убежище",
+]
+
+# ------------------------------------------------------------
+# 18. NEW V9 — POLITICAL PRISONERS / DETAINEES
+# ------------------------------------------------------------
+
+POLITICAL_PRISONER_TERMS_V9 = [
+    "political prisoner",
+    "political prisoners",
+    "political detainee",
+    "political detainees",
+    "prisoner of conscience",
+    "prisoners of conscience",
+    "wrongfully imprisoned",
+    "wrongfully detained",
+    "arbitrarily detained",
+    "arbitrary detention",
+    "arbitrarily arrested",
+    "arbitrary arrest",
+    "politically motivated imprisonment",
+    "politically motivated detention",
+    "politically motivated charges",
+    "political prosecution",
+    "political trial",
+    "show trial",
+    "political conviction",
+
+    # Russian
+    "политический заключенный",
+    "политические заключенные",
+    "политзаключенный",
+    "политзаключенные",
+    "политический узник",
+    "узник совести",
+    "узники совести",
+    "произвольно задержан",
+    "произвольное задержание",
+    "произвольный арест",
+    "политически мотивированное обвинение",
+    "политически мотивированное дело",
+    "политическое преследование",
+    "политический процесс",
+    "показательный процесс",
+]
+
+# ------------------------------------------------------------
+# 19. DOMESTIC POLITICAL TERMS
+# ------------------------------------------------------------
 
 DOMESTIC_POLITICAL_TERMS = [
-    "election",
-    "elections",
-    "parliamentary election",
-    "presidential election",
-    "parliamentary vote",
-
-    "parliament",
-    "parliamentary",
-
-    "constitution",
-    "constitutional reform",
-    "constitutional changes",
-
-    "political reform",
-    "political reforms",
-
     "president",
     "presidential",
     "government",
-
-    "cabinet reshuffle",
-    "government reshuffle",
-
-    "opposition party",
-    "opposition parties",
-    "political party",
-    "political parties",
-
+    "parliament",
+    "parliamentary",
+    "prime minister",
+    "ministry",
+    "minister",
+    "authorities",
+    "officials",
+    "election",
+    "elections",
+    "opposition",
+    "political opposition",
     "protest",
     "protests",
     "demonstration",
     "demonstrations",
     "rally",
     "rallies",
-
     "referendum",
+    "constitutional reform",
+    "political reform",
+    "political crisis",
+    "political unrest",
+    "political instability",
 
-    "political corruption",
-    "corruption scandal",
-
-    # Russe
-    "выборы",
-    "парламентские выборы",
-    "президентские выборы",
-    "парламент",
-    "конституция",
-    "конституционная реформа",
-    "политическая реформа",
+    # Russian
     "президент",
+    "президентский",
     "правительство",
-    "оппозиционная партия",
-    "политическая партия",
+    "парламент",
+    "премьер-министр",
+    "министерство",
+    "министр",
+    "власти",
+    "чиновники",
+    "выборы",
+    "оппозиция",
     "протест",
     "протесты",
     "митинг",
     "митинги",
+    "демонстрация",
     "референдум",
+    "конституционная реформа",
+    "политическая реформа",
+    "политический кризис",
 ]
 
-
-# ============================================================
-# 11. GÉOPOLITIQUE MAJEURE
-# ============================================================
+# ------------------------------------------------------------
+# 20. MAJOR GEOPOLITICS
+# ------------------------------------------------------------
 
 MAJOR_GEOPOLITICAL_TERMS = [
-    "shanghai cooperation organization",
-    "shanghai cooperation organisation",
-    "sco summit",
-    "sco leaders",
-    "sco heads of state",
-    "sco meeting",
-
-    "шанхайская организация сотрудничества",
-    "шос",
-
+    "war",
+    "invasion",
+    "military operation",
     "armed conflict",
-    "major conflict",
-    "military escalation",
-
+    "conflict",
     "ceasefire",
     "peace agreement",
-
-    "border conflict",
-    "border clashes",
-    "border crisis",
-
-    "major security crisis",
-
-    "terrorist attack",
-    "terrorist attacks",
-
-    "major sanctions",
-    "new sanctions",
-    "sanctions imposed",
-
-    "diplomatic crisis",
-    "diplomatic rupture",
-    "diplomatic dispute",
-
-    "ambassador expelled",
-    "expelled ambassador",
-
-    "strategic partnership",
-    "strategic realignment",
-    "major strategic shift",
-
+    "sanctions",
+    "sanction",
     "security alliance",
     "military alliance",
-    "military cooperation agreement",
+    "troops",
+    "military base",
+    "border conflict",
+    "border clashes",
+    "terrorism",
+    "terrorist attack",
+    "counterterrorism",
+    "security operation",
+    "geopolitical",
+    "foreign interference",
+    "foreign influence",
+    "strategic partnership",
+    "security cooperation",
+    "china",
+    "russia",
+    "united states",
+    "european union",
+    "iran",
+    "afghanistan",
+    "ukraine",
+
+    # Russian
+    "война",
+    "вторжение",
+    "военная операция",
+    "вооруженный конфликт",
+    "конфликт",
+    "перемирие",
+    "мирное соглашение",
+    "санкции",
+    "военный союз",
+    "войска",
+    "военная база",
+    "пограничный конфликт",
+    "пограничные столкновения",
+    "терроризм",
+    "террористический акт",
+    "контртеррористическая операция",
+    "иностранное вмешательство",
+    "иностранное влияние",
+    "стратегическое партнерство",
+    "китай",
+    "россия",
+    "сша",
+    "евросоюз",
+    "иран",
+    "афганистан",
+    "украина",
 ]
 
-
-# ============================================================
-# 12. GÉOPOLITIQUE / ÉCONOMIE ORDINAIRE
-# ============================================================
+# ------------------------------------------------------------
+# 21. ROUTINE GEOPOLITICS
+# ------------------------------------------------------------
 
 ROUTINE_GEO_TERMS = [
-    "trade",
-    "trading",
-    "investment",
-    "investments",
-
-    "gas",
-    "oil",
-    "uranium",
-    "pipeline",
-
-    "railway",
-    "railroad",
-
-    "trade corridor",
-    "transport corridor",
-    "logistics",
-
-    "energy cooperation",
-    "economic cooperation",
-
-    "business forum",
-    "investment forum",
-    "economic forum",
-
+    "meeting",
+    "talks",
+    "visit",
+    "official visit",
+    "delegation",
     "memorandum",
     "memorandum of understanding",
-
-    "economic partnership",
-
-    "gdp",
-    "gdp growth",
-    "economic growth",
-    "export",
-    "exports",
-    "import",
-    "imports",
-    "currency",
-    "stock exchange",
-    "tourism",
-    "tourist",
-    "agriculture",
-    "harvest",
-
-    # Russe
-    "торговля",
-    "инвестиции",
-    "газ",
-    "нефть",
-    "уран",
-    "трубопровод",
-    "железная дорога",
-    "экономическое сотрудничество",
-    "бизнес-форум",
-    "меморандум",
-    "экспорт",
-    "импорт",
-    "туризм",
+    "agreement signed",
+    "trade agreement",
+    "economic cooperation",
+    "investment",
+    "business forum",
+    "summit",
+    "conference",
+    "bilateral relations",
+    "diplomatic relations",
+    "foreign minister",
+    "president met",
+    "leaders met",
 ]
 
-
-# ============================================================
-# 12bis. CONTEXTE GÉNÉRIQUE / FAIBLE SIGNAL
-# ============================================================
-#
-# Termes diplomatiques ou institutionnels génériques, différents
-# du "bruit" (NOISE_TERMS) : ils peuvent apparaître dans un article
-# pertinent, mais n'apportent qu'un contexte faible et ne doivent
-# jamais, à eux seuls, faire monter le score.
+# ------------------------------------------------------------
+# 22. LOW-SIGNAL CONTEXT
+# ------------------------------------------------------------
 
 LOW_SIGNAL_CONTEXT_TERMS = [
-    "delegation",
-    "official visit",
-    "bilateral talks",
-    "bilateral meeting",
-    "state visit",
-    "meeting",
-    "summit",
-    "forum",
-    "conference",
-    "ceremony",
-    "announcement",
-    "statement",
-    "international community",
-    "authorities",
-    "official",
-    "officials",
-
-    # Russe
-    "делегация",
-    "официальный визит",
-    "двусторонние переговоры",
-    "двусторонняя встреча",
-    "государственный визит",
-    "встреча",
-    "саммит",
-    "форум",
-    "конференция",
-    "церемония",
-    "заявление",
-    "международное сообщество",
-    "власти",
-    "официальный",
-    "официальные лица",
+    "development",
+    "economic growth",
+    "investment",
+    "trade",
+    "tourism",
+    "culture",
+    "cultural",
+    "education",
+    "sports",
+    "football",
+    "music",
+    "festival",
+    "infrastructure",
+    "construction",
+    "transport",
+    "railway",
+    "airport",
+    "technology",
+    "digitalization",
+    "digitization",
+    "startup",
+    "business",
+    "market",
+    "industry",
+    "agriculture",
+    "weather",
+    "climate",
+    "environment",
 ]
 
-
-# ============================================================
-# 13. ACTEURS EXTÉRIEURS
-# ============================================================
+# ------------------------------------------------------------
+# 23. REGIONAL ACTORS
+# ------------------------------------------------------------
 
 REGIONAL_ACTORS = [
-    "russia",
-    "russian",
-    "kremlin",
-    "putin",
+    "president",
+    "government",
+    "parliament",
+    "ministry",
+    "minister",
+    "prosecutor",
+    "prosecutors",
+    "police",
+    "security service",
+    "national security",
+    "intelligence service",
+    "court",
+    "judge",
+    "judges",
+    "prosecution",
+    "authorities",
+    "officials",
+    "law enforcement",
 
-    "china",
-    "chinese",
-    "beijing",
-    "xi jinping",
-
-    "afghanistan",
-    "afghan",
-
-    "iran",
-    "iranian",
-
-    "turkey",
-    "turkish",
-
-    "european union",
-    "eu",
-
-    "united states",
-    "washington",
+    # Russian
+    "президент",
+    "правительство",
+    "парламент",
+    "министерство",
+    "министр",
+    "прокуратура",
+    "прокурор",
+    "полиция",
+    "служба безопасности",
+    "спецслужбы",
+    "суд",
+    "судья",
+    "власти",
+    "чиновники",
+    "правоохранительные органы",
 ]
 
-
-# ============================================================
-# 14. HISTOIRE / CULTURE
-# ============================================================
+# ------------------------------------------------------------
+# 24. HISTORICAL
+# ------------------------------------------------------------
 
 HISTORICAL_TERMS = [
     "history",
     "historical",
-    "historian",
-    "century",
-    "19th century",
-    "20th century",
-    "21st century",
-    "ancient",
-
+    "in the soviet era",
     "soviet era",
     "soviet period",
-    "former soviet",
+    "during the soviet union",
+    "stalin",
+    "stalinist",
+    "deportation under stalin",
+    "world war ii",
+    "second world war",
     "cold war",
+    "ussr",
+    "soviet union",
+    "historical memory",
+    "commemoration",
+    "anniversary",
 
-    "biography",
-    "biographical",
-    "born in",
-    "died in",
-    "legacy",
-    "heritage",
-
-    "museum",
-    "photography",
-    "photographer",
-    "book review",
-    "film review",
-    "archive",
-    "archives",
+    # Russian
+    "история",
+    "исторический",
+    "советский период",
+    "советское время",
+    "советский союз",
+    "сталин",
+    "сталинский",
+    "депортация при сталине",
+    "вторая мировая война",
+    "холодная война",
+    "историческая память",
+    "память",
+    "годовщина",
 ]
 
-
-# ============================================================
-# 15. CONTENU NON JOURNALISTIQUE
-# ============================================================
+# ------------------------------------------------------------
+# 25. NON-NEWS
+# ------------------------------------------------------------
 
 NON_NEWS_TERMS = [
-    "vacancy",
-    "vacancies",
-    "job opening",
-    "job openings",
-    "hiring",
-    "we are hiring",
-
-    "career",
-    "careers",
-    "employment opportunity",
-    "job opportunity",
-    "apply now",
-
-    "call for applications",
-    "project evaluator",
-    "project evaluation",
-
-    "request for proposals",
-    "tender",
-
-    "grant opportunity",
-    "funding opportunity",
-
-    "workshop",
-    "webinar",
-    "training",
-
-    "conference registration",
-    "event registration",
-
-    "project results",
-    "annual report",
-
-    # Russe
-    "вакансия",
-    "вакансии",
-    "требуется",
-    "прием на работу",
-    "тендер",
-    "грант",
-    "семинар",
-    "вебинар",
-    "тренинг",
-
-    # Français
-    "offre d'emploi",
-    "recrutement",
-    "poste à pourvoir",
-    "appel à candidatures",
-    "atelier",
-    "webinaire",
-    "formation",
-    "rapport annuel",
+    "recipe",
+    "horoscope",
+    "weather forecast",
+    "sports results",
+    "football match",
+    "celebrity",
+    "fashion",
+    "lifestyle",
+    "real estate",
+    "property",
+    "car review",
+    "restaurant",
+    "travel guide",
+    "tourist guide",
+    "entertainment",
 ]
 
-
-# ============================================================
-# 16. BRUIT
-# ============================================================
+# ------------------------------------------------------------
+# 26. NOISE
+# ------------------------------------------------------------
 
 NOISE_TERMS = [
-    "football",
-    "soccer",
-    "basketball",
-    "boxing",
-    "tennis",
-    "olympics",
-
-    "match",
-    "player",
-    "coach",
-
-    "iphone",
-    "android",
-    "smartphone",
-
-    "software release",
-    "app launch",
-
-    "cryptocurrency",
-    "stock market",
+    "advertisement",
+    "sponsored",
+    "promo",
+    "promotion",
+    "discount",
+    "sale",
+    "coupon",
+    "shopping",
+    "buy now",
+    "subscribe now",
 ]
 
-
-# ============================================================
-# 17. MOTS-CLÉS FORTS — RÉPRESSION
-# ============================================================
+# ------------------------------------------------------------
+# 27. SEVERE REPRESSION
+# ------------------------------------------------------------
 
 SEVERE_REPRESSION_TERMS = [
     "torture",
     "tortured",
-    "enforced disappearance",
     "forced disappearance",
-    "forcibly disappeared",
+    "enforced disappearance",
+    "extrajudicial killing",
+    "death in custody",
     "political prisoner",
     "political prisoners",
-    "political repression",
+    "prisoner of conscience",
     "arbitrary detention",
-    "solitary confinement",
-    "inhuman conditions",
-    "torturous conditions",
-    "political crackdown",
-    "opposition crackdown",
+    "arbitrary arrest",
+    "forced labor",
+    "forced labour",
+    "mass detention",
+    "mass arrests",
+    "mass arrest",
+    "violent crackdown",
+    "deadly crackdown",
+    "crackdown killed",
+    "security forces killed",
+    "security forces opened fire",
+    "disappeared in custody",
 
-    # Russe
-    "пытка",
-    "пытки",
+    # Russian stems
+    "пытк",
     "насильственное исчезновение",
-    "политический заключенный",
-    "политические заключенные",
-    "политические репрессии",
+    "внесудебное убийство",
+    "смерть в заключении",
+    "политзаключ",
+    "узник совести",
     "произвольное задержание",
-    "одиночное заключение",
-    "пыточные условия",
-    "пыточных условиях",
-    "пыточном состоянии",
-    "шизо",
-    "карцер",
-    "репрессии",
+    "произвольный арест",
+    "принудительный труд",
+    "массовые задержания",
+    "массовые аресты",
+    "жесткий разгон",
+    "жестокий разгон",
+    "силы безопасности открыли огонь",
 ]
 
-
-# ============================================================
-# 18. PATTERNS — RELATIONS ACTIVISTES
-# ============================================================
+# ------------------------------------------------------------
+# 28. ACTIVIST REPRESSION PATTERNS
+# ------------------------------------------------------------
 
 ACTIVIST_REPRESSION_PATTERNS = [
-    r"\bactivist\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b",
-    r"\bactivists\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b",
-
-    r"\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b.{0,150}\bactivist\b",
-    r"\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b.{0,150}\bactivists\b",
-
-    r"\bhuman rights defender\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b",
-    r"\bhuman rights defenders\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|serving)\b",
+    r"\bactivist\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|prosecuted)\b",
+    r"\bactivists\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|prosecuted)\b",
+    r"\bhuman rights defender\b.{0,120}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|prosecuted)\b",
+    r"\bdissident\b.{0,120}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|prosecuted)\b",
 ]
 
-
-# ============================================================
-# 19. PATTERNS — RELATIONS JOURNALISTES
-# ============================================================
+# ------------------------------------------------------------
+# 29. JOURNALIST REPRESSION PATTERNS
+# ------------------------------------------------------------
 
 JOURNALIST_REPRESSION_PATTERNS = [
-    r"\bjournalist\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
-    r"\bjournalists\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
-
-    r"\breporter\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
-    r"\breporters\b.{0,150}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|attacked|beaten|threatened)\b",
-
-    r"\bjournalist\b.{0,150}\b(censorship|censored|blocked|banned)\b",
-    r"\bindependent media\b.{0,150}\b(blocked|banned|closed|shut down)\b",
+    r"\bjournalist\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|prosecuted)\b",
+    r"\breporter\b.{0,100}\b(arrested|detained|jailed|imprisoned|charged|convicted|sentenced|prosecuted)\b",
+    r"\bjournalist\b.{0,100}\b(threatened|harassed|attacked|assaulted)\b",
+    r"\bmedia outlet\b.{0,100}\b(blocked|banned|closed|shut down)\b",
+    r"\bwebsite\b.{0,100}\b(blocked|banned|censored)\b",
 ]
 
-
-# ============================================================
-# 20. PATTERNS — RUSSE / RELATIONS
-# ============================================================
+# ------------------------------------------------------------
+# 30. RUSSIAN ACTIVIST REPRESSION
+# ------------------------------------------------------------
 
 ACTIVIST_REPRESSION_RU_PATTERNS = [
-    r"(активист|активисты|правозащитник|правозащитники).{0,150}(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены|приговорен|приговорена|приговорены|отбывает|содержится|посажен|посажена)",
-    r"(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены|приговорен|приговорена|приговорены|отбывает|содержится|посажен|посажена).{0,150}(активист|активисты|правозащитник|правозащитники)",
+    r"активист.{0,100}(задержан|арестован|осужден|заключен|преследуется|обвинен)",
+    r"правозащитник.{0,120}(задержан|арестован|осужден|заключен|преследуется|обвинен)",
+    r"оппозиционер.{0,120}(задержан|арестован|осужден|заключен|преследуется|обвинен)",
+    r"диссидент.{0,120}(задержан|арестован|осужден|заключен|преследуется|обвинен)",
 ]
 
+# ------------------------------------------------------------
+# 31. RUSSIAN JOURNALIST REPRESSION
+# ------------------------------------------------------------
 
 JOURNALIST_REPRESSION_RU_PATTERNS = [
-    r"(журналист|журналисты|репортер|репортеры).{0,150}(арестован|арестована|арестованы|задержан|задержана|задержаны|осужден|осуждена|осуждены|заключен|заключена|заключены|приговорен|приговорена|приговорены|отбывает|содержится|посажен|посажена)",
-    r"(журналист|журналисты|репортер|репортеры).{0,150}(угрож|напад|избит|запрет|цензур|задерж)",
+    r"журналист.{0,100}(задержан|арестован|осужден|заключен|обвинен|преследуется)",
+    r"репортер.{0,100}(задержан|арестован|осужден|заключен|обвинен)",
+    r"журналист.{0,100}(угрожали|избит|атакован|нападение)",
+    r"СМИ.{0,100}(заблокировано|закрыто|запрещено)",
+    r"сайт.{0,100}(заблокирован|запрещен)",
 ]
 
+# ------------------------------------------------------------
+# 32. V9 — STRONG MORPHOLOGICAL REPRESSION PATTERNS
+# ------------------------------------------------------------
 
-# ============================================================
-# 21. WEIGHTS — RÉPRESSION
-# ============================================================
+REPRESSION_MORPHOLOGY_PATTERNS_V9 = [
+    r"\bзадерж\w*\b",
+    r"\bарест\w*\b",
+    r"\bпреслед\w*\b",
+    r"\bрепресс\w*\b",
+    r"\bпыт\w*\b",
+    r"\bцензур\w*\b",
+    r"\bзапрет\w*\b",
+    r"\bподав\w*\b",
+    r"\bпритесн\w*\b",
+    r"\bугрож\w*\b",
+    r"\bзапуг\w*\b",
+    r"\bзаключ\w*\b",
+    r"\bосужден\w*\b",
+    r"\bприговор\w*\b",
+    r"\bобвин\w*\b",
+]
+
+# ------------------------------------------------------------
+# 33. WEIGHTS
+# ------------------------------------------------------------
 
 REPRESSION_WEIGHTS = {
-    "torture": 10,
-    "tortured": 10,
-    "enforced disappearance": 10,
-    "forced disappearance": 10,
-    "forcibly disappeared": 10,
-    "political prisoner": 10,
-    "political prisoners": 10,
-
-    "political repression": 9,
-    "political crackdown": 9,
-    "opposition crackdown": 9,
-
-    "imprisoned": 8,
-    "imprisonment": 8,
-    "jailed": 8,
-    "jail": 7,
-    "prison": 7,
-    "prisons": 7,
-    "prison sentence": 8,
-    "prison term": 8,
-    "sentenced to prison": 8,
-
-    "arrested": 7,
-    "arrest": 6,
-    "arrests": 6,
-    "detained": 7,
-    "detention": 6,
-
-    "convicted": 6,
-    "conviction": 6,
-    "sentenced": 6,
-
-    "criminal prosecution": 5,
-    "prosecuted": 5,
-    "charged with": 5,
-    "criminal charges": 5,
-
-    "trial": 4,
-    "closed-door trial": 5,
-    "secret trial": 5,
-
-    "travel ban": 4,
-    "exit ban": 4,
-    "passport confiscated": 4,
-
-    "censorship": 3,
-    "online censorship": 3,
-    "internet censorship": 4,
-    "website blocked": 3,
-    "internet shutdown": 5,
-
-    "police abuse": 6,
-    "abuse in custody": 7,
-    "custodial abuse": 7,
-
-    "attacked": 5,
-    "physically attacked": 6,
-    "assaulted": 6,
-    "beaten": 6,
-    "beaten up": 6,
-    "threatened": 4,
-    "death threats": 6,
-    "intimidated": 4,
-    "intimidation": 4,
-
-    "репрессии": 8,
-    "политические репрессии": 9,
-    "пытка": 10,
-    "пытки": 10,
-    "арестован": 7,
-    "арестована": 7,
-    "арестованы": 7,
-    "задержан": 7,
-    "задержана": 7,
-    "задержаны": 7,
-    "осужден": 6,
-    "осуждена": 6,
-    "осуждены": 6,
-    "заключен": 8,
-    "заключена": 8,
-    "заключены": 8,
-    "тюрьма": 7,
-    "тюрьме": 7,
-    "избит": 6,
-    "избита": 6,
-    "избиты": 6,
-    "угрозы": 4,
-    "угрозы убийством": 6,
-    "запугивание": 4,
-    "шизо": 8,
-    "карцер": 8,
-    "пыточные условия": 10,
-    "пыточных условиях": 10,
-    "одиночное заключение": 9,
-    "произвольное задержание": 9,
-    "за решеткой": 7,
-    "за решёткой": 7,
-    "отбывает срок": 7,
-    "отбывает наказание": 7,
+    "torture": 15,
+    "forced disappearance": 15,
+    "enforced disappearance": 15,
+    "political prisoner": 14,
+    "political prisoners": 14,
+    "arbitrary detention": 12,
+    "arbitrary arrest": 12,
+    "political repression": 10,
+    "crackdown": 9,
+    "persecution": 9,
+    "harassment": 6,
+    "intimidation": 6,
+    "censorship": 7,
+    "suppression": 7,
+    "political prosecution": 12,
+    "politically motivated prosecution": 14,
 }
 
-
-# ============================================================
-# 22. WEIGHTS — DROITS SPÉCIFIQUES
-# ============================================================
+# ------------------------------------------------------------
+# 34. SPECIFIC RIGHTS WEIGHTS
+# ------------------------------------------------------------
 
 SPECIFIC_RIGHTS_WEIGHTS = {
-    "academic freedom": 7,
-    "academic freedoms": 7,
-    "academic censorship": 7,
-    "academic repression": 8,
-    "academic freedom at risk": 8,
-    "scholars at risk": 7,
-    "professor arrested": 6,
-    "professor detained": 6,
-    "академическая свобода": 7,
-    "академические свободы": 7,
-    "преследование ученых": 8,
-    "преследование учёных": 8,
-    "арест профессора": 7,
-    "задержание профессора": 7,
-
-
-    "gender-based violence": 8,
-    "violence against women": 8,
-    "violence against girls": 8,
+    "torture": 10,
+    "forced disappearance": 10,
+    "enforced disappearance": 10,
+    "extrajudicial killing": 10,
+    "death in custody": 9,
+    "gender-based violence": 7,
+    "domestic violence": 7,
+    "domestic abuse": 7,
     "sexual violence": 8,
+    "sexual abuse": 8,
     "forced marriage": 7,
     "child marriage": 7,
-
-    "gender discrimination": 6,
-    "gender-based discrimination": 6,
-
-    "lgbt rights": 7,
-    "lgbti rights": 7,
-    "gay rights": 7,
-    "lgbt": 5,
-    "lgbti": 5,
-    "lgbtq": 5,
-    "same-sex relations": 5,
-    "same-sex conduct": 5,
-
-    "ethnic discrimination": 7,
-    "religious discrimination": 7,
-    "minority rights": 6,
-
-    "child abuse": 8,
-    "child labor": 7,
-    "child labour": 7,
-
-    "forced labor": 8,
-    "forced labour": 8,
-
-    "migrant rights": 5,
-    "refugee rights": 5,
-
-    "права женщин": 5,
-    "гендерная дискриминация": 6,
-    "насилие в отношении женщин": 8,
-    "домашнее насилие": 7,
-    "сексуальное насилие": 8,
-    "принудительный брак": 7,
-    "детский брак": 7,
-    "лгбт": 5,
-    "права меньшинств": 6,
-    "дискриминация": 4,
-    "права детей": 5,
-    "детский труд": 7,
-    "принудительный труд": 8,
-    "права мигрантов": 5,
+    "religious persecution": 7,
+    "religious freedom": 5,
+    "ethnic discrimination": 6,
+    "LGBT persecution": 8,
+    "LGBT rights": 5,
 }
 
-
-# ============================================================
-# 23. MOTS FORTS POUR IDENTIFIER UNE VICTIME
-# ============================================================
+# ------------------------------------------------------------
+# 35. VICTIMS
+# ------------------------------------------------------------
 
 VICTIM_TERMS = [
+    "victim",
+    "victims",
+    "survivor",
+    "survivors",
+    "family of",
+    "families of",
+    "relatives",
+    "detainee",
+    "detainees",
+    "prisoner",
+    "prisoners",
+    "civilian",
+    "civilians",
+    "women",
+    "girls",
+    "children",
+    "minority",
+    "minorities",
+    "dissident",
+    "dissidents",
+
+    # Russian
+    "жертва",
+    "жертвы",
+    "пострадавший",
+    "пострадавшие",
+    "выживший",
+    "выжившие",
+    "родственники",
+    "задержанный",
+    "задержанные",
+    "заключенный",
+    "заключенные",
+    "гражданские",
+    "женщины",
+    "девушки",
+    "дети",
+    "меньшинства",
+]
+
+# ------------------------------------------------------------
+# 36. V9 — LOW-SIGNAL POLITICAL / REFORM TERMS
+#     These should NEVER be strong on their own.
+# ------------------------------------------------------------
+
+GENERIC_REFORM_TERMS_V9 = [
+    "reform",
+    "reforms",
+    "modernization",
+    "modernisation",
+    "new law",
+    "new legislation",
+    "law passed",
+    "law adopted",
+    "amendment",
+    "amendments",
+    "democracy score",
+    "democratic decline",
+    "democratic backsliding",
+    "political reform",
+    "institutional reform",
+    "governance reform",
+    "governance",
+    "accountability",
+    "transparency",
+    "civic space",
+    "civil society",
+
+    # Russian
+    "реформа",
+    "реформы",
+    "модернизация",
+    "новый закон",
+    "новое законодательство",
+    "закон принят",
+    "поправки",
+    "демократический спад",
+    "демократическое отступление",
+    "политическая реформа",
+    "институциональная реформа",
+    "управление",
+    "подотчетность",
+    "прозрачность",
+    "гражданское общество",
+]
+
+# ------------------------------------------------------------
+# 37. V9 — NON-HR TOPICS
+# ------------------------------------------------------------
+
+NON_HR_TOPIC_TERMS_V9 = [
+    "economy",
+    "economic growth",
+    "trade",
+    "investment",
+    "business",
+    "tourism",
+    "tourist",
+    "culture",
+    "cultural",
+    "museum",
+    "music",
+    "film",
+    "festival",
+    "sport",
+    "football",
+    "construction",
+    "infrastructure",
+    "railway",
+    "airport",
+    "energy",
+    "oil",
+    "gas",
+    "agriculture",
+    "harvest",
+    "technology",
+    "digital",
+    "startup",
+    "real estate",
+
+    # Russian
+    "экономика",
+    "экономический рост",
+    "торговля",
+    "инвестиции",
+    "бизнес",
+    "туризм",
+    "турист",
+    "культура",
+    "музей",
+    "музыка",
+    "фильм",
+    "фестиваль",
+    "спорт",
+    "футбол",
+    "строительство",
+    "инфраструктура",
+    "железная дорога",
+    "аэропорт",
+    "энергетика",
+    "нефть",
+    "газ",
+    "сельское хозяйство",
+    "урожай",
+    "технологии",
+    "цифровизация",
+    "стартап",
+    "недвижимость",
+]
+
+# ------------------------------------------------------------
+# 38. V9 — ACADEMIC / EDUCATIONAL RIGHTS
+# ------------------------------------------------------------
+
+ACADEMIC_HR_TERMS_V9 = [
+    "academic freedom",
+    "academic freedom violated",
+    "university repression",
+    "university crackdown",
+    "professor arrested",
+    "professor detained",
+    "student activist",
+    "student activists",
+    "student protest",
+    "student protests",
+    "campus repression",
+    "academic censorship",
+    "researcher prosecuted",
+    "researcher detained",
+    "scholar persecuted",
+
+    # Russian
+    "академическая свобода",
+    "репрессии в университете",
+    "преследование преподавателя",
+    "преподаватель арестован",
+    "преподаватель задержан",
+    "студент-активист",
+    "студенты-активисты",
+    "студенческий протест",
+    "студенческие протесты",
+    "цензура в университете",
+    "ученый преследуется",
+    "исследователь задержан",
+]
+
+# ------------------------------------------------------------
+# 39. V9 — EVENT ANCHOR WEIGHTS
+# ------------------------------------------------------------
+
+EVENT_ANCHOR_WEIGHTS_V9 = {
+    "bloody january": 12,
+    "bloody january 2022": 12,
+    "january events": 10,
+    "qantar": 12,
+
+    "nukus protests": 11,
+    "nukus protest": 11,
+    "nukus events": 10,
+    "nukus crackdown": 13,
+    "karakalpakstan protests": 11,
+    "karakalpakstan crackdown": 13,
+
+    "gorno-badakhshan": 8,
+    "gbao": 8,
+    "khorog protests": 11,
+    "gbao crackdown": 13,
+    "pamiri crackdown": 13,
+
+    "kempir-abad": 7,
+    "kempir-abad case": 9,
+
+    "central asia crackdown": 10,
+    "central asian repression": 10,
+}
+
+# ------------------------------------------------------------
+# 40. V9 — REGIONAL SOURCE HINTS
+# ------------------------------------------------------------
+
+REGIONAL_SOURCE_HINTS_V9 = [
+    "eurasianet",
+    "diplomat",
+    "occrp",
+    "amnesty",
+    "human rights watch",
+    "hrw",
+    "cpj",
+    "rsf",
+    "novastan",
+    "times of central asia",
+    "asia-plus",
+    "asia plus",
+    "kloop",
+    "24.kg",
+    "kaktus",
+    "kabar",
+    "radio ozodi",
+    "radio azattyq",
+    "gazeta.uz",
+    "kun.uz",
+    "spot.uz",
+    "turkmen.news",
+    "fergana",
+    "central asia-caucasus analyst",
+    "azernews",
+    "uznews",
+    "kursiv",
+    "vlast",
+    "orda",
+    "tengrinews",
+]
+
+# ------------------------------------------------------------
+# 41. V9 — TERMS THAT SHOULD NOT TRIGGER STRONG REPRESSION
+# ------------------------------------------------------------
+
+GENERIC_LEGAL_TERMS_V9 = [
+    "trial",
+    "sentence",
+    "sentenced",
+    "court",
+    "case",
+    "law",
+    "lawsuit",
+    "judge",
+    "judges",
+    "prosecutor",
+    "prosecution",
+    "government",
+    "president",
+    "official",
+    "officials",
+    "minister",
+    "parliament",
+]
+
+# ------------------------------------------------------------
+# 42. V9 — STRONG PRIMARY RIGHTS
+# ------------------------------------------------------------
+
+STRONG_PRIMARY_RIGHTS_V9 = [
+    "torture",
+    "forced disappearance",
+    "enforced disappearance",
+    "extrajudicial killing",
+    "death in custody",
+    "forced labor",
+    "forced labour",
+    "political prisoner",
+    "political prisoners",
+    "prisoner of conscience",
+    "arbitrary detention",
+    "arbitrary arrest",
+    "gender-based violence",
+    "domestic violence",
+    "domestic abuse",
+    "sexual violence",
+    "sexual abuse",
+    "forced marriage",
+    "child marriage",
+    "LGBT persecution",
+    "religious persecution",
+    "ethnic persecution",
+    "journalist detained",
+    "journalist arrested",
+    "journalist imprisoned",
+    "media outlet blocked",
+    "internet shutdown",
+]
+
+# ------------------------------------------------------------
+# 43. V9 — STRONG POLITICAL CONTEXT
+# ------------------------------------------------------------
+
+STRONG_POLITICAL_CONTEXT_V9 = [
+    "political repression",
+    "state repression",
+    "government repression",
+    "political persecution",
+    "political prosecution",
+    "politically motivated prosecution",
+    "politically motivated charges",
+    "political prisoner",
+    "political prisoners",
+    "prisoner of conscience",
+    "arbitrary detention",
+    "arbitrary arrest",
+    "judicial independence",
+    "political control of courts",
+    "concentration of power",
+    "abuse of presidential power",
+    "lifetime immunity",
+    "immunity from prosecution",
+    "transnational repression",
+    "foreign interference",
+]
+
+# ------------------------------------------------------------
+# 44. V9 — DEMOCRACY / CIVIC SPACE
+# ------------------------------------------------------------
+
+DEMOCRACY_CIVIC_SPACE_TERMS_V9 = [
+    "democratic decline",
+    "democratic backsliding",
+    "democracy score",
+    "declining democracy",
+    "shrinking civic space",
+    "civic space",
+    "civil society restrictions",
+    "restrictions on civil society",
+    "political pluralism",
+    "political participation",
+    "electoral freedom",
+    "free and fair elections",
+    "election repression",
+    "election interference",
+    "voter intimidation",
+    "opposition crackdown",
+
+    # Russian
+    "демократический спад",
+    "демократическое отступление",
+    "рейтинг демократии",
+    "сокращение гражданского пространства",
+    "ограничение гражданского общества",
+    "политический плюрализм",
+    "политическое участие",
+    "свободные и честные выборы",
+    "давление на оппозицию",
+    "преследование оппозиции",
+]
+
+# ------------------------------------------------------------
+# 45. V9 — CONTEXTUAL VICTIM / TARGET COMBINATIONS
+# ------------------------------------------------------------
+
+TARGET_TERMS_V9 = [
     "activist",
     "activists",
-    "human rights activist",
     "human rights defender",
-    "dissident",
-
+    "human rights defenders",
     "journalist",
     "journalists",
     "reporter",
+    "reporters",
+    "dissident",
+    "dissidents",
+    "opposition",
+    "opposition figure",
+    "opposition figures",
+    "civil society",
+    "ngo",
+    "ngo worker",
+    "lawyer",
+    "lawyers",
     "blogger",
-    "independent journalist",
+    "bloggers",
+    "political opponent",
+    "political opponents",
 
-    # Russe
+    # Russian
     "активист",
     "активисты",
     "правозащитник",
     "правозащитники",
-    "диссидент",
     "журналист",
     "журналисты",
     "репортер",
+    "диссидент",
+    "оппозиция",
+    "оппозиционер",
+    "гражданское общество",
+    "правозащитная организация",
+    "юрист",
+    "юристы",
     "блогер",
+    "блогеры",
 ]
+
+# ------------------------------------------------------------
+# 46. V9 — COMBINED SIGNAL WEIGHTS
+# ------------------------------------------------------------
+
+REPRESSION_COMBINATION_WEIGHTS_V9 = {
+    "target_plus_repression": 15,
+    "journalist_plus_repression": 20,
+    "activist_plus_repression": 18,
+    "political_prisoner": 22,
+    "torture_plus_detention": 22,
+    "disappearance_plus_state_actor": 25,
+    "forced_labor_plus_state_actor": 22,
+    "gender_violence_plus_women": 12,
+    "event_plus_repression": 18,
+    "event_plus_target": 14,
+    "rule_of_law_plus_political_power": 10,
+    "transnational_plus_dissident": 18,
+}
+
+# ------------------------------------------------------------
+# 47. V9 — BODY CONFIRMATION TERMS
+#     These are deliberately weaker than primary signals.
+# ------------------------------------------------------------
+
+BODY_CONFIRMATION_TERMS_V9 = [
+    "arrested",
+    "detained",
+    "imprisoned",
+    "jailed",
+    "sentenced",
+    "convicted",
+    "charged",
+    "prosecuted",
+    "tortured",
+    "beaten",
+    "threatened",
+    "harassed",
+    "blocked",
+    "banned",
+    "censored",
+    "disappeared",
+    "kidnapped",
+    "deported",
+    "extradited",
+    "forced",
+    "coerced",
+
+    # Russian morphology
+    "задерж",
+    "арест",
+    "осужден",
+    "приговор",
+    "обвин",
+    "заключ",
+    "преслед",
+    "пыт",
+    "угрож",
+    "запрет",
+    "заблок",
+    "исчез",
+    "похищ",
+    "депорт",
+    "экстрад",
+    "принуд",
+    "насили",
+]
+
+# ------------------------------------------------------------
+# 48. V9 — EXPLICIT HR ACTIONS
+# ------------------------------------------------------------
+
+EXPLICIT_HR_ACTION_TERMS_V9 = [
+    "arrested",
+    "detained",
+    "imprisoned",
+    "jailed",
+    "tortured",
+    "beaten",
+    "disappeared",
+    "killed",
+    "threatened",
+    "harassed",
+    "prosecuted",
+    "convicted",
+    "sentenced",
+    "blocked",
+    "banned",
+    "censored",
+    "forced",
+    "coerced",
+    "persecuted",
+    "repressed",
+
+    # Russian
+    "задержан",
+    "арестован",
+    "заключен",
+    "осужден",
+    "приговорен",
+    "пытали",
+    "избит",
+    "исчез",
+    "убит",
+    "угрожали",
+    "преследуется",
+    "запрещен",
+    "заблокирован",
+    "принужден",
+    "репрессирован",
+]
+
+# ------------------------------------------------------------
+# END keywords.py V9
+# ------------------------------------------------------------
