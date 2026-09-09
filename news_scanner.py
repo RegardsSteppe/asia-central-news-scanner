@@ -9,6 +9,11 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+try:
+    from stop_words import get_stop_words
+except ImportError:  # pragma: no cover - library not installed
+    get_stop_words = None
+
 from sources import SOURCES
 from scoring import classify_article
 from html_template import create_web_page
@@ -44,6 +49,73 @@ CSV_OUTPUT_FILE = BASE_DIR / "articles.csv"
 
 ENRICH_LIMIT = 80
 VOCABULARY_LIMIT = 300
+
+# Small, hand-picked list kept as a safety net in case the "stop-words"
+# library is not installed or fails to load its corpus for some reason.
+_FALLBACK_STOPWORDS = {
+    "the",
+    "and",
+    "for",
+    "with",
+    "from",
+    "that",
+    "this",
+    "are",
+    "has",
+    "have",
+    "into",
+    "about",
+    "after",
+    "before",
+    "their",
+    "they",
+    "will",
+    "you",
+    "your",
+    "how",
+    "why",
+    "what",
+    "who",
+    "что",
+    "как",
+    "для",
+    "это",
+    "после",
+    "перед",
+    "из",
+    "в",
+    "на",
+    "и",
+    "с",
+    "по",
+    "не",
+    "к",
+    "о",
+}
+
+# Terms specific to this project's news-title vocabulary that generic
+# stopword corpora don't cover.
+_EXTRA_STOPWORDS = {
+    "new",
+    "central",
+    "asia",
+}
+
+
+def _load_stopwords() -> set[str]:
+    words: set[str] = set(_FALLBACK_STOPWORDS)
+
+    if get_stop_words is not None:
+        for language in ("en", "ru"):
+            try:
+                words |= set(get_stop_words(language))
+            except Exception:
+                continue
+
+    return words | _EXTRA_STOPWORDS
+
+
+STOPWORDS = _load_stopwords()
 
 
 # ============================================================
@@ -116,50 +188,6 @@ def build_title_vocabulary(
 
     counts: dict[str, int] = {}
 
-    stopwords = {
-        "the",
-        "and",
-        "for",
-        "with",
-        "from",
-        "that",
-        "this",
-        "are",
-        "has",
-        "have",
-        "into",
-        "about",
-        "after",
-        "before",
-        "their",
-        "they",
-        "will",
-        "you",
-        "your",
-        "how",
-        "why",
-        "what",
-        "who",
-        "new",
-        "central",
-        "asia",
-        "что",
-        "как",
-        "для",
-        "это",
-        "после",
-        "перед",
-        "из",
-        "в",
-        "на",
-        "и",
-        "с",
-        "по",
-        "не",
-        "к",
-        "о",
-    }
-
     for article in articles:
         title = clean_title(
             article.get("title", "")
@@ -177,7 +205,7 @@ def build_title_vocabulary(
             if not word:
                 continue
 
-            if word in stopwords:
+            if word in STOPWORDS:
                 continue
 
             counts[word] = (
