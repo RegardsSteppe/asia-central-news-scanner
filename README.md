@@ -165,6 +165,12 @@ Run a normal scan:
 python news_scanner.py
 ```
 
+Generate the Hudson Institute variant:
+
+```bash
+python news_scanner2.py
+```
+
 Force fresh HTTP requests instead of using the scanner cache:
 
 ```bash
@@ -228,6 +234,9 @@ The scanner will:
 7. enrich the highest-scoring articles;
 8. score them again;
 9. generate `index.html`.
+
+The Hudson Institute variant uses `sources2.py`, `keywords2.py`, `scoring2.py`
+and generates `index2.html`.
 
 ## GitHub Actions
 
