@@ -2,6 +2,12 @@ name: Asia Central News Scanner
 
 on:
   workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: "Force full re-scan (ignore HTTP cache and per-source freshness memory)"
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: "0 6 * * *"
 
@@ -28,7 +34,9 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Run scanner
-        run: python news_scanner.py
+        run: >-
+          python news_scanner.py
+          ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.force_refresh == 'true') && '--scan' || '' }}
 
       - name: Prepare website
         run: |
