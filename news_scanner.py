@@ -452,6 +452,22 @@ def update_source_cache(
     }
 
 
+def compute_seen_keys(
+    memory: dict[str, Any],
+    force_refresh: bool,
+) -> set[str]:
+    """
+    Détermine les clés d'articles à traiter comme "déjà vues" pour ce
+    run. force_refresh (--scan) signifie repartir de zéro : le filtre
+    seen_article_keys est alors désactivé, sinon un "re-scan forcé"
+    continuerait à écarter silencieusement tout ce qui a déjà été
+    traité lors d'un run précédent.
+    """
+    if not SKIP_PREVIOUSLY_SEEN or force_refresh:
+        return set()
+    return load_seen_keys(memory)
+
+
 def timed_call(label: str, func: Any, *args: Any, **kwargs: Any) -> Any:
     started = time.perf_counter()
     result = func(*args, **kwargs)
@@ -1077,11 +1093,7 @@ def run_scan(
 ) -> list[dict[str, Any]]:
     started_total = time.perf_counter()
     memory = show_memory()
-    seen_keys = (
-        load_seen_keys(memory)
-        if SKIP_PREVIOUSLY_SEEN
-        else set()
-    )
+    seen_keys = compute_seen_keys(memory, force_refresh)
 
     print(
         f"SOURCES | {len(SOURCES)} sources actives"
