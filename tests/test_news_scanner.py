@@ -277,6 +277,55 @@ class CollectArticlesTests(unittest.TestCase):
         mock_fetch.assert_called_once()
         self.assertEqual(articles[0]["url"], "https://example.com/fresh")
 
+    @patch("news_scanner.diagnose_source_content")
+    @patch("news_scanner.parse_rss")
+    @patch("news_scanner.fetch_url")
+    def test_cached_articles_are_not_dropped_as_previously_seen(
+        self,
+        mock_fetch,
+        mock_parse,
+        mock_diag,
+    ):
+        # Régression : un article servi depuis le cache par-source a, par
+        # construction, déjà été enregistré dans seen_article_keys lors du
+        # scan qui a rempli ce cache. S'il était filtré comme "déjà vu",
+        # une source dans sa fenêtre de fraîcheur ne contribuerait jamais
+        # rien et le site publié se retrouverait vide.
+        from datetime import datetime, timezone
+
+        memory = {
+            "sources": {
+                "S1": {
+                    "last_scanned_at": datetime.now(timezone.utc).isoformat(),
+                    "ok": True,
+                    "articles": [
+                        {
+                            "source": "S1",
+                            "source_label": "S1",
+                            "title": "Cached",
+                            "summary": "",
+                            "url": "https://example.com/cached",
+                            "date": None,
+                        }
+                    ],
+                }
+            }
+        }
+
+        with patch(
+            "news_scanner.SOURCES",
+            new=[{"name": "S1", "url": "https://example.com/rss", "type": "rss"}],
+        ):
+            articles, ok, total, skipped = collect_articles(
+                seen_keys={"example.com/cached"},
+                memory=memory,
+            )
+
+        mock_fetch.assert_not_called()
+        self.assertEqual(len(articles), 1)
+        self.assertEqual(articles[0]["url"], "https://example.com/cached")
+        self.assertEqual(skipped, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

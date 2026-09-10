@@ -969,7 +969,13 @@ def collect_articles(
                 continue
             if key in run_seen:
                 continue
-            if key in preload_seen:
+            # Les articles servis depuis le cache par-source ne sont PAS
+            # filtrés par seen_article_keys : ce cache existe pour éviter
+            # de re-télécharger une source, pas pour l'exclure du rapport
+            # du jour — sinon une source "fraîche" (< SOURCE_MIN_INTERVAL)
+            # ne contribuerait jamais rien, puisque ses articles ont par
+            # définition déjà été vus lors du scan qui a rempli le cache.
+            if not from_cache and key in preload_seen:
                 skipped_previously_seen += 1
                 continue
             run_seen.add(key)
