@@ -1557,17 +1557,17 @@
       ]
     },
     "Human Rights Watch": {
-      "last_scanned_at": "2026-09-10T14:05:41.758938+00:00",
+      "last_scanned_at": "2026-09-10T14:09:43.735532+00:00",
       "ok": false,
       "articles": []
     },
     "Human Rights Watch — français": {
-      "last_scanned_at": "2026-09-10T14:05:41.758964+00:00",
+      "last_scanned_at": "2026-09-10T14:09:43.735553+00:00",
       "ok": false,
       "articles": []
     },
     "Human Rights Watch — russe": {
-      "last_scanned_at": "2026-09-10T14:05:41.758970+00:00",
+      "last_scanned_at": "2026-09-10T14:09:43.735561+00:00",
       "ok": false,
       "articles": []
     },
@@ -12708,7 +12708,7 @@
       ]
     },
     "International Crisis Group": {
-      "last_scanned_at": "2026-09-10T14:05:41.766291+00:00",
+      "last_scanned_at": "2026-09-10T14:09:43.744314+00:00",
       "ok": false,
       "articles": []
     },
@@ -15651,7 +15651,12 @@
       ]
     },
     "George C. Marshall European Center for Security Studies": {
-      "last_scanned_at": "2026-09-10T14:05:41.769469+00:00",
+      "last_scanned_at": "2026-09-10T14:09:43.746534+00:00",
+      "ok": false,
+      "articles": []
+    },
+    "Swiss Political Science Review": {
+      "last_scanned_at": "2026-09-10T14:09:43.746542+00:00",
       "ok": false,
       "articles": []
     }
