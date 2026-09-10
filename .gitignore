@@ -5,7 +5,10 @@
 *.log
 news_scanner.log
 http_cache.json
-memory.json
+
+# memory.json is intentionally tracked: it persists the scanner's
+# per-source freshness cache and seen-article keys across CI runs
+# (see .github/workflows/news-scanner.yml).
 
 # Python
 __pycache__/

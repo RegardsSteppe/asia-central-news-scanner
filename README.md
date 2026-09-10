@@ -22,7 +22,8 @@ https://regardssteppe.github.io/asia-central-news-scanner/
 * 🔎 **Two-pass analysis** — titles and summaries are scored first; full article bodies are retrieved only for the highest-ranked articles
 * 📝 **Audit information** — the dashboard exposes scoring and classification information for inspection
 * 📚 **Title vocabulary** — frequently occurring title words are extracted for monitoring and analysis
-* 🛡️ **Fault tolerance** — a failing source does not stop the complete scan
+* 🛡️ **Fault tolerance** — a failing source does not stop the complete scan, and automatically retries a `fallbacks` URL before giving up
+* 🧠 **Persistent memory** — already-seen articles and each source's last-scan time are stored in `memory.json` (committed by the CI workflow), so a source scanned recently isn't re-fetched needlessly
 * 🌐 **GitHub Pages output** — the final `index.html` and `articles.csv` are published as static outputs
 
 ## How it works
@@ -185,6 +186,8 @@ The scanner now exposes conservative runtime knobs via environment variables:
 | `SCANNER_HTTP_RETRY_BACKOFF_BASE` | `1.0` | Exponential backoff base delay |
 | `SCANNER_SKIP_PREVIOUSLY_SEEN` | `1` | Skip already-seen article keys early |
 | `SCANNER_MAX_PERSISTED_SEEN_KEYS` | `5000` | Max number of persisted seen keys |
+| `SCANNER_SOURCE_MIN_INTERVAL` | `7200` (2h) | Minimum delay, in seconds, before a successfully-scanned source is fetched again. `--scan` bypasses it. |
+| `SCANNER_MAX_CACHED_ARTICLES_PER_SOURCE` | `60` | Max articles kept per source in the freshness cache |
 
 Examples:
 
@@ -203,7 +206,16 @@ Each run logs:
 
 ### Conditional HTTP cache metadata
 
-HTTP responses now persist ETag/Last-Modified metadata and cached source content in `http_cache.json` to support conditional requests (`If-None-Match`, `If-Modified-Since`) across runs.
+HTTP responses now persist ETag/Last-Modified metadata and cached source content in `http_cache.json` to support conditional requests (`If-None-Match`, `If-Modified-Since`) across runs. This file is not committed (runner-local only).
+
+### Scanner memory (`memory.json`)
+
+`memory.json` is committed by the GitHub Actions workflow after every run (`Persist scanner memory` step), so it survives across the ephemeral CI runners — unlike `http_cache.json`, it's tracked in git on purpose. It stores two things:
+
+* `seen_article_keys` — canonical keys of articles already processed, so they aren't re-analyzed on the next run (see `SCANNER_SKIP_PREVIOUSLY_SEEN`).
+* `sources` — for each source, the timestamp of its last successful scan and a compact copy of the articles it returned (title/summary/url/date, no full body). If a source was scanned less than `SCANNER_SOURCE_MIN_INTERVAL` ago, the next run reuses this cached list instead of re-fetching the source over the network. A source that failed is always retried on the next run, regardless of the interval.
+
+Run with `--scan` to force a full re-fetch of every source, ignoring both the HTTP cache and this per-source freshness memory.
 
 ### Persistence/index note
 
