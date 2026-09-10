@@ -6,6 +6,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from news_scanner import (
+    build_audit,
     build_csv_rows,
     canonical_article_key,
     collect_articles,
@@ -55,6 +56,38 @@ class DeduplicateTests(unittest.TestCase):
 
     def test_empty_list(self):
         self.assertEqual(deduplicate([]), [])
+
+
+class BuildAuditTests(unittest.TestCase):
+    def test_preserves_url_date_and_theme(self):
+        # Régression : le tableau d'audit du site (render_audit_row)
+        # affiche url/date/theme, mais build_audit() ne les copiait
+        # pas dans les dicts qu'il construit — chaque ligne du tableau
+        # avait donc un lien mort (href=""), aucune date et aucun
+        # thème, pour la quasi-totalité des articles (les D, jamais
+        # affichés ailleurs que dans ce tableau).
+        from datetime import datetime, timezone
+
+        date = datetime(2026, 3, 15, tzinfo=timezone.utc)
+        articles = [
+            {
+                "title": "Some article",
+                "source": "Test Source",
+                "url": "https://example.com/article",
+                "date": date,
+                "theme": "Politique intérieure",
+                "score": 14,
+                "level": "D",
+                "relevant": False,
+                "signals": {},
+            }
+        ]
+
+        audit = build_audit(articles)
+
+        self.assertEqual(audit[0]["url"], "https://example.com/article")
+        self.assertEqual(audit[0]["date"], date)
+        self.assertEqual(audit[0]["theme"], "Politique intérieure")
 
 
 class CsvExportTests(unittest.TestCase):
