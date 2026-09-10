@@ -73,6 +73,35 @@ class LooksLikeArticleLinkTests(unittest.TestCase):
             )
         )
 
+    def test_rejects_expert_profile_pages(self):
+        self.assertFalse(
+            looks_like_article_link(
+                "https://www.hudson.org/experts/1346-riley-walters",
+                "Riley Walters",
+            )
+        )
+
+    def test_rejects_contributor_profile_pages(self):
+        self.assertFalse(
+            looks_like_article_link(
+                "https://www.fpri.org/contributor/bram-wells/",
+                "Bram Wells",
+            )
+        )
+
+    def test_rejects_team_and_people_pages(self):
+        self.assertFalse(
+            looks_like_article_link(
+                "https://eurasianet.org/people/alexander-thompson",
+                "Alexander Thompson",
+            )
+        )
+        self.assertFalse(
+            looks_like_article_link(
+                "https://novastan.org/de/team/", "Unser Team"
+            )
+        )
+
 
 class ExtractPublishedDateTests(unittest.TestCase):
     def test_reads_article_published_time_meta(self):

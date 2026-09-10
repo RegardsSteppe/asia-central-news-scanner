@@ -142,6 +142,27 @@ _NON_ARTICLE_PATH_PATTERNS = (
     "/wp-login",
     "/cart",
     "/account",
+    # Pages de profil/bio (auteurs, chercheurs, staff) : fréquentes sur
+    # les sites de think tanks, elles passaient le filtre générique
+    # (titre = juste un nom propre, 2 segments de chemin) faute d'être
+    # explicitement exclues — ex. hudson.org/experts/<nom>,
+    # fpri.org/contributor/<nom>, eurasianet.org/people/<nom>.
+    "/experts/",
+    "/expert/",
+    "/people/",
+    "/person/",
+    "/staff/",
+    "/team/",
+    "/scholars/",
+    "/scholar/",
+    "/fellows/",
+    "/fellow/",
+    "/contributors/",
+    "/contributor/",
+    "/profile/",
+    "/profiles/",
+    "/bio/",
+    "/bios/",
 )
 
 # Segments d'URL qui indiquent plutôt une page d'article.
