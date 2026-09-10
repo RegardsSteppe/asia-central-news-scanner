@@ -9,6 +9,7 @@ from find_candidate_sources import (
     extract_outbound_domains,
     find_candidates,
     is_excluded,
+    is_same_organization,
     known_domains,
 )
 
@@ -38,6 +39,25 @@ class IsExcludedTests(unittest.TestCase):
         self.assertFalse(is_excluded("ohchr.org"))
 
 
+class IsSameOrganizationTests(unittest.TestCase):
+    def test_same_label_different_tld_is_same_org(self):
+        # Cas réel observé : un article sur aljazeera.com pointe vers
+        # careers.aljazeera.net (son propre réseau, pas une source tierce).
+        self.assertTrue(
+            is_same_organization("careers.aljazeera.net", "aljazeera.com")
+        )
+
+    def test_same_apex_different_subdomain_is_same_org(self):
+        self.assertTrue(
+            is_same_organization("about.rferl.org", "rferl.org")
+        )
+
+    def test_different_organization_is_not_same_org(self):
+        self.assertFalse(
+            is_same_organization("ohchr.org", "rferl.org")
+        )
+
+
 class KnownDomainsTests(unittest.TestCase):
     def test_includes_real_source_domains(self):
         domains = known_domains()
@@ -56,6 +76,16 @@ class ExtractOutboundDomainsTests(unittest.TestCase):
         """
 
         domains = extract_outbound_domains(html, own_domain="example.com")
+
+        self.assertEqual(domains, {"ohchr.org"})
+
+    def test_excludes_same_organization_under_other_domain(self):
+        html = """
+        <a href="https://training.aljazeera.net/careers">same org</a>
+        <a href="https://ohchr.org/report">real citation</a>
+        """
+
+        domains = extract_outbound_domains(html, own_domain="aljazeera.com")
 
         self.assertEqual(domains, {"ohchr.org"})
 
