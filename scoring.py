@@ -1,4 +1,5 @@
 import re
+from functools import lru_cache
 
 from keywords import (
     CENTRAL_ASIA_TERMS,
@@ -238,13 +239,24 @@ def normalize(text):
     return re.sub(r"\s+", " ", str(text)).strip().lower()
 
 
+@lru_cache(maxsize=None)
+def _compiled(pattern, flags=0):
+    """
+    classify_article() runs dozens of keyword-list lookups against every
+    article, each historically recompiling its regex from scratch — with
+    ~50 term lists of dozens of phrases each, that's ~1800+ regex
+    compilations per article. Terms/patterns are static (from keywords.py
+    or literals below), so the compiled pattern is cached and reused
+    across every article instead.
+    """
+    return re.compile(pattern, flags)
+
+
 def phrase_present(text, phrase):
     if not text or not phrase:
         return False
-    return bool(re.search(
-        r"(?<!\w)" + re.escape(normalize(phrase)) + r"(?!\w)",
-        text
-    ))
+    pattern = r"(?<!\w)" + re.escape(normalize(phrase)) + r"(?!\w)"
+    return bool(_compiled(pattern).search(text))
 
 
 def find_terms(text, terms):
@@ -256,7 +268,7 @@ def capped_add(current, value, maximum):
 
 
 def contains_pattern(text, patterns):
-    return any(re.search(pattern, text, re.I | re.S) for pattern in patterns)
+    return any(_compiled(pattern, re.I | re.S).search(text) for pattern in patterns)
 
 
 def weighted_score(terms, weights, maximum):
@@ -271,9 +283,9 @@ def relation_present(text, targets, actions, window=140):
         for action in actions:
             a = re.escape(normalize(target))
             b = re.escape(normalize(action))
-            if re.search(rf"{a}.{{0,{window}}}{b}", text, re.I | re.S):
+            if _compiled(rf"{a}.{{0,{window}}}{b}", re.I | re.S).search(text):
                 return True
-            if re.search(rf"{b}.{{0,{window}}}{a}", text, re.I | re.S):
+            if _compiled(rf"{b}.{{0,{window}}}{a}", re.I | re.S).search(text):
                 return True
     return False
 
@@ -346,24 +358,23 @@ def classify_article(article):
     has_hr_defender = any(normalize(x) in full_text for x in HUMAN_RIGHTS_DEFENDER_TERMS)
     forced_labor_detected = any(normalize(x) in full_text for x in FORCED_LABOR_TERMS)
 
-    has_detention = bool(re.search(
-        r"\b(detained|detention|arrested|arrest|задерж\w*|арест\w*)\b",
-        full_text, re.I
-    ))
-    has_imprisonment = bool(re.search(
+    has_detention = bool(_compiled(
+        r"\b(detained|detention|arrested|arrest|задерж\w*|арест\w*)\b", re.I
+    ).search(full_text))
+    has_imprisonment = bool(_compiled(
         r"\b(imprisoned|imprisonment|prison sentence|sentenced|осужден\w*|приговор\w*|заключ\w*)\b",
-        full_text, re.I
-    ))
-    has_censorship = bool(re.search(r"(censorship|censored|цензур\w*)", full_text, re.I))
-    has_government_involvement = bool(re.search(
+        re.I
+    ).search(full_text))
+    has_censorship = bool(_compiled(r"(censorship|censored|цензур\w*)", re.I).search(full_text))
+    has_government_involvement = bool(_compiled(
         r"\b(government|authorities|state|government-backed|ilo|правительство|власти|государств\w*)\b",
-        full_text, re.I
-    ))
+        re.I
+    ).search(full_text))
 
-    has_restriction = bool(re.search(
+    has_restriction = bool(_compiled(
         r"(restriction|restrictions|restricted access|ограничени\w*|запрет\w*)",
-        full_text, re.I
-    ))
+        re.I
+    ).search(full_text))
 
     # --------------------------------------------------------
     # V9 — PRIMARY SIGNALS
@@ -435,7 +446,7 @@ def classify_article(article):
     )
 
     primary_lgbt_pressure = bool(
-        re.search(r"\blgbt\w*|\bqueer\b", primary_hr_text, re.I)
+        _compiled(r"\blgbt\w*|\bqueer\b", re.I).search(primary_hr_text)
         and (primary_repression or primary_specific_right or primary_press)
     )
 
@@ -521,22 +532,22 @@ def classify_article(article):
     confirmed_activist_pressure = regional_context and activist_relation
     confirmed_journalist_pressure = regional_context and journalist_relation
 
-    severe_morphology = bool(re.search(
+    severe_morphology = bool(_compiled(
         r"(?:пыточ\w*\s+услов\w*|\bшизо\b|\bкарцер\b|произволь\w*\s+задерж\w*)",
-        full_text, re.I
-    ))
+        re.I
+    ).search(full_text))
 
     severe_detected = bool(
         severe_morphology
         or any(normalize(x) in full_text for x in SEVERE_REPRESSION_TERMS)
     )
 
-    prison_sentence_signal = bool(re.search(
+    prison_sentence_signal = bool(_compiled(
         r"(?:\b(?:8|9|10|11|12|13|14|15|16|17|18|19|20)\s*(?:лет|года|год|years?)\b.{0,80}"
         r"\b(?:тюрьм|заключ|лишен|лишени)|\b(?:приговорен|осужден|осуждён)\b.{0,80}"
         r"\b(?:лет|года|год)\b)",
-        full_text, re.I
-    ))
+        re.I
+    ).search(full_text))
 
     # ========================================================
     # SOUS-SCORES
@@ -630,10 +641,10 @@ def classify_article(article):
     elif routine_geo:
         geopolitical_score = 2
 
-    has_sco = bool(re.search(
+    has_sco = bool(_compiled(
         r"\b(sco|shanghai cooperation organization|shanghai cooperation organisation)\b",
-        full_text, re.I
-    ))
+        re.I
+    ).search(full_text))
     if has_sco and major_geo:
         geopolitical_score = capped_add(geopolitical_score, 3, 10)
 
