@@ -106,6 +106,34 @@ CENTRAL_ASIA_TERMS = [
     "tajik",
     "turkmen",
 
+    # Grandes villes — un article peut nommer la ville sans jamais
+    # nommer le pays (ex. un titre mentionnant seulement "Samarkand").
+    "almaty",
+    "astana",
+    "nur-sultan",
+    "shymkent",
+    "karaganda",
+    "aktobe",
+    "atyrau",
+    "tashkent",
+    "samarkand",
+    "bukhara",
+    "khiva",
+    "namangan",
+    "andijan",
+    "fergana",
+    "nukus",
+    "bishkek",
+    "osh",
+    "jalal-abad",
+    "karakol",
+    "dushanbe",
+    "khujand",
+    "khorog",
+    "ashgabat",
+    "turkmenabat",
+    "dashoguz",
+
     # Russian
     "центральная азия",
     "центральноазиатский",
@@ -115,6 +143,33 @@ CENTRAL_ASIA_TERMS = [
     "киргизия",
     "таджикистан",
     "туркменистан",
+
+    # Grandes villes — russe
+    "алматы",
+    "астана",
+    "нур-султан",
+    "шымкент",
+    "караганда",
+    "актобе",
+    "атырау",
+    "ташкент",
+    "самарканд",
+    "бухара",
+    "хива",
+    "наманган",
+    "андижан",
+    "фергана",
+    "нукус",
+    "бишкек",
+    "ош",
+    "джалал-абад",
+    "каракол",
+    "душанбе",
+    "худжанд",
+    "хорог",
+    "ашхабад",
+    "туркменабат",
+    "дашогуз",
 ]
 
 # ------------------------------------------------------------
@@ -133,6 +188,13 @@ CAUCASUS_TERMS = [
     "north ossetia",
     "ingushetia",
 
+    # Grandes villes
+    "baku",
+    "tbilisi",
+    "yerevan",
+    "grozny",
+    "makhachkala",
+
     # Russian
     "кавказ",
     "южный кавказ",
@@ -143,6 +205,13 @@ CAUCASUS_TERMS = [
     "чечня",
     "дагестан",
     "ингушетия",
+
+    # Grandes villes — russe
+    "баку",
+    "тбилиси",
+    "ереван",
+    "грозный",
+    "махачкала",
 ]
 
 # ------------------------------------------------------------
