@@ -89,6 +89,25 @@ class BuildAuditTests(unittest.TestCase):
         self.assertEqual(audit[0]["date"], date)
         self.assertEqual(audit[0]["theme"], "Politique intérieure")
 
+    def test_maps_source_to_display_category(self):
+        # La table d'audit du site regroupe les milliers de lignes de
+        # niveau D par catégorie de source (voir PROFILE_GROUPS dans
+        # sources.py) plutôt que de tout lister à plat.
+        articles = [
+            {"title": "A", "source": "Human Rights Watch"},
+            {"title": "B", "source": "RAND Corporation"},
+            {"title": "C", "source": "Unknown Source"},
+        ]
+
+        audit = build_audit(articles)
+
+        self.assertEqual(audit[0]["category"], "Droits humains & presse")
+        self.assertEqual(
+            audit[1]["category"],
+            "Sécurité & géopolitique (think tanks)",
+        )
+        self.assertEqual(audit[2]["category"], "Autres")
+
 
 class CsvExportTests(unittest.TestCase):
     def test_rows_include_article_data_scores_and_keywords(self):
