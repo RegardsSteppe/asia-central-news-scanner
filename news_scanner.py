@@ -17,7 +17,7 @@ try:
 except ImportError:  # pragma: no cover - library not installed
     get_stop_words = None
 
-from sources import SOURCES
+from sources import SOURCES, PROFILE_GROUPS
 from scoring import classify_article
 from html_template import create_web_page
 from synthesis import generate_synthesis
@@ -70,6 +70,14 @@ MAX_PERSISTED_SEEN_KEYS = max(
     100,
     int(os.getenv("SCANNER_MAX_PERSISTED_SEEN_KEYS", "5000")),
 )
+
+# Nom de source -> catégorie d'affichage (voir PROFILE_GROUPS dans
+# sources.py). Sert uniquement à regrouper la table d'audit dans le
+# HTML — n'influence jamais le scoring.
+SOURCE_NAME_TO_GROUP = {
+    source["name"]: PROFILE_GROUPS.get(source["profile"], "Autres")
+    for source in SOURCES
+}
 
 # Durée pendant laquelle une source scannée avec succès n'est pas
 # re-scannée (mémoire par source, persistée dans memory.json). 2h par défaut.
@@ -629,15 +637,20 @@ def build_audit(
     audit = []
 
     for article in articles:
+        source = article.get(
+            "source",
+            "",
+        )
         audit.append(
             {
                 "title": article.get(
                     "title",
                     "",
                 ),
-                "source": article.get(
-                    "source",
-                    "",
+                "source": source,
+                "category": SOURCE_NAME_TO_GROUP.get(
+                    source,
+                    "Autres",
                 ),
                 "url": article.get(
                     "url",
@@ -708,9 +721,11 @@ def build_csv_rows(
     for article in articles:
         date = article.get("date")
         signals = article.get("signals") or {}
+        source = article.get("source", "")
         row: dict[str, Any] = {
             "date": date.isoformat() if hasattr(date, "isoformat") else date or "",
-            "source": article.get("source", ""),
+            "source": source,
+            "category": SOURCE_NAME_TO_GROUP.get(source, "Autres"),
             "title": article.get("title", ""),
             "url": article.get("url", ""),
             "summary": article.get("summary", ""),
@@ -739,6 +754,7 @@ def export_csv(articles: list[dict[str, Any]]) -> None:
     fieldnames = [
         "date",
         "source",
+        "category",
         "title",
         "url",
         "summary",

@@ -3,6 +3,8 @@
 import html
 from datetime import datetime, timezone
 
+from sources import PROFILE_GROUP_ORDER
+
 
 def esc(value):
     """Escape HTML safely."""
@@ -433,6 +435,51 @@ def render_audit_row(
         </td>
 
     </tr>
+    """
+
+
+def render_audit_group(
+    category,
+    rows_html,
+    count,
+):
+    """Render one category block of the audit table (heading + table)."""
+
+    return f"""
+    <div class="audit-group">
+
+        <h3>
+            {esc(category)}
+            <span class="audit-group-count">
+                {esc(count)} article{esc("s" if count != 1 else "")}
+            </span>
+        </h3>
+
+        <div class="audit-wrapper">
+
+        <table>
+
+        <thead>
+        <tr>
+            <th>Niveau</th>
+            <th>Score</th>
+            <th>Date</th>
+            <th>Source</th>
+            <th>Thème</th>
+            <th>Article</th>
+            <th>Retenu</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {rows_html}
+        </tbody>
+
+        </table>
+
+        </div>
+
+    </div>
     """
 
 
@@ -962,6 +1009,29 @@ h1 {
     margin-bottom: 15px;
 }
 
+.audit-group {
+
+    margin-bottom: 35px;
+}
+
+.audit-group h3 {
+
+    margin-bottom: 12px;
+
+    font-size: 17px;
+}
+
+.audit-group-count {
+
+    color: #888;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    margin-left: 6px;
+}
+
 .audit-wrapper {
 
     overflow-x: auto;
@@ -1150,16 +1220,57 @@ def create_web_page(
         )
 
     # --------------------------------------------------------
-    # AUDIT
+    # AUDIT — regroupé par catégorie de source (PROFILE_GROUP_ORDER)
+    # pour rester lisible malgré la masse de niveau D.
     # --------------------------------------------------------
 
-    audit_rows = []
+    audit_by_category: dict[str, list] = {}
 
     for article in audit:
 
-        audit_rows.append(
-            render_audit_row(
-                article
+        category = article.get(
+            "category",
+            "Autres",
+        )
+
+        audit_by_category.setdefault(
+            category,
+            [],
+        ).append(
+            article
+        )
+
+    category_order = list(PROFILE_GROUP_ORDER)
+
+    for category in audit_by_category:
+
+        if category not in category_order:
+
+            category_order.append(
+                category
+            )
+
+    audit_groups_html = []
+
+    for category in category_order:
+
+        articles_in_category = audit_by_category.get(
+            category
+        )
+
+        if not articles_in_category:
+            continue
+
+        rows_html = "".join(
+            render_audit_row(article)
+            for article in articles_in_category
+        )
+
+        audit_groups_html.append(
+            render_audit_group(
+                category,
+                rows_html,
+                len(articles_in_category),
             )
         )
 
@@ -1289,63 +1400,14 @@ Audit complet
 
 <p class="audit-description">
 
-Tous les articles analysés sont conservés ici.
-Les articles filtrés restent visibles pour permettre
-de contrôler les décisions du moteur.
+Tous les articles analysés sont conservés ici, regroupés par
+catégorie de source. Les articles filtrés restent visibles pour
+permettre de contrôler les décisions du moteur.
 
 </p>
 
 
-<div class="audit-wrapper">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>
-Niveau
-</th>
-
-<th>
-Score
-</th>
-
-<th>
-Date
-</th>
-
-<th>
-Source
-</th>
-
-<th>
-Thème
-</th>
-
-<th>
-Article
-</th>
-
-<th>
-Retenu
-</th>
-
-</tr>
-
-</thead>
-
-
-<tbody>
-
-{"".join(audit_rows)}
-
-</tbody>
-
-</table>
-
-</div>
+{"".join(audit_groups_html)}
 
 </section>
 

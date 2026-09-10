@@ -1537,3 +1537,50 @@ SOURCE_PROFILES = {
         ),
     },
 }
+
+
+# ============================================================
+# REGROUPEMENT D'AFFICHAGE (audit)
+#
+# Les 13 profils ci-dessus sont trop nombreux pour être lisibles dans
+# la table d'audit (des milliers de lignes en niveau D). Regroupés en
+# 8 catégories pour l'affichage uniquement — le scoring, lui, ignore
+# totalement ce regroupement.
+# ============================================================
+
+PROFILE_GROUPS = {
+    "human_rights": "Droits humains & presse",
+    "press_freedom": "Droits humains & presse",
+
+    "investigative": "Investigation",
+
+    "independent": "Médias indépendants",
+    "regional_independent": "Médias indépendants",
+    "international_independent": "Médias indépendants",
+
+    "regional_media": "Médias régionaux",
+    "regional_analysis": "Médias régionaux",
+
+    "international_analysis": "Analyse internationale",
+
+    "security_analysis": "Sécurité & géopolitique (think tanks)",
+
+    "state_media": "Médias officiels (contrepoint)",
+
+    "economic_media": "Économie & recherche",
+    "academic_research": "Économie & recherche",
+}
+
+# Ordre d'affichage : des sources les plus proches de la ligne
+# éditoriale (droits humains, indépendant) vers les sources ajoutées
+# comme contrepoint (médias officiels) ou hors-thème (économie).
+PROFILE_GROUP_ORDER = [
+    "Droits humains & presse",
+    "Investigation",
+    "Médias indépendants",
+    "Médias régionaux",
+    "Analyse internationale",
+    "Sécurité & géopolitique (think tanks)",
+    "Médias officiels (contrepoint)",
+    "Économie & recherche",
+]
