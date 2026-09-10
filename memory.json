@@ -1533,17 +1533,17 @@
       ]
     },
     "Human Rights Watch": {
-      "last_scanned_at": "2026-09-10T18:05:38.389792+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.748059+00:00",
       "ok": false,
       "articles": []
     },
     "Human Rights Watch — français": {
-      "last_scanned_at": "2026-09-10T18:05:38.389800+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.748066+00:00",
       "ok": false,
       "articles": []
     },
     "Human Rights Watch — russe": {
-      "last_scanned_at": "2026-09-10T18:05:38.389805+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.748070+00:00",
       "ok": false,
       "articles": []
     },
@@ -12580,7 +12580,7 @@
       ]
     },
     "International Crisis Group": {
-      "last_scanned_at": "2026-09-10T18:05:38.398344+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.757041+00:00",
       "ok": false,
       "articles": []
     },
@@ -15395,12 +15395,12 @@
       ]
     },
     "George C. Marshall European Center for Security Studies": {
-      "last_scanned_at": "2026-09-10T18:05:38.400320+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.760326+00:00",
       "ok": false,
       "articles": []
     },
     "Swiss Political Science Review": {
-      "last_scanned_at": "2026-09-10T18:05:38.413305+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.765126+00:00",
       "ok": false,
       "articles": []
     },
@@ -15410,7 +15410,7 @@
       "articles": []
     },
     "OHCHR": {
-      "last_scanned_at": "2026-09-10T18:05:38.391141+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.749438+00:00",
       "ok": false,
       "articles": []
     },
@@ -15939,7 +15939,7 @@
       ]
     },
     "International Partnership for Human Rights": {
-      "last_scanned_at": "2026-09-10T18:05:38.391499+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.749863+00:00",
       "ok": false,
       "articles": []
     },
@@ -17636,12 +17636,12 @@
       ]
     },
     "Sputnik": {
-      "last_scanned_at": "2026-09-10T18:05:38.401763+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.761316+00:00",
       "ok": false,
       "articles": []
     },
     "Regnum": {
-      "last_scanned_at": "2026-09-10T18:05:38.401771+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.761325+00:00",
       "ok": false,
       "articles": []
     },
@@ -21298,9 +21298,490 @@
       ]
     },
     "CGTN": {
-      "last_scanned_at": "2026-09-10T18:05:38.412689+00:00",
-      "ok": false,
-      "articles": []
+      "last_scanned_at": "2026-09-10T18:23:22.764601+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Middle East",
+          "summary": "",
+          "url": "https://www.cgtn.com/world/middle-east",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Chat Group",
+          "summary": "",
+          "url": "https://chatgroup.user.cgtn.com/share/index.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "President Xi makes instructions following cargo ship fire in Qingdao",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/President-Xi-makes-instructions-following-cargo-ship-fire-in-Qingdao-1QkhhCBi5tC/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "25 dead in cargo ship fire, east China's Qingdao",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/news-1QknXzz97uo/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Chinese vice premier calls for greater openness in services sector",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Chinese-vice-premier-calls-for-greater-openness-in-services-sector-1QjD5245yZq/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Graphics: China is a key driver of global trade in services",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Graphics-China-is-a-key-driver-of-global-trade-in-services-1QjQ14iqHy8/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China, US make fresh headway in counternarcotics cooperation",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-US-make-fresh-headway-in-counternarcotics-cooperation-1QkxjlqfR2E/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China-led international alliance against telecom, cyber fraud formed",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-led-international-alliance-against-telecom-cyber-fraud-formed-1Qkph0bOZxK/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Trump makes another Iran war prediction as Hormuz traffic dries up",
+          "summary": "",
+          "url": "https://newseu.cgtn.com/news/2026-09-10/Trump-makes-another-Iran-war-prediction-as-Hormuz-traffic-dries-up-1Qkm2KbytuE/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Trump: Iran war will end right after US midterm elections",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Trump-Iran-war-will-end-right-after-US-midterm-elections-1QjOujXufg4/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "WFP warns hunger crisis is undermining DR Congo Ebola response",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/WFP-warns-hunger-crisis-is-undermining-DR-Congo-Ebola-response-1QjOdND7o9q/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Africa CDC warns that the DRC's Ebola outbreak not yet under control",
+          "summary": "",
+          "url": "https://newsaf.cgtn.com/news/2026-09-05/Africa-CDC-warns-that-the-DRC-s-Ebola-outbreak-not-yet-under-control-1QaGwkuoRoY/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "President Xi Jinping to attend 18th BRICS Summit in India",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/President-Xi-Jinping-to-attend-18th-BRICS-Summit-in-India-1Qkk9KoV2UM/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "2026 APEC CEO Summit to be held on Nov. 17-18 in China's Shenzhen",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/2026-APEC-CEO-Summit-to-be-held-on-Nov-17-18-in-China-s-Shenzhen-1QkpMIz9M2s/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Algeria cuts diplomatic ties with the UAE",
+          "summary": "",
+          "url": "https://newsaf.cgtn.com/news/2026-09-10/Algeria-cuts-diplomatic-ties-with-the-UAE-1QktYgn8L0k/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China, US in talks on $30bn reciprocal tariff reduction arrangement",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-US-in-talks-on-30bn-reciprocal-tariff-reduction-arrangement-commerce-ministry-1QkaUBur4Eo/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China's 'super buyer' power fuels new engine for global trade",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-s-super-buyer-power-fuels-new-engine-for-global-trade-1QkvCSwB2ww/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Shanghai's vision for a people-centered city",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Shanghai-s-vision-for-a-people-centered-city-1QkErzl532M/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Why China keeps widening its door, as seen at CIFTIS",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Why-China-keeps-widening-its-door-as-seen-at-CIFTIS-1Qila3koRGw/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "BRICS financial autonomy: Motivations, conditions and limits",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/BRICS-financial-autonomy-Motivations-conditions-and-limits-1Qk5jXyHdi8/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "When disaster strikes, humanity should rise above politics",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/When-disaster-strikes-humanity-should-rise-above-politics-1Qkn5t73uq4/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Graphics: Milestones for BRICS 2006-2026",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Graphics-Milestones-for-BRICS-2006-2026-1QjS66AXPhK/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "'SCO action' can help advance reform of global governance",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/-SCO-action-can-help-advance-reform-of-global-governance-1QkinSjgp8Y/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "The Nepal mudslide: Disaster is not a traffic magnet",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/The-Nepal-mudslide-Disaster-is-not-a-traffic-magnet-1Qkg9ve3RBe/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "A Brazilian on BRICS, China and new opportunities",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/A-Brazilian-on-BRICS-China-and-new-opportunities-1QkBUo0DOow/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "How BRICS builds consensus amid growing diversity after big expansion",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/How-BRICS-builds-consensus-amid-growing-diversity-after-big-expansion-1QjSenlCI3m/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Xi chairs CPC leadership meeting on Gyirong mudslide rescue efforts",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-08-28/Xi-chairs-CPC-leadership-meeting-on-Gyirong-mudslide-rescue-efforts-1PYorUXmOrK/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "President Xi: China-Kyrgyzstan cooperation entering a 'golden period'",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-08-30/President-Xi-China-Kyrgyzstan-cooperation-entering-a-golden-period--1Q1ZM3FjkIM/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "How China-Kyrgyzstan 'golden' ties deliver for both nations and beyond",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-08-31/How-China-Kyrgyzstan-golden-ties-deliver-for-both-nations-and-beyond-1Q3Uaj6u7Yc/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Mainland welcomes rising Taiwan 'One Country, Two Systems' discussion",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-09/Mainland-welcomes-rising-Taiwan-One-Country-Two-Systems-discussion-1QiPdsy5kYM/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China holds over 5.3 million valid invention patents",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-08/China-holds-over-5-3-million-valid-invention-patents-1QgyjEHJ2wM/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Live: The agent era – How AI is reshaping the future of services",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-07/Live-The-agent-era-How-AI-is-reshaping-the-future-of-services-1QfmB36F8BO/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Watch: Rethinking healthy longevity in an aging world",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-08/Watch-Rethinking-healthy-longevity-in-an-aging-world-1QhcVK2Kx5m/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Live: Search and rescue continues at mudslide-hit China-Nepal border",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-01/-Live-Search-and-rescue-continues-at-mudslide-hit-China-Nepal-border-1Q5ipDkWeNq/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Live: Global South youth map BRICS's next chapter",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-06/Live-Global-South-youth-map-BRICS-s-next-chapter-1QdLe4u6TWE/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "BRICS tech horizons: New paths for energy cooperation",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/BRICS-tech-horizons-New-paths-for-energy-cooperation-1QjVsqDUL1m/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China-built Kingfisher oilfield completed in Uganda",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-built-Kingfisher-oilfield-completed-in-Uganda-1QkeqmBv4EE/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "How IP services are helping Chinese tech companies go global",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/How-IP-services-are-helping-Chinese-tech-companies-go-global-1QkjzFexLX2/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China launches new remote sensing satellite groups",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-launches-new-remote-sensing-satellite-groups-1Qkt8z4YnCM/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Xinjiang-Chongqing computing power project enters new stage",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Xinjiang-Chongqing-computing-power-project-enters-new-stage-1QkdJ3u7lVm/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China's services: A window into China's new momentum of opening up",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-s-services-A-window-into-China-s-new-momentum-of-opening-up-1Qk3IIaDTYQ/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Norway seeks new growth in China beyond salmon and maritime transport",
+          "summary": "",
+          "url": "https://newseu.cgtn.com/news/2026-09-10/Norway-seeks-new-growth-in-China-beyond-salmon-and-maritime-transport-1QkpJTOMqhW/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "From Rio to Hangzhou: Young musicians build China-Brazil bridges",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/From-Rio-to-Hangzhou-Young-musicians-build-China-Brazil-bridges-1Qiwz1Qx7u8/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Ping-Pong at Songyue Lake: Shandong’s carnival stop in Rizhao",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Ping-Pong-at-Songyue-Lake-Shandong-s-carnival-stop-in-Rizhao-1QicObqvrW0/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Nepali journalist: Stop framing our tragedy through geopolitical lens",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-09/Nepali-journalist-Stop-framing-our-tragedy-through-geopolitical-lens-1QiXdOxua64/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "New dens, safer havens for wildlife",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-08/New-dens-safer-havens-for-wildlife-1QgRADcs8dW/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China's Zheng Qinwen knocked out by Rybakina in US Open quarterfinals",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-s-Zheng-Qinwen-knocked-out-by-Rybakina-in-US-Open-quarterfinals-1QjRmlLgGfC/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China, Australia seal spots in quarterfinals at FIBA Women's World Cup",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/China-Australia-seal-spots-in-quarterfinals-at-FIBA-Women-s-World-Cup-1QjQZFbsN9u/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "China's pharma revolution from follower to global player",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-09/China-s-pharma-revolution-from-follower-to-global-player-1QikHNKiLDy/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Bayeux Tapestry fever sweeps London",
+          "summary": "",
+          "url": "https://newseu.cgtn.com/news/2026-09-10/Bayeux-Tapestry-fever-sweeps-London-1Qj3FcBjCUw/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Red Army heritage old town: A living fossil on stone streets",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Red-Army-heritage-old-town-A-living-fossil-on-stone-streets-1Qk48ZjnLji/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Enjoy Russian food and performances in Hulunbuir",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-10/Enjoy-Russian-food-and-performances-in-Hulunbuir-1Qk5beG2Rm8/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Nepali man's agonising search for family after flood",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-08/Nepali-man-s-agonising-search-for-family-after-flood-1QgSDBtqz9C/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "By Global Stringer",
+          "summary": "",
+          "url": "https://www.cgtn.com/gstringer/stringer/global-stringer.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "A Russian student praises China's role in BRICS cooperation",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-08/A-Russian-student-praises-China-s-role-in-BRICS-cooperation-1QgUycm3Ad2/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Mexican student: BRICS will open doors for young people",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-09/Mexican-youth-expects-BRICS-to-bring-more-opportunities-for-the-young-1QiT7SphwWI/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Egyptian student shares memorable moments of youth exchanges",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-06/Egyptian-student-shares-memorable-moments-of-youth-exchanges-1QcYXY5IBz2/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Stringer Dispatch: Nepal mudslide survivor recalls moment disaster hit",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2026-09-03/Stringer-Dispatch-Nepal-mudslide-survivor-recalls-moment-disaster-hit-1Q90Q5WgCVq/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "CGTN AI 3D animated short 'The Legend of the Monkey King' coming soon",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2025-10-03/CGTN-AI-3D-animated-short-The-Legend-of-the-Monkey-King-coming-soon-1HaL2QtGi76/p.html",
+          "date": null
+        },
+        {
+          "source": "CGTN",
+          "source_label": "Média officiel · diffuseur chinois international",
+          "title": "Mulan's heroic journey unveiled through AI",
+          "summary": "",
+          "url": "https://news.cgtn.com/news/2024-07-31/Mulan-s-heroic-journey-unveiled-through-AI-1vGDnNdP4fS/p.html",
+          "date": null
+        }
+      ]
     },
     "Ministère chinois des Affaires étrangères": {
       "last_scanned_at": "2026-09-10T18:05:38.413108+00:00",
@@ -21960,9 +22441,2102 @@
       ]
     },
     "CIDCA (Chine)": {
-      "last_scanned_at": "2026-09-10T18:05:38.413301+00:00",
+      "last_scanned_at": "2026-09-10T18:23:22.765121+00:00",
       "ok": false,
       "articles": []
+    },
+    "The Guardian — Kazakhstan": {
+      "last_scanned_at": "2026-09-10T18:23:22.745983+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Skip to main content",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/kazakhstan",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "US edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/us",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "UK edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/uk",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Australia edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/au",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Europe edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/eur",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "International edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/int",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "US politics",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-politics",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Midterms 2026",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-midterm-elections-2026",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Climate crisis",
+          "summary": "",
+          "url": "https://www.theguardian.com/environment/climate-crisis",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Middle East",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/middleeast",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "US immigration",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/usimmigration",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Opinion videos",
+          "summary": "",
+          "url": "https://www.theguardian.com/type/video+tone/comment",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Design a better world",
+          "summary": "",
+          "url": "https://www.theguardian.com/artanddesign/series/design-a-better-world",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Love & sex",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/love-and-sex",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Home & garden",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/home-and-garden",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Health & fitness",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/health-and-wellbeing",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "South and central Asia",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/south-and-central-asia",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Sign up for our email",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/2018/sep/17/guardian-us-morning-briefing-sign-up-to-stay-informed",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Complaints & corrections",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/complaints-and-corrections",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Cookie policy",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/cookies",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Tax strategy",
+          "summary": "",
+          "url": "https://uploads.guim.co.uk/2026/07/22/STL_Global_Tax_Strategy_for_the_year_to_31_March_2027.pdf",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "All topics",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/subjects/a",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "All writers",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/contributors",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Accessibility settings",
+          "summary": "",
+          "url": "https://www.theguardian.com/help/accessibility-help",
+          "date": null
+        }
+      ]
+    },
+    "The Guardian — Uzbekistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746180+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Skip to main content",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/uzbekistan",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "US edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/us",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "UK edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/uk",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Australia edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/au",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Europe edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/eur",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "International edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/int",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "US politics",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-politics",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Midterms 2026",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-midterm-elections-2026",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Climate crisis",
+          "summary": "",
+          "url": "https://www.theguardian.com/environment/climate-crisis",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Middle East",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/middleeast",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "US immigration",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/usimmigration",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Opinion videos",
+          "summary": "",
+          "url": "https://www.theguardian.com/type/video+tone/comment",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Design a better world",
+          "summary": "",
+          "url": "https://www.theguardian.com/artanddesign/series/design-a-better-world",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Love & sex",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/love-and-sex",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Home & garden",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/home-and-garden",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Health & fitness",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/health-and-wellbeing",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "... ... comments",
+          "summary": "",
+          "url": "https://www.theguardian.com/film/2023/feb/28/women-behind-the-wheel-review-well-meaning-road-trip-across-central-asia-gets-stuck",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "South and central Asia",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/south-and-central-asia",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Donald Trump",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/donaldtrump",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Sign up for our email",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/2018/sep/17/guardian-us-morning-briefing-sign-up-to-stay-informed",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Complaints & corrections",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/complaints-and-corrections",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Cookie policy",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/cookies",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Tax strategy",
+          "summary": "",
+          "url": "https://uploads.guim.co.uk/2026/07/22/STL_Global_Tax_Strategy_for_the_year_to_31_March_2027.pdf",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "All topics",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/subjects/a",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "All writers",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/contributors",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Accessibility settings",
+          "summary": "",
+          "url": "https://www.theguardian.com/help/accessibility-help",
+          "date": null
+        }
+      ]
+    },
+    "The Guardian — Kyrgyzstan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746353+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Skip to main content",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/kyrgyzstan",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "US edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/us",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "UK edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/uk",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Australia edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/au",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Europe edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/eur",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "International edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/int",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "US politics",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-politics",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Midterms 2026",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-midterm-elections-2026",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Climate crisis",
+          "summary": "",
+          "url": "https://www.theguardian.com/environment/climate-crisis",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Middle East",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/middleeast",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "US immigration",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/usimmigration",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Opinion videos",
+          "summary": "",
+          "url": "https://www.theguardian.com/type/video+tone/comment",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Design a better world",
+          "summary": "",
+          "url": "https://www.theguardian.com/artanddesign/series/design-a-better-world",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Love & sex",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/love-and-sex",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Home & garden",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/home-and-garden",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Health & fitness",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/health-and-wellbeing",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "... ... comments",
+          "summary": "",
+          "url": "https://www.theguardian.com/film/2023/oct/16/beshkempir-or-the-adopted-son-review-part-childhood-memoir-part-mysterious-folk-tale",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "... ... comments",
+          "summary": "",
+          "url": "https://www.theguardian.com/film/2023/feb/28/women-behind-the-wheel-review-well-meaning-road-trip-across-central-asia-gets-stuck",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "South and central Asia",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/south-and-central-asia",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Sign up for our email",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/2018/sep/17/guardian-us-morning-briefing-sign-up-to-stay-informed",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Complaints & corrections",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/complaints-and-corrections",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Cookie policy",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/cookies",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Tax strategy",
+          "summary": "",
+          "url": "https://uploads.guim.co.uk/2026/07/22/STL_Global_Tax_Strategy_for_the_year_to_31_March_2027.pdf",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "All topics",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/subjects/a",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "All writers",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/contributors",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Accessibility settings",
+          "summary": "",
+          "url": "https://www.theguardian.com/help/accessibility-help",
+          "date": null
+        }
+      ]
+    },
+    "The Guardian — Tajikistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746523+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Skip to main content",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/tajikistan",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "US edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/us",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "UK edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/uk",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Australia edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/au",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Europe edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/eur",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "International edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/int",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "US politics",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-politics",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Midterms 2026",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-midterm-elections-2026",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Climate crisis",
+          "summary": "",
+          "url": "https://www.theguardian.com/environment/climate-crisis",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Middle East",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/middleeast",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "US immigration",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/usimmigration",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Opinion videos",
+          "summary": "",
+          "url": "https://www.theguardian.com/type/video+tone/comment",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Design a better world",
+          "summary": "",
+          "url": "https://www.theguardian.com/artanddesign/series/design-a-better-world",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Love & sex",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/love-and-sex",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Home & garden",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/home-and-garden",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Health & fitness",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/health-and-wellbeing",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "... ... comments",
+          "summary": "",
+          "url": "https://www.theguardian.com/film/2023/feb/28/women-behind-the-wheel-review-well-meaning-road-trip-across-central-asia-gets-stuck",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "South and central Asia",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/south-and-central-asia",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Islamic State",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/islamic-state",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Sign up for our email",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/2018/sep/17/guardian-us-morning-briefing-sign-up-to-stay-informed",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Complaints & corrections",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/complaints-and-corrections",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Cookie policy",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/cookies",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Tax strategy",
+          "summary": "",
+          "url": "https://uploads.guim.co.uk/2026/07/22/STL_Global_Tax_Strategy_for_the_year_to_31_March_2027.pdf",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "All topics",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/subjects/a",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "All writers",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/contributors",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Accessibility settings",
+          "summary": "",
+          "url": "https://www.theguardian.com/help/accessibility-help",
+          "date": null
+        }
+      ]
+    },
+    "The Guardian — Turkmenistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746748+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Skip to main content",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/turkmenistan",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "US edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/us",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "UK edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/uk",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Australia edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/au",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Europe edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/eur",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "International edition",
+          "summary": "",
+          "url": "https://www.theguardian.com/preference/edition/int",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "US politics",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-politics",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Midterms 2026",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/us-midterm-elections-2026",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Climate crisis",
+          "summary": "",
+          "url": "https://www.theguardian.com/environment/climate-crisis",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Middle East",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/middleeast",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "US immigration",
+          "summary": "",
+          "url": "https://www.theguardian.com/us-news/usimmigration",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Opinion videos",
+          "summary": "",
+          "url": "https://www.theguardian.com/type/video+tone/comment",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Design a better world",
+          "summary": "",
+          "url": "https://www.theguardian.com/artanddesign/series/design-a-better-world",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Love & sex",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/love-and-sex",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Home & garden",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/home-and-garden",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Health & fitness",
+          "summary": "",
+          "url": "https://www.theguardian.com/lifeandstyle/health-and-wellbeing",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "... ... comments",
+          "summary": "",
+          "url": "https://www.theguardian.com/science/2019/jun/17/language-wars-18-greatest-linguistic-spats",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Greenhouse gas emissions",
+          "summary": "",
+          "url": "https://www.theguardian.com/environment/carbon-emissions",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Fossil fuels",
+          "summary": "",
+          "url": "https://www.theguardian.com/environment/fossil-fuels",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "South and central Asia",
+          "summary": "",
+          "url": "https://www.theguardian.com/world/south-and-central-asia",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Sign up for our email",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/2018/sep/17/guardian-us-morning-briefing-sign-up-to-stay-informed",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Complaints & corrections",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/complaints-and-corrections",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Cookie policy",
+          "summary": "",
+          "url": "https://www.theguardian.com/info/cookies",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Tax strategy",
+          "summary": "",
+          "url": "https://uploads.guim.co.uk/2026/07/22/STL_Global_Tax_Strategy_for_the_year_to_31_March_2027.pdf",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "All topics",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/subjects/a",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "All writers",
+          "summary": "",
+          "url": "https://www.theguardian.com/index/contributors",
+          "date": null
+        },
+        {
+          "source": "The Guardian — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Accessibility settings",
+          "summary": "",
+          "url": "https://www.theguardian.com/help/accessibility-help",
+          "date": null
+        }
+      ]
+    },
+    "AP News — Kazakhstan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746775+00:00",
+      "ok": false,
+      "articles": []
+    },
+    "AP News — Uzbekistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746780+00:00",
+      "ok": false,
+      "articles": []
+    },
+    "AP News — Kyrgyzstan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746783+00:00",
+      "ok": false,
+      "articles": []
+    },
+    "AP News — Tajikistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746787+00:00",
+      "ok": false,
+      "articles": []
+    },
+    "AP News — Turkmenistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746790+00:00",
+      "ok": false,
+      "articles": []
+    },
+    "Al Jazeera — Kazakhstan": {
+      "last_scanned_at": "2026-09-10T18:23:22.746941+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Skip to Featured Content",
+          "summary": "",
+          "url": "https://www.aljazeera.com/where/kazakhstan/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "play Live",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/live",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Kazakhstan’s Tokayev appoints longtime adviser as vice president",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/31/kazakhstans-president-taps-longtime-adviser-for-vice-president-role",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Ukraine’s offensive against Russia causes petrol panic across Central Asia",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/24/ukraines-offensive-against-russia-causes-petrol-panic-across-central-asia",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Kazakhstan’s newly formed pro-government party wins parliamentary election",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/24/kazakhstans-newly-formed-pro-government-party-wins-parliamentary-election",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Tokayev allies head for landslide victory in Kazakhstan elections",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/newsfeed/2026/8/24/08-24-26-kazakh-elections-sv-mp4",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Polls close in Kazakhstan parliamentary elections; vote count under way",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/23/kazakhstan-holds-parliamentary-election-expected-to-cement-presidents-grip",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Kazakhstan parliamentary elections begin: What’s at stake?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/23/kazakhstan-parliamentary-elections-begin-whats-at-stake",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Swiatek defeats Rybakina to claim Canadian Open title",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2026/8/14/swiatek-defeats-rybakina-to-claim-canadian-open",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Kazakhstan releases first tiger to restore extinct species",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/newsfeed/2026/8/4/kazakhstan-releases-first-tiger-to-restore-extinct-species",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "‘Freeze the conflict’: Drones slow Kazakh oil flow amid Russia-Ukraine war",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/7/26/freeze-the-conflict-drones-slow-kazakh-oil-flow-amid-russia-ukraine-war",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "US-Russian crew launches on mission to space station",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/newsfeed/2026/7/14/us-russian-crew-launches-on-mission-to-space-station",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "US, Russian astronauts launch into orbit for joint space mission",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/7/14/us-russian-astronauts-launch-into-orbit-for-joint-space-mission",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Spidercam crashes onto pitch during Hungary match",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/newsfeed/2026/6/10/spidercam-crashes-onto-pitch-during-hungary-match",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "OPEC+ agrees to hike oil output, warns of slow recovery after attacks",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/4/5/opec-agrees-to-hike-oil-output-warns-of-slow-recovery-after-attacks",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "101 East",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/101-east/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Kazakhstan’s train hospital brings healthcare to remote regions",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/101-east/2026/2/28/kazakhstans-train-hospital-brings-healthcare-to-remote-regions",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Indonesia, Morocco, Kosovo among 5 countries to send troops under Gaza plan",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/2/20/indonesia-morocco-kosovo-among-5-countries-to-send-troops-under-gaza-plan",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Audio of Epstein discussing Tony Blair’s income",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/newsfeed/2026/2/4/audio-of-epstein-discussing-tony-blairs-income",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Sabalenka ‘really upset’ at blowing Australian Open final chances",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2026/1/31/sabalenka-really-upset-at-blowing-australian-open-final-chances",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Club Brugge fans jailed for impersonating Borat in Kazakhstan",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2026/1/22/club-brugge-fans-jailed-for-impersonating-borat-in-kazakhstan",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Kazakhstan, which already recognises Israel, to join ‘Abraham Accords’",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/11/6/kazakhstan-which-already-recognises-israel-to-join-abraham-accords",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kazakhstan",
+          "source_label": "International · Kazakhstan",
+          "title": "Submit a Tip",
+          "summary": "",
+          "url": "https://webapps.aljazeera.net/aje/tips/",
+          "date": null
+        }
+      ]
+    },
+    "Al Jazeera — Uzbekistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.747126+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Skip to Featured Content",
+          "summary": "",
+          "url": "https://www.aljazeera.com/where/uzbekistan/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "play Live",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/live",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Taliban secures pragmatic global alliances without formal recognition",
+          "summary": "",
+          "url": "https://www.aljazeera.com/economy/2026/8/20/taliban-secures-pragmatic-global-alliances-without-formal-recognition",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Ronaldo scores in record sixth World Cup as Portugal thrash Uzbekistan",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2026/6/23/ronaldo-scores-twice-as-portugal-thrash-uzbekistan-5-0-at-world-cup-2026",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Portugal thump Uzbekistan as Ronaldo breaks scoring records – updates",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2026/6/23/portugal-vs-uzbekistan-live-world-cup-2026",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Over to you, Ronaldo: Can Portugal bounce back against Uzbekistan?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2026/6/23/portugal-vs-uzbekistan-world-cup-ronaldo-prediction-kickoff-team-news",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "World Cup: Diaz dazzles as Colombia beat newcomers Uzbekistan 3-1",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2026/6/18/luis-diaz-colombia-defeat-world-cup-2026-debutants-uzbekistan",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Satellite images show 10 places where water is disappearing globally",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/6/17/satellite-images-show-10-places-where-water-is-disappearing-globally",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "DR Congo arrive in the US for the World Cup after Ebola quarantine",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2026/6/12/dr-congo-arrive-in-the-us-for-the-world-cup-after-ebola-quarantine",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Ukraine says over 1,400 Africans recruited to fight for Russia in war",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/11/8/ukraines-fm-says-over-1400-africans-recruited-to-fight-for-russia-in-war",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Why is Trump hosting Central Asia leaders; are Russia, China his targets?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/11/6/why-is-trump-hosting-c-asia-leaders-can-he-compete-with-russia-china",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "SCO summit in China: Who’s attending, what’s at stake amid Trump tariffs?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/8/30/sco-summit-in-china-whos-attending-whats-at-stake-amid-trump-tariffs",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "China’s Xi Jinping meets Central Asian leaders: Why their summit matters",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/6/16/chinas-xi-jinping-meets-central-asian-leaders-why-their-summit-matters",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Remembering Shamshad Abdullaev, the world-class Uzbek poet too few knew",
+          "summary": "",
+          "url": "https://www.aljazeera.com/features/2024/10/25/remembering-shamshad-abdullaev-the-world-class-uzbek-poet-too-few-knew",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "From Uzbek disco to Uighur rock: Forgotten sounds of the Silk Road",
+          "summary": "",
+          "url": "https://www.aljazeera.com/features/2024/10/12/from-uzbek-disco-to-uighur-rock-forgotten-sounds-of-the-silk-road",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Koreans in Uzbekistan: K-pop and a brewing cultural clash",
+          "summary": "",
+          "url": "https://www.aljazeera.com/features/2024/9/8/koreans-in-uzbekistan-k-pop-and-a-brewing-cultural-clash",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Russia to build nuclear power plant in Uzbekistan",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2024/5/27/russia-to-build-nuclear-power-plant-in-uzbekistan",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Japan beat Uzbekistan to lift AFC U23 Asian Cup 2024",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "It’s a wrap!",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final?update=2877377",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "More to come from Al Jazeera Sport",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final?update=2877316",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Japan take home gold medal!",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final?update=2877349",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Uzbek players receive silver medal",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final?update=2877343",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Japan, Uzbekistan enter AFC U23 Asian Cup final and confirm Olympic berths",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2024/4/30/japan-uzbekistan-enter-afc-u23-asian-cup-final-and-confirm-olympic-berth",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "‘Maximally pragmatic’: How Central Asia navigates Russia’s war on Ukraine",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2024/3/22/maximally-pragmatic-how-central-asia-navigates-russias-war-on-ukraine",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Did an arrested Uzbek ‘mafia chieftain’ organise killings of dissidents?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2024/2/5/did-an-arrested-uzbek-mafia-chieftain-organise-killings-of-dissidents",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Uzbekistan",
+          "source_label": "International · Ouzbékistan",
+          "title": "Submit a Tip",
+          "summary": "",
+          "url": "https://webapps.aljazeera.net/aje/tips/",
+          "date": null
+        }
+      ]
+    },
+    "Al Jazeera — Kyrgyzstan": {
+      "last_scanned_at": "2026-09-10T18:23:22.747291+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Skip to Featured Content",
+          "summary": "",
+          "url": "https://www.aljazeera.com/where/kyrgyzstan/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "play Live",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/live",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Kyrgyzstan hosts pivotal SCO summit amid global geopolitical shifts",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/9/3/kyrgyzstan-hosts-pivotal-sco-summit-amid-global-geopolitical-shifts",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Video: SCO summit leaders meet in aftermath of US war on Iran",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/newsfeed/2026/9/1/video-sco-summit-leaders-meet-in-aftermath-of-us-war-on-iran",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Putin, Xi reaffirm Russia-China ties amid ‘unpredictable’ world",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/31/putin-and-xi-affirm-strategic-alliance-amid-unpredictable-world",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Xi, Modi and Putin attend SCO summit: What’s on the agenda?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/31/xi-modi-and-putin-set-to-meet-for-sco-summit-whats-on-the-agenda",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Russia, China leaders to meet at Shanghai Cooperation Organisation summit",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/31/russia-china-leaders-to-meet-at-shanghai-cooperation-organisation-summit",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "China’s Xi to visit Kyrgyzstan, Egypt",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/26/chinas-xi-to-visit-kyrgyzstan-egypt",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Ukraine’s offensive against Russia causes petrol panic across Central Asia",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/24/ukraines-offensive-against-russia-causes-petrol-panic-across-central-asia",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Sanctions fears as Kyrgyzstan shutters companies suspected of aiding Russia",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/5/27/kyrgyzstan-russia-tensions",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Memories of a Dream: How Music Revives a Woman’s Lost Dream",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/digidocs/2025/12/31/memories-of-a-dream-how-music-revives-a-womans-lost-dream",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Kyrgyzstan votes in snap parliamentary election with no opposition",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/11/30/kyrgyzstan-votes-in-snap-parliamentary-election-with-no-opposition",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Why is Trump hosting Central Asia leaders; are Russia, China his targets?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/11/6/why-is-trump-hosting-c-asia-leaders-can-he-compete-with-russia-china",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "China’s Xi Jinping meets Central Asian leaders: Why their summit matters",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/6/16/chinas-xi-jinping-meets-central-asian-leaders-why-their-summit-matters",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Kyrgyzstan court sentences ex-leader Atambayev to 11 years in absentia",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/6/4/kyrgyzstan-court-sentences-ex-leader-atambayev-to-11-years-in-absentia",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "The girl with sun-shaped earrings: A family remembers a murdered daughter",
+          "summary": "",
+          "url": "https://www.aljazeera.com/features/2024/11/9/the-girl-with-sun-shaped-earrings-a-family-remembers-a-murdered-daughter",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "In Kyrgyzstan, an ‘unprecedented crackdown’ on free press raises alarm",
+          "summary": "",
+          "url": "https://www.aljazeera.com/features/2024/7/18/in-kyrgyzstan-an-unprecedented-crackdown-on-free-press-raises-alarm",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Panic in Bishkek: Why were Pakistani students attacked in Kyrgyzstan?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2024/5/20/panic-in-bishkek-why-were-pakistani-students-attacked-in-kyrgyzstan",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Russia’s Putin makes rare visit to Kyrgyzstan despite ICC arrest warrant",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/10/12/russias-putin-makes-rare-visit-to-kyrgyzstan-despite-icc-arrest-warrant",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Russia-Ukraine war: List of key events, day 584",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/9/30/russia-ukraine-war-list-of-key-events-day-584",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Kyrgyzstan brings back 95 ISIL wives, children from Syrian internment camps",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/8/30/kyrgyzstan-brings-back-95-isil-wives-children-from-syrian-internment-camps",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Kyrgyzstan",
+          "source_label": "International · Kirghizistan",
+          "title": "Submit a Tip",
+          "summary": "",
+          "url": "https://webapps.aljazeera.net/aje/tips/",
+          "date": null
+        }
+      ]
+    },
+    "Al Jazeera — Tajikistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.747492+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Skip to Featured Content",
+          "summary": "",
+          "url": "https://www.aljazeera.com/where/tajikistan/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "play Live",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/live",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Ukraine’s offensive against Russia causes petrol panic across Central Asia",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/24/ukraines-offensive-against-russia-causes-petrol-panic-across-central-asia",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "On the road to Rogun Dam, Tajikistan’s ‘greatest dream’",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/5/29/on-the-road-to-rogun-dam-tajikistans-greatest-dream",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Tajikistan-Taliban border clashes: What’s behind them, why it affects China",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/12/26/tajikistan-taliban-border-clashes-whats-behind-them-why-it-affects-china",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Five people killed in firefight on Tajik-Afghan border, Tajikistan says",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/12/25/five-killed-at-tajikistan-afghanistan-border-in-armed-clash",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Ukraine says over 1,400 Africans recruited to fight for Russia in war",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/11/8/ukraines-fm-says-over-1400-africans-recruited-to-fight-for-russia-in-war",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Why is Trump hosting Central Asia leaders; are Russia, China his targets?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/11/6/why-is-trump-hosting-c-asia-leaders-can-he-compete-with-russia-china",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Captured Tajik tells of life on Ukraine frontlines alongside Russian forces",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/10/8/tajik-war-prisoner-captured-by-ukraine-fears-being-swapped",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "China’s Xi Jinping meets Central Asian leaders: Why their summit matters",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/6/16/chinas-xi-jinping-meets-central-asian-leaders-why-their-summit-matters",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "OPINION OPINION,",
+          "summary": "",
+          "url": "https://www.aljazeera.com/opinion/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "The World Bank should reconsider its mega dam project in Tajikistan",
+          "summary": "",
+          "url": "https://www.aljazeera.com/opinions/2024/12/15/the-world-bank-should-reconsider-its-mega-dam-project-in-tajikistan",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Talk to Al Jazeera: In the Field",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/in-the-field/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Tajikistan’s glacial crisis: Central Asia’s melting heart",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/in-the-field/2024/7/21/tajikistans-glacial-crisis-central-asias-melting-heart",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Talk to Al Jazeera",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/talk-to-al-jazeera/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Tajik FM: Melting glaciers, human rights, and geopolitical strife",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/talk-to-al-jazeera/2024/6/16/tajik-fm-melting-glaciers-human-rights-and-geopolitical-strife",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Moscow theatre attack suspects show signs of beating in court",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/newsfeed/2024/3/25/moscow-theatre-attack-suspects-show-signs-of-beating-in-court",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Tajikistan vs Jordan 0-1: AFC Asian Cup 2023 quarterfinal – as it happened",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Goodbye for now",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football?update=2671166",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "It was so close, according to the stats",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football?update=2671214",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Who will it be in the next round?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football?update=2671173",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Yatimov thanks the fans",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football?update=2671156",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Russia-Ukraine war: List of key events, day 584",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/9/30/russia-ukraine-war-list-of-key-events-day-584",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Torrential rains kill at least 21 people in Tajikistan",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/8/30/torrential-rains-kill-at-least-21-people-in-tajikistan",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Russia faces a new neighbourhood threat: China",
+          "summary": "",
+          "url": "https://www.aljazeera.com/opinions/2023/6/6/russia-faces-a-new-neighbourhood-threat-china",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Blinken in Central Asia to boost ties amid Russia-Ukraine war",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/2/28/blinken-in-central-asia-to-boost-ties-amid-ukraine-war",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Remote Tajikistan region shaken by magnitude 6.8 earthquake",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/2/23/remote-tajikistan-region-shaken-by-magnitude-6-8-earthquake",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "‘I was naive about Russia’: Central Asians on the Ukraine war",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/2/17/where-does-central-asia-stand-on-russia",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Tajikistan",
+          "source_label": "International · Tadjikistan",
+          "title": "Submit a Tip",
+          "summary": "",
+          "url": "https://webapps.aljazeera.net/aje/tips/",
+          "date": null
+        }
+      ]
+    },
+    "Al Jazeera — Turkmenistan": {
+      "last_scanned_at": "2026-09-10T18:23:22.747678+00:00",
+      "ok": true,
+      "articles": [
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Skip to Featured Content",
+          "summary": "",
+          "url": "https://www.aljazeera.com/where/turkmenistan/",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "play Live",
+          "summary": "",
+          "url": "https://www.aljazeera.com/video/live",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Ukraine’s offensive against Russia causes petrol panic across Central Asia",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/8/24/ukraines-offensive-against-russia-causes-petrol-panic-across-central-asia",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Taliban secures pragmatic global alliances without formal recognition",
+          "summary": "",
+          "url": "https://www.aljazeera.com/economy/2026/8/20/taliban-secures-pragmatic-global-alliances-without-formal-recognition",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Turkmenistan legalises crypto mining and exchanges in shift for economy",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2026/1/2/turkmenistan-legalises-crypto-mining-and-exchanges-in-shift-for-economy",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Why is Trump hosting Central Asia leaders; are Russia, China his targets?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/11/6/why-is-trump-hosting-c-asia-leaders-can-he-compete-with-russia-china",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "China’s Xi Jinping meets Central Asian leaders: Why their summit matters",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2025/6/16/chinas-xi-jinping-meets-central-asian-leaders-why-their-summit-matters",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Moscow concert hall attack: Why is ISIL targeting Russia?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2024/3/23/moscow-concert-hall-attack-why-is-isil-targeting",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Arkadag FC all-conquering in a bizarre football season in Turkmenistan",
+          "summary": "",
+          "url": "https://www.aljazeera.com/sports/2023/12/29/arkadag-fc-turkmenistan-football-project-asia-afc",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Russia-Ukraine war: List of key events, day 584",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/9/30/russia-ukraine-war-list-of-key-events-day-584",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Blinken in Central Asia to boost ties amid Russia-Ukraine war",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2023/2/28/blinken-in-central-asia-to-boost-ties-amid-ukraine-war",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Ukraine war: Is Central Asia loosening ties with Russia?",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2022/3/25/ukraine-war-is-central-asia-loosening-ties-with-russia",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Turkmenistan leader’s son wins presidential election",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2022/3/15/turkmenistan-leaders-son-wins-presidential-election",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Turkmenistan votes, president’s son expected to win",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2022/3/12/turkmenistan-votes-presidents-son-expected-to-win",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Turkmenistan to hold early presidential election on March 12",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2022/2/12/turkmenistan-to-hold-early-presidential-election-on-march-12",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "India’s Modi, Central Asian leaders pledge closer economic ties",
+          "summary": "",
+          "url": "https://www.aljazeera.com/economy/2022/1/27/indias-modi-central-asian-leaders-pledge-closer-economic-ties",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "US issues religious freedom ‘concern’ list, removes Nigeria",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2021/11/18/us-issues-religious-freedom-concern-list-removes-nigeria",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Turkmenistan’s dissidents fear crackdown in Turkish exile",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2021/11/12/turkmenistans-dissidents-fear-crackdown-in-turkish-exile",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "US military presence in Central Asia unlikely amid Taliban rise",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2021/8/23/us-military-presence-in-central-asia-unlikely-amid-taliban-rise",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Afghanistan’s Central Asian neighbours panic, reject refugees",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2021/8/19/afghanistans-ex-soviet-neighbours-panic-reject-refugees",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Central Asia’s leaders meet as Taliban makes gains in Afghanistan",
+          "summary": "",
+          "url": "https://www.aljazeera.com/news/2021/8/6/central-asia-taliban-afghanistan",
+          "date": null
+        },
+        {
+          "source": "Al Jazeera — Turkmenistan",
+          "source_label": "International · Turkménistan",
+          "title": "Submit a Tip",
+          "summary": "",
+          "url": "https://webapps.aljazeera.net/aje/tips/",
+          "date": null
+        }
+      ]
     }
   },
   "seen_article_keys": [
@@ -25870,6 +28444,224 @@
     "www.youtube.com/user/midrftube?feature=results_main",
     "www.youtube.com/user/pravitelstvorf",
     "yandex.ru/adfox/1092/golink?p1=ciucm&p2=frfe&p5=binqok&pr=RANDOM&puid1=&puid2=&puid3=&puid4=&puid5=&puid6=&puid7=&puid8=&puid9=&puid10=&puid11=",
-    "zakupki.gov.ru/epz/main/public/home.html"
+    "zakupki.gov.ru/epz/main/public/home.html",
+    "chatgroup.user.cgtn.com/share/index.html",
+    "news.cgtn.com/event/2019/whorunschina/index.html",
+    "news.cgtn.com/event/2022/the-numbers-of-a-decade/index.html",
+    "news.cgtn.com/event/2022/the-song-painted/index.html",
+    "news.cgtn.com/event/2023/the-song-painted-nature/index.html",
+    "news.cgtn.com/event/20241226/tang-architecture/index.html",
+    "news.cgtn.com/news/2024-03-15/song-dynasty-themed-stickers-1rzckzsauu8/p.html",
+    "news.cgtn.com/news/2024-07-31/mulan-s-heroic-journey-unveiled-through-ai-1vgdnndp4fs/p.html",
+    "news.cgtn.com/news/2025-09-02/unforgotten-front-china-in-wwii-interactive-walk-through-history-1ghhhvjumki/p.html",
+    "news.cgtn.com/news/2025-10-03/cgtn-ai-3d-animated-short-the-legend-of-the-monkey-king-coming-soon-1hal2qtgi76/p.html",
+    "news.cgtn.com/news/2026-02-15/timeless-crafts-timeless-blessings-1kmaiuyudq4/p.html",
+    "news.cgtn.com/news/2026-08-28/xi-chairs-cpc-leadership-meeting-on-gyirong-mudslide-rescue-efforts-1pyoruxmork/p.html",
+    "news.cgtn.com/news/2026-08-30/president-xi-china-kyrgyzstan-cooperation-entering-a-golden-period--1q1zm3fjkim/p.html",
+    "news.cgtn.com/news/2026-08-31/how-china-kyrgyzstan-golden-ties-deliver-for-both-nations-and-beyond-1q3uaj6u7yc/p.html",
+    "news.cgtn.com/news/2026-09-01/-live-search-and-rescue-continues-at-mudslide-hit-china-nepal-border-1q5ipdkwenq/p.html",
+    "news.cgtn.com/news/2026-09-03/stringer-dispatch-nepal-mudslide-survivor-recalls-moment-disaster-hit-1q90q5wgcvq/p.html",
+    "news.cgtn.com/news/2026-09-06/egyptian-student-shares-memorable-moments-of-youth-exchanges-1qcyxy5ibz2/p.html",
+    "news.cgtn.com/news/2026-09-06/live-global-south-youth-map-brics-s-next-chapter-1qdle4u6twe/p.html",
+    "news.cgtn.com/news/2026-09-07/live-the-agent-era-how-ai-is-reshaping-the-future-of-services-1qfmb36f8bo/p.html",
+    "news.cgtn.com/news/2026-09-08/a-russian-student-praises-china-s-role-in-brics-cooperation-1qguycm3ad2/p.html",
+    "news.cgtn.com/news/2026-09-08/china-holds-over-5-3-million-valid-invention-patents-1qgyjehj2wm/p.html",
+    "news.cgtn.com/news/2026-09-08/nepali-man-s-agonising-search-for-family-after-flood-1qgsdbtqz9c/p.html",
+    "news.cgtn.com/news/2026-09-08/new-dens-safer-havens-for-wildlife-1qgradcs8dw/p.html",
+    "news.cgtn.com/news/2026-09-08/watch-rethinking-healthy-longevity-in-an-aging-world-1qhcvk2kx5m/p.html",
+    "news.cgtn.com/news/2026-09-09/china-s-pharma-revolution-from-follower-to-global-player-1qikhnkildy/p.html",
+    "news.cgtn.com/news/2026-09-09/mainland-welcomes-rising-taiwan-one-country-two-systems-discussion-1qipdsy5kym/p.html",
+    "news.cgtn.com/news/2026-09-09/mexican-youth-expects-brics-to-bring-more-opportunities-for-the-young-1qit7sphwwi/p.html",
+    "news.cgtn.com/news/2026-09-09/nepali-journalist-stop-framing-our-tragedy-through-geopolitical-lens-1qixdoxua64/p.html",
+    "news.cgtn.com/news/2026-09-10/-sco-action-can-help-advance-reform-of-global-governance-1qkinsjgp8y/p.html",
+    "news.cgtn.com/news/2026-09-10/20-years-on-how-has-brics-undergone-its-transformation--1qktoahi6xw/p.html",
+    "news.cgtn.com/news/2026-09-10/2026-apec-ceo-summit-to-be-held-on-nov-17-18-in-china-s-shenzhen-1qkpmiz9m2s/p.html",
+    "news.cgtn.com/news/2026-09-10/37-boatmen-6-boats-7-days-how-the-red-army-crossed-jinsha-river--1qk5bpo5ifm/p.html",
+    "news.cgtn.com/news/2026-09-10/a-brazilian-on-brics-china-and-new-opportunities-1qkbuo0doow/p.html",
+    "news.cgtn.com/news/2026-09-10/astronauts-play-water-ball-ping-pong-in-space-lecture-for-students-1qkftanbihi/p.html",
+    "news.cgtn.com/news/2026-09-10/brics-financial-autonomy-motivations-conditions-and-limits-1qk5jxyhdi8/p.html",
+    "news.cgtn.com/news/2026-09-10/brics-tech-horizons-new-paths-for-energy-cooperation-1qjvsqdul1m/p.html",
+    "news.cgtn.com/news/2026-09-10/china-australia-seal-spots-in-quarterfinals-at-fiba-women-s-world-cup-1qjqzfbsn9u/p.html",
+    "news.cgtn.com/news/2026-09-10/china-built-kingfisher-oilfield-completed-in-uganda-1qkeqmbv4ee/p.html",
+    "news.cgtn.com/news/2026-09-10/china-launches-new-remote-sensing-satellite-groups-1qkt8z4yncm/p.html",
+    "news.cgtn.com/news/2026-09-10/china-led-international-alliance-against-telecom-cyber-fraud-formed-1qkph0bozxk/p.html",
+    "news.cgtn.com/news/2026-09-10/china-s-services-a-window-into-china-s-new-momentum-of-opening-up-1qk3iiadtyq/p.html",
+    "news.cgtn.com/news/2026-09-10/china-s-super-buyer-power-fuels-new-engine-for-global-trade-1qkvcswb2ww/p.html",
+    "news.cgtn.com/news/2026-09-10/china-s-zheng-qinwen-knocked-out-by-rybakina-in-us-open-quarterfinals-1qjrmllggfc/p.html",
+    "news.cgtn.com/news/2026-09-10/china-us-in-talks-on-30bn-reciprocal-tariff-reduction-arrangement-commerce-ministry-1qkaubur4eo/p.html",
+    "news.cgtn.com/news/2026-09-10/china-us-make-fresh-headway-in-counternarcotics-cooperation-1qkxjlqfr2e/p.html",
+    "news.cgtn.com/news/2026-09-10/chinese-vice-premier-calls-for-greater-openness-in-services-sector-1qjd5245yzq/p.html",
+    "news.cgtn.com/news/2026-09-10/ciftis-2026-one-step-closer-to-ai-powered-robots-1qkgyib8pma/p.html",
+    "news.cgtn.com/news/2026-09-10/enjoy-russian-food-and-performances-in-hulunbuir-1qk5beg2rm8/p.html",
+    "news.cgtn.com/news/2026-09-10/from-rio-to-hangzhou-young-musicians-build-china-brazil-bridges-1qiwz1qx7u8/p.html",
+    "news.cgtn.com/news/2026-09-10/frontline-furry-rescuer-gets-well-deserved-break-after-mudslide-injury-1qka9std9g8/p.html",
+    "news.cgtn.com/news/2026-09-10/graphics-china-is-a-key-driver-of-global-trade-in-services-1qjq14iqhy8/p.html",
+    "news.cgtn.com/news/2026-09-10/graphics-milestones-for-brics-2006-2026-1qjs66axphk/p.html",
+    "news.cgtn.com/news/2026-09-10/how-brics-builds-consensus-amid-growing-diversity-after-big-expansion-1qjsenlci3m/p.html",
+    "news.cgtn.com/news/2026-09-10/how-ip-services-are-helping-chinese-tech-companies-go-global-1qkjzfexlx2/p.html",
+    "news.cgtn.com/news/2026-09-10/indian-historian-south-south-trade-is-growing-dramatically-1qksynmgiog/p.html",
+    "news.cgtn.com/news/2026-09-10/is-ai-facing-a-distillation-problem--1qkt82hjeue/p.html",
+    "news.cgtn.com/news/2026-09-10/ndrc-talks-with-major-us-companies-in-china-on-business-outlook-1qkaf23q1xk/p.html",
+    "news.cgtn.com/news/2026-09-10/news-1qknxzz97uo/p.html",
+    "news.cgtn.com/news/2026-09-10/ping-pong-at-songyue-lake-shandong-s-carnival-stop-in-rizhao-1qicobqvrw0/p.html",
+    "news.cgtn.com/news/2026-09-10/pla-air-force-debuts-4-aircraft-types-in-egypt-1qkbzphudxo/p.html",
+    "news.cgtn.com/news/2026-09-10/president-xi-jinping-to-attend-18th-brics-summit-in-india-1qkk9kov2um/p.html",
+    "news.cgtn.com/news/2026-09-10/president-xi-makes-instructions-following-cargo-ship-fire-in-qingdao-1qkhhcbi5tc/p.html",
+    "news.cgtn.com/news/2026-09-10/red-army-heritage-old-town-a-living-fossil-on-stone-streets-1qk48zjnlji/p.html",
+    "news.cgtn.com/news/2026-09-10/shanghai-s-vision-for-a-people-centered-city-1qkerzl532m/p.html",
+    "news.cgtn.com/news/2026-09-10/the-nepal-mudslide-disaster-is-not-a-traffic-magnet-1qkg9ve3rbe/p.html",
+    "news.cgtn.com/news/2026-09-10/trump-iran-war-will-end-right-after-us-midterm-elections-1qjoujxufg4/p.html",
+    "news.cgtn.com/news/2026-09-10/unctad-official-ai-is-now-a-top-driver-of-services-trade-1qkrkczf3ko/p.html",
+    "news.cgtn.com/news/2026-09-10/wfp-warns-hunger-crisis-is-undermining-dr-congo-ebola-response-1qjodnd7o9q/p.html",
+    "news.cgtn.com/news/2026-09-10/when-disaster-strikes-humanity-should-rise-above-politics-1qkn5t73uq4/p.html",
+    "news.cgtn.com/news/2026-09-10/why-china-keeps-widening-its-door-as-seen-at-ciftis-1qila3korgw/p.html",
+    "news.cgtn.com/news/2026-09-10/with-merna-finding-common-ground-for-the-next-generation-1qk9tglu7to/p.html",
+    "news.cgtn.com/news/2026-09-10/xinjiang-chongqing-computing-power-project-enters-new-stage-1qkdj3u7lvm/p.html",
+    "news.cgtn.com/news/3d3d414e77516a4e34457a6333566d54/index.html",
+    "newsaf.cgtn.com/news/2026-09-05/africa-cdc-warns-that-the-drc-s-ebola-outbreak-not-yet-under-control-1qagwkuoroy/p.html",
+    "newsaf.cgtn.com/news/2026-09-10/algeria-cuts-diplomatic-ties-with-the-uae-1qktygn8l0k/p.html",
+    "newseu.cgtn.com/news/2026-09-10/bayeux-tapestry-fever-sweeps-london-1qj3fcbjcuw/p.html",
+    "newseu.cgtn.com/news/2026-09-10/norway-seeks-new-growth-in-china-beyond-salmon-and-maritime-transport-1qkpjtomqhw/p.html",
+    "newseu.cgtn.com/news/2026-09-10/trump-makes-another-iran-war-prediction-as-hormuz-traffic-dries-up-1qkm2kbytue/p.html",
+    "uploads.guim.co.uk/2026/07/22/stl_global_tax_strategy_for_the_year_to_31_march_2027.pdf",
+    "webapps.aljazeera.net/aje/tips",
+    "www.aljazeera.com/economy/2022/1/27/indias-modi-central-asian-leaders-pledge-closer-economic-ties",
+    "www.aljazeera.com/economy/2026/8/20/taliban-secures-pragmatic-global-alliances-without-formal-recognition",
+    "www.aljazeera.com/features/2024/10/12/from-uzbek-disco-to-uighur-rock-forgotten-sounds-of-the-silk-road",
+    "www.aljazeera.com/features/2024/10/25/remembering-shamshad-abdullaev-the-world-class-uzbek-poet-too-few-knew",
+    "www.aljazeera.com/features/2024/11/9/the-girl-with-sun-shaped-earrings-a-family-remembers-a-murdered-daughter",
+    "www.aljazeera.com/features/2024/7/18/in-kyrgyzstan-an-unprecedented-crackdown-on-free-press-raises-alarm",
+    "www.aljazeera.com/features/2024/9/8/koreans-in-uzbekistan-k-pop-and-a-brewing-cultural-clash",
+    "www.aljazeera.com/news/2021/11/12/turkmenistans-dissidents-fear-crackdown-in-turkish-exile",
+    "www.aljazeera.com/news/2021/11/18/us-issues-religious-freedom-concern-list-removes-nigeria",
+    "www.aljazeera.com/news/2021/8/19/afghanistans-ex-soviet-neighbours-panic-reject-refugees",
+    "www.aljazeera.com/news/2021/8/23/us-military-presence-in-central-asia-unlikely-amid-taliban-rise",
+    "www.aljazeera.com/news/2021/8/6/central-asia-taliban-afghanistan",
+    "www.aljazeera.com/news/2022/2/12/turkmenistan-to-hold-early-presidential-election-on-march-12",
+    "www.aljazeera.com/news/2022/3/12/turkmenistan-votes-presidents-son-expected-to-win",
+    "www.aljazeera.com/news/2022/3/15/turkmenistan-leaders-son-wins-presidential-election",
+    "www.aljazeera.com/news/2022/3/25/ukraine-war-is-central-asia-loosening-ties-with-russia",
+    "www.aljazeera.com/news/2023/10/12/russias-putin-makes-rare-visit-to-kyrgyzstan-despite-icc-arrest-warrant",
+    "www.aljazeera.com/news/2023/2/17/where-does-central-asia-stand-on-russia",
+    "www.aljazeera.com/news/2023/2/23/remote-tajikistan-region-shaken-by-magnitude-6-8-earthquake",
+    "www.aljazeera.com/news/2023/2/28/blinken-in-central-asia-to-boost-ties-amid-ukraine-war",
+    "www.aljazeera.com/news/2023/8/30/kyrgyzstan-brings-back-95-isil-wives-children-from-syrian-internment-camps",
+    "www.aljazeera.com/news/2023/8/30/torrential-rains-kill-at-least-21-people-in-tajikistan",
+    "www.aljazeera.com/news/2023/9/30/russia-ukraine-war-list-of-key-events-day-584",
+    "www.aljazeera.com/news/2024/2/5/did-an-arrested-uzbek-mafia-chieftain-organise-killings-of-dissidents",
+    "www.aljazeera.com/news/2024/3/22/maximally-pragmatic-how-central-asia-navigates-russias-war-on-ukraine",
+    "www.aljazeera.com/news/2024/3/23/moscow-concert-hall-attack-why-is-isil-targeting",
+    "www.aljazeera.com/news/2024/5/20/panic-in-bishkek-why-were-pakistani-students-attacked-in-kyrgyzstan",
+    "www.aljazeera.com/news/2024/5/27/russia-to-build-nuclear-power-plant-in-uzbekistan",
+    "www.aljazeera.com/news/2025/10/8/tajik-war-prisoner-captured-by-ukraine-fears-being-swapped",
+    "www.aljazeera.com/news/2025/11/30/kyrgyzstan-votes-in-snap-parliamentary-election-with-no-opposition",
+    "www.aljazeera.com/news/2025/11/6/kazakhstan-which-already-recognises-israel-to-join-abraham-accords",
+    "www.aljazeera.com/news/2025/11/6/why-is-trump-hosting-c-asia-leaders-can-he-compete-with-russia-china",
+    "www.aljazeera.com/news/2025/11/8/ukraines-fm-says-over-1400-africans-recruited-to-fight-for-russia-in-war",
+    "www.aljazeera.com/news/2025/12/25/five-killed-at-tajikistan-afghanistan-border-in-armed-clash",
+    "www.aljazeera.com/news/2025/12/26/tajikistan-taliban-border-clashes-whats-behind-them-why-it-affects-china",
+    "www.aljazeera.com/news/2025/6/16/chinas-xi-jinping-meets-central-asian-leaders-why-their-summit-matters",
+    "www.aljazeera.com/news/2025/6/4/kyrgyzstan-court-sentences-ex-leader-atambayev-to-11-years-in-absentia",
+    "www.aljazeera.com/news/2025/8/30/sco-summit-in-china-whos-attending-whats-at-stake-amid-trump-tariffs",
+    "www.aljazeera.com/news/2026/1/2/turkmenistan-legalises-crypto-mining-and-exchanges-in-shift-for-economy",
+    "www.aljazeera.com/news/2026/2/20/indonesia-morocco-kosovo-among-5-countries-to-send-troops-under-gaza-plan",
+    "www.aljazeera.com/news/2026/4/5/opec-agrees-to-hike-oil-output-warns-of-slow-recovery-after-attacks",
+    "www.aljazeera.com/news/2026/5/27/kyrgyzstan-russia-tensions",
+    "www.aljazeera.com/news/2026/5/29/on-the-road-to-rogun-dam-tajikistans-greatest-dream",
+    "www.aljazeera.com/news/2026/6/17/satellite-images-show-10-places-where-water-is-disappearing-globally",
+    "www.aljazeera.com/news/2026/7/14/us-russian-astronauts-launch-into-orbit-for-joint-space-mission",
+    "www.aljazeera.com/news/2026/8/23/kazakhstan-holds-parliamentary-election-expected-to-cement-presidents-grip",
+    "www.aljazeera.com/news/2026/8/23/kazakhstan-parliamentary-elections-begin-whats-at-stake",
+    "www.aljazeera.com/news/2026/8/24/kazakhstans-newly-formed-pro-government-party-wins-parliamentary-election",
+    "www.aljazeera.com/news/2026/8/24/ukraines-offensive-against-russia-causes-petrol-panic-across-central-asia",
+    "www.aljazeera.com/news/2026/8/26/chinas-xi-to-visit-kyrgyzstan-egypt",
+    "www.aljazeera.com/news/2026/8/31/kazakhstans-president-taps-longtime-adviser-for-vice-president-role",
+    "www.aljazeera.com/news/2026/8/31/putin-and-xi-affirm-strategic-alliance-amid-unpredictable-world",
+    "www.aljazeera.com/news/2026/8/31/russia-china-leaders-to-meet-at-shanghai-cooperation-organisation-summit",
+    "www.aljazeera.com/news/2026/8/31/xi-modi-and-putin-set-to-meet-for-sco-summit-whats-on-the-agenda",
+    "www.aljazeera.com/news/2026/9/3/kyrgyzstan-hosts-pivotal-sco-summit-amid-global-geopolitical-shifts",
+    "www.aljazeera.com/opinion",
+    "www.aljazeera.com/opinions/2023/6/6/russia-faces-a-new-neighbourhood-threat-china",
+    "www.aljazeera.com/opinions/2024/12/15/the-world-bank-should-reconsider-its-mega-dam-project-in-tajikistan",
+    "www.aljazeera.com/sports/2023/12/29/arkadag-fc-turkmenistan-football-project-asia-afc",
+    "www.aljazeera.com/sports/2024/4/30/japan-uzbekistan-enter-afc-u23-asian-cup-final-and-confirm-olympic-berth",
+    "www.aljazeera.com/sports/2026/1/22/club-brugge-fans-jailed-for-impersonating-borat-in-kazakhstan",
+    "www.aljazeera.com/sports/2026/1/31/sabalenka-really-upset-at-blowing-australian-open-final-chances",
+    "www.aljazeera.com/sports/2026/6/12/dr-congo-arrive-in-the-us-for-the-world-cup-after-ebola-quarantine",
+    "www.aljazeera.com/sports/2026/6/18/luis-diaz-colombia-defeat-world-cup-2026-debutants-uzbekistan",
+    "www.aljazeera.com/sports/2026/6/23/portugal-vs-uzbekistan-world-cup-ronaldo-prediction-kickoff-team-news",
+    "www.aljazeera.com/sports/2026/6/23/ronaldo-scores-twice-as-portugal-thrash-uzbekistan-5-0-at-world-cup-2026",
+    "www.aljazeera.com/sports/2026/8/14/swiatek-defeats-rybakina-to-claim-canadian-open",
+    "www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football",
+    "www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football?update=2671156",
+    "www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football?update=2671166",
+    "www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football?update=2671173",
+    "www.aljazeera.com/sports/liveblog/2024/2/2/live-tajikistan-vs-jordan-afc-asian-cup-2023-qatar-football?update=2671214",
+    "www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final",
+    "www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final?update=2877316",
+    "www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final?update=2877343",
+    "www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final?update=2877349",
+    "www.aljazeera.com/sports/liveblog/2024/5/3/live-japan-vs-uzbekistan-afc-u23-asian-cup-2024-final?update=2877377",
+    "www.aljazeera.com/sports/liveblog/2026/6/23/portugal-vs-uzbekistan-live-world-cup-2026",
+    "www.aljazeera.com/video/101-east",
+    "www.aljazeera.com/video/101-east/2026/2/28/kazakhstans-train-hospital-brings-healthcare-to-remote-regions",
+    "www.aljazeera.com/video/digidocs/2025/12/31/memories-of-a-dream-how-music-revives-a-womans-lost-dream",
+    "www.aljazeera.com/video/in-the-field",
+    "www.aljazeera.com/video/in-the-field/2024/7/21/tajikistans-glacial-crisis-central-asias-melting-heart",
+    "www.aljazeera.com/video/live",
+    "www.aljazeera.com/video/newsfeed/2024/3/25/moscow-theatre-attack-suspects-show-signs-of-beating-in-court",
+    "www.aljazeera.com/video/newsfeed/2026/2/4/audio-of-epstein-discussing-tony-blairs-income",
+    "www.aljazeera.com/video/newsfeed/2026/6/10/spidercam-crashes-onto-pitch-during-hungary-match",
+    "www.aljazeera.com/video/newsfeed/2026/7/14/us-russian-crew-launches-on-mission-to-space-station",
+    "www.aljazeera.com/video/newsfeed/2026/8/24/08-24-26-kazakh-elections-sv-mp4",
+    "www.aljazeera.com/video/newsfeed/2026/8/4/kazakhstan-releases-first-tiger-to-restore-extinct-species",
+    "www.aljazeera.com/video/newsfeed/2026/9/1/video-sco-summit-leaders-meet-in-aftermath-of-us-war-on-iran",
+    "www.aljazeera.com/video/talk-to-al-jazeera",
+    "www.aljazeera.com/video/talk-to-al-jazeera/2024/6/16/tajik-fm-melting-glaciers-human-rights-and-geopolitical-strife",
+    "www.aljazeera.com/where/kazakhstan",
+    "www.aljazeera.com/where/kyrgyzstan",
+    "www.aljazeera.com/where/tajikistan",
+    "www.aljazeera.com/where/turkmenistan",
+    "www.aljazeera.com/where/uzbekistan",
+    "www.cgtn.com/gstringer/stringer/global-stringer.html",
+    "www.cgtn.com/special/chinese-master",
+    "www.cgtn.com/specials/2026/china-crafted.html",
+    "www.cgtn.com/thelegendofkungfu/vrshaolin",
+    "www.cgtn.com/tv/replay?id=CIFCAEA",
+    "www.cgtn.com/world/middle-east",
+    "www.theguardian.com/artanddesign/series/design-a-better-world",
+    "www.theguardian.com/environment/carbon-emissions",
+    "www.theguardian.com/environment/climate-crisis",
+    "www.theguardian.com/environment/fossil-fuels",
+    "www.theguardian.com/film/2023/feb/28/women-behind-the-wheel-review-well-meaning-road-trip-across-central-asia-gets-stuck",
+    "www.theguardian.com/film/2023/oct/16/beshkempir-or-the-adopted-son-review-part-childhood-memoir-part-mysterious-folk-tale",
+    "www.theguardian.com/help/accessibility-help",
+    "www.theguardian.com/index/contributors",
+    "www.theguardian.com/index/subjects/a",
+    "www.theguardian.com/info/2018/sep/17/guardian-us-morning-briefing-sign-up-to-stay-informed",
+    "www.theguardian.com/info/complaints-and-corrections",
+    "www.theguardian.com/info/cookies",
+    "www.theguardian.com/lifeandstyle/health-and-wellbeing",
+    "www.theguardian.com/lifeandstyle/home-and-garden",
+    "www.theguardian.com/lifeandstyle/love-and-sex",
+    "www.theguardian.com/preference/edition/au",
+    "www.theguardian.com/preference/edition/eur",
+    "www.theguardian.com/preference/edition/int",
+    "www.theguardian.com/preference/edition/uk",
+    "www.theguardian.com/preference/edition/us",
+    "www.theguardian.com/science/2019/jun/17/language-wars-18-greatest-linguistic-spats",
+    "www.theguardian.com/type/video+tone/comment",
+    "www.theguardian.com/us-news/donaldtrump",
+    "www.theguardian.com/us-news/us-midterm-elections-2026",
+    "www.theguardian.com/us-news/us-politics",
+    "www.theguardian.com/us-news/usimmigration",
+    "www.theguardian.com/world/islamic-state",
+    "www.theguardian.com/world/kazakhstan",
+    "www.theguardian.com/world/kyrgyzstan",
+    "www.theguardian.com/world/middleeast",
+    "www.theguardian.com/world/south-and-central-asia",
+    "www.theguardian.com/world/tajikistan",
+    "www.theguardian.com/world/turkmenistan",
+    "www.theguardian.com/world/uzbekistan"
   ]
 }
