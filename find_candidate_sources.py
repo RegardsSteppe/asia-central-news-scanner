@@ -32,17 +32,27 @@ CACHE_TTL = 3600
 
 # Domaines de navigation/réseaux sociaux/pub/analytics — jamais des
 # sources d'actualité, on les écarte pour ne pas polluer le résultat.
+# Liste enrichie après un premier run réel (voir commit history) :
+# telegram.me/wa.me/vk.*/ok.ru/bsky.app/dzen.ru/yandex.* et les
+# widgets de dons/cookies passaient au travers de la première version.
 _EXCLUDED_DOMAIN_SUFFIXES = (
     "facebook.com", "fb.com", "twitter.com", "x.com", "instagram.com",
-    "youtube.com", "youtu.be", "linkedin.com", "whatsapp.com",
-    "t.me", "telegram.org", "pinterest.com", "reddit.com", "tiktok.com",
-    "google.com", "google.co", "apple.com", "play.google.com",
+    "youtube.com", "youtu.be", "linkedin.com", "whatsapp.com", "wa.me",
+    "t.me", "telegram.org", "telegram.me", "pinterest.com", "reddit.com",
+    "tiktok.com", "threads.net", "threads.com", "bsky.app",
+    "vk.com", "vk.ru", "ok.ru", "dzen.ru", "yandex.ru", "yandex.com",
+    "ya.ru", "google.com", "google.co", "apple.com", "play.google.com",
     "wikipedia.org", "wikimedia.org", "wikidata.org",
     "doubleclick.net", "googletagmanager.com", "google-analytics.com",
     "googlesyndication.com", "amazon-adsystem.com", "adnxs.com",
     "taboola.com", "outbrain.com", "criteo.com", "cloudflareinsights.com",
     "hotjar.com", "sentry.io", "disqus.com", "addtoany.com",
-    "mailchimp.com", "typepad.com",
+    "mailchimp.com", "typepad.com", "cookiedatabase.org", "donorbox.org",
+    "paypal.com", "akamaized.net",
+    # Sites-sœurs de RFE/RL, sous d'autres noms de domaine (mêmes
+    # articles reliés en interne, pas des sources tierces) — voir
+    # RFE/RL dans sources.py.
+    "currenttime.tv", "radiomarsho.com", "azatliq.org", "azattyqasia.org",
 )
 
 
@@ -51,11 +61,27 @@ def domain_of(url: str) -> str:
     return netloc[4:] if netloc.startswith("www.") else netloc
 
 
+def _registrable_label(domain: str) -> str:
+    """Second-to-last label, e.g. "aljazeera" for "training.aljazeera.net"."""
+    parts = domain.split(".")
+    return parts[-2] if len(parts) >= 2 else domain
+
+
 def is_excluded(domain: str) -> bool:
     return any(
         domain == suffix or domain.endswith("." + suffix)
         for suffix in _EXCLUDED_DOMAIN_SUFFIXES
     )
+
+
+def is_same_organization(domain: str, own_domain: str) -> bool:
+    """
+    Catches an outlet's own network under a different domain name (e.g.
+    an article on aljazeera.com linking to careers.aljazeera.net, or
+    about.rferl.org from an article on rferl.org) — same registrable
+    label, different subdomain or TLD. Not a citation to a third party.
+    """
+    return _registrable_label(domain) == _registrable_label(own_domain)
 
 
 def known_domains() -> set[str]:
@@ -85,7 +111,9 @@ def extract_outbound_domains(html: str, own_domain: str) -> set[str]:
             continue
 
         domain = domain_of(href)
-        if not domain or domain == own_domain or is_excluded(domain):
+        if not domain or is_excluded(domain):
+            continue
+        if is_same_organization(domain, own_domain):
             continue
 
         domains.add(domain)
