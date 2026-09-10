@@ -105,34 +105,90 @@ SOURCES = [
         "max_articles": 100,
     },
 
-    {
-        "name": "The Guardian — Asie centrale",
-        "short_name": "Guardian",
-        "profile": "international_analysis",
-        "label": "International · analyse",
-        "type": "rss",
-        "language": "en",
-
-        "url": "https://www.theguardian.com/world/central-asia",
-
-        "feeds": [
-            "https://www.theguardian.com/world/central-asia/rss",
-        ],
-
-        "max_articles": 60,
-    },
-
     # ========================================================
     # PRESSE INTERNATIONALE — PAR PAYS
     #
-    # AP et Al Jazeera n'ont pas de section "Asie centrale" regroupée
-    # (contrairement au Guardian) : seulement des pages par pays. Une
-    # entrée par pays plutôt que le flux généraliste complet, pour
-    # éviter de diluer le scan avec l'actualité mondiale hors-sujet.
+    # Aucun des trois (Guardian, AP, Al Jazeera) n'a de section "Asie
+    # centrale" regroupée : le tag "/world/central-asia" supposé du
+    # Guardian n'existe pas (404 confirmé sur un run réel) — seuls des
+    # tags par pays existent chez les trois. Une entrée par pays plutôt
+    # que le flux généraliste complet, pour éviter de diluer le scan
+    # avec l'actualité mondiale hors-sujet.
+    #
+    # AP (les 5 entrées ci-dessous) renvoie 403 sur un run réel —
+    # bloqué probablement par une protection anti-bot (comme HRW /
+    # Crisis Group / IPHR ailleurs dans ce fichier). Conservé quand
+    # même comme les autres sources bloquées : la géo-restriction ou
+    # le blocage peut changer sans que l'URL change.
     #
     # URLs non vérifiables depuis cet environnement (accès réseau
     # sortant bloqué) : à valider via les logs du premier run réel.
     # ========================================================
+
+    {
+        "name": "The Guardian — Kazakhstan",
+        "short_name": "Guardian Kazakhstan",
+        "profile": "international_analysis",
+        "label": "International · Kazakhstan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.theguardian.com/world/kazakhstan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "The Guardian — Uzbekistan",
+        "short_name": "Guardian Uzbekistan",
+        "profile": "international_analysis",
+        "label": "International · Ouzbékistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.theguardian.com/world/uzbekistan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "The Guardian — Kyrgyzstan",
+        "short_name": "Guardian Kyrgyzstan",
+        "profile": "international_analysis",
+        "label": "International · Kirghizistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.theguardian.com/world/kyrgyzstan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "The Guardian — Tajikistan",
+        "short_name": "Guardian Tajikistan",
+        "profile": "international_analysis",
+        "label": "International · Tadjikistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.theguardian.com/world/tajikistan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "The Guardian — Turkmenistan",
+        "short_name": "Guardian Turkmenistan",
+        "profile": "international_analysis",
+        "label": "International · Turkménistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.theguardian.com/world/turkmenistan",
+
+        "max_articles": 40,
+    },
 
     {
         "name": "AP News — Kazakhstan",
@@ -421,7 +477,10 @@ SOURCES = [
         "type": "html",
         "language": "en",
 
-        "url": "https://www.ohchr.org/en/press-releases",
+        # "/en/press-releases" 404 sur un run réel — remplacé par la
+        # racine du site (même pattern que Hudson/Jamestown/etc. :
+        # découverte générique des liens d'articles).
+        "url": "https://www.ohchr.org/en",
 
         "max_articles": 80,
     },
@@ -1281,7 +1340,9 @@ SOURCES = [
         "type": "html",
         "language": "en",
 
-        "url": "https://news.cgtn.com/",
+        # "news.cgtn.com" 404 sur un run réel — le sous-domaine "news."
+        # n'existe pas, remplacé par le domaine principal.
+        "url": "https://www.cgtn.com/",
 
         "max_articles": 80,
     },
