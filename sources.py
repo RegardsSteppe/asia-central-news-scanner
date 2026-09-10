@@ -337,6 +337,21 @@ SOURCES = [
         "max_articles": 250,
     },
 
+    {
+        # Trouvé via find_candidate_sources.py : cité par un article
+        # Novastan de niveau A sur les manifestations de Noukous.
+        "name": "The New Humanitarian",
+        "short_name": "New Humanitarian",
+        "profile": "investigative",
+        "label": "International · journalisme humanitaire",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.thenewhumanitarian.org/",
+
+        "max_articles": 200,
+    },
+
     # ========================================================
     # DROITS HUMAINS
     # ========================================================
@@ -483,6 +498,53 @@ SOURCES = [
         "url": "https://www.ohchr.org/en",
 
         "max_articles": 200,
+    },
+
+    {
+        # Trouvé via find_candidate_sources.py : cité par un article
+        # RFE/RL de niveau A sur un procès secret au Xinjiang. Sous-
+        # domaine distinct d'ohchr.org (qui, lui, est bloqué en 403) —
+        # à voir s'il répond différemment.
+        "name": "OHCHR — Rapporteurs spéciaux",
+        "short_name": "OHCHR Special Procedures",
+        "profile": "human_rights",
+        "label": "International · ONU · droits humains",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://spcommreports.ohchr.org/",
+
+        "max_articles": 150,
+    },
+
+    {
+        # Trouvé via find_candidate_sources.py : cité par un article
+        # Novastan de niveau A sur les violences conjugales en Ouzbékistan.
+        "name": "UN Women — Europe & Asie centrale",
+        "short_name": "UN Women ECA",
+        "profile": "human_rights",
+        "label": "International · ONU · droits des femmes",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://eca.unwomen.org/en",
+
+        "max_articles": 150,
+    },
+
+    {
+        # Trouvé via find_candidate_sources.py : cité par un article
+        # RFE/RL de niveau A sur le Xinjiang.
+        "name": "Parlement européen",
+        "short_name": "Europarl",
+        "profile": "human_rights",
+        "label": "International · UE · droits humains",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.europarl.europa.eu/news/en",
+
+        "max_articles": 150,
     },
 
     {
@@ -847,6 +909,36 @@ SOURCES = [
         "max_articles": 200,
     },
 
+    {
+        # Trouvé via find_candidate_sources.py : cité par un article
+        # Novastan de niveau A sur l'Ouzbékistan.
+        "name": "Daryo.uz",
+        "short_name": "Daryo",
+        "profile": "regional_media",
+        "label": "Régional · Ouzbékistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://daryo.uz/en",
+
+        "max_articles": 200,
+    },
+
+    {
+        # Trouvé via find_candidate_sources.py, même article que Daryo.uz.
+        # Pas de version anglaise connue.
+        "name": "Qalampir.uz",
+        "short_name": "Qalampir",
+        "profile": "regional_media",
+        "label": "Régional · Ouzbékistan",
+        "type": "html",
+        "language": "uz",
+
+        "url": "https://qalampir.uz/",
+
+        "max_articles": 200,
+    },
+
     # ========================================================
     # TURKMÉNISTAN
     # ========================================================
@@ -1135,6 +1227,20 @@ SOURCES = [
         "max_articles": 150,
     },
 
+    {
+        # Trouvé via find_candidate_sources.py.
+        "name": "Institute for European Politics",
+        "short_name": "IEP Berlin",
+        "profile": "security_analysis",
+        "label": "International · analyse européenne",
+        "type": "html",
+        "language": "de",
+
+        "url": "https://iep-berlin.de/",
+
+        "max_articles": 100,
+    },
+
     # ========================================================
     # MÉDIAS OFFICIELS — RUSSIE & CHINE
     #
@@ -1159,6 +1265,39 @@ SOURCES = [
         "language": "en",
 
         "url": "https://tass.com/",
+
+        "max_articles": 200,
+    },
+
+    {
+        # Trouvé via find_candidate_sources.py : cité (en tant que
+        # source russe) par un article Al Jazeera de niveau B. Version
+        # russe du TASS ci-dessus — même agence, entrée séparée pour
+        # rester cohérent avec le reste du fichier (Novastan, Amnesty,
+        # HRW... une entrée par langue).
+        "name": "TASS — russe",
+        "short_name": "TASS RU",
+        "profile": "state_media",
+        "label": "Média officiel · agence de presse russe · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://tass.ru/",
+
+        "max_articles": 200,
+    },
+
+    {
+        # Trouvé via find_candidate_sources.py : cité par un article
+        # Al Jazeera de niveau B.
+        "name": "Izvestia",
+        "short_name": "Izvestia",
+        "profile": "state_media",
+        "label": "Média proche du pouvoir · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://iz.ru/",
 
         "max_articles": 200,
     },
@@ -1397,6 +1536,41 @@ SOURCES = [
         "url": "https://en.cidca.gov.cn/",
 
         "max_articles": 100,
+    },
+
+    # ========================================================
+    # IRAN
+    #
+    # Iran fait partie de la région élargie couverte par le scanner
+    # (cf. MAJOR_GEOPOLITICAL_TERMS dans keywords.py). Trouvées via
+    # find_candidate_sources.py, citées par un article RFE/RL de
+    # niveau A sur les divisions internes iraniennes.
+    # ========================================================
+
+    {
+        "name": "IRNA",
+        "short_name": "IRNA",
+        "profile": "state_media",
+        "label": "Média officiel · agence de presse iranienne",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://en.irna.ir/",
+
+        "max_articles": 150,
+    },
+
+    {
+        "name": "Fararu",
+        "short_name": "Fararu",
+        "profile": "international_independent",
+        "label": "International · Iran",
+        "type": "html",
+        "language": "fa",
+
+        "url": "https://www.fararu.com/",
+
+        "max_articles": 150,
     },
 
     # ========================================================
