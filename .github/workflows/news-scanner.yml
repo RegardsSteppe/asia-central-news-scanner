@@ -55,8 +55,18 @@ jobs:
       # Runs after publishing: the site going live must never be blocked by
       # this step. main can move while the scan runs (a merge landing, or a
       # concurrent run), so a plain `git push` can be rejected as
-      # non-fast-forward — retry with a rebase onto the latest branch tip
-      # instead of failing the whole job.
+      # non-fast-forward.
+      #
+      # Retries by resetting onto the latest branch tip and re-applying our
+      # own freshly-generated memory.json on top, rather than rebasing the
+      # commit: memory.json is a cache (freshness timestamps, seen-article
+      # keys), so "our version replayed on latest main" is always the right
+      # resolution — a 3-way merge/rebase can hit a real conflict on this
+      # file (two concurrent runs touching the same JSON keys) and, under
+      # `bash -e`, a conflicting `git rebase` aborts the whole step instead
+      # of retrying. Confirmed live: two runs triggered ~4 min apart raced
+      # here and the rebase-based retry exited after attempt 1/5 instead of
+      # retrying, even though the site itself had already published fine.
       - name: Persist scanner memory
         run: |
           if [ -z "$(git status --porcelain -- memory.json)" ]; then
@@ -66,16 +76,21 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add memory.json
-          git commit -m "Update scanner memory [skip ci]"
+
+          cp memory.json /tmp/memory.json.new
 
           for attempt in 1 2 3 4 5; do
+            cp /tmp/memory.json.new memory.json
+            if [ -n "$(git status --porcelain -- memory.json)" ]; then
+              git add memory.json
+              git commit -m "Update scanner memory [skip ci]"
+            fi
             if git push; then
               exit 0
             fi
-            echo "Push rejected (attempt $attempt/5), rebasing onto latest ${GITHUB_REF_NAME}..."
+            echo "Push rejected (attempt $attempt/5), resetting onto latest ${GITHUB_REF_NAME}..."
             git fetch origin "${GITHUB_REF_NAME}"
-            git rebase "origin/${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
             sleep $((attempt * 3))
           done
 
