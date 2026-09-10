@@ -935,6 +935,268 @@ SOURCES = [
     },
 
     # ========================================================
+    # MÉDIAS OFFICIELS — RUSSIE & CHINE
+    #
+    # Ajoutés à la demande explicite : voir le narratif officiel russe
+    # et chinois sur l'Asie centrale comme point de comparaison face
+    # aux sources indépendantes/militantes du reste de la liste — pas
+    # pour leur fiabilité factuelle. profile="state_media" (déjà
+    # utilisé pour Kabar, l'agence officielle kirghize) : ni exclues
+    # du scoring, ni boostées, jugées comme toute autre source
+    # uniquement sur le contenu de chaque article.
+    #
+    # URLs non vérifiables depuis cet environnement (accès réseau
+    # sortant bloqué) : à valider via les logs du premier run réel.
+    # ========================================================
+
+    {
+        "name": "TASS",
+        "short_name": "TASS",
+        "profile": "state_media",
+        "label": "Média officiel · agence de presse russe",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://tass.com/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "RIA Novosti",
+        "short_name": "RIA Novosti",
+        "profile": "state_media",
+        "label": "Média officiel · agence de presse russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://ria.ru/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Sputnik",
+        "short_name": "Sputnik",
+        "profile": "state_media",
+        "label": "Média officiel · propagande internationale russe",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://sputniknews.com/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Regnum",
+        "short_name": "Regnum",
+        "profile": "state_media",
+        "label": "Média officiel · espace post-soviétique",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://regnum.ru/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Rossiyskaya Gazeta Beyond (RBTH)",
+        "short_name": "RBTH",
+        "profile": "state_media",
+        "label": "Média officiel · diplomatie publique russe",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.rbth.com/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "Nezavisimaya Gazeta",
+        "short_name": "NG.ru",
+        "profile": "state_media",
+        "label": "Média proche du pouvoir · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://www.ng.ru/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "Kommersant",
+        "short_name": "Kommersant",
+        "profile": "state_media",
+        "label": "Média proche du pouvoir · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://www.kommersant.ru/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "Vedomosti",
+        "short_name": "Vedomosti",
+        "profile": "state_media",
+        "label": "Média proche du pouvoir · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://www.vedomosti.ru/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "Kremlin.ru",
+        "short_name": "Kremlin",
+        "profile": "state_media",
+        "label": "Média officiel · présidence russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "http://kremlin.ru/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "Gouvernement russe",
+        "short_name": "Government.ru",
+        "profile": "state_media",
+        "label": "Média officiel · gouvernement russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "http://government.ru/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "Ministère russe des Affaires étrangères",
+        "short_name": "MID.ru",
+        "profile": "state_media",
+        "label": "Média officiel · diplomatie russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://www.mid.ru/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "Mission russe à l'ONU",
+        "short_name": "Russia UN",
+        "profile": "state_media",
+        "label": "Média officiel · diplomatie russe",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://russiaun.ru/",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "Xinhua",
+        "short_name": "Xinhua",
+        "profile": "state_media",
+        "label": "Média officiel · agence de presse chinoise",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://english.news.cn/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "China Daily",
+        "short_name": "China Daily",
+        "profile": "state_media",
+        "label": "Média officiel · presse chinoise",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.chinadaily.com.cn/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "CGTN",
+        "short_name": "CGTN",
+        "profile": "state_media",
+        "label": "Média officiel · diffuseur chinois international",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://news.cgtn.com/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Ministère chinois des Affaires étrangères",
+        "short_name": "MFA Chine",
+        "profile": "state_media",
+        "label": "Média officiel · diplomatie chinoise",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.fmprc.gov.cn/eng/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "China Diplomacy",
+        "short_name": "China Diplomacy",
+        "profile": "state_media",
+        "label": "Média officiel · diplomatie chinoise",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.chinadiplomacy.org.cn/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "NDRC (Chine)",
+        "short_name": "NDRC",
+        "profile": "state_media",
+        "label": "Média officiel · politique économique chinoise",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://en.ndrc.gov.cn/",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "CIDCA (Chine)",
+        "short_name": "CIDCA",
+        "profile": "state_media",
+        "label": "Média officiel · aide au développement chinoise",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://en.cidca.gov.cn/",
+
+        "max_articles": 40,
+    },
+
+    # ========================================================
     # RECHERCHE ACADÉMIQUE
     #
     # Confiance plus faible que le reste de sources.py : URL non
