@@ -9,6 +9,7 @@ from news_scanner import (
     build_csv_rows,
     canonical_article_key,
     collect_articles,
+    compute_seen_keys,
     deduplicate,
     load_seen_keys,
 )
@@ -91,6 +92,21 @@ class MemorySeenKeysTests(unittest.TestCase):
     def test_load_seen_keys_filters_invalid_entries(self):
         memory = {"seen_article_keys": ["a", "", None, 42, "b"]}
         self.assertEqual(load_seen_keys(memory), {"a", "b"})
+
+    def test_compute_seen_keys_normal_run_uses_memory(self):
+        memory = {"seen_article_keys": ["a", "b"]}
+        self.assertEqual(
+            compute_seen_keys(memory, force_refresh=False), {"a", "b"}
+        )
+
+    def test_compute_seen_keys_force_refresh_ignores_memory(self):
+        # Régression : --scan (force_refresh) doit repartir de zéro,
+        # sinon un "re-scan forcé" continue de filtrer silencieusement
+        # tout ce qui a déjà été traité lors d'un run précédent.
+        memory = {"seen_article_keys": ["a", "b"]}
+        self.assertEqual(
+            compute_seen_keys(memory, force_refresh=True), set()
+        )
 
 
 class CollectArticlesTests(unittest.TestCase):
