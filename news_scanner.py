@@ -510,6 +510,7 @@ def enrich_articles(
             article["url"],
             source_by_name.get(article.get("source"), {}),
             force_refresh=force_refresh,
+            expected_title=article.get("title", ""),
         )
 
     done = 0

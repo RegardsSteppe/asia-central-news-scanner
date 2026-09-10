@@ -327,10 +327,58 @@ def extract_published_date(soup: BeautifulSoup):
     return None
 
 
+def _significant_words(text: str) -> set[str]:
+    return set(re.findall(r"[^\W\d_]{4,}", (text or "").lower(), flags=re.UNICODE))
+
+
+def _page_matches_expected_title(
+    expected_title: str,
+    soup: BeautifulSoup,
+) -> bool:
+    """
+    Certains sites répondent 200 OK mais redirigent silencieusement
+    une URL d'article invalide/supprimée vers leur page d'accueil (ou
+    une autre page générique) — un code HTTP normal ne peut pas
+    détecter ça. On compare le titre attendu (déjà connu depuis le
+    flux/la page de liste) aux titres réellement présents sur la page
+    récupérée ; en cas de recouvrement trop faible, on considère qu'on
+    n'a pas la bonne page.
+    """
+    expected_words = _significant_words(expected_title)
+
+    if len(expected_words) < 2:
+        return True
+
+    candidates = []
+
+    title_tag = soup.find("title")
+    if title_tag:
+        candidates.append(title_tag.get_text())
+
+    og_title = soup.find("meta", attrs={"property": "og:title"})
+    if og_title:
+        candidates.append(og_title.get("content", ""))
+
+    h1 = soup.find("h1")
+    if h1:
+        candidates.append(h1.get_text())
+
+    page_words: set[str] = set()
+    for candidate in candidates:
+        page_words |= _significant_words(candidate)
+
+    if not page_words:
+        return True
+
+    overlap = expected_words & page_words
+    return len(overlap) / len(expected_words) >= 0.3
+
+
 def extract_body(
     url: str,
     source: dict[str, Any] | None = None,
     force_refresh: bool = False,
+    expected_title: str = "",
 ) -> tuple[str, Any]:
     content = fetch_url(
         url,
@@ -341,6 +389,12 @@ def extract_body(
     )
 
     soup = BeautifulSoup(content, "html.parser")
+
+    if expected_title and not _page_matches_expected_title(expected_title, soup):
+        # On n'a probablement pas atterri sur l'article (redirection
+        # douce, page supprimée...) : mieux vaut ne rien renvoyer que
+        # de scorer/afficher le contenu d'une page sans rapport.
+        return "", None
 
     published_date = extract_published_date(soup)
 
