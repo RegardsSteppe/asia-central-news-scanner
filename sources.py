@@ -123,6 +123,148 @@ SOURCES = [
     },
 
     # ========================================================
+    # PRESSE INTERNATIONALE — PAR PAYS
+    #
+    # AP et Al Jazeera n'ont pas de section "Asie centrale" regroupée
+    # (contrairement au Guardian) : seulement des pages par pays. Une
+    # entrée par pays plutôt que le flux généraliste complet, pour
+    # éviter de diluer le scan avec l'actualité mondiale hors-sujet.
+    #
+    # URLs non vérifiables depuis cet environnement (accès réseau
+    # sortant bloqué) : à valider via les logs du premier run réel.
+    # ========================================================
+
+    {
+        "name": "AP News — Kazakhstan",
+        "short_name": "AP Kazakhstan",
+        "profile": "international_independent",
+        "label": "International · Kazakhstan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://apnews.com/hub/kazakhstan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "AP News — Uzbekistan",
+        "short_name": "AP Uzbekistan",
+        "profile": "international_independent",
+        "label": "International · Ouzbékistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://apnews.com/hub/uzbekistan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "AP News — Kyrgyzstan",
+        "short_name": "AP Kyrgyzstan",
+        "profile": "international_independent",
+        "label": "International · Kirghizistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://apnews.com/hub/kyrgyzstan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "AP News — Tajikistan",
+        "short_name": "AP Tajikistan",
+        "profile": "international_independent",
+        "label": "International · Tadjikistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://apnews.com/hub/tajikistan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "AP News — Turkmenistan",
+        "short_name": "AP Turkmenistan",
+        "profile": "international_independent",
+        "label": "International · Turkménistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://apnews.com/hub/turkmenistan",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "Al Jazeera — Kazakhstan",
+        "short_name": "AJ Kazakhstan",
+        "profile": "international_independent",
+        "label": "International · Kazakhstan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.aljazeera.com/where/kazakhstan/",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "Al Jazeera — Uzbekistan",
+        "short_name": "AJ Uzbekistan",
+        "profile": "international_independent",
+        "label": "International · Ouzbékistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.aljazeera.com/where/uzbekistan/",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "Al Jazeera — Kyrgyzstan",
+        "short_name": "AJ Kyrgyzstan",
+        "profile": "international_independent",
+        "label": "International · Kirghizistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.aljazeera.com/where/kyrgyzstan/",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "Al Jazeera — Tajikistan",
+        "short_name": "AJ Tajikistan",
+        "profile": "international_independent",
+        "label": "International · Tadjikistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.aljazeera.com/where/tajikistan/",
+
+        "max_articles": 40,
+    },
+
+    {
+        "name": "Al Jazeera — Turkmenistan",
+        "short_name": "AJ Turkmenistan",
+        "profile": "international_independent",
+        "label": "International · Turkménistan",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.aljazeera.com/where/turkmenistan/",
+
+        "max_articles": 40,
+    },
+
+    # ========================================================
     # INVESTIGATION
     # ========================================================
 
