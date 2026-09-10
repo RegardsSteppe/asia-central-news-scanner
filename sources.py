@@ -646,6 +646,165 @@ SOURCES = [
 
         "max_articles": 80,
     },
+
+    # ========================================================
+    # SÉCURITÉ RÉGIONALE
+    #
+    # Think tanks et centres de recherche généralistes (pas
+    # spécifiques Asie centrale) : volontairement absents de
+    # central_asia_source_terms dans scoring.py. Leur pertinence
+    # géographique est jugée uniquement par les mots-clés détectés
+    # dans le titre/corps de chaque article, jamais par la source —
+    # pour éviter qu'un article sur un tout autre sujet/région
+    # n'hérite d'un laissez-passer géographique juste parce qu'il
+    # vient de ce think tank (cf. le cas RFE/RL).
+    #
+    # URLs non vérifiables depuis cet environnement (accès réseau
+    # sortant bloqué) : à valider via les logs du premier run réel.
+    # ========================================================
+
+    {
+        "name": "Hudson Institute",
+        "short_name": "Hudson",
+        "profile": "security_analysis",
+        "label": "International · sécurité",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.hudson.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Jamestown Foundation",
+        "short_name": "Jamestown",
+        "profile": "security_analysis",
+        "label": "International · sécurité · Eurasie",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://jamestown.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "International Crisis Group",
+        "short_name": "Crisis Group",
+        "profile": "security_analysis",
+        "label": "International · prévention des conflits",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.crisisgroup.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Carnegie Endowment for International Peace",
+        "short_name": "Carnegie",
+        "profile": "security_analysis",
+        "label": "International · analyse géopolitique",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://carnegieendowment.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Chatham House",
+        "short_name": "Chatham House",
+        "profile": "security_analysis",
+        "label": "International · Russie & Eurasie",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.chathamhouse.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "RAND Corporation",
+        "short_name": "RAND",
+        "profile": "security_analysis",
+        "label": "International · recherche sécurité",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.rand.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Atlantic Council",
+        "short_name": "Atlantic Council",
+        "profile": "security_analysis",
+        "label": "International · Eurasie",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.atlanticcouncil.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "CSIS",
+        "short_name": "CSIS",
+        "profile": "security_analysis",
+        "label": "International · sécurité & stratégie",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.csis.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Foreign Policy Research Institute",
+        "short_name": "FPRI",
+        "profile": "security_analysis",
+        "label": "International · Eurasie",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.fpri.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "Stimson Center",
+        "short_name": "Stimson",
+        "profile": "security_analysis",
+        "label": "International · sécurité",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.stimson.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "George C. Marshall European Center for Security Studies",
+        "short_name": "Marshall Center",
+        "profile": "security_analysis",
+        "label": "International · études de sécurité",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.marshallcenter.org/",
+
+        "max_articles": 80,
+    },
 ]
 
 
@@ -739,6 +898,16 @@ SOURCE_PROFILES = {
         "description": (
             "Publication spécialisée dans l'analyse politique "
             "et géopolitique de l'Asie centrale et du Caucase."
+        ),
+    },
+
+    "security_analysis": {
+        "name": "Sécurité · analyse",
+        "description": (
+            "Think tank ou centre de recherche généraliste sur la "
+            "sécurité, la géopolitique et les conflits — non "
+            "spécifique à l'Asie centrale. Sa pertinence géographique "
+            "est jugée uniquement sur le contenu de chaque article."
         ),
     },
 }
