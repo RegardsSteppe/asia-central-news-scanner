@@ -638,6 +638,17 @@ def build_audit(
                     "source",
                     "",
                 ),
+                "url": article.get(
+                    "url",
+                    "",
+                ),
+                "date": article.get(
+                    "date",
+                ),
+                "theme": article.get(
+                    "theme",
+                    "",
+                ),
                 "score": article.get(
                     "score",
                     0,
