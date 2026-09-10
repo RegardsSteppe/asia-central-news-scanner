@@ -805,6 +805,29 @@ SOURCES = [
 
         "max_articles": 80,
     },
+
+    # ========================================================
+    # RECHERCHE ACADÉMIQUE
+    #
+    # Confiance plus faible que le reste de sources.py : URL non
+    # vérifiée (déduite de l'ISSN de la revue), plateforme éditeur
+    # (Wiley) potentiellement à rendu JS et articles majoritairement
+    # payants (seuls titre/résumé seront visibles). À confirmer/
+    # corriger via les logs du premier run réel.
+    # ========================================================
+
+    {
+        "name": "Swiss Political Science Review",
+        "short_name": "SPSR",
+        "profile": "academic_research",
+        "label": "Recherche académique · science politique",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://onlinelibrary.wiley.com/journal/16626370",
+
+        "max_articles": 60,
+    },
 ]
 
 
@@ -908,6 +931,16 @@ SOURCE_PROFILES = {
             "sécurité, la géopolitique et les conflits — non "
             "spécifique à l'Asie centrale. Sa pertinence géographique "
             "est jugée uniquement sur le contenu de chaque article."
+        ),
+    },
+
+    "academic_research": {
+        "name": "Recherche académique",
+        "description": (
+            "Revue scientifique publiant occasionnellement des "
+            "articles de recherche sur l'Asie centrale (sociologie, "
+            "science politique, surveillance numérique...). Contenu "
+            "généraliste, pertinence jugée au cas par cas."
         ),
     },
 }
