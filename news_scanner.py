@@ -20,6 +20,7 @@ except ImportError:  # pragma: no cover - library not installed
 from sources import SOURCES
 from scoring import classify_article
 from html_template import create_web_page
+from synthesis import generate_synthesis
 
 from text_utils import (
     article_date_timestamp,
@@ -1050,6 +1051,7 @@ def export_html(
     audit: list[dict[str, Any]],
     stats: dict[str, Any],
     vocabulary: list[dict[str, Any]],
+    synthesis: str = "",
 ) -> None:
     """
     Génère et écrit index.html. Toute erreur est journalisée puis
@@ -1066,6 +1068,7 @@ def export_html(
             audit=audit,
             stats=stats,
             title_words=vocabulary,
+            synthesis=synthesis,
         )
 
         if not isinstance(
@@ -1228,6 +1231,31 @@ def run_scan(
     )
 
     # --------------------------------------------------------
+    # Synthèse (LLM local, niveau A uniquement)
+    # --------------------------------------------------------
+
+    level_a_articles = [
+        article
+        for article in all_articles
+        if article.get("level") == "A"
+    ]
+
+    synthesis_text = timed_call(
+        "synthesis",
+        generate_synthesis,
+        level_a_articles,
+    )
+
+    print(
+        "SYNTHESIS | "
+        + (
+            f"{len(synthesis_text)} caractères générés"
+            if synthesis_text
+            else "vide (aucun article A ou échec de génération)"
+        )
+    )
+
+    # --------------------------------------------------------
     # Génération HTML
     # --------------------------------------------------------
 
@@ -1238,6 +1266,7 @@ def run_scan(
         audit,
         stats,
         vocabulary,
+        synthesis_text,
     )
     timed_call(
         "export-csv",

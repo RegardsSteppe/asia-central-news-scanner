@@ -440,6 +440,34 @@ def render_audit_row(
 # DASHBOARD
 # ============================================================
 
+def render_synthesis(
+    synthesis,
+):
+    """Render the generated synthesis section, if any."""
+
+    if not synthesis:
+        return ""
+
+    return f"""
+    <section class="synthesis">
+
+        <h2>
+            🧭 Synthèse du jour
+        </h2>
+
+        <p class="synthesis-text">
+            {esc(synthesis)}
+        </p>
+
+        <p class="synthesis-note">
+            Généré automatiquement à partir des articles de niveau A —
+            à vérifier avant citation.
+        </p>
+
+    </section>
+    """
+
+
 def render_dashboard(
     stats,
 ):
@@ -547,6 +575,47 @@ h1 {
     font-size: 14px;
 
     color: #555;
+}
+
+
+/* ========================================================
+   SYNTHÈSE
+======================================================== */
+
+.synthesis {
+
+    background: #eef4ff;
+
+    border-left: 4px solid #3a5fcd;
+
+    border-radius: 6px;
+
+    padding: 18px 22px;
+
+    margin-bottom: 30px;
+}
+
+.synthesis h2 {
+
+    margin: 0 0 10px;
+
+    font-size: 18px;
+}
+
+.synthesis-text {
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+}
+
+.synthesis-note {
+
+    margin-top: 10px;
+
+    font-size: 12px;
+
+    color: #667;
 }
 
 
@@ -1017,6 +1086,7 @@ def create_web_page(
     audit,
     stats,
     title_words=None,
+    synthesis="",
 ):
     """
     Build the complete HTML page.
@@ -1164,6 +1234,13 @@ Dernier scan :
 ========================================================= -->
 
 {render_dashboard(stats)}
+
+
+<!-- ========================================================
+     SYNTHÈSE
+========================================================= -->
+
+{render_synthesis(synthesis)}
 
 
 <!-- ========================================================
