@@ -105,6 +105,23 @@ SOURCES = [
         "max_articles": 100,
     },
 
+    {
+        "name": "The Guardian — Asie centrale",
+        "short_name": "Guardian",
+        "profile": "international_analysis",
+        "label": "International · analyse",
+        "type": "rss",
+        "language": "en",
+
+        "url": "https://www.theguardian.com/world/central-asia",
+
+        "feeds": [
+            "https://www.theguardian.com/world/central-asia/rss",
+        ],
+
+        "max_articles": 60,
+    },
+
     # ========================================================
     # INVESTIGATION
     # ========================================================
@@ -245,6 +262,65 @@ SOURCES = [
         "url": "https://rsf.org/fr/",
 
         "max_articles": 80,
+    },
+
+    # ========================================================
+    # DROITS HUMAINS — ORGANISATIONS INTERGOUVERNEMENTALES
+    #
+    # URLs non vérifiables depuis cet environnement (accès réseau
+    # sortant bloqué) : à valider via les logs du premier run réel.
+    # ========================================================
+
+    {
+        "name": "OHCHR",
+        "short_name": "OHCHR",
+        "profile": "human_rights",
+        "label": "International · ONU · droits humains",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.ohchr.org/en/press-releases",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "OSCE",
+        "short_name": "OSCE",
+        "profile": "human_rights",
+        "label": "International · sécurité & droits humains",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.osce.org/news",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "CIVICUS Monitor",
+        "short_name": "CIVICUS",
+        "profile": "human_rights",
+        "label": "International · espace civique",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://monitor.civicus.org/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "International Partnership for Human Rights",
+        "short_name": "IPHR",
+        "profile": "human_rights",
+        "label": "International · droits humains",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.iphronline.org/",
+
+        "max_articles": 60,
     },
 
     # ========================================================
@@ -647,6 +723,19 @@ SOURCES = [
         "max_articles": 80,
     },
 
+    {
+        "name": "Trend News Agency",
+        "short_name": "Trend",
+        "profile": "regional_media",
+        "label": "Régional · Caucase",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://en.trend.az/",
+
+        "max_articles": 80,
+    },
+
     # ========================================================
     # SÉCURITÉ RÉGIONALE
     #
@@ -804,6 +893,45 @@ SOURCES = [
         "url": "https://www.marshallcenter.org/",
 
         "max_articles": 80,
+    },
+
+    {
+        "name": "PONARS Eurasia",
+        "short_name": "PONARS",
+        "profile": "security_analysis",
+        "label": "International · post-soviétique",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.ponarseurasia.org/",
+
+        "max_articles": 80,
+    },
+
+    {
+        "name": "SpecialEurasia",
+        "short_name": "SpecialEurasia",
+        "profile": "security_analysis",
+        "label": "International · Asie centrale & Caucase",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.specialeurasia.com/",
+
+        "max_articles": 60,
+    },
+
+    {
+        "name": "Caspian Policy Center",
+        "short_name": "CPC",
+        "profile": "security_analysis",
+        "label": "International · Caspienne",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.caspianpolicy.org/",
+
+        "max_articles": 60,
     },
 
     # ========================================================
