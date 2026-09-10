@@ -534,6 +534,20 @@ SPECIFIC_RIGHTS_TERMS = [
     "homophobia",
     "transphobia",
 
+    # Surveillance / vie privée (ajouté pour couvrir la recherche
+    # académique sur la surveillance numérique, ex. caméras chinoises
+    # en Asie centrale).
+    "mass surveillance",
+    "surveillance cameras",
+    "facial recognition",
+    "biometric surveillance",
+    "digital authoritarianism",
+    "surveillance state",
+    "chinese surveillance technology",
+    "safe city surveillance",
+    "privacy violation",
+    "privacy rights",
+
     # Russian
     "пытк",
     "истязани",
@@ -569,6 +583,15 @@ SPECIFIC_RIGHTS_TERMS = [
     "ЛГБТ",
     "гомофоб",
     "трансфоб",
+
+    # Surveillance / vie privée — russe
+    "массовая слежка",
+    "видеонаблюдение",
+    "распознавание лиц",
+    "биометрическая слежка",
+    "цифровой авторитаризм",
+    "слежка за гражданами",
+    "нарушение приватности",
 ]
 
 # ------------------------------------------------------------
