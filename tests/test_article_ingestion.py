@@ -1,6 +1,7 @@
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -8,6 +9,7 @@ from bs4 import BeautifulSoup
 
 from article_ingestion import (
     build_article,
+    extract_body,
     extract_published_date,
     looks_like_article_link,
     parse_rss,
@@ -128,6 +130,49 @@ class ExtractPublishedDateTests(unittest.TestCase):
     def test_returns_none_when_no_date_found(self):
         soup = BeautifulSoup("<html><body>No date here</body></html>", "html.parser")
         self.assertIsNone(extract_published_date(soup))
+
+
+class ExtractBodySoftRedirectTests(unittest.TestCase):
+    """
+    Régression : certains sites répondent 200 OK mais redirigent
+    silencieusement une URL d'article cassée vers leur page d'accueil
+    (ou une autre page générique) — un code HTTP seul ne peut pas
+    détecter ça. extract_body() doit reconnaître que le titre attendu
+    n'apparaît nulle part sur la page reçue et refuser ce contenu
+    plutôt que de le traiter comme le corps de l'article.
+    """
+
+    @patch("article_ingestion.fetch_url")
+    def test_returns_empty_body_when_page_does_not_match_title(self, mock_fetch):
+        mock_fetch.return_value = (
+            "<html><head><title>Hudson Institute — Home</title></head>"
+            "<body><h1>Welcome to Hudson Institute</h1>"
+            "<p>Unrelated homepage content.</p></body></html>"
+        )
+
+        body, date = extract_body(
+            "https://www.hudson.org/foreign-policy/some-removed-article",
+            expected_title="Mr. Trump, Take the Golden Road to Samarkand",
+        )
+
+        self.assertEqual(body, "")
+        self.assertIsNone(date)
+
+    @patch("article_ingestion.fetch_url")
+    def test_returns_body_when_page_matches_title(self, mock_fetch):
+        mock_fetch.return_value = (
+            "<html><head><title>Mr. Trump, Take the Golden Road to "
+            "Samarkand | Hudson Institute</title></head>"
+            "<body><article>Full article text about Samarkand.</article>"
+            "</body></html>"
+        )
+
+        body, date = extract_body(
+            "https://www.hudson.org/foreign-policy/mr-trump-take-golden-road-samarkand",
+            expected_title="Mr. Trump, Take the Golden Road to Samarkand",
+        )
+
+        self.assertIn("Samarkand", body)
 
 
 class BuildArticleTests(unittest.TestCase):
