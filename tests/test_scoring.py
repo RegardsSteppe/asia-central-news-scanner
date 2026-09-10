@@ -7,6 +7,48 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from scoring import classify_article
 
 
+class CityGeographyTests(unittest.TestCase):
+    """
+    Régression : la géographie n'était détectée que via des noms de
+    pays, jamais des villes — un titre ne citant qu'une ville
+    (ex. "Samarkand") tombait à 0/100 faute de tout ancrage régional.
+    """
+
+    def test_recognizes_major_central_asian_cities(self):
+        article = {
+            "title": "Mr. Trump, Take the Golden Road to Samarkand",
+            "summary": "",
+            "body": "",
+            "source": "Hudson Institute",
+            "url": "https://www.hudson.org/example",
+        }
+
+        classify_article(article)
+
+        self.assertGreater(article["score"], 0)
+        self.assertTrue(
+            any("Asie centrale" in reason for reason in article["reasons"])
+        )
+
+    def test_recognizes_major_caucasus_cities(self):
+        article = {
+            "title": "Protests continue in Tbilisi over new legislation",
+            "summary": "",
+            "body": "",
+            "source": "Test Source",
+            "url": "https://example.com/tbilisi-protests",
+        }
+
+        classify_article(article)
+
+        # Caucase-only reste pénalisé par ailleurs (comportement
+        # pré-existant, hors sujet ici) : on vérifie seulement que la
+        # ville est bien reconnue comme un signal géographique.
+        self.assertTrue(
+            any("Caucase" in reason for reason in article["reasons"])
+        )
+
+
 class SecurityIsolationTests(unittest.TestCase):
     """
     Garde-fou pour l'ajout de sources sécurité (Hudson Institute et
