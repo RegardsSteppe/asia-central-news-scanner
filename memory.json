@@ -1,7 +1,7 @@
 {
   "sources": {
     "Radio Free Europe / Radio Liberty": {
-      "last_scanned_at": "2026-09-10T12:41:33.117029+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.947274+00:00",
       "ok": true,
       "articles": [
         {
@@ -239,6 +239,14 @@
         {
           "source": "Radio Free Europe / Radio Liberty",
           "source_label": "International · indépendant",
+          "title": "'Infiltration' Bill Exposes Iran's Internal Divisions Over Wartime Security Crackdown",
+          "summary": "Iran’s parliament is divided over a sweeping bill aimed at countering foreign “infiltration,” exposing tensions over how far the state should go in tightening security after the war. Even supporters such as Parliament Speaker Qalibaf have warned against measures that could “lock up” the country.",
+          "url": "https://www.rferl.org/a/iran-infiltration-bill-parliament-opposition-qalibaf-/33851689.html",
+          "date": "2026-09-10T13:43:29+00:00"
+        },
+        {
+          "source": "Radio Free Europe / Radio Liberty",
+          "source_label": "International · indépendant",
           "title": "Washington Distances Itself From Former Envoy Khalilzad's Taliban Meetings Ahead Of 9/11 Anniversary",
           "summary": "A visit to Afghanistan by a former US special envoy that included meetings with senior Taliban officials and a major oil and gas deal has touched a raw nerve on the eve of the 25th anniversary of 9/11.",
           "url": "https://www.rferl.org/a/former-envoy-khalilzad-taliban-meetings-9-11-anniversary/33851670.html",
@@ -247,7 +255,7 @@
         {
           "source": "Radio Free Europe / Radio Liberty",
           "source_label": "International · indépendant",
-          "title": "US Congressman Abraham Hamadeh: Armenia-Azerbaijan Peace Deal Could Come Before Trump’s Term Ends",
+          "title": "US Congressman Abraham Hamadeh: Armenia-Azerbaijan Peace Deal Could Come Before Trump's Term Ends",
           "summary": "US Congressman Abraham Hamadeh says the Armenia-Azerbaijan peace process is moving faster than many expected and predicts that a final peace agreement could be reached well before the end of President Donald Trump’s current term.",
           "url": "https://www.rferl.org/a/us-congressman-abraham-hamadeh-armenia-azerbaijan-peace-deal-could-come-before-trump-s-term-ends/33851684.html",
           "date": "2026-09-10T11:46:31+00:00"
@@ -264,7 +272,7 @@
           "source": "Radio Free Europe / Radio Liberty",
           "source_label": "International · indépendant",
           "title": "From Russia With Expertise: Iranian Students Return Home With Potentially Deadly Knowledge Of Drones, AI, And More",
-          "summary": "Iranians studying in Russia often work on projects with military applications, an analysis by Systema shows -- and upon return, some join entities linked to Iran’s armed forces. These ties are growing: the number of Iranians studying at Russian universities has jumped during Moscow’s war on Ukraine.",
+          "summary": "Iranians studying in Russia often work on projects with military applications, an analysis by Systema shows -- and upon return, some join entities linked to Iran’s armed forces. These ties are growing: The number of Iranians studying at Russian universities has jumped during Moscow’s war on Ukraine.",
           "url": "https://www.rferl.org/a/russia-iran-dual-use-military-students-research/33850183.html",
           "date": "2026-09-10T10:30:56+00:00"
         },
@@ -387,19 +395,11 @@
           "summary": "The 9/11 attacks were a global plot orchestrated by a Saudi millionaire whose Al-Qaeda network was later crippled by US-led military action. But experts warn today’s terrorists can be lone actors inspired online and harder to track, while Al-Qaeda is adapting to new technologies.",
           "url": "https://www.rferl.org/a/al-qaeda-terrorism-counterterrorism-25-years/33846520.html",
           "date": "2026-09-08T07:18:11+00:00"
-        },
-        {
-          "source": "Radio Free Europe / Radio Liberty",
-          "source_label": "International · indépendant",
-          "title": "US-Iranian Kamran Hekmati Released From Tehran Prison But Can't Leave Country",
-          "summary": "An Iranian-American citizen, Kamran Hekmati, has been released from Tehran's notorious Evin Prison, sources have told RFE/RL's Radio Farda, but he is unable to leave the country due to a travel ban.",
-          "url": "https://www.rferl.org/a/iran-kamran-hekmati-release-travel-ban/33849101.html",
-          "date": "2026-09-07T19:02:55+00:00"
         }
       ]
     },
     "Eurasianet": {
-      "last_scanned_at": "2026-09-10T12:18:34.966458+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.947547+00:00",
       "ok": true,
       "articles": [
         {
@@ -553,27 +553,11 @@
           "summary": "",
           "url": "https://eurasianet.org/podcast/central-asianist",
           "date": null
-        },
-        {
-          "source": "Eurasianet",
-          "source_label": "Indépendant · régional",
-          "title": "Erlan Benedis-Grab",
-          "summary": "",
-          "url": "https://eurasianet.org/people/erlan-benedis-grab",
-          "date": null
-        },
-        {
-          "source": "Eurasianet",
-          "source_label": "Indépendant · régional",
-          "title": "Alexander Thompson",
-          "summary": "",
-          "url": "https://eurasianet.org/people/alexander-thompson",
-          "date": null
         }
       ]
     },
     "Cabar.asia": {
-      "last_scanned_at": "2026-09-10T12:18:34.966562+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.947645+00:00",
       "ok": true,
       "articles": [
         {
@@ -659,7 +643,7 @@
       ]
     },
     "Cabar.asia — russe": {
-      "last_scanned_at": "2026-09-10T12:18:34.966759+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.947880+00:00",
       "ok": true,
       "articles": [
         {
@@ -881,7 +865,7 @@
       ]
     },
     "The Diplomat": {
-      "last_scanned_at": "2026-09-10T12:18:34.966932+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.948091+00:00",
       "ok": true,
       "articles": [
         {
@@ -919,6 +903,14 @@
         {
           "source": "The Diplomat",
           "source_label": "International · analyse",
+          "title": "What Kazakhstan’s New Unicameral Parliament Means for Its Foreign Policy By Bimal Adhikari and Aruzhan Kaimoldina Although Kazakhstan’s Senate rarely exercised its influence over the country’s foreign policy, its abolishment has left the country without the diplomatic expertise and sequential vetting that the upper chamber once provided.",
+          "summary": "",
+          "url": "https://thediplomat.com/2026/09/what-kazakhstans-new-unicameral-parliament-means-for-its-foreign-policy/",
+          "date": null
+        },
+        {
+          "source": "The Diplomat",
+          "source_label": "International · analyse",
           "title": "Shifting Poles and Power 35 Years After the End of the Soviet Union By Dilnoza Ubaydullaeva For many post-Soviet states, multipolarity is nothing new. Navigating between competing powers has been an important part of their security strategy since independence.",
           "summary": "",
           "url": "https://thediplomat.com/2026/09/shifting-poles-and-power-35-years-after-the-end-of-the-soviet-union/",
@@ -951,17 +943,17 @@
         {
           "source": "The Diplomat",
           "source_label": "International · analyse",
-          "title": "Pax Silica vs WAICO: Will Central Asia Have to Pick a Side? By Catherine Putz One clue as to how the U.S. plans to proceed might be glimpsed in how Uzbekistan progresses in following Kazakhstan into dual membership.",
+          "title": "Latest Video Is BRICS Actually Benefiting India?",
           "summary": "",
-          "url": "https://thediplomat.com/2026/09/pax-silica-vs-waico-will-central-asia-have-to-pick-a-side/",
+          "url": "https://thediplomat.com/2026/09/is-brics-actually-benefiting-india/",
           "date": null
         },
         {
           "source": "The Diplomat",
           "source_label": "International · analyse",
-          "title": "Latest Video Is BRICS Actually Benefiting India?",
+          "title": "Pax Silica vs WAICO: Will Central Asia Have to Pick a Side? By Catherine Putz One clue as to how the U.S. plans to proceed might be glimpsed in how Uzbekistan progresses in following Kazakhstan into dual membership.",
           "summary": "",
-          "url": "https://thediplomat.com/2026/09/is-brics-actually-benefiting-india/",
+          "url": "https://thediplomat.com/2026/09/pax-silica-vs-waico-will-central-asia-have-to-pick-a-side/",
           "date": null
         },
         {
@@ -1015,14 +1007,6 @@
         {
           "source": "The Diplomat",
           "source_label": "International · analyse",
-          "title": "Tajikistan Taxes Tourism Trips Abroad to Fund Development at Home By Kulobiddin Norov The new rules would hit Tajikistan’s tourism companies while benefiting an affiliated state body.",
-          "summary": "",
-          "url": "https://thediplomat.com/2026/09/tajikistan-taxes-tourism-trips-abroad-to-fund-development-at-home/",
-          "date": null
-        },
-        {
-          "source": "The Diplomat",
-          "source_label": "International · analyse",
           "title": "Indonesia Reopens Airports After Suspension Due to Volcanic Eruption",
           "summary": "",
           "url": "https://thediplomat.com/2026/09/hold-indonesia-reopens-airports-after-suspension-due-to-volcanic-eruption/",
@@ -1071,7 +1055,7 @@
       ]
     },
     "OCCRP": {
-      "last_scanned_at": "2026-09-10T12:18:34.967985+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.949183+00:00",
       "ok": true,
       "articles": [
         {
@@ -1112,6 +1096,22 @@
           "title": "Organized Crime",
           "summary": "",
           "url": "https://www.occrp.org/en/organized-crime",
+          "date": null
+        },
+        {
+          "source": "OCCRP",
+          "source_label": "International · investigation",
+          "title": "Australia Charges Accountants in Multimillion-Dollar Loan Fraud Scheme",
+          "summary": "",
+          "url": "https://www.occrp.org/en/news/australia-charges-accountants-in-multimillion-dollar-loan-fraud-scheme",
+          "date": null
+        },
+        {
+          "source": "OCCRP",
+          "source_label": "International · investigation",
+          "title": "Armenia Unveils Raid Footage in Ex-Tax Chief Probe",
+          "summary": "",
+          "url": "https://www.occrp.org/en/news/armenia-unveils-raid-footage-in-ex-tax-chief-probe",
           "date": null
         },
         {
@@ -1357,22 +1357,6 @@
         {
           "source": "OCCRP",
           "source_label": "International · investigation",
-          "title": "Armenia Detains Ex-President Kocharyan in Corruption Probe",
-          "summary": "",
-          "url": "https://www.occrp.org/en/news/armenia-detains-ex-president-kocharyan-in-corruption-probe",
-          "date": null
-        },
-        {
-          "source": "OCCRP",
-          "source_label": "International · investigation",
-          "title": "Kazakhstan’s Election Brings a New Parliament — and More Pressure on Journalists",
-          "summary": "",
-          "url": "https://www.occrp.org/en/news/kazakhstans-election-brings-a-new-parliament-and-more-pressure-on-journalists",
-          "date": null
-        },
-        {
-          "source": "OCCRP",
-          "source_label": "International · investigation",
           "title": "Inside the Supply Chain Funneling Irish Alumina to Russian Rockets",
           "summary": "",
           "url": "https://www.occrp.org/en/investigation/inside-the-aluminum-supply-chain-linking-irish-industry-to-russian-rockets",
@@ -1509,6 +1493,14 @@
         {
           "source": "OCCRP",
           "source_label": "International · investigation",
+          "title": "Armenia Detains Ex-President Kocharyan in Corruption Probe",
+          "summary": "",
+          "url": "https://www.occrp.org/en/news/armenia-detains-ex-president-kocharyan-in-corruption-probe",
+          "date": null
+        },
+        {
+          "source": "OCCRP",
+          "source_label": "International · investigation",
           "title": "Liberia Charges Ex-Vice President in Transnational Drug Probe",
           "summary": "",
           "url": "https://www.occrp.org/en/news/liberia-charges-ex-vice-president-in-transnational-drug-probe",
@@ -1545,34 +1537,26 @@
           "summary": "",
           "url": "https://www.occrp.org/en/news/dutch-court-hears-case-against-whistleblowers-murder-suspect",
           "date": null
-        },
-        {
-          "source": "OCCRP",
-          "source_label": "International · investigation",
-          "title": "Iraq PM’s Anti-Corruption Campaign Rumbles On",
-          "summary": "",
-          "url": "https://www.occrp.org/en/news/iraq-pms-anti-corruption-campaign-rumbles-on",
-          "date": null
         }
       ]
     },
     "Human Rights Watch": {
-      "last_scanned_at": "2026-09-10T14:09:43.735532+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.949239+00:00",
       "ok": false,
       "articles": []
     },
     "Human Rights Watch — français": {
-      "last_scanned_at": "2026-09-10T14:09:43.735553+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.949245+00:00",
       "ok": false,
       "articles": []
     },
     "Human Rights Watch — russe": {
-      "last_scanned_at": "2026-09-10T14:09:43.735561+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.949249+00:00",
       "ok": false,
       "articles": []
     },
     "Amnesty International": {
-      "last_scanned_at": "2026-09-10T12:18:34.968194+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.949390+00:00",
       "ok": true,
       "articles": [
         {
@@ -1746,7 +1730,7 @@
       ]
     },
     "Amnesty International — français": {
-      "last_scanned_at": "2026-09-10T12:18:34.968370+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.949566+00:00",
       "ok": true,
       "articles": [
         {
@@ -1952,7 +1936,7 @@
       ]
     },
     "Amnesty International — russe": {
-      "last_scanned_at": "2026-09-10T12:18:34.968538+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.949719+00:00",
       "ok": true,
       "articles": [
         {
@@ -2118,7 +2102,7 @@
       ]
     },
     "Committee to Protect Journalists": {
-      "last_scanned_at": "2026-09-10T12:18:34.968873+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.950083+00:00",
       "ok": true,
       "articles": [
         {
@@ -2548,7 +2532,7 @@
       ]
     },
     "Committee to Protect Journalists — russe": {
-      "last_scanned_at": "2026-09-10T12:18:34.969220+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.950419+00:00",
       "ok": true,
       "articles": [
         {
@@ -2946,7 +2930,7 @@
       ]
     },
     "Reporters Without Borders": {
-      "last_scanned_at": "2026-09-10T12:18:34.969752+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.950985+00:00",
       "ok": true,
       "articles": [
         {
@@ -3432,7 +3416,7 @@
       ]
     },
     "The Times of Central Asia": {
-      "last_scanned_at": "2026-09-10T12:18:34.969822+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.951062+00:00",
       "ok": true,
       "articles": [
         {
@@ -3470,7 +3454,7 @@
       ]
     },
     "Novastan — français": {
-      "last_scanned_at": "2026-09-10T12:18:34.970139+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.951364+00:00",
       "ok": true,
       "articles": [
         {
@@ -3668,9 +3652,9 @@
         {
           "source": "Novastan — français",
           "source_label": "Régional · indépendant · français",
-          "title": "L’ambassadeur du Turkménistan en France rappelé",
+          "title": "Glaciers, glissement de terrain géant, nouveaux organismes et pesticides : résumé de recherches en Asie centrale",
           "summary": "",
-          "url": "https://novastan.org/fr/europe-et-asie-centrale/lambassadeur-du-turkmenistan-en-france-rappele/",
+          "url": "https://novastan.org/fr/societe-et-culture/glaciers-glissement-de-terrain-geant-et-nouveaux-organismes-resume-de-recherches-en-asie-centrale/",
           "date": null
         },
         {
@@ -3868,7 +3852,7 @@
       ]
     },
     "Novastan — anglais": {
-      "last_scanned_at": "2026-09-10T12:18:34.970417+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.951635+00:00",
       "ok": true,
       "articles": [
         {
@@ -3901,14 +3885,6 @@
           "title": "Economy and Development",
           "summary": "",
           "url": "https://novastan.org/en/cat/economics/",
-          "date": null
-        },
-        {
-          "source": "Novastan — anglais",
-          "source_label": "Régional · indépendant · anglais",
-          "title": "People and Interviews",
-          "summary": "",
-          "url": "https://novastan.org/en/cat/people/",
           "date": null
         },
         {
@@ -3962,6 +3938,14 @@
         {
           "source": "Novastan — anglais",
           "source_label": "Régional · indépendant · anglais",
+          "title": "“A Fourth Political Reset?”: An Interview with Kyrgyz Political Scientist Emil Dzhuraev",
+          "summary": "",
+          "url": "https://novastan.org/en/kyrgyzstan/kyrgyzstan-sadyr-japarov-politics-china-2027-election/",
+          "date": null
+        },
+        {
+          "source": "Novastan — anglais",
+          "source_label": "Régional · indépendant · anglais",
           "title": "The Silk Road Paradigm and the Dilemma of In-Between",
           "summary": "",
           "url": "https://novastan.org/en/politics/silk-road-paradigm-central-asia-china-europe/",
@@ -3997,14 +3981,6 @@
           "title": "“A public lesson to everybody”: Kazakhstan convicts feminist and LGBTI rights activist Zhanar Sekerbayeva",
           "summary": "",
           "url": "https://novastan.org/en/kazakhstan/zhanar-sekerbayeva-kazakhstan-lgbti-rights/",
-          "date": null
-        },
-        {
-          "source": "Novastan — anglais",
-          "source_label": "Régional · indépendant · anglais",
-          "title": "“The Chaar is much more than a horse”: reviving Kyrgyzstan’s indigenous spotted breed",
-          "summary": "",
-          "url": "https://novastan.org/en/kyrgyzstan/chaar-horse-kyrgyzstan-indigenous-spotted-breed/",
           "date": null
         },
         {
@@ -4074,9 +4050,9 @@
         {
           "source": "Novastan — anglais",
           "source_label": "Régional · indépendant · anglais",
-          "title": "“Follow the invoices”: Marius Dragomir on how money shapes independent journalism",
+          "title": "Minsk’s Eastern Bet: Why Central Asia Matters More Than Ever",
           "summary": "",
-          "url": "https://novastan.org/en/kyrgyzstan/independent-media-sustainability-central-asia/",
+          "url": "https://novastan.org/en/politics/belarus-central-asia-relations/",
           "date": null
         },
         {
@@ -4093,22 +4069,6 @@
           "title": "More Women in Central Asian Politics – But Where Is the Power?",
           "summary": "",
           "url": "https://novastan.org/en/politics/women-central-asian-politics-representation-power/",
-          "date": null
-        },
-        {
-          "source": "Novastan — anglais",
-          "source_label": "Régional · indépendant · anglais",
-          "title": "Minsk’s Eastern Bet: Why Central Asia Matters More Than Ever",
-          "summary": "",
-          "url": "https://novastan.org/en/politics/belarus-central-asia-relations/",
-          "date": null
-        },
-        {
-          "source": "Novastan — anglais",
-          "source_label": "Régional · indépendant · anglais",
-          "title": "The Vocabulary of Reform: Why Central Asia Is Reimagining Its Political Traditions",
-          "summary": "",
-          "url": "https://novastan.org/en/kazakhstan/central-asia-political-traditions/",
           "date": null
         },
         {
@@ -4202,7 +4162,7 @@
       ]
     },
     "Novastan — allemand": {
-      "last_scanned_at": "2026-09-10T12:18:34.970787+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.951995+00:00",
       "ok": true,
       "articles": [
         {
@@ -4408,9 +4368,9 @@
         {
           "source": "Novastan — allemand",
           "source_label": "Régional · indépendant · allemand",
-          "title": "Kirgistan: Regierungsnahe Parteien gewinnen Parlamentswahl",
+          "title": "Was es im Museum für Zeitgenössische Kunst in Urgentsch zu sehen gibt",
           "summary": "",
-          "url": "https://novastan.org/de/politik-und-wirtschaft/kirgistan-regierungsnahe-parteien-vorne-bei-der-parlamentswahl/",
+          "url": "https://novastan.org/de/usbekistan/was-es-im-museum-fuer-zeitgenoessische-kunst-in-urgentsch-zu-sehen-gibt/",
           "date": null
         },
         {
@@ -4568,14 +4528,6 @@
         {
           "source": "Novastan — allemand",
           "source_label": "Régional · indépendant · allemand",
-          "title": "Unser Team",
-          "summary": "",
-          "url": "https://novastan.org/de/team/",
-          "date": null
-        },
-        {
-          "source": "Novastan — allemand",
-          "source_label": "Régional · indépendant · allemand",
           "title": "Unsere Partner",
           "summary": "",
           "url": "https://novastan.org/de/partner/",
@@ -4584,7 +4536,7 @@
       ]
     },
     "UzNews24": {
-      "last_scanned_at": "2026-09-10T12:18:34.970848+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.952065+00:00",
       "ok": true,
       "articles": [
         {
@@ -4610,19 +4562,11 @@
           "summary": "",
           "url": "https://uznews.uz/ru/auth/logout",
           "date": null
-        },
-        {
-          "source": "UzNews24",
-          "source_label": "Régional · Ouzbékistan",
-          "title": "Yes, delete account",
-          "summary": "",
-          "url": "https://uznews.uz/profile/delete",
-          "date": null
         }
       ]
     },
     "Sarpa Media": {
-      "last_scanned_at": "2026-09-10T12:18:34.970862+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.952082+00:00",
       "ok": true,
       "articles": [
         {
@@ -4636,7 +4580,7 @@
       ]
     },
     "Kursiv Media": {
-      "last_scanned_at": "2026-09-10T12:18:34.971128+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.952313+00:00",
       "ok": true,
       "articles": [
         {
@@ -4674,6 +4618,30 @@
         {
           "source": "Kursiv Media",
           "source_label": "Régional · business & politique",
+          "title": "ADCB plans to triple financing for projects in Kazakhstan",
+          "summary": "",
+          "url": "https://kz.kursiv.media/en/2026-09-10/engk-nknk-adcb-plans-to-triple-financing-for-projects-in-kazakhstan/",
+          "date": null
+        },
+        {
+          "source": "Kursiv Media",
+          "source_label": "Régional · business & politique",
+          "title": "From jet to keychain: Icelandair gives Hekla Aurora a second life",
+          "summary": "",
+          "url": "https://kz.kursiv.media/en/2026-09-10/from-jet-to-keychain-icelandair-gives-hekla-aurora-a-second-life/",
+          "date": null
+        },
+        {
+          "source": "Kursiv Media",
+          "source_label": "Régional · business & politique",
+          "title": "World Suicide Prevention Day: The hidden cost of male silence",
+          "summary": "",
+          "url": "https://kz.kursiv.media/en/2026-09-10/world-suicide-prevention-day-the-hidden-cost-of-male-silence/",
+          "date": null
+        },
+        {
+          "source": "Kursiv Media",
+          "source_label": "Régional · business & politique",
           "title": "Kazakhstan to produce Indian tractor brands in $120 million deal",
           "summary": "",
           "url": "https://kz.kursiv.media/en/2026-09-10/engk-nknk-kazakhstan-to-produce-indian-tractor-brands-in-120-million-deal/",
@@ -4706,6 +4674,14 @@
         {
           "source": "Kursiv Media",
           "source_label": "Régional · business & politique",
+          "title": "Kyrgyz court sentences Tashiev, seven others to four years",
+          "summary": "",
+          "url": "https://kz.kursiv.media/en/2026-09-10/engk-tank-kyrgyz-court-sentences-tashiev-seven-others-to-four-years/",
+          "date": null
+        },
+        {
+          "source": "Kursiv Media",
+          "source_label": "Régional · business & politique",
           "title": "FIDE presidential candidate fails to return after connection drops",
           "summary": "",
           "url": "https://kz.kursiv.media/en/2026-09-10/engk-tank-fide-presidential-candidate-fails-to-return-after-connection-drops/",
@@ -4717,38 +4693,6 @@
           "title": "‘It’s just a number right now.’ Rybakina speaks after becoming World No. 1",
           "summary": "",
           "url": "https://kz.kursiv.media/en/2026-09-10/engk-nknk-its-just-a-number-right-now-rybakina-speaks-after-becoming-world-no-1/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
-          "title": "Kazakhstan’s central bank may sharply cut base rate by late October",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/2026-09-10/engk-yeri-kazakhstans-central-bank-may-sharply-cut-base-rate-by-late-october/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
-          "title": "From jet to keychain: Icelandair gives Hekla Aurora a second life",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/2026-09-10/from-jet-to-keychain-icelandair-gives-hekla-aurora-a-second-life/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
-          "title": "World Suicide Prevention Day: The hidden cost of male silence",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/2026-09-10/world-suicide-prevention-day-the-hidden-cost-of-male-silence/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
-          "title": "Rising global temperatures could lead to a massive rice shortage",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/2026-09-10/engk-yeri-rising-global-temperatures-could-lead-to-a-massive-rice-shortage/",
           "date": null
         },
         {
@@ -4850,6 +4794,14 @@
         {
           "source": "Kursiv Media",
           "source_label": "Régional · business & politique",
+          "title": "Kazakhstan’s central bank may sharply cut base rate by late October",
+          "summary": "",
+          "url": "https://kz.kursiv.media/en/2026-09-10/engk-yeri-kazakhstans-central-bank-may-sharply-cut-base-rate-by-late-october/",
+          "date": null
+        },
+        {
+          "source": "Kursiv Media",
+          "source_label": "Régional · business & politique",
           "title": "Kazakhstan seeks 6.6 billion yuan through bond issues",
           "summary": "",
           "url": "https://kz.kursiv.media/en/2026-09-07/engk-tank-kazakhstan-seeks-6-6-billion-yuan-through-bond-issues/",
@@ -4866,14 +4818,6 @@
         {
           "source": "Kursiv Media",
           "source_label": "Régional · business & politique",
-          "title": "Kazakhstan’s financial regulator comments on Georgian group’s bank acquisition plans",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/2026-09-02/engk-nknk-kazakhstans-financial-regulator-comments-on-georgian-groups-bank-acquisition-plans/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
           "title": "The Middle Corridor needs an operator",
           "summary": "",
           "url": "https://kz.kursiv.media/en/opinions/the-middle-corridor-needs-an-operator/",
@@ -4882,25 +4826,9 @@
         {
           "source": "Kursiv Media",
           "source_label": "Régional · business & politique",
-          "title": "Mehmet Enes Beşer",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/expert/mehmet-enes-beser/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
           "title": "The AI race is just getting started",
           "summary": "",
           "url": "https://kz.kursiv.media/en/opinions/the-ai-race-is-just-getting-started/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
-          "title": "Renat Tukanov",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/expert/renat-tukanov/",
           "date": null
         },
         {
@@ -4922,14 +4850,6 @@
         {
           "source": "Kursiv Media",
           "source_label": "Régional · business & politique",
-          "title": "Sultan Suleimanov",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/expert/sultan-suleimanov/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
           "title": "Why Wall Street panicked over AI and why it was an overreaction",
           "summary": "",
           "url": "https://kz.kursiv.media/en/opinions/engk-tank-why-wall-street-panicked-over-ai-and-why-it-was-an-overreaction/",
@@ -4941,14 +4861,6 @@
           "title": "Solving the equation: Who will finance Central Asia’s ecological future",
           "summary": "",
           "url": "https://kz.kursiv.media/en/opinions/solving-the-equation-who-will-finance-central-asias-ecological-future/",
-          "date": null
-        },
-        {
-          "source": "Kursiv Media",
-          "source_label": "Régional · business & politique",
-          "title": "Katarzyna Wawiernia",
-          "summary": "",
-          "url": "https://kz.kursiv.media/en/expert/katarzyna-wawiernia/",
           "date": null
         },
         {
@@ -4970,7 +4882,7 @@
       ]
     },
     "Vlast — russe": {
-      "last_scanned_at": "2026-09-10T12:18:34.971548+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.952734+00:00",
       "ok": true,
       "articles": [
         {
@@ -5456,7 +5368,7 @@
       ]
     },
     "Vlast — anglais": {
-      "last_scanned_at": "2026-09-10T12:18:34.971690+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.952915+00:00",
       "ok": true,
       "articles": [
         {
@@ -5590,7 +5502,7 @@
       ]
     },
     "Radio Azattyq": {
-      "last_scanned_at": "2026-09-10T12:41:33.121571+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.953262+00:00",
       "ok": true,
       "articles": [
         {
@@ -5668,6 +5580,22 @@
         {
           "source": "Radio Azattyq",
           "source_label": "International · Kazakhstan",
+          "title": "Құрылтай вице-спикері дәлізде сұрақ қоюға салынған тыйымды журналистер \"хайпымен\" байланыстырды",
+          "summary": "",
+          "url": "https://www.azattyq.org/a/quryltai-vitse-spikeri-dalizde-suraq-qoyuga-salyngan-tyiymdy-zhurnalister-haipy-dep-atady/33851755.html",
+          "date": null
+        },
+        {
+          "source": "Radio Azattyq",
+          "source_label": "International · Kazakhstan",
+          "title": "\"75-тің хаты\" ісі: Бішкек қалалық соты Ташиев пен өзге жеті адамның жазасын жеңілдетті",
+          "summary": "",
+          "url": "https://www.azattyq.org/a/bishkek-qalalyq-soty-tashiev-pen-ozge-zheti-adamnyn-zhazasyn-zhenildetti/33851731.html",
+          "date": null
+        },
+        {
+          "source": "Radio Azattyq",
+          "source_label": "International · Kazakhstan",
           "title": "\"Әділет\" фракциясы \"ұлттық құндылыққа\" негізделген амандасу әдебін енгізуді ұсынды",
           "summary": "",
           "url": "https://www.azattyq.org/a/adilet-fraktsiyasy-ulttyq-qundylyqqa-negizdelgen-amandasu-adebin-engizudi-usyndy/33851555.html",
@@ -5687,22 +5615,6 @@
           "title": "Украина дрондары алғаш рет үш мың шақырымдай жердегі Ямалға шабуыл жасады",
           "summary": "",
           "url": "https://www.azattyq.org/a/ukraina-ush-myn-shaqyrymnan-astam-zherdegi-yamalga-algash-ret-dronmen-shabuyl-zhasady/33851445.html",
-          "date": null
-        },
-        {
-          "source": "Radio Azattyq",
-          "source_label": "International · Kazakhstan",
-          "title": "Трамп Путин Украина бойынша мәміле жасағысы келеді деп мәлімдеді",
-          "summary": "",
-          "url": "https://www.azattyq.org/a/tramp-putin-ukraina-boiynsha-mamile-zhasagysy-keledi-dep-malimdedi/33851436.html",
-          "date": null
-        },
-        {
-          "source": "Radio Azattyq",
-          "source_label": "International · Kazakhstan",
-          "title": "Молдовадан Ослоға ұшқан кезде Зеленскийдің ұшағына \"дрон тие жаздаған\"",
-          "summary": "",
-          "url": "https://www.azattyq.org/a/moldovadan-osloga-attanarda-zelenskiidin-ushagyna-dron-tie-zhazdagan/33851458.html",
           "date": null
         },
         {
@@ -6036,7 +5948,7 @@
       ]
     },
     "Orda.kz — russe": {
-      "last_scanned_at": "2026-09-10T12:18:34.971729+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.953333+00:00",
       "ok": true,
       "articles": [
         {
@@ -6066,7 +5978,7 @@
       ]
     },
     "Orda.kz — anglais": {
-      "last_scanned_at": "2026-09-10T12:18:34.971743+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.953350+00:00",
       "ok": true,
       "articles": [
         {
@@ -6080,7 +5992,7 @@
       ]
     },
     "Tengrinews": {
-      "last_scanned_at": "2026-09-10T12:18:34.972221+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.953799+00:00",
       "ok": true,
       "articles": [
         {
@@ -6089,6 +6001,14 @@
           "title": "The dollar has dropped sharply in Kazakhstan",
           "summary": "",
           "url": "https://en.tengrinews.kz/kazakhstan_news/the-dollar-has-dropped-sharply-in-kazakhstan-273504/",
+          "date": null
+        },
+        {
+          "source": "Tengrinews",
+          "source_label": "Média régional · Kazakhstan",
+          "title": "Kazakhstani citizens wanted to vacation in Egypt but faced problems",
+          "summary": "",
+          "url": "https://en.tengrinews.kz/my-country/kazakhstani-citizens-wanted-to-vacation-in-egypt-but-faced-273508/",
           "date": null
         },
         {
@@ -6134,9 +6054,17 @@
         {
           "source": "Tengrinews",
           "source_label": "Média régional · Kazakhstan",
-          "title": "Traffic to be restricted at Beisekova and Koshyghululy intersection in Astana",
+          "title": "“Could kill us all” – scientist leaves Anthropic and makes alarming statement about AI",
           "summary": "",
-          "url": "https://en.tengrinews.kz/autonews/traffic-to-be-restricted-at-beisekova-and-koshyghululy-273497/",
+          "url": "https://en.tengrinews.kz/curious/could-kill-us-all-scientist-leaves-anthropic-and-makes-273507/",
+          "date": null
+        },
+        {
+          "source": "Tengrinews",
+          "source_label": "Média régional · Kazakhstan",
+          "title": "If you wrote it, you pay: what Kazakhstani people face for online insults",
+          "summary": "",
+          "url": "https://en.tengrinews.kz/kazakhstan_news/if-you-wrote-it-you-pay-what-kazakhstani-people-face-for-273503/",
           "date": null
         },
         {
@@ -6153,6 +6081,14 @@
           "title": "Kazakhstan wants to restrict social media registration for children under 16",
           "summary": "",
           "url": "https://en.tengrinews.kz/kazakhstan_news/kazakhstan-wants-to-restrict-social-media-registration-for-273499/",
+          "date": null
+        },
+        {
+          "source": "Tengrinews",
+          "source_label": "Média régional · Kazakhstan",
+          "title": "Traffic to be restricted at Beisekova and Koshyghululy intersection in Astana",
+          "summary": "",
+          "url": "https://en.tengrinews.kz/autonews/traffic-to-be-restricted-at-beisekova-and-koshyghululy-273497/",
           "date": null
         },
         {
@@ -6518,30 +6454,6 @@
         {
           "source": "Tengrinews",
           "source_label": "Média régional · Kazakhstan",
-          "title": "Vice Minister announced the average price for beef in Kazakhstan",
-          "summary": "",
-          "url": "https://en.tengrinews.kz/kazakhstan_news/vice-minister-announced-the-average-price-for-beef-in-273451/",
-          "date": null
-        },
-        {
-          "source": "Tengrinews",
-          "source_label": "Média régional · Kazakhstan",
-          "title": "Kazakhstanis warned about new visa application rules for New Zealand",
-          "summary": "",
-          "url": "https://en.tengrinews.kz/travel-notes/kazakhstanis-warned-about-new-visa-application-rules-for-new-273450/",
-          "date": null
-        },
-        {
-          "source": "Tengrinews",
-          "source_label": "Média régional · Kazakhstan",
-          "title": "A multi-colored strip appeared in Almaty - what is it for",
-          "summary": "",
-          "url": "https://en.tengrinews.kz/autoroads/a-multi-colored-strip-appeared-in-almaty-what-is-it-for-273449/",
-          "date": null
-        },
-        {
-          "source": "Tengrinews",
-          "source_label": "Média régional · Kazakhstan",
           "title": "Kazakhstanis warned about new entry rules for China",
           "summary": "",
           "url": "https://en.tengrinews.kz/travel-notes/kazakhstanis-warned-about-new-entry-rules-for-china-273407/",
@@ -6566,7 +6478,7 @@
       ]
     },
     "Kloop": {
-      "last_scanned_at": "2026-09-10T12:18:34.972458+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.954071+00:00",
       "ok": true,
       "articles": [
         {
@@ -6828,7 +6740,7 @@
       ]
     },
     "24.kg — russe": {
-      "last_scanned_at": "2026-09-10T12:18:34.973039+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.954657+00:00",
       "ok": true,
       "articles": [
         {
@@ -6885,6 +6797,46 @@
           "title": "Три землетрясения произошло в Кыргызстане вблизи села Баетово",
           "summary": "",
           "url": "https://24.kg/proisshestvija/388618_tri_zemletryaseniya_proizoshlo_vkyirgyizstane_vblizi_sela_baetovo/",
+          "date": null
+        },
+        {
+          "source": "24.kg — russe",
+          "source_label": "Régional · Kirghizistan · russe",
+          "title": "Премьерный четверг: кыргызские фильмы, романтическое фэнтези, корейские триллеры",
+          "summary": "",
+          "url": "https://24.kg/obschestvo/388612_premernyiy_chetverg_kyirgyizskie_filmyi_romanticheskoe_fentezi_koreyskie_trilleryi/",
+          "date": null
+        },
+        {
+          "source": "24.kg — russe",
+          "source_label": "Régional · Kirghizistan · russe",
+          "title": "Рамзан Кадыров потребовал от чеченцев укоротить бороды",
+          "summary": "",
+          "url": "https://24.kg/obschestvo/388755_ramzan_kadyirov_potreboval_otchechentsev_ukorotit_borodyi/",
+          "date": null
+        },
+        {
+          "source": "24.kg — russe",
+          "source_label": "Régional · Kirghizistan · russe",
+          "title": "В городе Ош началась подготовка к международному турниру по боксу TURKSEN-3",
+          "summary": "",
+          "url": "https://24.kg/sport/388753_vgorodeosh_nachalas_podgotovka_kmejdunarodnomu_turniru_poboksu_TURKSEN-3/",
+          "date": null
+        },
+        {
+          "source": "24.kg — russe",
+          "source_label": "Régional · Kirghizistan · russe",
+          "title": "Переход школьных учебников на новый алфавит в Узбекистане начнется в 2027 году",
+          "summary": "",
+          "url": "https://24.kg/obschestvo/388747_perehod_shkolnyih_uchebnikov_nanovyiy_alfavit_vuzbekistane_nachnetsya_v2027_godu/",
+          "date": null
+        },
+        {
+          "source": "24.kg — russe",
+          "source_label": "Régional · Kirghizistan · russe",
+          "title": "11 сентября: где в Бишкеке и регионах отключат свет",
+          "summary": "",
+          "url": "https://24.kg/obschestvo/388743_11sentyabrya_gde_vbishkeke_iregionah_otklyuchat_svet/",
           "date": null
         },
         {
@@ -7270,51 +7222,11 @@
           "summary": "",
           "url": "https://24.kg/obschestvo/388645_vbishkeke_otkryili_semeyno-razvlekatelnyiy_tsentr_asman_park/",
           "date": null
-        },
-        {
-          "source": "24.kg — russe",
-          "source_label": "Régional · Kirghizistan · russe",
-          "title": "От платья дочери до нарядов первых леди: как появился этно-бренд одежды BAIRA",
-          "summary": "",
-          "url": "https://24.kg/obschestvo/388588_otplatya_docheri_donaryadov_pervyih_ledi_kak_poyavilsya_etno-brend_odejdyi_BAIRA/",
-          "date": null
-        },
-        {
-          "source": "24.kg — russe",
-          "source_label": "Régional · Kirghizistan · russe",
-          "title": "США уничтожили пять иранских танкеров в ответ на обстрел своего военного корабля",
-          "summary": "",
-          "url": "https://24.kg/proisshestvija/388628_ssha_unichtojili_pyat_iranskih_tankerov_votvet_naobstrel_svoego_voennogo_korablya/",
-          "date": null
-        },
-        {
-          "source": "24.kg — russe",
-          "source_label": "Régional · Kirghizistan · russe",
-          "title": "В Таласской области изъяли 124,8 килограмма незаконно добытого корня эндик",
-          "summary": "",
-          "url": "https://24.kg/proisshestvija/388647_vtalasskoy_oblasti_izyyali_1248_kilogramma_nezakonno_dobyitogo_kornya_endik/",
-          "date": null
-        },
-        {
-          "source": "24.kg — russe",
-          "source_label": "Régional · Kirghizistan · russe",
-          "title": "Самострой под снос. В Бишкеке демонтировали 171 фундамент и недострой",
-          "summary": "",
-          "url": "https://24.kg/obschestvo/388644_samostroy_pod_snos_vbishkeke_demontirovali_171_fundament_inedostroy/",
-          "date": null
-        },
-        {
-          "source": "24.kg — russe",
-          "source_label": "Régional · Kirghizistan · russe",
-          "title": "Застройщику солнечной электростанции завысили платежи почти на 24 миллиона сомов",
-          "summary": "",
-          "url": "https://24.kg/obschestvo/388642_zastroyschiku_solnechnoy_elektrostantsii_zavyisili_plateji_pochti_na24milliona_somov/",
-          "date": null
         }
       ]
     },
     "24.kg — anglais": {
-      "last_scanned_at": "2026-09-10T12:18:34.973420+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.955067+00:00",
       "ok": true,
       "articles": [
         {
@@ -7728,17 +7640,17 @@
         {
           "source": "24.kg — anglais",
           "source_label": "Régional · Kirghizistan · anglais",
-          "title": "Kyrgyzstan defeats Kazakhstan 12-0 for 6th World Nomad Games kok-boru victory",
+          "title": "Kyrgyzstan tops medal standings at World Nomad Games 2026",
           "summary": "",
-          "url": "https://24.kg/english/388167_Kyrgyzstan_defeats_Kazakhstan_12-0_for_6th_World_Nomad_Games_kok-boru_victory_/",
+          "url": "https://24.kg/english/388217_Kyrgyzstan_tops_medal_standings_at_World_Nomad_Games_2026/",
           "date": null
         },
         {
           "source": "24.kg — anglais",
           "source_label": "Régional · Kirghizistan · anglais",
-          "title": "Kyrgyzstan tops medal standings at World Nomad Games 2026",
+          "title": "Kyrgyzstan defeats Kazakhstan 12-0 for 6th World Nomad Games kok-boru victory",
           "summary": "",
-          "url": "https://24.kg/english/388217_Kyrgyzstan_tops_medal_standings_at_World_Nomad_Games_2026/",
+          "url": "https://24.kg/english/388167_Kyrgyzstan_defeats_Kazakhstan_12-0_for_6th_World_Nomad_Games_kok-boru_victory_/",
           "date": null
         },
         {
@@ -7760,9 +7672,41 @@
       ]
     },
     "Kaktus Media": {
-      "last_scanned_at": "2026-09-10T12:18:34.974111+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.955751+00:00",
       "ok": true,
       "articles": [
+        {
+          "source": "Kaktus Media",
+          "source_label": "Indépendant · Kirghizistan",
+          "title": "Профессора КНУ получили не 1 млн сомов, а лишь 40 тыс.? Новый скандал вокруг \"Э-Кундолук\"",
+          "summary": "",
+          "url": "https://kaktus.media/doc/553010_professora_kny_polychili_ne_1_mln_somov_a_lish_40_tys._novyy_skandal_vokryg_e_kyndolyk.html",
+          "date": null
+        },
+        {
+          "source": "Kaktus Media",
+          "source_label": "Indépendant · Kirghizistan",
+          "title": "Сколько семей получат пособие \"Бала ырысы\" в сентябре (цифры)",
+          "summary": "",
+          "url": "https://kaktus.media/doc/553058_skolko_semey_polychat_posobie_bala_yrysy_v_sentiabre_cifry.html",
+          "date": null
+        },
+        {
+          "source": "Kaktus Media",
+          "source_label": "Indépendant · Kirghizistan",
+          "title": "Для бедных стран это роскошь. Бекешев объяснил, почему в КР нет запроса на экоповестку",
+          "summary": "",
+          "url": "https://kaktus.media/doc/553048_dlia_bednyh_stran_eto_roskosh._bekeshev_obiasnil_pochemy_v_kr_net_zaprosa_na_ekopovestky.html",
+          "date": null
+        },
+        {
+          "source": "Kaktus Media",
+          "source_label": "Indépendant · Kirghizistan",
+          "title": "Силовики задержали подозреваемого в экономической контрабанде иностранца (фото)",
+          "summary": "",
+          "url": "https://kaktus.media/doc/553057_siloviki_zaderjali_podozrevaemogo_v_ekonomicheskoy_kontrabande_inostranca_foto.html",
+          "date": null
+        },
         {
           "source": "Kaktus Media",
           "source_label": "Indépendant · Kirghizistan",
@@ -7785,38 +7729,6 @@
           "title": "В Кыргызстане хотят ограничить использование металлоискателей",
           "summary": "",
           "url": "https://kaktus.media/doc/553047_v_kyrgyzstane_hotiat_ogranichit_ispolzovanie_metalloiskateley.html",
-          "date": null
-        },
-        {
-          "source": "Kaktus Media",
-          "source_label": "Indépendant · Kirghizistan",
-          "title": "11 сентября в части Бишкека отключат свет (список улиц)",
-          "summary": "",
-          "url": "https://kaktus.media/doc/553030_11_sentiabria_v_chasti_bishkeka_otkluchat_svet_spisok_ylic.html",
-          "date": null
-        },
-        {
-          "source": "Kaktus Media",
-          "source_label": "Indépendant · Kirghizistan",
-          "title": "Облачно и жарко. Прогноз погоды в Бишкеке и по Кыргызстану на неделю",
-          "summary": "",
-          "url": "https://kaktus.media/doc/553032_oblachno_i_jarko._prognoz_pogody_v_bishkeke_i_po_kyrgyzstany_na_nedelu.html",
-          "date": null
-        },
-        {
-          "source": "Kaktus Media",
-          "source_label": "Indépendant · Kirghizistan",
-          "title": "\"Дело 75\" и Ташиев. Суд огласил приговор за закрытыми дверями. Подсудимым изменили статью",
-          "summary": "",
-          "url": "https://kaktus.media/doc/553043_delo_75_i_tashiev._syd_oglasil_prigovor_za_zakrytymi_dveriami._podsydimym_izmenili_statu.html",
-          "date": null
-        },
-        {
-          "source": "Kaktus Media",
-          "source_label": "Indépendant · Kirghizistan",
-          "title": "12-летней Азалии нужна помощь для продолжения реабилитации после операции (видео)",
-          "summary": "",
-          "url": "https://kaktus.media/doc/553026_12_letney_azalii_nyjna_pomosh_dlia_prodoljeniia_reabilitacii_posle_operacii_video.html",
           "date": null
         },
         {
@@ -7865,6 +7777,38 @@
           "title": "Подарки от Honor в O!Store: ТВ, планшеты, часы и смарт-гаджеты!",
           "summary": "",
           "url": "https://kaktus.media/doc/553037_podarki_ot_honor_v_ostore:_tv_planshety_chasy_i_smart_gadjety.html",
+          "date": null
+        },
+        {
+          "source": "Kaktus Media",
+          "source_label": "Indépendant · Kirghizistan",
+          "title": "Облачно и жарко. Прогноз погоды в Бишкеке и по Кыргызстану на неделю",
+          "summary": "",
+          "url": "https://kaktus.media/doc/553032_oblachno_i_jarko._prognoz_pogody_v_bishkeke_i_po_kyrgyzstany_na_nedelu.html",
+          "date": null
+        },
+        {
+          "source": "Kaktus Media",
+          "source_label": "Indépendant · Kirghizistan",
+          "title": "\"Дело 75\" и Ташиев. Суд огласил приговор за закрытыми дверями. Подсудимым изменили статью",
+          "summary": "",
+          "url": "https://kaktus.media/doc/553043_delo_75_i_tashiev._syd_oglasil_prigovor_za_zakrytymi_dveriami._podsydimym_izmenili_statu.html",
+          "date": null
+        },
+        {
+          "source": "Kaktus Media",
+          "source_label": "Indépendant · Kirghizistan",
+          "title": "12-летней Азалии нужна помощь для продолжения реабилитации после операции (видео)",
+          "summary": "",
+          "url": "https://kaktus.media/doc/553026_12_letney_azalii_nyjna_pomosh_dlia_prodoljeniia_reabilitacii_posle_operacii_video.html",
+          "date": null
+        },
+        {
+          "source": "Kaktus Media",
+          "source_label": "Indépendant · Kirghizistan",
+          "title": "11 сентября в части Бишкека отключат свет (список улиц)",
+          "summary": "",
+          "url": "https://kaktus.media/doc/553030_11_sentiabria_v_chasti_bishkeka_otkluchat_svet_spisok_ylic.html",
           "date": null
         },
         {
@@ -8210,43 +8154,11 @@
           "summary": "",
           "url": "https://kaktus.media/doc/552975_prezident_podpisal_ykaz_o_prisvoenii_pochetnyh_zvaniy_i_gosnagrad_polnyy_spisok.html",
           "date": null
-        },
-        {
-          "source": "Kaktus Media",
-          "source_label": "Indépendant · Kirghizistan",
-          "title": "Конец летних отпусков. Как максимально выгодно использовать осень для поиска работы",
-          "summary": "",
-          "url": "https://kaktus.media/doc/552905_konec_letnih_otpyskov._kak_maksimalno_vygodno_ispolzovat_osen_dlia_poiska_raboty.html",
-          "date": null
-        },
-        {
-          "source": "Kaktus Media",
-          "source_label": "Indépendant · Kirghizistan",
-          "title": "Прямые поставки лекарств из Узбекистана. Кыргызстан договорился о ключевых условиях",
-          "summary": "",
-          "url": "https://kaktus.media/doc/552969_priamye_postavki_lekarstv_iz_yzbekistana._kyrgyzstan_dogovorilsia_o_kluchevyh_ysloviiah.html",
-          "date": null
-        },
-        {
-          "source": "Kaktus Media",
-          "source_label": "Indépendant · Kirghizistan",
-          "title": "В Кыргызстане создадут Фонд сохранения ледников и Иссык-Куля",
-          "summary": "",
-          "url": "https://kaktus.media/doc/552878_v_kyrgyzstane_sozdadyt_fond_sohraneniia_lednikov_i_issyk_kylia.html",
-          "date": null
-        },
-        {
-          "source": "Kaktus Media",
-          "source_label": "Indépendant · Kirghizistan",
-          "title": "ВОЗ: У курящих женщин риск бесплодия выше на 40%, у мужчин страдает качество спермы",
-          "summary": "",
-          "url": "https://kaktus.media/doc/552936_voz:_y_kyriashih_jenshin_risk_besplodiia_vyshe_na_40_y_myjchin_stradaet_kachestvo_spermy.html",
-          "date": null
         }
       ]
     },
     "Kabar": {
-      "last_scanned_at": "2026-09-10T12:18:34.974662+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.956348+00:00",
       "ok": true,
       "articles": [
         {
@@ -8292,7 +8204,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Korea ready to share its spatial data expertise with Kyrgyzstan 10 September 14:44 7",
+          "title": "Korea ready to share its spatial data expertise with Kyrgyzstan 10 September 14:44 9",
           "summary": "",
           "url": "https://en.kabar.kg/news/korea-ready-to-share-its-spatial-data-expertise-with-kyrgyzstan/",
           "date": null
@@ -8332,7 +8244,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Major Chinese companies interested in investing in Kyrgyzstan 10 September 17:03 9",
+          "title": "Major Chinese companies interested in investing in Kyrgyzstan 10 September 17:03 11",
           "summary": "",
           "url": "https://en.kabar.kg/news/major-chinese-companies-interested-in-investing-in-kyrgyzstan/",
           "date": null
@@ -8340,7 +8252,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "First robotic system unveiled in Kyrgyzstan 10 September 11:40 13",
+          "title": "First robotic system unveiled in Kyrgyzstan 10 September 11:40 14",
           "summary": "",
           "url": "https://en.kabar.kg/news/first-robotic-system-unveiled-in-kyrgyzstan/",
           "date": null
@@ -8420,7 +8332,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "VI World Nomad Games. Medal standings as of September 2 3 September 367",
+          "title": "VI World Nomad Games. Medal standings as of September 2 3 September 368",
           "summary": "",
           "url": "https://en.kabar.kg/news/vi-world-nomad-games-medal-standings-as-of-september-2/",
           "date": null
@@ -8428,7 +8340,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "SCO Summit: list of signed documents 1 September 328",
+          "title": "SCO Summit: list of signed documents 1 September 329",
           "summary": "",
           "url": "https://en.kabar.kg/news/sco-summit-list-of-signed-documents/",
           "date": null
@@ -8484,15 +8396,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Kyrgyz Cabinet head: Kyrgyzstan changes in five years 2 September 2026 32",
-          "summary": "",
-          "url": "https://en.kabar.kg/news/kyrgyz-cabinet-head-kyrgyzstan-changes-in-five-years/",
-          "date": null
-        },
-        {
-          "source": "Kabar",
-          "source_label": "Agence officielle · Kirghizistan",
-          "title": "Kyrgyz Parliament opens 2nd session 2 September 2026 39",
+          "title": "Kyrgyz Parliament opens 2nd session 2 September 2026 40",
           "summary": "",
           "url": "https://en.kabar.kg/news/kyrgyz-parliament-opens-2nd-session/",
           "date": null
@@ -8500,9 +8404,9 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Zhaparov: Kyrgyzstan views Pakistan as reliable partner 2 September 2026 38",
+          "title": "Lao President Sisoulith arrives in Kyrgyzstan 31 August 2026 54",
           "summary": "",
-          "url": "https://en.kabar.kg/news/zhaparov-kyrgyzstan-views-pakistan-as-reliable-partner/",
+          "url": "https://en.kabar.kg/news/lao-president-sisoulith-arrives-in-kyrgyzstan/",
           "date": null
         },
         {
@@ -8516,15 +8420,23 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Kyrgyzstan, Azerbaijan to strengthen interparliamentary ties 14 July 2026 1454",
+          "title": "Young parliamentarians from Kyrgyzstan and Uzbekistan call for dialogue 11 August 2026 776",
           "summary": "",
-          "url": "https://en.kabar.kg/news/kyrgyzstan-azerbaijan-to-strengthen-interparliamentary-ties/",
+          "url": "https://en.kabar.kg/news/young-parliamentarians-from-kyrgyzstan-and-uzbekistan-call-for-dialogue/",
           "date": null
         },
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Central Asia's tallest ferris wheel opened in Bishkek 10 September 2026 9",
+          "title": "Kyrgyzstan, Kazakhstan to strengthen strategic partnership 20 July 2026 1650",
+          "summary": "",
+          "url": "https://en.kabar.kg/news/kyrgyzstan-kazakhstan-to-strengthen-strategic-partnership/",
+          "date": null
+        },
+        {
+          "source": "Kabar",
+          "source_label": "Agence officielle · Kirghizistan",
+          "title": "Central Asia's tallest ferris wheel opened in Bishkek 10 September 2026 10",
           "summary": "",
           "url": "https://en.kabar.kg/news/central-asias-tallest-ferris-wheel-opened-in-bishkek/",
           "date": null
@@ -8532,7 +8444,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Central Asian youth unite their voices for climate and water 9 September 2026 11",
+          "title": "Central Asian youth unite their voices for climate and water 9 September 2026 12",
           "summary": "",
           "url": "https://en.kabar.kg/news/central-asian-youth-unite-their-voices-for-climate-and-water/",
           "date": null
@@ -8540,7 +8452,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Aitmatov Aalamy Memorial Complex nears completion in Aitmatov’s native village 9 September 2026 11",
+          "title": "Aitmatov Aalamy Memorial Complex nears completion in Aitmatov’s native village 9 September 2026 13",
           "summary": "",
           "url": "https://en.kabar.kg/news/aitmatov-aalamy-memorial-complex-nears-completion-in-aitmatovs-native-village/",
           "date": null
@@ -8564,7 +8476,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Zimbabwean delegation learns about history and culture of Kyrgyz people 9 September 2026 10",
+          "title": "Zimbabwean delegation learns about history and culture of Kyrgyz people 9 September 2026 11",
           "summary": "",
           "url": "https://en.kabar.kg/news/zimbabwean-delegation-learns-about-history-and-culture-of-kyrgyz-people/",
           "date": null
@@ -8708,7 +8620,7 @@
         {
           "source": "Kabar",
           "source_label": "Agence officielle · Kirghizistan",
-          "title": "Foreign guests share impressions of World Nomad Games 7 September 2026 25",
+          "title": "Foreign guests share impressions of World Nomad Games 7 September 2026 26",
           "summary": "",
           "url": "https://en.kabar.kg/news/foreign-guests-share-impressions-of-world-nomad-games/",
           "date": null
@@ -8732,7 +8644,7 @@
       ]
     },
     "Asia-Plus": {
-      "last_scanned_at": "2026-09-10T12:18:34.974829+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.956528+00:00",
       "ok": true,
       "articles": [
         {
@@ -8741,6 +8653,14 @@
           "title": "Special Projects",
           "summary": "",
           "url": "https://asiaplus.news/en/special-projects/",
+          "date": null
+        },
+        {
+          "source": "Asia-Plus",
+          "source_label": "Régional · Tadjikistan",
+          "title": "Tajikistan prepares three agricultural investment projects with FAO support",
+          "summary": "",
+          "url": "https://asiaplus.news/en/2026/09/10/tajikistan-prepares-three-agro-investment-projects-with-fao-support/",
           "date": null
         },
         {
@@ -8781,14 +8701,6 @@
           "title": "Azamat Sultanov and his plan to change the lives of thousands of people in Africa",
           "summary": "",
           "url": "https://asiaplus.news/en/2026/09/10/azamat-sultanov-and-his-plan-to-change-the-lives-of-thousands-of-people-in-africa/",
-          "date": null
-        },
-        {
-          "source": "Asia-Plus",
-          "source_label": "Régional · Tadjikistan",
-          "title": "Tourist arrivals from Tajikistan to Malaysia rise by more than 60%",
-          "summary": "",
-          "url": "https://asiaplus.news/en/2026/09/10/the-flow-of-tourists-from-tajikistan-to-malaysia-has-grown-by-more-than-60/",
           "date": null
         },
         {
@@ -8858,6 +8770,14 @@
         {
           "source": "Asia-Plus",
           "source_label": "Régional · Tadjikistan",
+          "title": "Tourist arrivals from Tajikistan to Malaysia rise by more than 60%",
+          "summary": "",
+          "url": "https://asiaplus.news/en/2026/09/10/the-flow-of-tourists-from-tajikistan-to-malaysia-has-grown-by-more-than-60/",
+          "date": null
+        },
+        {
+          "source": "Asia-Plus",
+          "source_label": "Régional · Tadjikistan",
           "title": "Artificial intelligence to be introduced in Tajikistan’s prisons",
           "summary": "",
           "url": "https://asiaplus.news/en/2026/09/10/artificial-intelligence-to-be-introduced-in-tajikistans-prisons/",
@@ -8886,19 +8806,11 @@
           "summary": "",
           "url": "https://asiaplus.news/en/2026/09/10/drone-attacks-on-wildberries-warehouses-leave-central-asian-businesses-facing-millions-in-losses/",
           "date": null
-        },
-        {
-          "source": "Asia-Plus",
-          "source_label": "Régional · Tadjikistan",
-          "title": "Pakistan orders nearly 1,000 Afghan medical students to return home",
-          "summary": "",
-          "url": "https://asiaplus.news/en/2026/09/10/pakistan-demanded-the-return-of-nearly-a-thousand-medical-students-to-afghanistan/",
-          "date": null
         }
       ]
     },
     "Radio Ozodi": {
-      "last_scanned_at": "2026-09-10T12:41:33.124173+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.956970+00:00",
       "ok": true,
       "articles": [
         {
@@ -8963,6 +8875,14 @@
           "title": "Ҳамаи сомонаҳои RFE/RL",
           "summary": "",
           "url": "https://www.ozodi.org/navigation/allsites",
+          "date": null
+        },
+        {
+          "source": "Radio Ozodi",
+          "source_label": "International · Tadjikistan",
+          "title": "Дар Тоҷикистон дарду ранҷҳоро ба ҳайси силоҳ истифода мекунанд?",
+          "summary": "",
+          "url": "https://www.ozodi.org/a/dar-tojikiston-dardu-ranjhoro-ba-haysi-siloh-istifoda-mekunand/33851770.html",
           "date": null
         },
         {
@@ -9048,9 +8968,9 @@
         {
           "source": "Radio Ozodi",
           "source_label": "International · Tadjikistan",
-          "title": "“Қассоби Босния” ва шиори “Ба пеш!” Маросими дафни Младич баҳсбарангез шуд",
+          "title": "Додгоҳ ҷазои Қамчибек Тошиевро сабуктар кардааст",
           "summary": "",
-          "url": "https://www.ozodi.org/a/33850028.html",
+          "url": "https://www.ozodi.org/a/33851753.html",
           "date": null
         },
         {
@@ -9080,9 +9000,9 @@
         {
           "source": "Radio Ozodi",
           "source_label": "International · Tadjikistan",
-          "title": "Кувайт дар Тоҷикистон сафорат боз кард",
+          "title": "“Қассоби Босния” ва шиори “Ба пеш!” Маросими дафни Младич баҳсбарангез шуд",
           "summary": "",
-          "url": "https://www.ozodi.org/a/kuvayt-dar-tojikiston-saforat-boz-kard/33850013.html",
+          "url": "https://www.ozodi.org/a/33850028.html",
           "date": null
         },
         {
@@ -9107,14 +9027,6 @@
           "title": "Адаш Истад. Аз фантастикаи илмӣ то дардҳои воқеияти бараҳна",
           "summary": "",
           "url": "https://www.ozodi.org/a/33849263.html",
-          "date": null
-        },
-        {
-          "source": "Radio Ozodi",
-          "source_label": "International · Tadjikistan",
-          "title": "Ҳушдори хатар аз кӯҳҳо. Аҳволи пиряхи \"Тоҷикистон\" бадтар шудааст",
-          "summary": "",
-          "url": "https://www.ozodi.org/a/hushdori-khatar-dar-balandi/33849129.html",
           "date": null
         },
         {
@@ -9184,25 +9096,17 @@
         {
           "source": "Radio Ozodi",
           "source_label": "International · Tadjikistan",
-          "title": "Эмомалӣ Раҳмон\"қарсаки осмонкаф\" талаб кард",
+          "title": "Дар Тоҷикистон дарду ранҷҳоро ба ҳайси силоҳ истифода мекунанд?",
+          "summary": "",
+          "url": "https://www.ozodi.org/a/dar-tojikiston-dardu-ranjhoro-ba-haysi-siloh-istifoda-mekunand/33851714.html",
+          "date": null
+        },
+        {
+          "source": "Radio Ozodi",
+          "source_label": "International · Tadjikistan",
+          "title": "Эмомалӣ Раҳмон\"як қарсаки осмонкаф\" талаб кард",
           "summary": "",
           "url": "https://www.ozodi.org/a/emomali-rahmon-qarsaki-osmonkaf-talab-kard/33851725.html",
-          "date": null
-        },
-        {
-          "source": "Radio Ozodi",
-          "source_label": "International · Tadjikistan",
-          "title": "Созмон мегӯяд, \"дар Тоҷикистон бо хавфи такрори ҷанги шаҳрвандӣ\" озодиҳоро маҳдуд мекунанд",
-          "summary": "",
-          "url": "https://www.ozodi.org/a/sozmon-meguyad-dar-tojikiston-bo-khavfi-takrori-jangi-shahrvandi-ozodihoro-mahdud-mekunand/33851714.html",
-          "date": null
-        },
-        {
-          "source": "Radio Ozodi",
-          "source_label": "International · Tadjikistan",
-          "title": "Оё Афғонистон ҳамоно паноҳгоҳи даҳшатафканон аст?",
-          "summary": "",
-          "url": "https://www.ozodi.org/a/oyo-afghoniston-hamono-panohgohi-dahshatafkanon-ast/33851711.html",
           "date": null
         },
         {
@@ -9336,6 +9240,14 @@
         {
           "source": "Radio Ozodi",
           "source_label": "International · Tadjikistan",
+          "title": "Идомаи баҳси молики \"Ҷумъабозор\" ва ширкати сохтмонии \"Асри мо\"",
+          "summary": "",
+          "url": "https://www.ozodi.org/a/idomai-bahsi-moliki-jum-abozor-va-shirkati-sokhtmonii-asri-mo/33847008.html",
+          "date": null
+        },
+        {
+          "source": "Radio Ozodi",
+          "source_label": "International · Tadjikistan",
           "title": "Корду мушту лагад. Чаро мардон баъди талоқ занонро ором намемонанд?",
           "summary": "",
           "url": "https://www.ozodi.org/a/charo-mardon-ba-di-taloq-ham-zanonro-orom-nameguzorand/33704815.html",
@@ -9384,7 +9296,7 @@
       ]
     },
     "Gazeta.uz": {
-      "last_scanned_at": "2026-09-10T12:18:34.975342+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.957391+00:00",
       "ok": true,
       "articles": [
         {
@@ -9654,7 +9566,7 @@
         {
           "source": "Gazeta.uz",
           "source_label": "Régional · Ouzbékistan",
-          "title": "Air quality 71 Moderate Acceptable, however pollution in this range may pose a moderate health concer for a very small number of individuals. PM2.5: 20 mkg/m3 – Moderate Tashkent, Uzbekistan 10 September at 17:18",
+          "title": "Air quality 97 Moderate Acceptable, however pollution in this range may pose a moderate health concer for a very small number of individuals. PM2.5: 34 mkg/m3 – Moderate Tashkent, Uzbekistan 10 September at 19:17",
           "summary": "",
           "url": "https://www.gazeta.uz/en/air/",
           "date": null
@@ -9870,7 +9782,7 @@
       ]
     },
     "Kun.uz": {
-      "last_scanned_at": "2026-09-10T12:18:34.975540+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.957592+00:00",
       "ok": true,
       "articles": [
         {
@@ -9956,6 +9868,30 @@
         {
           "source": "Kun.uz",
           "source_label": "Régional · Ouzbékistan",
+          "title": "Fare evasion checks intensify in Tashkent as cases rise nearly 68%",
+          "summary": "",
+          "url": "https://kun.uz/en/news/2026/09/10/fare-evasion-checks-intensify-in-tashkent-as-cases-rise-68",
+          "date": null
+        },
+        {
+          "source": "Kun.uz",
+          "source_label": "Régional · Ouzbékistan",
+          "title": "Central Bank revises Uzbekistan’s official FX rate calculation",
+          "summary": "",
+          "url": "https://kun.uz/en/news/2026/09/10/central-bank-revises-uzbekistans-official-fx-rate-calculation",
+          "date": null
+        },
+        {
+          "source": "Kun.uz",
+          "source_label": "Régional · Ouzbékistan",
+          "title": "President outlines priorities to boost Uzbekistan’s electrical engineering industry",
+          "summary": "",
+          "url": "https://kun.uz/en/news/2026/09/10/president-outlines-priorities-to-boost-uzbekistans-electrical-engineering-industry",
+          "date": null
+        },
+        {
+          "source": "Kun.uz",
+          "source_label": "Régional · Ouzbékistan",
           "title": "Charvak Reservoir search ends, all three victims recovered",
           "summary": "",
           "url": "https://kun.uz/en/news/2026/09/10/charvak-reservoir-search-ends-all-three-victims-recovered",
@@ -10028,30 +9964,6 @@
         {
           "source": "Kun.uz",
           "source_label": "Régional · Ouzbékistan",
-          "title": "Uzbekistan outlines preferential loans for hotel businesses",
-          "summary": "",
-          "url": "https://kun.uz/en/news/2026/09/09/uzbekistan-outlines-preferential-loans-for-hotel-businesses",
-          "date": null
-        },
-        {
-          "source": "Kun.uz",
-          "source_label": "Régional · Ouzbékistan",
-          "title": "Uzbekistan considers Türkiye’s model for children’s rehabilitation center",
-          "summary": "",
-          "url": "https://kun.uz/en/news/2026/09/09/uzbekistan-considers-trkiyes-model-for-childrens-rehabilitation-center",
-          "date": null
-        },
-        {
-          "source": "Kun.uz",
-          "source_label": "Régional · Ouzbékistan",
-          "title": "Uzbekistan welcomes 9.1 million foreign tourists in eight months",
-          "summary": "",
-          "url": "https://kun.uz/en/news/2026/09/09/uzbekistan-welcomes-91-million-foreign-tourists-in-eight-months",
-          "date": null
-        },
-        {
-          "source": "Kun.uz",
-          "source_label": "Régional · Ouzbékistan",
           "title": "Hot reports",
           "summary": "",
           "url": "https://kun.uz/en/news/actual",
@@ -10068,7 +9980,7 @@
       ]
     },
     "Spot.uz": {
-      "last_scanned_at": "2026-09-10T12:18:34.975803+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.957880+00:00",
       "ok": true,
       "articles": [
         {
@@ -10418,7 +10330,7 @@
       ]
     },
     "Turkmen.News": {
-      "last_scanned_at": "2026-09-10T12:18:34.976202+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.958257+00:00",
       "ok": true,
       "articles": [
         {
@@ -10872,7 +10784,7 @@
       ]
     },
     "Chronicles of Turkmenistan": {
-      "last_scanned_at": "2026-09-10T12:18:34.976385+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.958444+00:00",
       "ok": true,
       "articles": [
         {
@@ -10974,6 +10886,22 @@
         {
           "source": "Chronicles of Turkmenistan",
           "source_label": "Indépendant · Turkménistan",
+          "title": "Минобраз Туркменистана опубликовал список справок для выезда на учебу зарубеж",
+          "summary": "",
+          "url": "https://www.hronikatm.com/2026/09/minobraz-turkmenistana-opublikoval-spisok-spravok-dlya-vyezda-na-uchebu-zarubezh/",
+          "date": null
+        },
+        {
+          "source": "Chronicles of Turkmenistan",
+          "source_label": "Indépendant · Turkménistan",
+          "title": "Туркменистан начал выпускать холодильники",
+          "summary": "",
+          "url": "https://www.hronikatm.com/2026/09/turkmenistan-nachal-vypuskat-holodilniki/",
+          "date": null
+        },
+        {
+          "source": "Chronicles of Turkmenistan",
+          "source_label": "Indépendant · Turkménistan",
           "title": "Президент принял послов ЕС и Франции",
           "summary": "",
           "url": "https://www.hronikatm.com/2026/09/prezident-prinyal-poslov-es-i-franczii/",
@@ -10985,22 +10913,6 @@
           "title": "Туркменистан и Китай обсудили сотрудничество в сфере миграции",
           "summary": "",
           "url": "https://www.hronikatm.com/2026/09/turkmenistan-i-kitaj-obsudili-sotrudnichestvo-v-sfere-migraczii/",
-          "date": null
-        },
-        {
-          "source": "Chronicles of Turkmenistan",
-          "source_label": "Indépendant · Turkménistan",
-          "title": "Китай готов продвигать «китайско-центральноазиатский дух» и вместе со странами ЦА бороться с «тремя силами зла»",
-          "summary": "",
-          "url": "https://www.hronikatm.com/2026/09/kitaj-gotov-prodvigat-kitajsko-czentralnoaziatskij-duh-i-vmeste-so-stranami-cza-borotsya-s-tremya-silami-zla/",
-          "date": null
-        },
-        {
-          "source": "Chronicles of Turkmenistan",
-          "source_label": "Indépendant · Turkménistan",
-          "title": "Врачи Петербурга готовы делиться с Туркменистаном опытом по сохранению здоровья и спасению жизни",
-          "summary": "",
-          "url": "https://www.hronikatm.com/2026/09/vrachi-peterburga-gotovy-delitsya-s-turkmenistanom-opytom-po-sohraneniyu-zdorovya-i-spaseniyu-zhizni/",
           "date": null
         },
         {
@@ -11062,9 +10974,25 @@
       ]
     },
     "Fergana Agency": {
-      "last_scanned_at": "2026-09-10T12:18:34.976611+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.958681+00:00",
       "ok": true,
       "articles": [
+        {
+          "source": "Fergana Agency",
+          "source_label": "Régional · transfrontalier",
+          "title": "Узбекистан нарастит выпуск электротехники до $11 млрд к 2030 году",
+          "summary": "",
+          "url": "https://fergana.agency/news/149292/",
+          "date": null
+        },
+        {
+          "source": "Fergana Agency",
+          "source_label": "Régional · transfrontalier",
+          "title": "В штаб-квартире ООН готовят презентации Центра исламской цивилизации Узбекистана",
+          "summary": "",
+          "url": "https://fergana.agency/news/149291/",
+          "date": null
+        },
         {
           "source": "Fergana Agency",
           "source_label": "Régional · transfrontalier",
@@ -11116,22 +11044,6 @@
         {
           "source": "Fergana Agency",
           "source_label": "Régional · transfrontalier",
-          "title": "В Казахстане предложили компенсировать автовладельцам ремонт из-за некачественного бензина",
-          "summary": "",
-          "url": "https://fergana.agency/news/149267/",
-          "date": null
-        },
-        {
-          "source": "Fergana Agency",
-          "source_label": "Régional · transfrontalier",
-          "title": "Мирзиёев потребовал от чиновников выезжать в махалли, а не сидеть в кабинетах",
-          "summary": "",
-          "url": "https://fergana.agency/news/149266/",
-          "date": null
-        },
-        {
-          "source": "Fergana Agency",
-          "source_label": "Régional · transfrontalier",
           "title": "09 сентября 09.09 «Хакан и Бильге» едут в Туркестан Почему турецкие школьники больше никогда не услышат термина «Центральная Азия»",
           "summary": "",
           "url": "https://fergana.agency/articles/149240/",
@@ -11148,17 +11060,17 @@
         {
           "source": "Fergana Agency",
           "source_label": "Régional · transfrontalier",
-          "title": "Узбекистанцам разрешат открывать бизнес на первых этажах без перевода квартир в нежилой фонд 09:06",
+          "title": "В Казахстане предложили компенсировать автовладельцам ремонт из-за некачественного бензина 10:07",
           "summary": "",
-          "url": "https://fergana.agency/news/149264/",
+          "url": "https://fergana.agency/news/149267/",
           "date": null
         },
         {
           "source": "Fergana Agency",
           "source_label": "Régional · transfrontalier",
-          "title": "Госкомпания из Узбекистана займется строительством железных дорог в Сербии 08:55",
+          "title": "Мирзиёев потребовал от чиновников выезжать в махалли, а не сидеть в кабинетах 09:30",
           "summary": "",
-          "url": "https://fergana.agency/news/149262/",
+          "url": "https://fergana.agency/news/149266/",
           "date": null
         },
         {
@@ -11364,7 +11276,7 @@
       ]
     },
     "Central Asia-Caucasus Analyst": {
-      "last_scanned_at": "2026-09-10T12:18:34.976763+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.958846+00:00",
       "ok": true,
       "articles": [
         {
@@ -11522,9 +11434,65 @@
       ]
     },
     "Azernews": {
-      "last_scanned_at": "2026-09-10T12:18:34.977349+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.959433+00:00",
       "ok": true,
       "articles": [
+        {
+          "source": "Azernews",
+          "source_label": "Régional · Caucase",
+          "title": "Altay Communities Symposium draws int'l scholars to Baku [PHOTOS] Culture 18:11",
+          "summary": "",
+          "url": "https://www.azernews.az/culture/263669.html",
+          "date": null
+        },
+        {
+          "source": "Azernews",
+          "source_label": "Régional · Caucase",
+          "title": "EIA forecasts Azerbaijan oil production for 2027 Oil & Gas 17:49",
+          "summary": "",
+          "url": "https://www.azernews.az/oil_and_gas/263686.html",
+          "date": null
+        },
+        {
+          "source": "Azernews",
+          "source_label": "Régional · Caucase",
+          "title": "Azerbaijan and EU discuss new bilateral agreement negotiations [PHOTOS] Nation 17:35",
+          "summary": "",
+          "url": "https://www.azernews.az/nation/263701.html",
+          "date": null
+        },
+        {
+          "source": "Azernews",
+          "source_label": "Régional · Caucase",
+          "title": "Azerbaijan deepens China energy ties with solar and Caspian wind plans Nation 17:27",
+          "summary": "",
+          "url": "https://www.azernews.az/nation/263684.html",
+          "date": null
+        },
+        {
+          "source": "Azernews",
+          "source_label": "Régional · Caucase",
+          "title": "Azerbaijan Football Cup to feature total of thirty-four teams Sports 17:03",
+          "summary": "",
+          "url": "https://www.azernews.az/sports/263687.html",
+          "date": null
+        },
+        {
+          "source": "Azernews",
+          "source_label": "Régional · Caucase",
+          "title": "Ugandan General escalates dispute with Türkiye, calls for Turks to leave World 16:37",
+          "summary": "",
+          "url": "https://www.azernews.az/region/263691.html",
+          "date": null
+        },
+        {
+          "source": "Azernews",
+          "source_label": "Régional · Caucase",
+          "title": "CBA, World Bank exchange views on cooperation and technical assistance Business 16:26",
+          "summary": "",
+          "url": "https://www.azernews.az/business/263681.html",
+          "date": null
+        },
         {
           "source": "Azernews",
           "source_label": "Régional · Caucase",
@@ -11568,7 +11536,7 @@
         {
           "source": "Azernews",
           "source_label": "Régional · Caucase",
-          "title": "Houthi forces advance toward Bab-el-Mandeb Strait, threatening Red Sea trade routes World 15:00",
+          "title": "Houthi forces advance toward Bab-el-Mandeb Strait, threatening Red Sea trade routes",
           "summary": "",
           "url": "https://www.azernews.az/region/263683.html",
           "date": null
@@ -11576,7 +11544,7 @@
         {
           "source": "Azernews",
           "source_label": "Régional · Caucase",
-          "title": "Caspian and Black Sea ports boost cooperation [PHOTOS] Business 14:47",
+          "title": "Caspian and Black Sea ports boost cooperation [PHOTOS]",
           "summary": "",
           "url": "https://www.azernews.az/business/263682.html",
           "date": null
@@ -11584,7 +11552,7 @@
         {
           "source": "Azernews",
           "source_label": "Régional · Caucase",
-          "title": "Nakhchivan gets ready for a corridor that could change its fortunes Analysis 14:41",
+          "title": "Nakhchivan gets ready for a corridor that could change its fortunes",
           "summary": "",
           "url": "https://www.azernews.az/analysis/263673.html",
           "date": null
@@ -11592,7 +11560,7 @@
         {
           "source": "Azernews",
           "source_label": "Régional · Caucase",
-          "title": "President Ilham Aliyev approves state program for ensuring food security in 2027−2032 Nation 14:36",
+          "title": "President Ilham Aliyev approves state program for ensuring food security in 2027−2032",
           "summary": "",
           "url": "https://www.azernews.az/nation/263685.html",
           "date": null
@@ -11600,7 +11568,7 @@
         {
           "source": "Azernews",
           "source_label": "Régional · Caucase",
-          "title": "Baku to welcome sailors for Open Azerbaijan Championship Sports 14:22",
+          "title": "Baku to welcome sailors for Open Azerbaijan Championship",
           "summary": "",
           "url": "https://www.azernews.az/sports/263671.html",
           "date": null
@@ -11608,7 +11576,7 @@
         {
           "source": "Azernews",
           "source_label": "Régional · Caucase",
-          "title": "JPMorgan could become first bank to reach $1 trillion market cap World 14:00",
+          "title": "JPMorgan could become first bank to reach $1 trillion market cap",
           "summary": "",
           "url": "https://www.azernews.az/region/263668.html",
           "date": null
@@ -11616,7 +11584,7 @@
         {
           "source": "Azernews",
           "source_label": "Régional · Caucase",
-          "title": "Azerbaijan Sports Academy holds roundtable with Cambridge expert [PHOTOS] Sports 13:41",
+          "title": "Azerbaijan Sports Academy holds roundtable with Cambridge expert [PHOTOS]",
           "summary": "",
           "url": "https://www.azernews.az/sports/263667.html",
           "date": null
@@ -11948,67 +11916,11 @@
           "summary": "",
           "url": "https://www.azernews.az/region/263635.html",
           "date": null
-        },
-        {
-          "source": "Azernews",
-          "source_label": "Régional · Caucase",
-          "title": "Farewell ceremony held for People's Artist Aleksandr Sharovsky [PHOTOS]",
-          "summary": "",
-          "url": "https://www.azernews.az/culture/263636.html",
-          "date": null
-        },
-        {
-          "source": "Azernews",
-          "source_label": "Régional · Caucase",
-          "title": "Azerbaijan keeps Italy’s second-largest oil spot despite a 26% supply drop",
-          "summary": "",
-          "url": "https://www.azernews.az/oil_and_gas/263623.html",
-          "date": null
-        },
-        {
-          "source": "Azernews",
-          "source_label": "Régional · Caucase",
-          "title": "Rain and thunderstorms expected in Azerbaijan",
-          "summary": "",
-          "url": "https://www.azernews.az/lifestyle/263618.html",
-          "date": null
-        },
-        {
-          "source": "Azernews",
-          "source_label": "Régional · Caucase",
-          "title": "European champion joins fan event ahead of World Judo Championships [PHOTOS]",
-          "summary": "",
-          "url": "https://www.azernews.az/sports/263629.html",
-          "date": null
-        },
-        {
-          "source": "Azernews",
-          "source_label": "Régional · Caucase",
-          "title": "European gas prices surge to highest level since 2023 as winter supply fears mount",
-          "summary": "",
-          "url": "https://www.azernews.az/oil_and_gas/263628.html",
-          "date": null
-        },
-        {
-          "source": "Azernews",
-          "source_label": "Régional · Caucase",
-          "title": "Baku, Tirana set sights on stronger tourism ties [PHOTOS]",
-          "summary": "",
-          "url": "https://www.azernews.az/business/263622.html",
-          "date": null
-        },
-        {
-          "source": "Azernews",
-          "source_label": "Régional · Caucase",
-          "title": "Azerbaijan to facilitate transit of Russian wheat to Armenia",
-          "summary": "",
-          "url": "https://www.azernews.az/karabakh/263632.html",
-          "date": null
         }
       ]
     },
     "Hudson Institute": {
-      "last_scanned_at": "2026-09-10T14:05:41.766057+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.959689+00:00",
       "ok": true,
       "articles": [
         {
@@ -12017,14 +11929,6 @@
           "title": "Mr. Trump, Take the Golden Road to Samarkand",
           "summary": "",
           "url": "https://www.hudson.org/foreign-policy/mr-trump-take-golden-road-samarkand-ken-moriyasu",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Ken Moriyasu",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/ken-moriyasu",
           "date": null
         },
         {
@@ -12041,14 +11945,6 @@
           "title": "I Was a US Diplomat for 20 Years. Now I See How the Iran War Could Be Won.",
           "summary": "",
           "url": "https://www.hudson.org/foreign-policy/i-was-20-year-us-diplomat-now-i-see-thats-not-how-tame-iran-ludovic-hood",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Ludovic Hood",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/ludovic-hood",
           "date": null
         },
         {
@@ -12102,33 +11998,9 @@
         {
           "source": "Hudson Institute",
           "source_label": "International · sécurité",
-          "title": "Mike Gallagher",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/mike-gallagher",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Nadia Schadlow",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/1244-nadia-schadlow",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
           "title": "Beyond the Postwar Era: The Japan Innovation Party's Vision",
           "summary": "",
           "url": "https://www.hudson.org/events/beyond-postwar-era-japan-innovation-partys-vision",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Riley Walters",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/1346-riley-walters",
           "date": null
         },
         {
@@ -12142,25 +12014,9 @@
         {
           "source": "Hudson Institute",
           "source_label": "International · sécurité",
-          "title": "Luke Coffey",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/1453-luke-coffey",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
           "title": "New Initiatives at the DoW’s Office of Industrial Base Growth",
           "summary": "",
           "url": "https://www.hudson.org/national-security-defense/new-initiatives-dows-office-industrial-base-growth-nadia-schadlow-michael-dressler",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Michael Dressler",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/michael-dressler",
           "date": null
         },
         {
@@ -12174,25 +12030,9 @@
         {
           "source": "Hudson Institute",
           "source_label": "International · sécurité",
-          "title": "Olivia Enos",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/olivia-enos",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
           "title": "The West Faces Two Islams",
           "summary": "",
           "url": "https://www.hudson.org/foreign-policy/west-faces-two-islams-zineb-riboua",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Zineb Riboua",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/1467-zineb-riboua",
           "date": null
         },
         {
@@ -12206,25 +12046,9 @@
         {
           "source": "Hudson Institute",
           "source_label": "International · sécurité",
-          "title": "Harold Furchtgott-Roth",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/629-harold-furchtgott-roth",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
           "title": "Energy, Infrastructure, and America’s Hidden Arms Race with China",
           "summary": "",
           "url": "https://www.hudson.org/energy/energy-infrastructure-americas-hidden-arms-race-china-Paul-Sracic",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Paul Sracic",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/paul-sracic",
           "date": null
         },
         {
@@ -12238,25 +12062,9 @@
         {
           "source": "Hudson Institute",
           "source_label": "International · sécurité",
-          "title": "Tom Tugendhat",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/tom-tugendhat",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
           "title": "Mamdani Denounces an Indian Nonprofit",
           "summary": "",
           "url": "https://www.hudson.org/foreign-policy/mamdani-denounces-indian-nonprofit-bill-drexel",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Bill Drexel",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/bill-drexel",
           "date": null
         },
         {
@@ -12270,25 +12078,9 @@
         {
           "source": "Hudson Institute",
           "source_label": "International · sécurité",
-          "title": "Walter Russell Mead",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/1038-walter-russell-mead",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
           "title": "NATO, Russia, and Hybrid Warfare: Is Europe Falling into the Boiling-Frog Trap?",
           "summary": "",
           "url": "https://www.hudson.org/foreign-policy/nato-russia-hybrid-warfare-europe-falling-boiling-frog-trap-tsiporah-fried",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Tsiporah Fried",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/tsiporah-fried",
           "date": null
         },
         {
@@ -12358,14 +12150,6 @@
         {
           "source": "Hudson Institute",
           "source_label": "International · sécurité",
-          "title": "Michael Doran",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/1035-michael-doran",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
           "title": "What the US Gets Wrong about Oman",
           "summary": "",
           "url": "https://www.hudson.org/foreign-policy/what-us-gets-wrong-about-oman-luke-coffey",
@@ -12382,15 +12166,7 @@
         {
           "source": "Hudson Institute",
           "source_label": "International · sécurité",
-          "title": "Rebeccah L. Heinrichs",
-          "summary": "",
-          "url": "https://www.hudson.org/experts/1054-rebeccah-l-heinrichs",
-          "date": null
-        },
-        {
-          "source": "Hudson Institute",
-          "source_label": "International · sécurité",
-          "title": "Why the World Order is Collapsing and American Power is Rising",
+          "title": "Why the World Order Is Collapsing and American Power Is Rising",
           "summary": "",
           "url": "https://www.hudson.org/foreign-policy/how-america-keeps-winning-walter-russell-mead",
           "date": null
@@ -12422,7 +12198,7 @@
       ]
     },
     "Jamestown Foundation": {
-      "last_scanned_at": "2026-09-10T14:05:41.766265+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.959951+00:00",
       "ok": true,
       "articles": [
         {
@@ -12708,12 +12484,12 @@
       ]
     },
     "International Crisis Group": {
-      "last_scanned_at": "2026-09-10T14:09:43.744314+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.959986+00:00",
       "ok": false,
       "articles": []
     },
     "Carnegie Endowment for International Peace": {
-      "last_scanned_at": "2026-09-10T14:05:41.766457+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.960201+00:00",
       "ok": true,
       "articles": [
         {
@@ -13007,7 +12783,7 @@
       ]
     },
     "Chatham House": {
-      "last_scanned_at": "2026-09-10T14:05:41.767282+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.961245+00:00",
       "ok": true,
       "articles": [
         {
@@ -13493,7 +13269,7 @@
       ]
     },
     "RAND Corporation": {
-      "last_scanned_at": "2026-09-10T14:05:41.767487+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.961517+00:00",
       "ok": true,
       "articles": [
         {
@@ -13803,14 +13579,6 @@
         {
           "source": "RAND Corporation",
           "source_label": "International · recherche sécurité",
-          "title": "RAND on Bluesky",
-          "summary": "",
-          "url": "https://bsky.app/profile/rand.org",
-          "date": null
-        },
-        {
-          "source": "RAND Corporation",
-          "source_label": "International · recherche sécurité",
           "title": "Policy Minded: RAND's Flagship Podcast",
           "summary": "",
           "url": "https://www.rand.org/pubs/podcasts.html",
@@ -13819,7 +13587,7 @@
       ]
     },
     "Atlantic Council": {
-      "last_scanned_at": "2026-09-10T14:05:41.767967+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.962145+00:00",
       "ok": true,
       "articles": [
         {
@@ -14305,7 +14073,7 @@
       ]
     },
     "CSIS": {
-      "last_scanned_at": "2026-09-10T14:05:41.768622+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.962887+00:00",
       "ok": true,
       "articles": [
         {
@@ -14791,7 +14559,7 @@
       ]
     },
     "Foreign Policy Research Institute": {
-      "last_scanned_at": "2026-09-10T14:05:41.768870+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.963136+00:00",
       "ok": true,
       "articles": [
         {
@@ -14933,14 +14701,6 @@
         {
           "source": "Foreign Policy Research Institute",
           "source_label": "International · Eurasie",
-          "title": "Bram Wells",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/bram-wells/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
           "title": "Diaspora and Migration in the Latvian Context",
           "summary": "",
           "url": "https://www.fpri.org/multimedia/2026/08/diaspora-and-migration-in-the-latvian-context/",
@@ -14957,25 +14717,9 @@
         {
           "source": "Foreign Policy Research Institute",
           "source_label": "International · Eurasie",
-          "title": "Raghvendra Kumar",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/raghvendra-kumar/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
           "title": "A Crown Jewel in Peril: Russia’s Arctic Aggression Masks Nuclear Vulnerability",
           "summary": "",
           "url": "https://www.fpri.org/article/2026/07/a-crown-jewel-in-peril-russias-arctic-aggression-masks-nuclear-vulnerability/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Carl Parkin",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/carl-parkin/",
           "date": null
         },
         {
@@ -14997,25 +14741,9 @@
         {
           "source": "Foreign Policy Research Institute",
           "source_label": "International · Eurasie",
-          "title": "Shihoko Goto",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/shihoko-goto/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
           "title": "Losing the Ambiguity, Missing the Strategy: US Policy Towards Taiwan in Flux",
           "summary": "",
           "url": "https://www.fpri.org/article/2026/07/losing-the-ambiguity-missing-the-strategy-us-policy-towards-taiwan-in-flux/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Jacques deLisle",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/jacques-delisle/",
           "date": null
         },
         {
@@ -15053,22 +14781,6 @@
         {
           "source": "Foreign Policy Research Institute",
           "source_label": "International · Eurasie",
-          "title": "Emily Holland",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/emily-holland/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Aaron Stein",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/aaron-stein/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
           "title": "The Security Situation in Cameroon",
           "summary": "",
           "url": "https://www.fpri.org/event/2026/the-security-situation-in-cameroon/",
@@ -15077,65 +14789,9 @@
         {
           "source": "Foreign Policy Research Institute",
           "source_label": "International · Eurasie",
-          "title": "Gabriel Cyrille Nguijoi",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/gabriel-cyrille-nguijoi/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Roger Motaze",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/roger-motaze/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Michael Walsh",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/michael-walsh/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Charles A. Ray",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/charles-a-ray/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
           "title": "Zeitenwende in Action: Germany’s Future Role in NATO Security",
           "summary": "",
           "url": "https://www.fpri.org/event/2026/zeitenwende-in-action-germanys-future-role-in-nato-security/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Peter Beyer",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/peter-beyer/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Jim Townsend",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/jim-townsend/",
-          "date": null
-        },
-        {
-          "source": "Foreign Policy Research Institute",
-          "source_label": "International · Eurasie",
-          "title": "Mark Speich",
-          "summary": "",
-          "url": "https://www.fpri.org/contributor/mark-speich/",
           "date": null
         },
         {
@@ -15165,7 +14821,7 @@
       ]
     },
     "Stimson Center": {
-      "last_scanned_at": "2026-09-10T14:05:41.769440+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.963943+00:00",
       "ok": true,
       "articles": [
         {
@@ -15651,12 +15307,12 @@
       ]
     },
     "George C. Marshall European Center for Security Studies": {
-      "last_scanned_at": "2026-09-10T14:09:43.746534+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.963997+00:00",
       "ok": false,
       "articles": []
     },
     "Swiss Political Science Review": {
-      "last_scanned_at": "2026-09-10T14:09:43.746542+00:00",
+      "last_scanned_at": "2026-09-10T14:18:14.964001+00:00",
       "ok": false,
       "articles": []
     }
@@ -18144,6 +17800,53 @@
     "www.stimson.org/research/trade-tech/artificial-intelligence",
     "www.stimson.org/research/trade-tech/emerging-tech",
     "www.youtube.com/user/chathamhouse10",
-    "www.youtube.com/user/therandcorporation"
+    "www.youtube.com/user/therandcorporation",
+    "24.kg/obschestvo/388612_premernyiy_chetverg_kyirgyizskie_filmyi_romanticheskoe_fentezi_koreyskie_trilleryi",
+    "24.kg/obschestvo/388743_11sentyabrya_gde_vbishkeke_iregionah_otklyuchat_svet",
+    "24.kg/obschestvo/388747_perehod_shkolnyih_uchebnikov_nanovyiy_alfavit_vuzbekistane_nachnetsya_v2027_godu",
+    "24.kg/obschestvo/388755_ramzan_kadyirov_potreboval_otchechentsev_ukorotit_borodyi",
+    "24.kg/sport/388753_vgorodeosh_nachalas_podgotovka_kmejdunarodnomu_turniru_poboksu_turksen-3",
+    "asiaplus.news/en/2026/09/10/tajikistan-prepares-three-agro-investment-projects-with-fao-support",
+    "en.kabar.kg/news/kyrgyzstan-kazakhstan-to-strengthen-strategic-partnership",
+    "en.kabar.kg/news/lao-president-sisoulith-arrives-in-kyrgyzstan",
+    "en.kabar.kg/news/ots-secretary-general-participates-in-events-bringing-together-turkic-world-in-hungary",
+    "en.kabar.kg/news/trump-says-us-is-now-worlds-biggest-oil-producer",
+    "en.kabar.kg/news/young-parliamentarians-from-kyrgyzstan-and-uzbekistan-call-for-dialogue",
+    "en.tengrinews.kz/curious/could-kill-us-all-scientist-leaves-anthropic-and-makes-273507",
+    "en.tengrinews.kz/kazakhstan_news/if-you-wrote-it-you-pay-what-kazakhstani-people-face-for-273503",
+    "en.tengrinews.kz/my-country/kazakhstani-citizens-wanted-to-vacation-in-egypt-but-faced-273508",
+    "fergana.agency/news/149291",
+    "fergana.agency/news/149292",
+    "kaktus.media/doc/553010_professora_kny_polychili_ne_1_mln_somov_a_lish_40_tys._novyy_skandal_vokryg_e_kyndolyk.html",
+    "kaktus.media/doc/553048_dlia_bednyh_stran_eto_roskosh._bekeshev_obiasnil_pochemy_v_kr_net_zaprosa_na_ekopovestky.html",
+    "kaktus.media/doc/553057_siloviki_zaderjali_podozrevaemogo_v_ekonomicheskoy_kontrabande_inostranca_foto.html",
+    "kaktus.media/doc/553058_skolko_semey_polychat_posobie_bala_yrysy_v_sentiabre_cifry.html",
+    "kun.uz/en/news/2026/09/10/central-bank-revises-uzbekistans-official-fx-rate-calculation",
+    "kun.uz/en/news/2026/09/10/fare-evasion-checks-intensify-in-tashkent-as-cases-rise-68",
+    "kun.uz/en/news/2026/09/10/president-outlines-priorities-to-boost-uzbekistans-electrical-engineering-industry",
+    "kz.kursiv.media/en/2026-09-10/engk-nknk-adcb-plans-to-triple-financing-for-projects-in-kazakhstan",
+    "kz.kursiv.media/en/2026-09-10/engk-tank-kyrgyz-court-sentences-tashiev-seven-others-to-four-years",
+    "novastan.org/de/usbekistan/was-es-im-museum-fuer-zeitgenoessische-kunst-in-urgentsch-zu-sehen-gibt",
+    "novastan.org/en/kyrgyzstan/kyrgyzstan-sadyr-japarov-politics-china-2027-election",
+    "novastan.org/fr/societe-et-culture/glaciers-glissement-de-terrain-geant-et-nouveaux-organismes-resume-de-recherches-en-asie-centrale",
+    "thediplomat.com/2026/09/what-kazakhstans-new-unicameral-parliament-means-for-its-foreign-policy",
+    "www.azattyq.org/a/bishkek-qalalyq-soty-tashiev-pen-ozge-zheti-adamnyn-zhazasyn-zhenildetti/33851731.html",
+    "www.azattyq.org/a/quryltai-vitse-spikeri-dalizde-suraq-qoyuga-salyngan-tyiymdy-zhurnalister-haipy-dep-atady/33851755.html",
+    "www.azernews.az/business/263681.html",
+    "www.azernews.az/culture/263669.html",
+    "www.azernews.az/nation/263684.html",
+    "www.azernews.az/nation/263701.html",
+    "www.azernews.az/oil_and_gas/263686.html",
+    "www.azernews.az/region/263691.html",
+    "www.azernews.az/sports/263687.html",
+    "www.hronikatm.com/2026/09/minobraz-turkmenistana-opublikoval-spisok-spravok-dlya-vyezda-na-uchebu-zarubezh",
+    "www.hronikatm.com/2026/09/turkmenistan-nachal-vypuskat-holodilniki",
+    "www.occrp.org/en/news/armenia-unveils-raid-footage-in-ex-tax-chief-probe",
+    "www.occrp.org/en/news/australia-charges-accountants-in-multimillion-dollar-loan-fraud-scheme",
+    "www.ozodi.org/a/33851753.html",
+    "www.ozodi.org/a/dar-tojikiston-dardu-ranjhoro-ba-haysi-siloh-istifoda-mekunand/33851714.html",
+    "www.ozodi.org/a/dar-tojikiston-dardu-ranjhoro-ba-haysi-siloh-istifoda-mekunand/33851770.html",
+    "www.ozodi.org/a/idomai-bahsi-moliki-jum-abozor-va-shirkati-sokhtmonii-asri-mo/33847008.html",
+    "www.rferl.org/a/iran-infiltration-bill-parliament-opposition-qalibaf-/33851689.html"
   ]
 }
