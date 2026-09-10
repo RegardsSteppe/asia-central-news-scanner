@@ -82,7 +82,7 @@ SOURCE_MIN_INTERVAL_SECONDS = max(
 # (pour ne pas faire grossir memory.json indéfiniment).
 MAX_CACHED_ARTICLES_PER_SOURCE = max(
     10,
-    int(os.getenv("SCANNER_MAX_CACHED_ARTICLES_PER_SOURCE", "60")),
+    int(os.getenv("SCANNER_MAX_CACHED_ARTICLES_PER_SOURCE", "250")),
 )
 
 # Small, hand-picked list kept as a safety net in case the "stop-words"

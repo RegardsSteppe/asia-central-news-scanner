@@ -30,7 +30,7 @@ SOURCES = [
             "https://www.rferl.org/p/5549.html",
         ],
 
-        "max_articles": 150,
+        "max_articles": 400,
     },
 
     {
@@ -47,7 +47,7 @@ SOURCES = [
             "https://eurasianet.org/",
         ],
 
-        "max_articles": 120,
+        "max_articles": 300,
     },
 
     {
@@ -68,7 +68,7 @@ SOURCES = [
             "https://cabar.asia/en/",
         ],
 
-        "max_articles": 120,
+        "max_articles": 300,
     },
 
     {
@@ -85,7 +85,7 @@ SOURCES = [
             "https://cabar.asia/ru/category/ru",
         ],
 
-        "max_articles": 120,
+        "max_articles": 300,
     },
 
     {
@@ -102,7 +102,7 @@ SOURCES = [
             "https://thediplomat.com/",
         ],
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     # ========================================================
@@ -135,7 +135,7 @@ SOURCES = [
 
         "url": "https://www.theguardian.com/world/kazakhstan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -148,7 +148,7 @@ SOURCES = [
 
         "url": "https://www.theguardian.com/world/uzbekistan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -161,7 +161,7 @@ SOURCES = [
 
         "url": "https://www.theguardian.com/world/kyrgyzstan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -174,7 +174,7 @@ SOURCES = [
 
         "url": "https://www.theguardian.com/world/tajikistan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -187,7 +187,7 @@ SOURCES = [
 
         "url": "https://www.theguardian.com/world/turkmenistan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -200,7 +200,7 @@ SOURCES = [
 
         "url": "https://apnews.com/hub/kazakhstan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -213,7 +213,7 @@ SOURCES = [
 
         "url": "https://apnews.com/hub/uzbekistan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -226,7 +226,7 @@ SOURCES = [
 
         "url": "https://apnews.com/hub/kyrgyzstan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -239,7 +239,7 @@ SOURCES = [
 
         "url": "https://apnews.com/hub/tajikistan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -252,7 +252,7 @@ SOURCES = [
 
         "url": "https://apnews.com/hub/turkmenistan",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -265,7 +265,7 @@ SOURCES = [
 
         "url": "https://www.aljazeera.com/where/kazakhstan/",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -278,7 +278,7 @@ SOURCES = [
 
         "url": "https://www.aljazeera.com/where/uzbekistan/",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -291,7 +291,7 @@ SOURCES = [
 
         "url": "https://www.aljazeera.com/where/kyrgyzstan/",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -304,7 +304,7 @@ SOURCES = [
 
         "url": "https://www.aljazeera.com/where/tajikistan/",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -317,7 +317,7 @@ SOURCES = [
 
         "url": "https://www.aljazeera.com/where/turkmenistan/",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     # ========================================================
@@ -334,7 +334,7 @@ SOURCES = [
 
         "url": "https://www.occrp.org/en/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     # ========================================================
@@ -355,7 +355,7 @@ SOURCES = [
             "https://www.hrw.org/asia",
         ],
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -368,7 +368,7 @@ SOURCES = [
 
         "url": "https://www.hrw.org/fr/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -381,7 +381,7 @@ SOURCES = [
 
         "url": "https://www.hrw.org/ru/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -394,7 +394,7 @@ SOURCES = [
 
         "url": "https://www.amnesty.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -407,7 +407,7 @@ SOURCES = [
 
         "url": "https://www.amnesty.org/fr/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -420,7 +420,7 @@ SOURCES = [
 
         "url": "https://www.amnesty.org/ru/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -433,7 +433,7 @@ SOURCES = [
 
         "url": "https://cpj.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -446,7 +446,7 @@ SOURCES = [
 
         "url": "https://cpj.org/ru/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -459,7 +459,7 @@ SOURCES = [
 
         "url": "https://rsf.org/fr/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     # ========================================================
@@ -482,7 +482,7 @@ SOURCES = [
         # découverte générique des liens d'articles).
         "url": "https://www.ohchr.org/en",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -495,7 +495,7 @@ SOURCES = [
 
         "url": "https://www.osce.org/news",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -508,7 +508,7 @@ SOURCES = [
 
         "url": "https://monitor.civicus.org/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -521,7 +521,7 @@ SOURCES = [
 
         "url": "https://www.iphronline.org/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     # ========================================================
@@ -538,7 +538,7 @@ SOURCES = [
 
         "url": "https://timesca.com/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     # ========================================================
@@ -555,7 +555,7 @@ SOURCES = [
 
         "url": "https://novastan.org/fr/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -568,7 +568,7 @@ SOURCES = [
 
         "url": "https://novastan.org/en/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -581,7 +581,7 @@ SOURCES = [
 
         "url": "https://novastan.org/de/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -594,7 +594,7 @@ SOURCES = [
 
         "url": "https://uznews.uz/en",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -607,7 +607,7 @@ SOURCES = [
 
         "url": "https://sarpa.media/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -620,7 +620,7 @@ SOURCES = [
 
         "url": "https://kz.kursiv.media/en/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     # ========================================================
@@ -637,7 +637,7 @@ SOURCES = [
 
         "url": "https://vlast.kz/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -650,7 +650,7 @@ SOURCES = [
 
         "url": "https://vlast.kz/english/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -663,7 +663,7 @@ SOURCES = [
 
         "url": "https://www.azattyq.org/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -676,7 +676,7 @@ SOURCES = [
 
         "url": "https://orda.kz/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -689,7 +689,7 @@ SOURCES = [
 
         "url": "https://en.orda.kz/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -702,7 +702,7 @@ SOURCES = [
 
         "url": "https://en.tengrinews.kz/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     # ========================================================
@@ -719,7 +719,7 @@ SOURCES = [
 
         "url": "https://kloop.kg/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -732,7 +732,7 @@ SOURCES = [
 
         "url": "https://24.kg/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -745,7 +745,7 @@ SOURCES = [
 
         "url": "https://24.kg/english/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -758,7 +758,7 @@ SOURCES = [
 
         "url": "https://kaktus.media/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -771,7 +771,7 @@ SOURCES = [
 
         "url": "https://en.kabar.kg/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     # ========================================================
@@ -788,7 +788,7 @@ SOURCES = [
 
         "url": "https://asiaplustj.info/en",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -801,7 +801,7 @@ SOURCES = [
 
         "url": "https://www.ozodi.org/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     # ========================================================
@@ -818,7 +818,7 @@ SOURCES = [
 
         "url": "https://www.gazeta.uz/en/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -831,7 +831,7 @@ SOURCES = [
 
         "url": "https://kun.uz/en",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -844,7 +844,7 @@ SOURCES = [
 
         "url": "https://www.spot.uz/en/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     # ========================================================
@@ -861,7 +861,7 @@ SOURCES = [
 
         "url": "https://turkmen.news/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -874,7 +874,7 @@ SOURCES = [
 
         "url": "https://hronikatm.com/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     # ========================================================
@@ -891,7 +891,7 @@ SOURCES = [
 
         "url": "https://fergana.agency/",
 
-        "max_articles": 100,
+        "max_articles": 250,
     },
 
     {
@@ -904,7 +904,7 @@ SOURCES = [
 
         "url": "https://www.cacianalyst.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     # ========================================================
@@ -921,7 +921,7 @@ SOURCES = [
 
         "url": "https://www.azernews.az/latest/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -934,7 +934,7 @@ SOURCES = [
 
         "url": "https://en.trend.az/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     # ========================================================
@@ -963,7 +963,7 @@ SOURCES = [
 
         "url": "https://www.hudson.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -976,7 +976,7 @@ SOURCES = [
 
         "url": "https://jamestown.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -989,7 +989,7 @@ SOURCES = [
 
         "url": "https://www.crisisgroup.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1002,7 +1002,7 @@ SOURCES = [
 
         "url": "https://carnegieendowment.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1015,7 +1015,7 @@ SOURCES = [
 
         "url": "https://www.chathamhouse.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1028,7 +1028,7 @@ SOURCES = [
 
         "url": "https://www.rand.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1041,7 +1041,7 @@ SOURCES = [
 
         "url": "https://www.atlanticcouncil.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1054,7 +1054,7 @@ SOURCES = [
 
         "url": "https://www.csis.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1067,7 +1067,7 @@ SOURCES = [
 
         "url": "https://www.fpri.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1080,7 +1080,7 @@ SOURCES = [
 
         "url": "https://www.stimson.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1093,7 +1093,7 @@ SOURCES = [
 
         "url": "https://www.marshallcenter.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1106,7 +1106,7 @@ SOURCES = [
 
         "url": "https://www.ponarseurasia.org/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1119,7 +1119,7 @@ SOURCES = [
 
         "url": "https://www.specialeurasia.com/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1132,7 +1132,7 @@ SOURCES = [
 
         "url": "https://www.caspianpolicy.org/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     # ========================================================
@@ -1160,7 +1160,7 @@ SOURCES = [
 
         "url": "https://tass.com/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1173,7 +1173,7 @@ SOURCES = [
 
         "url": "https://ria.ru/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1186,7 +1186,7 @@ SOURCES = [
 
         "url": "https://sputniknews.com/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1199,7 +1199,7 @@ SOURCES = [
 
         "url": "https://regnum.ru/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1212,7 +1212,7 @@ SOURCES = [
 
         "url": "https://www.rbth.com/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1225,7 +1225,7 @@ SOURCES = [
 
         "url": "https://www.ng.ru/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1238,7 +1238,7 @@ SOURCES = [
 
         "url": "https://www.kommersant.ru/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1251,7 +1251,7 @@ SOURCES = [
 
         "url": "https://www.vedomosti.ru/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1264,7 +1264,7 @@ SOURCES = [
 
         "url": "http://kremlin.ru/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1277,7 +1277,7 @@ SOURCES = [
 
         "url": "http://government.ru/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1290,7 +1290,7 @@ SOURCES = [
 
         "url": "https://www.mid.ru/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1303,7 +1303,7 @@ SOURCES = [
 
         "url": "https://russiaun.ru/",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -1316,7 +1316,7 @@ SOURCES = [
 
         "url": "https://english.news.cn/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1329,7 +1329,7 @@ SOURCES = [
 
         "url": "https://www.chinadaily.com.cn/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1344,7 +1344,7 @@ SOURCES = [
         # n'existe pas, remplacé par le domaine principal.
         "url": "https://www.cgtn.com/",
 
-        "max_articles": 80,
+        "max_articles": 200,
     },
 
     {
@@ -1357,7 +1357,7 @@ SOURCES = [
 
         "url": "https://www.fmprc.gov.cn/eng/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1370,7 +1370,7 @@ SOURCES = [
 
         "url": "https://www.chinadiplomacy.org.cn/",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 
     {
@@ -1383,7 +1383,7 @@ SOURCES = [
 
         "url": "https://en.ndrc.gov.cn/",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     {
@@ -1396,7 +1396,7 @@ SOURCES = [
 
         "url": "https://en.cidca.gov.cn/",
 
-        "max_articles": 40,
+        "max_articles": 100,
     },
 
     # ========================================================
@@ -1419,7 +1419,7 @@ SOURCES = [
 
         "url": "https://onlinelibrary.wiley.com/journal/16626370",
 
-        "max_articles": 60,
+        "max_articles": 150,
     },
 ]
 
