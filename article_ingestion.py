@@ -245,7 +245,11 @@ def looks_like_article_link(url: str, title: str) -> bool:
         return True
 
     if _DATE_PATH_RE.search(path):
-        return True
+        # Une simple archive mensuelle/journalière (ex. "/2024/03/") n'a
+        # pas de segment supplémentaire pour l'article lui-même : ce n'est
+        # pas un article mais une page de liste, on la rejette.
+        segments = [segment for segment in path.split("/") if segment]
+        return len(segments) >= 3
 
     # Par défaut, accepter les chemins suffisamment spécifiques
     # (au moins deux segments non vides) pour rester conservateur
@@ -258,11 +262,55 @@ def looks_like_article_link(url: str, title: str) -> bool:
     return True
 
 
+# Emplacements usuels de la date de publication dans le <head> d'une
+# page d'article : (nom de balise, attributs à matcher, attribut à lire).
+_DATE_META_LOCATIONS = (
+    ("meta", {"property": "article:published_time"}, "content"),
+    ("meta", {"property": "og:article:published_time"}, "content"),
+    ("meta", {"name": "publish-date"}, "content"),
+    ("meta", {"name": "publish_date"}, "content"),
+    ("meta", {"name": "publication_date"}, "content"),
+    ("meta", {"name": "date"}, "content"),
+    ("meta", {"name": "sailthru.date"}, "content"),
+    ("meta", {"itemprop": "datePublished"}, "content"),
+    ("meta", {"name": "parsely-pub-date"}, "content"),
+)
+
+
+def extract_published_date(soup: BeautifulSoup):
+    """
+    Cherche la date de publication d'une page d'article dans les
+    métadonnées standard (Open Graph, schema.org, etc.) puis dans une
+    balise <time>. Retourne un datetime (via parse_date) ou None.
+    """
+    for tag_name, attrs, source_attr in _DATE_META_LOCATIONS:
+        tag = soup.find(tag_name, attrs=attrs)
+        if not tag:
+            continue
+
+        value = tag.get(source_attr)
+        parsed = parse_date(value)
+
+        if parsed:
+            return parsed
+
+    time_tag = soup.find("time")
+
+    if time_tag:
+        value = time_tag.get("datetime") or time_tag.get_text(strip=True)
+        parsed = parse_date(value)
+
+        if parsed:
+            return parsed
+
+    return None
+
+
 def extract_body(
     url: str,
     source: dict[str, Any] | None = None,
     force_refresh: bool = False,
-) -> str:
+) -> tuple[str, Any]:
     content = fetch_url(
         url,
         headers=HEADERS,
@@ -272,6 +320,8 @@ def extract_body(
     )
 
     soup = BeautifulSoup(content, "html.parser")
+
+    published_date = extract_published_date(soup)
 
     for tag in soup(
         [
@@ -297,7 +347,7 @@ def extract_body(
     else:
         text = soup.get_text(" ", strip=True)
 
-    return clean_text(text)
+    return clean_text(text), published_date
 
 
 def build_article(

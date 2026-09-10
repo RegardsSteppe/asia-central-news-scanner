@@ -30,6 +30,18 @@ jobs:
       - name: Run scanner
         run: python news_scanner.py
 
+      - name: Persist scanner memory
+        run: |
+          if [ -n "$(git status --porcelain -- memory.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add memory.json
+            git commit -m "Update scanner memory [skip ci]"
+            git push
+          else
+            echo "memory.json unchanged, nothing to persist"
+          fi
+
       - name: Prepare website
         run: |
           mkdir -p public

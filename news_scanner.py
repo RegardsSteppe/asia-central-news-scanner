@@ -7,6 +7,7 @@ import json
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -23,6 +24,7 @@ from html_template import create_web_page
 from text_utils import (
     article_date_timestamp,
     clean_title,
+    parse_date,
 )
 
 from http_utils import fetch_url
@@ -66,6 +68,20 @@ SKIP_PREVIOUSLY_SEEN = os.getenv(
 MAX_PERSISTED_SEEN_KEYS = max(
     100,
     int(os.getenv("SCANNER_MAX_PERSISTED_SEEN_KEYS", "5000")),
+)
+
+# Durée pendant laquelle une source scannée avec succès n'est pas
+# re-scannée (mémoire par source, persistée dans memory.json). 2h par défaut.
+SOURCE_MIN_INTERVAL_SECONDS = max(
+    0,
+    int(os.getenv("SCANNER_SOURCE_MIN_INTERVAL", str(2 * 3600))),
+)
+
+# Nombre maximal d'articles conservés par source dans le cache mémoire
+# (pour ne pas faire grossir memory.json indéfiniment).
+MAX_CACHED_ARTICLES_PER_SOURCE = max(
+    10,
+    int(os.getenv("SCANNER_MAX_CACHED_ARTICLES_PER_SOURCE", "60")),
 )
 
 # Small, hand-picked list kept as a safety net in case the "stop-words"
@@ -149,10 +165,20 @@ def canonical_article_key(
     if url:
         parsed = urlparse(url)
 
-        return (
+        key = (
             parsed.netloc.lower()
             + parsed.path.rstrip("/").lower()
         )
+
+        # La query string est conservée (après nettoyage des paramètres
+        # de tracking par normalize_url en amont) : certains sites
+        # identifient l'article uniquement via un paramètre (?id=123),
+        # et l'ignorer ferait passer des articles différents pour des
+        # doublons.
+        if parsed.query:
+            key += "?" + parsed.query
+
+        return key
 
     title = clean_title(
         article.get("title", "")
@@ -318,10 +344,11 @@ def load_seen_keys(memory: dict[str, Any]) -> set[str]:
     }
 
 
-def save_seen_keys(
+def update_seen_keys(
     memory: dict[str, Any],
     seen_keys: set[str],
 ) -> None:
+    """Met à jour memory['seen_article_keys'] en mémoire (pas d'I/O)."""
     existing = memory.get("seen_article_keys", [])
     if not isinstance(existing, list):
         existing = []
@@ -334,7 +361,95 @@ def save_seen_keys(
     ordered.extend(sorted(seen_keys))
     deduped = list(dict.fromkeys(ordered))
     memory["seen_article_keys"] = deduped[-MAX_PERSISTED_SEEN_KEYS:]
-    safe_save_memory(memory)
+
+
+# ============================================================
+# MÉMOIRE PAR SOURCE (éviter de re-scanner une source trop souvent)
+# ============================================================
+
+def _serialize_cached_article(
+    article: dict[str, Any],
+) -> dict[str, Any]:
+    """Version compacte et JSON-sérialisable d'un article, pour le cache
+    par source. On ne garde jamais le corps complet (trop volumineux)."""
+    date = article.get("date")
+    return {
+        "source": article.get("source", ""),
+        "source_label": article.get("source_label", ""),
+        "title": article.get("title", ""),
+        "summary": article.get("summary", ""),
+        "url": article.get("url", ""),
+        "date": date.isoformat() if hasattr(date, "isoformat") else date,
+    }
+
+
+def _deserialize_cached_article(
+    cached: dict[str, Any],
+) -> dict[str, Any]:
+    article = dict(cached)
+    article["date"] = parse_date(article.get("date"))
+    article["body"] = ""
+    return article
+
+
+def load_source_cache(
+    memory: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    sources = memory.get("sources")
+    return sources if isinstance(sources, dict) else {}
+
+
+def get_fresh_cached_articles(
+    source_cache: dict[str, dict[str, Any]],
+    name: str,
+    now: float,
+) -> list[dict[str, Any]] | None:
+    """
+    Retourne les articles en cache pour une source si elle a été
+    scannée avec succès il y a moins de SOURCE_MIN_INTERVAL_SECONDS,
+    sinon None (il faut re-scanner).
+    """
+    entry = source_cache.get(name)
+    if not isinstance(entry, dict) or not entry.get("ok"):
+        return None
+
+    scanned_at = parse_date(entry.get("last_scanned_at"))
+    if not scanned_at:
+        return None
+
+    if now - scanned_at.timestamp() >= SOURCE_MIN_INTERVAL_SECONDS:
+        return None
+
+    cached_articles = entry.get("articles", [])
+    if not isinstance(cached_articles, list):
+        return []
+
+    return [
+        _deserialize_cached_article(item)
+        for item in cached_articles
+        if isinstance(item, dict)
+    ]
+
+
+def update_source_cache(
+    memory: dict[str, Any],
+    name: str,
+    ok: bool,
+    articles: list[dict[str, Any]],
+) -> None:
+    sources = memory.get("sources")
+    if not isinstance(sources, dict):
+        sources = {}
+        memory["sources"] = sources
+
+    sources[name] = {
+        "last_scanned_at": datetime.now(timezone.utc).isoformat(),
+        "ok": ok,
+        "articles": [
+            _serialize_cached_article(article)
+            for article in articles[:MAX_CACHED_ARTICLES_PER_SOURCE]
+        ],
+    }
 
 
 def timed_call(label: str, func: Any, *args: Any, **kwargs: Any) -> Any:
@@ -374,7 +489,7 @@ def enrich_articles(
         for source in SOURCES
     }
 
-    def _enrich_article(article: dict[str, Any]) -> str:
+    def _enrich_article(article: dict[str, Any]) -> tuple[str, Any]:
         return extract_body(
             article["url"],
             source_by_name.get(article.get("source"), {}),
@@ -393,15 +508,20 @@ def enrich_articles(
         for future in as_completed(futures):
             article = futures[future]
             try:
-                body = future.result()
+                body, published_date = future.result()
             except Exception as exc:
                 print(
                     f"WARNING | {article.get('source')} | ENRICH ERROR | {exc}"
                 )
-                body = ""
+                body, published_date = "", None
 
             if body:
                 article["body"] = body
+
+            # La date de l'article (page de listing / flux RSS) fait parfois
+            # défaut : on la complète avec celle trouvée sur la page elle-même.
+            if not article.get("date") and published_date:
+                article["date"] = published_date
 
             classify_article(article)
 
@@ -624,16 +744,48 @@ def export_csv(articles: list[dict[str, Any]]) -> None:
 def collect_articles(
     force_refresh: bool = False,
     seen_keys: set[str] | None = None,
+    memory: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], int, int, int]:
     """
     Parcourt toutes les sources configurées, récupère leur contenu
     et en extrait les articles bruts (non dédupliqués, non scorés).
 
-    Retourne (articles, sources_successful, sources_total).
+    Une source scannée avec succès il y a moins de
+    SOURCE_MIN_INTERVAL_SECONDS n'est pas re-téléchargée : ses derniers
+    articles connus (mémorisés dans memory.json) sont réutilisés tels quels.
+
+    Retourne (articles, sources_successful, sources_total, skipped_previously_seen).
     """
 
     sources_total = len(SOURCES)
     preload_seen = seen_keys or set()
+    source_cache = load_source_cache(memory) if memory is not None else {}
+    now = time.time()
+
+    def _fetch_and_parse(
+        url: str,
+        source: dict[str, Any],
+        as_rss: bool,
+    ) -> tuple[list[dict[str, Any]], float, float]:
+        fetch_started = time.perf_counter()
+        content = fetch_url(
+            url,
+            headers=HEADERS,
+            request_timeout=REQUEST_TIMEOUT,
+            cache_ttl=CACHE_TTL,
+            force_refresh=force_refresh,
+        )
+        fetch_elapsed = time.perf_counter() - fetch_started
+        diagnose_source_content(source, content, url)
+
+        parse_started = time.perf_counter()
+        if as_rss:
+            articles = parse_rss(content, source)
+        else:
+            articles = extract_links_from_html(content, url, source)
+        parse_elapsed = time.perf_counter() - parse_started
+
+        return articles, fetch_elapsed, parse_elapsed
 
     def _collect_one(
         source_index: int,
@@ -644,83 +796,130 @@ def collect_articles(
             "Unknown",
         )
 
-        url = source.get(
-            "url",
-            "",
-        )
-
-        if not url:
-            return {
-                "index": source_index,
-                "name": name,
-                "ok": False,
-                "articles": [],
-                "error": "URL absente",
-                "fetch_time": 0.0,
-                "parse_time": 0.0,
-                "total_time": 0.0,
-            }
-
-        try:
-            source_started = time.perf_counter()
-            fetch_started = time.perf_counter()
-            content = fetch_url(
-                url,
-                headers=HEADERS,
-                request_timeout=REQUEST_TIMEOUT,
-                cache_ttl=CACHE_TTL,
-                force_refresh=force_refresh,
+        if not force_refresh:
+            cached_articles = get_fresh_cached_articles(
+                source_cache,
+                name,
+                now,
             )
-            fetch_elapsed = time.perf_counter() - fetch_started
-            diagnose_source_content(source, content, url)
+            if cached_articles is not None:
+                return {
+                    "index": source_index,
+                    "name": name,
+                    "ok": True,
+                    "articles": cached_articles,
+                    "error": "",
+                    "fetch_time": 0.0,
+                    "parse_time": 0.0,
+                    "total_time": 0.0,
+                    "from_cache": True,
+                }
 
-            source_type = str(
-                source.get(
-                    "type",
-                    "rss",
-                )
-            ).lower()
-
-            parse_started = time.perf_counter()
-            if source_type in {
+        source_type = str(
+            source.get(
+                "type",
                 "rss",
-                "feed",
-                "atom",
-            }:
-                articles = parse_rss(
-                    content,
-                    source,
-                )
-            else:
-                articles = extract_links_from_html(
-                    content,
-                    url,
-                    source,
-                )
-            parse_elapsed = time.perf_counter() - parse_started
+            )
+        ).lower()
+        is_rss = source_type in {"rss", "feed", "atom"}
 
-            return {
-                "index": source_index,
-                "name": name,
-                "ok": True,
-                "articles": articles,
-                "error": "",
-                "fetch_time": fetch_elapsed,
-                "parse_time": parse_elapsed,
-                "total_time": time.perf_counter() - source_started,
-            }
+        feeds = [feed for feed in (source.get("feeds") or []) if feed]
+        primary_url = source.get("url", "")
+        fallback_urls = [
+            fallback for fallback in (source.get("fallbacks") or []) if fallback
+        ]
 
-        except Exception as exc:
+        source_started = time.perf_counter()
+        articles: list[dict[str, Any]] = []
+        fetch_elapsed_total = 0.0
+        parse_elapsed_total = 0.0
+        errors: list[str] = []
+        fetched_ok = 0
+
+        if is_rss and feeds:
+            # Une source RSS peut être répartie sur plusieurs flux
+            # thématiques : on les agrège tous plutôt que de n'en
+            # garder qu'un seul.
+            for feed_url in feeds:
+                try:
+                    feed_articles, fetch_elapsed, parse_elapsed = _fetch_and_parse(
+                        feed_url, source, as_rss=True
+                    )
+                    articles.extend(feed_articles)
+                    fetch_elapsed_total += fetch_elapsed
+                    parse_elapsed_total += parse_elapsed
+                    fetched_ok += 1
+                except Exception as exc:
+                    errors.append(f"{feed_url}: {exc}")
+
+            if fetched_ok == 0:
+                # Tous les flux ont échoué : dernier recours sur l'URL
+                # principale / les fallbacks, traités comme une page HTML.
+                for candidate in ([primary_url] if primary_url else []) + fallback_urls:
+                    try:
+                        candidate_articles, fetch_elapsed, parse_elapsed = _fetch_and_parse(
+                            candidate, source, as_rss=False
+                        )
+                        articles.extend(candidate_articles)
+                        fetch_elapsed_total += fetch_elapsed
+                        parse_elapsed_total += parse_elapsed
+                        fetched_ok += 1
+                        break
+                    except Exception as exc:
+                        errors.append(f"{candidate}: {exc}")
+        else:
+            candidates = ([primary_url] if primary_url else []) + fallback_urls
+
+            if not candidates:
+                return {
+                    "index": source_index,
+                    "name": name,
+                    "ok": False,
+                    "articles": [],
+                    "error": "URL absente",
+                    "fetch_time": 0.0,
+                    "parse_time": 0.0,
+                    "total_time": 0.0,
+                    "from_cache": False,
+                }
+
+            for candidate in candidates:
+                try:
+                    candidate_articles, fetch_elapsed, parse_elapsed = _fetch_and_parse(
+                        candidate, source, as_rss=is_rss
+                    )
+                    articles.extend(candidate_articles)
+                    fetch_elapsed_total += fetch_elapsed
+                    parse_elapsed_total += parse_elapsed
+                    fetched_ok += 1
+                    break
+                except Exception as exc:
+                    errors.append(f"{candidate}: {exc}")
+
+        if fetched_ok == 0:
             return {
                 "index": source_index,
                 "name": name,
                 "ok": False,
                 "articles": [],
-                "error": str(exc),
+                "error": "; ".join(errors) or "erreur inconnue",
                 "fetch_time": 0.0,
                 "parse_time": 0.0,
                 "total_time": 0.0,
+                "from_cache": False,
             }
+
+        return {
+            "index": source_index,
+            "name": name,
+            "ok": True,
+            "articles": articles,
+            "error": "; ".join(errors),
+            "fetch_time": fetch_elapsed_total,
+            "parse_time": parse_elapsed_total,
+            "total_time": time.perf_counter() - source_started,
+            "from_cache": False,
+        }
 
     results: list[dict[str, Any]] = []
     with ThreadPoolExecutor(
@@ -736,17 +935,32 @@ def collect_articles(
 
     all_articles: list[dict[str, Any]] = []
     sources_successful = 0
+    sources_from_cache = 0
     skipped_previously_seen = 0
     run_seen: set[str] = set()
     for result in sorted(results, key=lambda item: item["index"]):
         name = result["name"]
+        from_cache = result.get("from_cache", False)
+
         if not result["ok"]:
             print(
                 f"WARNING | {name} | ERROR | {result['error']}"
             )
+            if memory is not None:
+                update_source_cache(memory, name, ok=False, articles=[])
             continue
 
+        if result["error"]:
+            # Succès partiel (ex. certains flux RSS ont échoué) : on
+            # continue avec ce qui a pu être récupéré, mais on le signale.
+            print(
+                f"WARNING | {name} | PARTIEL | {result['error']}"
+            )
+
         sources_successful += 1
+        if from_cache:
+            sources_from_cache += 1
+
         articles = result["articles"]
         accepted = 0
         for article in articles:
@@ -762,9 +976,19 @@ def collect_articles(
             all_articles.append(article)
             accepted += 1
 
+        if not from_cache and memory is not None:
+            update_source_cache(memory, name, ok=True, articles=articles)
+
+        cache_note = " (cache, pas re-scannée)" if from_cache else ""
         print(
-            f"SOURCE | {name} | {accepted}/{len(articles)} articles | "
+            f"SOURCE | {name} | {accepted}/{len(articles)} articles{cache_note} | "
             f"fetch={result['fetch_time']:.2f}s parse={result['parse_time']:.2f}s total={result['total_time']:.2f}s"
+        )
+
+    if sources_from_cache:
+        print(
+            f"CACHE | {sources_from_cache} source(s) non re-scannée(s) "
+            f"(< {SOURCE_MIN_INTERVAL_SECONDS // 60} min)"
         )
 
     return all_articles, sources_successful, sources_total, skipped_previously_seen
@@ -865,6 +1089,7 @@ def run_scan(
         collect_articles,
         force_refresh=force_refresh,
         seen_keys=seen_keys,
+        memory=memory,
     )
 
     print(
@@ -991,7 +1216,7 @@ def run_scan(
     )
 
     if SKIP_PREVIOUSLY_SEEN:
-        save_seen_keys(
+        update_seen_keys(
             memory,
             {
                 canonical_article_key(article)
@@ -1000,6 +1225,11 @@ def run_scan(
             },
         )
         print("MEMORY | seen_article_keys mis à jour")
+
+    # Toujours persisté, y compris quand SKIP_PREVIOUSLY_SEEN est
+    # désactivé : le cache par source (fraîcheur des sources) en dépend.
+    safe_save_memory(memory)
+    print("MEMORY | memory.json sauvegardée")
 
     print(
         f"PERF | total-runtime | {time.perf_counter() - started_total:.2f}s"

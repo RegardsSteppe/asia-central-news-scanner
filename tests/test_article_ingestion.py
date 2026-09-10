@@ -4,8 +4,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from bs4 import BeautifulSoup
+
 from article_ingestion import (
     build_article,
+    extract_published_date,
     looks_like_article_link,
     parse_rss,
 )
@@ -54,6 +57,48 @@ class LooksLikeArticleLinkTests(unittest.TestCase):
         self.assertFalse(
             looks_like_article_link("https://example.com/story", "A real headline here")
         )
+
+    def test_rejects_bare_monthly_archive_path(self):
+        self.assertFalse(
+            looks_like_article_link(
+                "https://example.com/2024/03/", "March news archive"
+            )
+        )
+
+    def test_accepts_dated_path_with_slug(self):
+        self.assertTrue(
+            looks_like_article_link(
+                "https://example.com/2024/03/some-real-story",
+                "A real headline here",
+            )
+        )
+
+
+class ExtractPublishedDateTests(unittest.TestCase):
+    def test_reads_article_published_time_meta(self):
+        soup = BeautifulSoup(
+            '<html><head><meta property="article:published_time" '
+            'content="2024-03-15T10:00:00Z"></head><body></body></html>',
+            "html.parser",
+        )
+        date = extract_published_date(soup)
+        self.assertIsNotNone(date)
+        self.assertEqual(date.year, 2024)
+        self.assertEqual(date.month, 3)
+        self.assertEqual(date.day, 15)
+
+    def test_reads_time_tag_datetime_attribute(self):
+        soup = BeautifulSoup(
+            '<html><body><time datetime="2024-03-15">15 mars</time></body></html>',
+            "html.parser",
+        )
+        date = extract_published_date(soup)
+        self.assertIsNotNone(date)
+        self.assertEqual(date.year, 2024)
+
+    def test_returns_none_when_no_date_found(self):
+        soup = BeautifulSoup("<html><body>No date here</body></html>", "html.parser")
+        self.assertIsNone(extract_published_date(soup))
 
 
 class BuildArticleTests(unittest.TestCase):

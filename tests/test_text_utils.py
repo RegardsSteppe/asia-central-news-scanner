@@ -66,6 +66,20 @@ class NormalizeUrlTests(unittest.TestCase):
     def test_none_input(self):
         self.assertEqual(normalize_url(None), "")
 
+    def test_strips_tracking_params(self):
+        self.assertEqual(
+            normalize_url(
+                "https://example.com/a?utm_source=x&utm_medium=y&fbclid=z"
+            ),
+            "https://example.com/a",
+        )
+
+    def test_keeps_non_tracking_query_params(self):
+        self.assertEqual(
+            normalize_url("https://example.com/a?id=123&utm_source=x"),
+            "https://example.com/a?id=123",
+        )
+
 
 class ParseDateTests(unittest.TestCase):
     def test_none_returns_none(self):

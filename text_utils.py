@@ -6,7 +6,7 @@ import unicodedata
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import Any
-from urllib.parse import urljoin, urlparse
+from urllib.parse import parse_qsl, urlencode, urljoin, urlparse
 
 
 # ============================================================
@@ -237,6 +237,31 @@ def article_date_timestamp(article: dict[str, Any]) -> float:
 # URL
 # ============================================================
 
+# Paramètres de tracking/partage qui ne distinguent pas deux articles
+# différents mais font que la même page apparaît comme une URL "unique"
+# à chaque fois (et donc échappe à la déduplication).
+_TRACKING_QUERY_PARAMS = {
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_term",
+    "utm_content",
+    "utm_id",
+    "utm_referrer",
+    "fbclid",
+    "gclid",
+    "yclid",
+    "mc_cid",
+    "mc_eid",
+    "_hsenc",
+    "_hsmi",
+    "igshid",
+    "ref",
+    "ref_src",
+    "spref",
+}
+
+
 def normalize_url(url: Any, base_url: str = "") -> str:
     url = clean_text(url)
 
@@ -253,5 +278,13 @@ def normalize_url(url: Any, base_url: str = "") -> str:
 
     # Suppression de fragments.
     parsed = parsed._replace(fragment="")
+
+    if parsed.query:
+        kept_params = [
+            (key, value)
+            for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+            if key.lower() not in _TRACKING_QUERY_PARAMS
+        ]
+        parsed = parsed._replace(query=urlencode(kept_params))
 
     return parsed.geturl().strip()
