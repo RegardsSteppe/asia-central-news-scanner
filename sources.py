@@ -388,6 +388,13 @@ SOURCES = [
         "feeds": [
             "https://www.hrw.org/rss/news",
             "https://news.google.com/rss/search?q=site:hrw.org&hl=en-US&gl=US&ceid=US:en",
+            # Le flux Google News générique (ci-dessus) est classé par
+            # pertinence mondiale et laisse passer à la trappe les
+            # articles spécifiques à l'Asie centrale/Caucase (ex :
+            # l'article sur Anar Mammadli en Azerbaïdjan, absent des
+            # 100 premiers résultats "site:hrw.org"). Requête
+            # supplémentaire ciblée sur les pays de la région.
+            "https://news.google.com/rss/search?q=site%3Ahrw.org%20%28Azerbaijan%20OR%20Armenia%20OR%20Georgia%20OR%20Kazakhstan%20OR%20Kyrgyzstan%20OR%20Tajikistan%20OR%20Turkmenistan%20OR%20Uzbekistan%29&hl=en-US&gl=US&ceid=US:en",
         ],
 
         "fallbacks": [
@@ -410,6 +417,7 @@ SOURCES = [
         "feeds": [
             "https://www.hrw.org/fr/rss/news",
             "https://news.google.com/rss/search?q=site:hrw.org/fr&hl=fr&gl=FR&ceid=FR:fr",
+            "https://news.google.com/rss/search?q=site%3Ahrw.org%2Ffr%20%28Azerba%C3%AFdjan%20OR%20Arm%C3%A9nie%20OR%20G%C3%A9orgie%20OR%20Kazakhstan%20OR%20Kirghizistan%20OR%20Tadjikistan%20OR%20Turkm%C3%A9nistan%20OR%20Ouzb%C3%A9kistan%29&hl=fr&gl=FR&ceid=FR:fr",
         ],
 
         "fallbacks": [
@@ -432,6 +440,7 @@ SOURCES = [
         "feeds": [
             "https://www.hrw.org/ru/rss/news",
             "https://news.google.com/rss/search?q=site:hrw.org/ru&hl=ru&gl=RU&ceid=RU:ru",
+            "https://news.google.com/rss/search?q=site%3Ahrw.org%2Fru%20%28%D0%90%D0%B7%D0%B5%D1%80%D0%B1%D0%B0%D0%B9%D0%B4%D0%B6%D0%B0%D0%BD%20OR%20%D0%90%D1%80%D0%BC%D0%B5%D0%BD%D0%B8%D1%8F%20OR%20%D0%93%D1%80%D1%83%D0%B7%D0%B8%D1%8F%20OR%20%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D1%82%D0%B0%D0%BD%20OR%20%D0%9A%D0%B8%D1%80%D0%B3%D0%B8%D0%B7%D0%B8%D1%8F%20OR%20%D0%A2%D0%B0%D0%B4%D0%B6%D0%B8%D0%BA%D0%B8%D1%81%D1%82%D0%B0%D0%BD%20OR%20%D0%A2%D1%83%D1%80%D0%BA%D0%BC%D0%B5%D0%BD%D0%B8%D1%81%D1%82%D0%B0%D0%BD%20OR%20%D0%A3%D0%B7%D0%B1%D0%B5%D0%BA%D0%B8%D1%81%D1%82%D0%B0%D0%BD%29&hl=ru&gl=RU&ceid=RU:ru",
         ],
 
         "fallbacks": [
