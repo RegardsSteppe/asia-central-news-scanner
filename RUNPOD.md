@@ -30,6 +30,10 @@ already built (title, summary, body...) in the request.
   Kept separate from the main `requirements.txt` (used by the GitHub
   Actions workflow) so the two deployment targets don't share an
   unrelated dependency.
+- `fetch_all_bodies.py` — one-off script, run locally/outside RunPod,
+  that fetches the full body for every article in an `articles.csv`
+  export (see "Feeding it ~6,800 articles" below) and writes a JSON
+  ready to submit to this endpoint. Not part of the Docker image.
 
 ## Local test (no RunPod account needed)
 
@@ -192,3 +196,33 @@ The response's `results` carries the same `score`/`level`/`reasons` the
 site would have shown — the point of this endpoint is to let the same
 export be re-scored elsewhere (e.g. alongside an LLM classifier) without
 re-running the full scan.
+
+Only ~600 of those articles get their full body during a normal scan
+(see "Two-pass analysis" in the README) — the rest only ever had
+title+summary. For a benchmark against an LLM classifier, that's a
+real gap: an ambiguous title (or a Google-News-sourced article, whose
+summary is stripped to empty on purpose) needs the body to be judged
+fairly, and comparing the LLM's title-only guess to the deterministic
+score for an article *it* enriched with the full body isn't
+apples-to-apples either.
+
+`fetch_all_bodies.py` closes that gap as a one-off, separate from the
+daily scan (it doesn't touch `memory.json`'s bounded `body_cache`):
+
+```bash
+python fetch_all_bodies.py --input articles.csv --output articles_with_body.json
+# quick test on a handful first:
+python fetch_all_bodies.py --input articles.csv --output sample.json --limit 50
+```
+
+It reuses `extract_body()` from `article_ingestion.py` as-is (same
+extraction the daily scan's enrichment uses, never duplicated) and
+attaches each source's declared `language` from `sources.py`. Needs the
+full `requirements.txt` (feedparser/beautifulsoup4/requests) — this
+script isn't part of the minimal RunPod image, it's what *produces*
+the JSON you feed to it. The output is already shaped as
+`{"articles": [...]}`, ready to submit under `"mode": "batch"`
+(wrap it in `{"input": ...}` for a real RunPod call). Expect some
+failures on the same sources the daily scan already struggles with
+(403s, timeouts) — a failed fetch is marked with `"fetch_error"`
+rather than dropped, so you can see exactly what's missing.
