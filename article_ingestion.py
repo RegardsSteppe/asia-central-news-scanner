@@ -75,6 +75,14 @@ def parse_rss(
             if not title:
                 continue
 
+            # La <description> Google News n'est jamais un vrai résumé :
+            # c'est juste le titre ré-empaqueté en lien HTML suivi du
+            # nom de la source ('<a href="...">Titre</a> <font ...>
+            # Source</font>'), affiché tel quel sur le site sans rien
+            # apporter. Le vrai résumé, s'il existe, viendra de
+            # l'enrichissement (corps de l'article).
+            summary = ""
+
         articles.append(
             build_article(
                 source=source,
