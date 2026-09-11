@@ -310,8 +310,40 @@ def phrase_present(text, phrase):
     return bool(_compiled(pattern).search(text))
 
 
+@lru_cache(maxsize=None)
+def _terms_alternation(terms):
+    """
+    Combine a term list into one alternation regex plus a lookup from
+    normalized term text back to the original term string, so find_terms
+    can scan the text once instead of running a separate compile+search
+    per term (classify_article calls find_terms ~50 times per article,
+    against lists of dozens of terms each). Cached on the term tuple:
+    the static lists from keywords.py/scoring.py are reused across every
+    article, same as _compiled/_alternation_pattern.
+    """
+    entries = []
+    lookup = {}
+    for term in terms:
+        norm = normalize(term)
+        if not norm or norm in lookup:
+            continue
+        lookup[norm] = term
+        entries.append(norm)
+    if not entries:
+        return None, {}
+    entries.sort(key=len, reverse=True)
+    pattern_text = "|".join(r"(?<!\w)" + re.escape(norm) + r"(?!\w)" for norm in entries)
+    return _compiled(pattern_text), lookup
+
+
 def find_terms(text, terms):
-    return [term for term in terms if phrase_present(text, term)]
+    if not text or not terms:
+        return []
+    pattern, lookup = _terms_alternation(tuple(terms))
+    if pattern is None:
+        return []
+    found = {lookup[match.group(0)] for match in pattern.finditer(text) if match.group(0) in lookup}
+    return [term for term in terms if term in found]
 
 
 def capped_add(current, value, maximum):
@@ -329,14 +361,56 @@ def weighted_score(terms, weights, maximum):
     return min(score, maximum)
 
 
+@lru_cache(maxsize=None)
+def _alternation_pattern(terms):
+    """
+    Combine a term list into one alternation regex instead of matching
+    each term separately. Terms are sorted longest-first so overlapping
+    alternatives (e.g. "activist" vs "activists") prefer the longer match.
+    Cached on the term tuple: the same static lists (ACTIVIST_TERMS,
+    TARGET_TERMS_V9, ...) are reused across every article.
+    """
+    escaped = sorted(
+        (re.escape(normalize(term)) for term in terms if term),
+        key=len,
+        reverse=True,
+    )
+    if not escaped:
+        return None
+    return _compiled("|".join(escaped), re.I | re.S)
+
+
 def relation_present(text, targets, actions, window=140):
-    for target in targets:
-        for action in actions:
-            a = re.escape(normalize(target))
-            b = re.escape(normalize(action))
-            if _compiled(rf"{a}.{{0,{window}}}{b}", re.I | re.S).search(text):
+    """
+    True if any target term and any action term co-occur within `window`
+    characters of each other, in either order.
+
+    Previously this compiled a dedicated regex per (target, action) pair
+    (thousands of pairs for the larger term lists) and searched the full
+    article text with each one. Instead, build one combined alternation
+    regex per side, collect match spans, and compare positions — this
+    turns O(targets x actions) regex compiles/searches into O(targets +
+    actions).
+    """
+    if not text:
+        return False
+    target_pattern = _alternation_pattern(tuple(targets))
+    if target_pattern is None:
+        return False
+    target_spans = [m.span() for m in target_pattern.finditer(text)]
+    if not target_spans:
+        return False
+    action_pattern = _alternation_pattern(tuple(actions))
+    if action_pattern is None:
+        return False
+    action_spans = [m.span() for m in action_pattern.finditer(text)]
+    if not action_spans:
+        return False
+    for target_start, target_end in target_spans:
+        for action_start, action_end in action_spans:
+            if target_end <= action_start <= target_end + window:
                 return True
-            if _compiled(rf"{b}.{{0,{window}}}{a}", re.I | re.S).search(text):
+            if action_end <= target_start <= action_end + window:
                 return True
     return False
 
