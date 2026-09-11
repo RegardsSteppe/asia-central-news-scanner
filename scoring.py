@@ -4,6 +4,7 @@ from functools import lru_cache
 from keywords import (
     CENTRAL_ASIA_TERMS,
     CAUCASUS_TERMS,
+    UYGHUR_TERMS,
     HUMAN_RIGHTS_TERMS,
     REPRESSION_TERMS,
     SPECIFIC_RIGHTS_TERMS,
@@ -318,6 +319,7 @@ def classify_article(article):
 
     central_asia = find_terms(headline, CENTRAL_ASIA_TERMS)
     caucasus = find_terms(headline, CAUCASUS_TERMS)
+    uyghur = find_terms(headline, UYGHUR_TERMS)
 
     central_asia_source_terms = [
         "turkmen.news", "turkmen news", "the times of central asia",
@@ -328,10 +330,13 @@ def classify_article(article):
     ]
     central_asia_source = find_terms(source_context, central_asia_source_terms)
 
-    body_geography = find_terms(body, CENTRAL_ASIA_TERMS + CAUCASUS_TERMS)
-    regional_context = bool(central_asia or body_geography or caucasus or central_asia_source)
-
-    caucasus_only = bool(caucasus and not central_asia)
+    body_geography = find_terms(
+        body, CENTRAL_ASIA_TERMS + CAUCASUS_TERMS + UYGHUR_TERMS
+    )
+    regional_context = bool(
+        central_asia or body_geography or caucasus or uyghur
+        or central_asia_source
+    )
 
     human_rights = find_terms(headline, HUMAN_RIGHTS_TERMS)
     repression = find_terms(headline, REPRESSION_TERMS)
@@ -569,13 +574,16 @@ def classify_article(article):
         geography_score = 12
         reasons.append("Asie centrale: " + ", ".join(central_asia[:6]))
     elif caucasus:
-        geography_score = 3
+        geography_score = 12
         reasons.append("Caucase: " + ", ".join(caucasus[:6]))
+    elif uyghur:
+        geography_score = 12
+        reasons.append("Ouïghours: " + ", ".join(uyghur[:6]))
     elif central_asia_source:
         geography_score = 10
         reasons.append("source spécialisée Asie centrale")
 
-    if central_asia and body_has_geography:
+    if (central_asia or caucasus or uyghur) and body_has_geography:
         geography_score = capped_add(geography_score, 3, 15)
         reasons.append("géographie confirmée dans le corps")
 
@@ -705,16 +713,12 @@ def classify_article(article):
         reasons.append("histoire / culture")
 
     if actors and not (
-        central_asia and (
+        (central_asia or caucasus or uyghur) and (
             has_activist or has_journalist or has_repression
             or has_specific_rights or domestic or major_geo
         )
     ):
         penalties += 5
-
-    if caucasus_only:
-        penalties += 10
-        reasons.append("Caucase uniquement")
 
     if non_news:
         score = min(score, 5)
@@ -912,8 +916,26 @@ def classify_article(article):
     # NIVEAU
     # ========================================================
 
-    if not regional_context or caucasus_only or non_news or noise:
-        level = "D"
+    # Un article hors région (Asie centrale/Caucase/Ouïghours) qui
+    # porte tout de même un vrai signal droits humains/activiste
+    # (ex : HRW sur un défenseur des droits en Iran ou au Rwanda) est
+    # distingué du pur bruit (sport, économie ordinaire, culture...) :
+    # niveau D, réservé aux activistes/répression d'autres régions.
+    # Le niveau E regroupe tout le reste (l'ancien niveau D).
+    global_hr_signal = bool(
+        has_activist or has_journalist or has_hr_defender
+        or primary_repression or primary_defender_case
+        or primary_forced_labor or primary_specific_right
+        or primary_press or primary_gender or primary_transnational
+        or primary_political_prisoner or primary_journalist_pressure
+        or primary_academic_case or primary_lgbt_pressure
+        or critical_hr_case
+    )
+
+    if not regional_context:
+        level = "D" if global_hr_signal else "E"
+    elif non_news or noise:
+        level = "E"
     elif score >= 75 and (
         confirmed_activist_pressure
         or confirmed_journalist_pressure
@@ -930,7 +952,7 @@ def classify_article(article):
     elif score >= 35:
         level = "C"
     else:
-        level = "D"
+        level = "E"
 
     if score >= 90:
         priority = "ABSOLUE"
@@ -1002,10 +1024,11 @@ def classify_article(article):
     signals = {
         "central_asia": central_asia,
         "caucasus": caucasus,
+        "uyghur": uyghur,
         "body_geography": body_geography,
         "body_geo_count": body_geo_count,
         "strong_body_geography": strong_body_geography,
-        "caucasus_only": caucasus_only,
+        "global_hr_signal": global_hr_signal,
 
         "activists": activists,
         "body_activists": body_activists,

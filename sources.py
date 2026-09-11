@@ -1259,6 +1259,65 @@ SOURCES = [
     },
 
     # ========================================================
+    # OUÏGHOURS / XINJIANG
+    #
+    # Ajouté à la demande explicite de l'utilisateur : traité comme
+    # une région ciblée à part entière (voir UYGHUR_TERMS dans
+    # keywords.py), au même titre que l'Asie centrale et le Caucase.
+    # ========================================================
+
+    {
+        "name": "Uyghur Human Rights Project",
+        "short_name": "UHRP",
+        "profile": "human_rights",
+        "label": "International · droits humains · Ouïghours",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://uhrp.org/",
+
+        "max_articles": 200,
+    },
+
+    {
+        "name": "World Uyghur Congress",
+        "short_name": "WUC",
+        "profile": "human_rights",
+        "label": "International · droits humains · Ouïghours",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.uyghurcongress.org/en/category/press-release/",
+
+        "fallbacks": [
+            "https://www.uyghurcongress.org/en/",
+        ],
+
+        "max_articles": 200,
+    },
+
+    {
+        "name": "Radio Free Asia — Uyghur (anglais)",
+        "short_name": "RFA Uyghur",
+        "profile": "international_independent",
+        "label": "International · Ouïghours",
+        "type": "rss",
+        "language": "en",
+
+        "url": "https://www.rfa.org/english/uyghur/",
+
+        "feeds": [
+            "https://www.rfa.org/english/news/uyghur_news/rss2.xml",
+        ],
+
+        "fallbacks": [
+            "https://www.rfa.org/english/uyghur/",
+        ],
+
+        "max_articles": 200,
+    },
+
+    # ========================================================
     # SÉCURITÉ RÉGIONALE
     #
     # Think tanks et centres de recherche généralistes (pas

@@ -264,6 +264,43 @@ CAUCASUS_TERMS = [
 ]
 
 # ------------------------------------------------------------
+# 4bis. UYGHURS / XINJIANG
+# ------------------------------------------------------------
+# Traité comme une région ciblée à part entière, au même titre que
+# l'Asie centrale et le Caucase (pas seulement un sujet secondaire).
+
+UYGHUR_TERMS = [
+    "uyghur",
+    "uyghurs",
+    "uighur",
+    "uighurs",
+    "xinjiang",
+    "east turkestan",
+    "eastern turkestan",
+    "urumqi",
+    "kashgar",
+    "kashgar prefecture",
+
+    # Russian
+    "уйгур",
+    "уйгуры",
+    "уйгурский",
+    "уйгурская",
+    "синьцзян",
+    "восточный туркестан",
+    "урумчи",
+    "кашгар",
+
+    # Farsi
+    "اویغور",
+    "اویغورها",
+    "شینجیانگ",
+    "ترکستان شرقی",
+    "ارومچی",
+    "کاشغر",
+]
+
+# ------------------------------------------------------------
 # 5. GENERAL HUMAN RIGHTS
 # ------------------------------------------------------------
 

@@ -666,6 +666,7 @@ def build_stats(
         "B": 0,
         "C": 0,
         "D": 0,
+        "E": 0,
     }
 
     relevant = 0
@@ -673,7 +674,7 @@ def build_stats(
     for article in articles:
         level = article.get(
             "level",
-            "D",
+            "E",
         )
 
         if level in levels:
@@ -705,6 +706,7 @@ def build_stats(
         "level_b": levels["B"],
         "level_c": levels["C"],
         "level_d": levels["D"],
+        "level_e": levels["E"],
         "sources_successful": sources_successful,
         "sources_total": sources_total,
         "relevance_rate": round(
@@ -757,7 +759,7 @@ def build_audit(
                 ),
                 "level": article.get(
                     "level",
-                    "D",
+                    "E",
                 ),
                 "relevant": article.get(
                     "relevant",
@@ -818,7 +820,7 @@ def build_csv_rows(
             "url": article.get("url", ""),
             "summary": article.get("summary", ""),
             "score": article.get("score", 0),
-            "level": article.get("level", "D"),
+            "level": article.get("level", "E"),
             "priority": article.get("priority", ""),
             "relevant": article.get("relevant", False),
             "theme": article.get("theme", ""),
@@ -1331,7 +1333,8 @@ def run_scan(
         f"A={stats['level_a']} "
         f"B={stats['level_b']} "
         f"C={stats['level_c']} "
-        f"D={stats['level_d']}"
+        f"D={stats['level_d']} "
+        f"E={stats['level_e']}"
     )
 
     # --------------------------------------------------------
