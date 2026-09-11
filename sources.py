@@ -997,10 +997,17 @@ SOURCES = [
         "short_name": "Centre1",
         "profile": "regional_media",
         "label": "Média régional · Kazakhstan · russe",
-        "type": "html",
+        "type": "rss",
         "language": "ru",
 
         "url": "https://centre1.com/kazakhstan/",
+
+        # Certificat SSL expiré côté serveur (audit du 2026-09-11) :
+        # le contournement Google News évite toute connexion directe
+        # au domaine, donc évite aussi le problème de certificat.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:centre1.com&hl=ru&gl=RU&ceid=RU:ru",
+        ],
 
         "fallbacks": [
             "https://centre1.com/",
@@ -1529,10 +1536,17 @@ SOURCES = [
         "short_name": "Marshall Center",
         "profile": "security_analysis",
         "label": "International · études de sécurité",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://www.marshallcenter.org/",
+
+        # Chaîne de certificat SSL cassée côté serveur (audit du
+        # 2026-09-11) : le contournement Google News évite toute
+        # connexion directe au domaine.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:marshallcenter.org&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 200,
     },
@@ -1901,10 +1915,17 @@ SOURCES = [
         "short_name": "CIDCA",
         "profile": "state_media",
         "label": "Média officiel · aide au développement chinoise",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://en.cidca.gov.cn/",
+
+        # Certificat SSL mal configuré côté serveur (hostname
+        # mismatch, audit du 2026-09-11) : le contournement Google
+        # News évite toute connexion directe au domaine.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:cidca.gov.cn&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 100,
     },
@@ -1959,10 +1980,17 @@ SOURCES = [
         "short_name": "SPSR",
         "profile": "academic_research",
         "label": "Recherche académique · science politique",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://onlinelibrary.wiley.com/journal/16626370",
+
+        # 403 anti-bot global à toute la plateforme Wiley (audit du
+        # 2026-09-11) : contournement Google News, restreint au nom de
+        # la revue pour ne pas remonter les autres revues Wiley.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aonlinelibrary.wiley.com%20%22Swiss%20Political%20Science%20Review%22&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 150,
     },
