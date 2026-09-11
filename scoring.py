@@ -394,7 +394,7 @@ def classify_article(article):
         find_terms(primary_hr_text, REPRESSION_TERMS_V9)
         or has_russian_repression_morphology(primary_hr_text)
         or contains_pattern(primary_hr_text, [
-            r"\bconvicted\b", r"\bsentenced\b", r"\bbehind bars\b",
+            r"\bconvicted\b", r"\bsentenc\w*\b", r"\bbehind bars\b",
             r"\bunder threat\b", r"\bunder pressure\b",
         ])
     )

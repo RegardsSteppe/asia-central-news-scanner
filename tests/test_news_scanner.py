@@ -13,6 +13,7 @@ from news_scanner import (
     collect_articles,
     compute_seen_keys,
     deduplicate,
+    enrich_articles,
     load_seen_keys,
 )
 
@@ -157,6 +158,63 @@ class CsvExportTests(unittest.TestCase):
         self.assertEqual(rows[0]["score"], 82)
         self.assertEqual(rows[0]["keywords"], "freedom; arrested")
         self.assertEqual(rows[0]["geography_score"], 12)
+
+
+class EnrichArticlesTests(unittest.TestCase):
+    @patch("news_scanner.extract_body")
+    def test_priority_profiles_get_guaranteed_enrichment_slots(
+        self, mock_extract
+    ):
+        # Régression : un article régional précis (ex : Amnesty sur une
+        # condamnation nommément ciblée) peut avoir un score titre-seul
+        # trop bas pour entrer dans le top ENRICH_LIMIT une fois noyé
+        # sous le volume d'une source généraliste — il ne recevrait
+        # alors jamais son corps complet et resterait plafonné pour
+        # toujours. Les profils human_rights/press_freedom/investigative
+        # doivent avoir des créneaux garantis, indépendants du score.
+        mock_extract.return_value = ("full body text", None)
+
+        sources = [
+            {"name": "Generic Source", "profile": "regional_media"},
+            {"name": "Amnesty International", "profile": "human_rights"},
+        ]
+
+        articles = [
+            {"source": "Generic Source", "score": 90, "url": "https://example.com/1", "title": "A" * 10},
+            {"source": "Generic Source", "score": 89, "url": "https://example.com/2", "title": "B" * 10},
+            {"source": "Generic Source", "score": 88, "url": "https://example.com/3", "title": "C" * 10},
+            {"source": "Amnesty International", "score": 15, "url": "https://example.com/4", "title": "D" * 10},
+        ]
+
+        with patch("news_scanner.SOURCES", new=sources), patch(
+            "news_scanner.ENRICH_LIMIT", 2
+        ), patch("news_scanner.ENRICH_PRIORITY_LIMIT", 10):
+            enrich_articles(articles)
+
+        self.assertEqual(articles[3]["body"], "full body text")
+
+    @patch("news_scanner.extract_body")
+    def test_general_score_ranking_still_applies_beyond_priority_profiles(
+        self, mock_extract
+    ):
+        mock_extract.return_value = ("full body text", None)
+
+        sources = [
+            {"name": "Generic Source", "profile": "regional_media"},
+        ]
+
+        articles = [
+            {"source": "Generic Source", "score": 90, "url": "https://example.com/1", "title": "A" * 10},
+            {"source": "Generic Source", "score": 10, "url": "https://example.com/2", "title": "B" * 10},
+        ]
+
+        with patch("news_scanner.SOURCES", new=sources), patch(
+            "news_scanner.ENRICH_LIMIT", 1
+        ), patch("news_scanner.ENRICH_PRIORITY_LIMIT", 10):
+            enrich_articles(articles)
+
+        self.assertEqual(articles[0]["body"], "full body text")
+        self.assertNotIn("body", articles[1])
 
 
 class MemorySeenKeysTests(unittest.TestCase):
