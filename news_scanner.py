@@ -134,6 +134,32 @@ _FALLBACK_STOPWORDS = {
     "не",
     "к",
     "о",
+    "les",
+    "des",
+    "une",
+    "un",
+    "le",
+    "la",
+    "du",
+    "de",
+    "et",
+    "que",
+    "qui",
+    "pour",
+    "dans",
+    "sur",
+    "avec",
+    "pas",
+    "plus",
+    "son",
+    "sa",
+    "ses",
+    "par",
+    "au",
+    "aux",
+    "ce",
+    "cette",
+    "ces",
 }
 
 # Terms specific to this project's news-title vocabulary that generic
@@ -160,7 +186,7 @@ def _load_stopwords() -> set[str]:
     words: set[str] = set(_FALLBACK_STOPWORDS)
 
     if get_stop_words is not None:
-        for language in ("en", "ru", "fa"):
+        for language in ("en", "ru", "fa", "fr"):
             try:
                 words |= set(get_stop_words(language))
             except Exception:

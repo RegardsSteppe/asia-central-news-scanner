@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from news_scanner import (
     build_audit,
     build_csv_rows,
+    build_title_vocabulary,
     canonical_article_key,
     collect_articles,
     compute_seen_keys,
@@ -37,6 +38,24 @@ class CanonicalArticleKeyTests(unittest.TestCase):
             canonical_article_key(article_a),
             canonical_article_key(article_b),
         )
+
+
+class BuildTitleVocabularyTests(unittest.TestCase):
+    def test_filters_out_french_stopwords(self):
+        # Régression : les stopwords français ("les", "des", "une"...)
+        # remontaient dans le nuage de mots car _load_stopwords()
+        # ne chargeait que en/ru/fa, pas fr, alors que plusieurs
+        # sources (RSF, FIDH...) publient en français.
+        articles = [
+            {"title": "Les autorités arrêtent une journaliste des droits humains"},
+            {"title": "Une répression sévère contre les militants dans la région"},
+        ]
+
+        vocabulary = build_title_vocabulary(articles, limit=50)
+        words = {entry["word"] for entry in vocabulary}
+
+        for stopword in ("les", "des", "une", "la", "dans"):
+            self.assertNotIn(stopword, words)
 
 
 class DeduplicateTests(unittest.TestCase):
