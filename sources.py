@@ -697,10 +697,17 @@ SOURCES = [
         "short_name": "IPHR",
         "profile": "human_rights",
         "label": "International · droits humains",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://iphronline.org/articles/",
+
+        # 403 persistant sur la page /articles/ ET le fallback racine
+        # (audit du 2026-09-11, run #127) : contournement Google News,
+        # même technique que pour HRW/les autres sources bloquées.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:iphronline.org&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "fallbacks": [
             "https://www.iphronline.org/",
