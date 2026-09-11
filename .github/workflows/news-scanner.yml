@@ -4,7 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       force_refresh:
-        description: "Force full re-scan (ignore HTTP cache and per-source freshness memory)"
+        description: "Force full re-scan (ignore HTTP cache and per-source freshness memory) — slow, re-fetches every source"
+        required: false
+        type: boolean
+        default: false
+      show_all_articles:
+        description: "Show every article currently on each source, including ones already shown in a past run — keeps the fast per-source cache, only disables the seen-article filter"
         required: false
         type: boolean
         default: false
@@ -35,6 +40,9 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Run scanner
+        env:
+          SCANNER_SKIP_PREVIOUSLY_SEEN: >-
+            ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.show_all_articles == 'true') && '0' || '1' }}
         run: >-
           python news_scanner.py
           ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.force_refresh == 'true') && '--scan' || '' }}
