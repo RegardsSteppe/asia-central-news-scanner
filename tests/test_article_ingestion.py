@@ -459,6 +459,62 @@ class ParseRssTests(unittest.TestCase):
             articles[0]["summary"], "A genuine summary of the article."
         )
 
+    def test_rejects_navigation_pages_from_google_news(self):
+        # Régression réelle : le flux Google News (site:hrw.org...)
+        # indexe aussi de vieilles pages de navigation du site
+        # ("Table of Contents Europe & Central Asia", "Countries"),
+        # jamais filtrées car looks_like_article_link() n'était
+        # jamais appliqué aux entrées RSS.
+        content = """<?xml version="1.0"?>
+        <rss version="2.0"><channel>
+        <item>
+          <title>Table of Contents Europe &amp; Central Asia - Human Rights Watch</title>
+          <link>https://news.google.com/rss/articles/abc1</link>
+          <description>Summary</description>
+        </item>
+        <item>
+          <title>Countries - Human Rights Watch</title>
+          <link>https://news.google.com/rss/articles/abc2</link>
+          <description>Summary</description>
+        </item>
+        <item>
+          <title>Kazakhstan Jails Activists for Peaceful Protest - Human Rights Watch</title>
+          <link>https://news.google.com/rss/articles/abc3</link>
+          <description>Summary</description>
+        </item>
+        </channel></rss>
+        """
+        articles = parse_rss(
+            content,
+            {"name": "Human Rights Watch"},
+            feed_url="https://news.google.com/rss/search?q=site:hrw.org",
+        )
+        titles = [a["title"] for a in articles]
+        self.assertEqual(
+            titles, ["Kazakhstan Jails Activists for Peaceful Protest"]
+        )
+
+    def test_google_news_redirect_url_does_not_trigger_rss_path_rejection(self):
+        # Le lien de redirection Google (.../rss/articles/<hash>)
+        # contient littéralement "/rss", un motif normalement exclu
+        # (liens de découverte de flux) — il ne doit pas être jugé
+        # sur son URL opaque, seulement sur son titre.
+        content = """<?xml version="1.0"?>
+        <rss version="2.0"><channel>
+        <item>
+          <title>A perfectly legitimate headline here - Human Rights Watch</title>
+          <link>https://news.google.com/rss/articles/xyz789</link>
+          <description>Summary</description>
+        </item>
+        </channel></rss>
+        """
+        articles = parse_rss(
+            content,
+            {"name": "Human Rights Watch"},
+            feed_url="https://news.google.com/rss/search?q=site:hrw.org",
+        )
+        self.assertEqual(len(articles), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
