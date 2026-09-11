@@ -225,6 +225,23 @@ _NON_ARTICLE_PATH_PATTERNS = (
     "/get-involved/",
     "/tmsearch/",
     "_layouts/",
+    # Repéré en audit réel le 2026-09-11 (niveau C) : pages de listing/
+    # agrégation, pas un article précis — uhrp.org/news_cat/uhrp-in-
+    # the-news/ (archive de catégorie WordPress) et hronikatm.com/
+    # other-media/iz-drugih-smi/ ("depuis d'autres médias", une
+    # rubrique de republication, pas un contenu original).
+    "/news_cat/",
+    "/other-media/",
+    # "/sports/" : contenu hors-sujet plutôt que "pas un article" à
+    # proprement parler, mais Al Jazeera par pays agrège tout le site
+    # (sport, culture, économie...) — un résultat de tennis atteignait
+    # le niveau C via un simple homonyme ("court" de tennis matchant
+    # le vocabulaire judiciaire). Exclu à la source plutôt que de
+    # complexifier le scoring pour un cas hors périmètre du projet.
+    "/sports/",
+    # uscirf.gov/news-room/uscirf-spotlight : page d'émission
+    # (liste tous les épisodes du podcast), pas un épisode précis.
+    "/uscirf-spotlight",
 )
 
 # Segments d'URL qui indiquent plutôt une page d'article.
