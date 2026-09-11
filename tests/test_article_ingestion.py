@@ -133,6 +133,24 @@ class LooksLikeArticleLinkTests(unittest.TestCase):
                 "Press freedom in the US",
             ),
             ("https://cpj.org/data/missing", "Missing Journalists"),
+            # Repéré en audit réel le 2026-09-11 : "Take Action" (page
+            # de campagne générique Amnesty) et deux pages-outils
+            # OHCHR Special Procedures atteignaient le niveau B avec
+            # un faux score de répression, faute d'être reconnues
+            # comme des non-articles.
+            (
+                "https://www.amnesty.org/en/get-involved/take-action/",
+                "Take Action",
+            ),
+            (
+                "https://spcommreports.ohchr.org/Tmsearch/TMDocuments",
+                "Communication search",
+            ),
+            (
+                "http://spinternet.ohchr.org/_Layouts/SpecialProceduresInternet/"
+                "ViewAllCountryMandates.aspx?Type=TM",
+                "Thematic mandates",
+            ),
         ]
 
         for url, title in cases:

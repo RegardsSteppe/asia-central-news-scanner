@@ -214,6 +214,17 @@ _NON_ARTICLE_PATH_PATTERNS = (
     "/classement",
     "/barometre",
     "/data/",
+    # Repéré en audit réel le 2026-09-11 : encore le même filtre par
+    # défaut (titre suffisant + 2 segments) qui laissait passer des
+    # pages-outils, ex. amnesty.org/en/get-involved/take-action/
+    # (page de campagne générique, pas un article précis) ou les
+    # microsites OHCHR Special Procedures — spcommreports.ohchr.org/
+    # Tmsearch/... (moteur de recherche) et spinternet.ohchr.org/
+    # _Layouts/.../ViewAllCountryMandates.aspx (page ASP.NET/
+    # SharePoint de navigation, pas un article).
+    "/get-involved/",
+    "/tmsearch/",
+    "_layouts/",
 )
 
 # Segments d'URL qui indiquent plutôt une page d'article.
