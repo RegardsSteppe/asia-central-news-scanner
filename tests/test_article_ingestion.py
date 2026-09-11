@@ -139,6 +139,28 @@ class LooksLikeArticleLinkTests(unittest.TestCase):
             with self.subTest(url=url):
                 self.assertFalse(looks_like_article_link(url, title))
 
+    def test_rejects_url_with_repeated_path_prefix(self):
+        # Régression réelle : FIDH sert des liens relatifs sans "/"
+        # initial depuis une page-liste déjà profonde, ce qui produit
+        # une URL cassée avec le préfixe de chemin dupliqué.
+        self.assertFalse(
+            looks_like_article_link(
+                "https://www.fidh.org/en/region/europe-central-asia/"
+                "en/region/europe-central-asia/azerbaijan/"
+                "azerbaijan-serious-concerns",
+                "Azerbaijan: Serious concerns over the ill-treatment",
+            )
+        )
+
+    def test_accepts_url_without_repeated_prefix(self):
+        self.assertTrue(
+            looks_like_article_link(
+                "https://www.fidh.org/en/region/europe-central-asia/"
+                "azerbaijan/azerbaijan-serious-concerns",
+                "Azerbaijan: Serious concerns over the ill-treatment",
+            )
+        )
+
 
 class ExtractPublishedDateTests(unittest.TestCase):
     def test_reads_article_published_time_meta(self):
