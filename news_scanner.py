@@ -85,7 +85,7 @@ FETCH_WORKERS = max(
 )
 ENRICH_WORKERS = max(
     1,
-    int(os.getenv("SCANNER_ENRICH_WORKERS", "4")),
+    int(os.getenv("SCANNER_ENRICH_WORKERS", "10")),
 )
 SKIP_PREVIOUSLY_SEEN = os.getenv(
     "SCANNER_SKIP_PREVIOUSLY_SEEN",
