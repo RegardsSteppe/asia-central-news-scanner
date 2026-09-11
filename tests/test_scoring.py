@@ -635,6 +635,56 @@ class LanguageTaggingTests(unittest.TestCase):
         )
 
 
+class ScoreIsAgeIndependentTests(unittest.TestCase):
+    """
+    Décidé avec l'utilisateur le 2026-09-11 : le score et le niveau
+    mesurent la pertinence sémantique d'un article, jamais son âge —
+    un vieux rapport pertinent (ex. republié via le contournement
+    Google News sur un site bloqué) doit obtenir exactement le même
+    score/niveau qu'un article frais équivalent. La fraîcheur ne joue
+    que sur l'affichage (tri, badge — voir html_template.py) et sur la
+    sélection des articles couverts par la synthèse quotidienne (voir
+    synthesis.py), jamais sur le score lui-même.
+    """
+
+    def _base_article(self):
+        return {
+            "title": "Kazakhstan Jails Activist for Ten Years Over Protest",
+            "summary": (
+                "A court in Kazakhstan sentenced a human rights activist "
+                "to ten years in prison after a peaceful protest."
+            ),
+            "body": "",
+            "source": "Test Source",
+            "url": "https://example.com/example",
+        }
+
+    def test_identical_score_regardless_of_declared_age(self):
+        fresh = self._base_article()
+        fresh["age_days"] = 0
+
+        old = self._base_article()
+        old["age_days"] = 900
+
+        no_age_info = self._base_article()
+
+        classify_article(fresh)
+        classify_article(old)
+        classify_article(no_age_info)
+
+        self.assertEqual(fresh["score"], old["score"])
+        self.assertEqual(fresh["score"], no_age_info["score"])
+        self.assertEqual(fresh["level"], old["level"])
+        self.assertEqual(fresh["level"], no_age_info["level"])
+
+    def test_freshness_score_no_longer_in_signals(self):
+        article = self._base_article()
+
+        classify_article(article)
+
+        self.assertNotIn("freshness_score", article["signals"])
+
+
 class FrenchVocabularyTests(unittest.TestCase):
     """
     Régression réelle (audit du 2026-09-11) : un article HRW en

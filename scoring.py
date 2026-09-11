@@ -936,28 +936,21 @@ def classify_article(article):
     if has_sco and major_geo:
         geopolitical_score = capped_add(geopolitical_score, 3, 10)
 
-    freshness_score = 0
-    age_days = article.get("age_days")
-    if age_days is not None:
-        try:
-            age_days = float(age_days)
-            if age_days <= 1:
-                freshness_score = 5
-            elif age_days <= 3:
-                freshness_score = 4
-            elif age_days <= 7:
-                freshness_score = 3
-            elif age_days <= 14:
-                freshness_score = 2
-            elif age_days <= 30:
-                freshness_score = 1
-        except (TypeError, ValueError):
-            pass
-
+    # Pas de bonus/malus de fraîcheur dans le score : le score et le
+    # niveau (A/B/C/D) mesurent la pertinence sémantique d'un article,
+    # pas son âge — un vieux rapport toujours pertinent (ex. republié
+    # via Google News) doit garder le même niveau qu'un article frais
+    # équivalent. La fraîcheur est gérée ailleurs, uniquement pour le
+    # tri d'affichage (le plus récent en premier au sein d'un même
+    # niveau) et l'indicateur d'âge sur chaque carte — jamais en
+    # ajoutant/retirant des points. Décidé avec l'utilisateur le
+    # 2026-09-11 après avoir remarqué que age_days n'était de toute
+    # façon jamais renseigné nulle part dans le pipeline (le bonus
+    # n'avait donc jamais été appliqué en pratique).
     score = (
         geography_score + target_score + repression_score
         + rights_score + journalism_score
-        + geopolitical_score + freshness_score
+        + geopolitical_score
     )
 
     # ========================================================
@@ -1383,7 +1376,6 @@ def classify_article(article):
         "rights_score": rights_score,
         "journalism_score": journalism_score,
         "geopolitical_score": geopolitical_score,
-        "freshness_score": freshness_score,
         "penalties": penalties,
     }
 

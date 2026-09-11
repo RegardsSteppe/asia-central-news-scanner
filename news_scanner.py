@@ -104,6 +104,30 @@ SOURCE_NAME_TO_GROUP = {
     for source in SOURCES
 }
 
+# Rang des niveaux pour le tri final (A d'abord, E en dernier). Sert
+# uniquement à ordonner l'affichage — le niveau lui-même vient de
+# scoring.py et ne dépend que de la pertinence sémantique.
+LEVEL_RANK = {"A": 4, "B": 3, "C": 2, "D": 1, "E": 0}
+
+
+def final_sort_key(article: dict[str, Any]) -> tuple:
+    """
+    Clé de tri (utilisée avec reverse=True) : niveau (A > B > C > D > E)
+    puis, à l'intérieur d'un même niveau, date décroissante — jamais le
+    score brut. Le score/niveau mesure la pertinence sémantique (voir
+    scoring.py) ; une fois qu'un article a atteint un niveau donné,
+    c'est sa fraîcheur qui doit décider de son rang d'affichage, pas un
+    écart de quelques points de score. Ça évite qu'un vieux rapport
+    très pertinent (ex. republié via Google News) ne s'affiche devant
+    un article frais équivalent au sein de la même section. Décidé
+    avec l'utilisateur le 2026-09-11.
+    """
+    return (
+        bool(article.get("relevant")),
+        LEVEL_RANK.get(article.get("level", "E"), 0),
+        article_date_timestamp(article),
+    )
+
 # Durée pendant laquelle une source scannée avec succès n'est pas
 # re-scannée (mémoire par source, persistée dans memory.json). 2h par défaut.
 SOURCE_MIN_INTERVAL_SECONDS = max(
@@ -804,7 +828,6 @@ def build_csv_rows(
         "rights_score",
         "journalism_score",
         "geopolitical_score",
-        "freshness_score",
     )
     rows = []
 
@@ -861,7 +884,6 @@ def export_csv(articles: list[dict[str, Any]]) -> None:
         "rights_score",
         "journalism_score",
         "geopolitical_score",
-        "freshness_score",
     ]
 
     with CSV_OUTPUT_FILE.open("w", encoding="utf-8", newline="") as handle:
@@ -1295,11 +1317,7 @@ def run_scan(
     timed_call(
         "sort-final",
         all_articles.sort,
-        key=lambda article: (
-            bool(article.get("relevant")),
-            article.get("score", 0),
-            article_date_timestamp(article),
-        ),
+        key=final_sort_key,
         reverse=True,
     )
 

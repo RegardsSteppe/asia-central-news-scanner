@@ -1,5 +1,6 @@
 import sys
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -147,6 +148,80 @@ class GenerateSynthesisTests(unittest.TestCase):
         result = generate_synthesis(articles)
 
         self.assertEqual(result, "")
+
+    @patch("synthesis._load_model")
+    def test_excludes_articles_older_than_max_age_days(self, mock_load):
+        # Décidé avec l'utilisateur le 2026-09-11 : la synthèse
+        # quotidienne ne doit couvrir que l'actualité récente, pas un
+        # vieux rapport pertinent qui refait surface (score/niveau
+        # restent volontairement indifférents à l'âge — voir
+        # scoring.py — donc ce filtre est bien nécessaire ici).
+        mock_model = MagicMock()
+        mock_model.create_chat_completion.return_value = {
+            "choices": [{"message": {"content": "ok"}}]
+        }
+        mock_load.return_value = mock_model
+
+        now = datetime.now(timezone.utc)
+        articles = [
+            {
+                "title": "Recent case",
+                "summary": "x",
+                "date": now - timedelta(days=2),
+            },
+            {
+                "title": "Old republished report",
+                "summary": "x",
+                "date": now - timedelta(days=90),
+            },
+        ]
+
+        generate_synthesis(articles, max_age_days=14)
+
+        messages = mock_model.create_chat_completion.call_args.kwargs[
+            "messages"
+        ]
+        articles_prompt = messages[-1]["content"]
+        self.assertIn("Recent case", articles_prompt)
+        self.assertNotIn("Old republished report", articles_prompt)
+
+    @patch("synthesis._load_model")
+    def test_keeps_articles_with_unknown_date(self, mock_load):
+        # Un article sans date exploitable ne doit pas être écarté :
+        # mieux vaut le couvrir que d'exclure à tort un cas peut-être
+        # récent.
+        mock_model = MagicMock()
+        mock_model.create_chat_completion.return_value = {
+            "choices": [{"message": {"content": "ok"}}]
+        }
+        mock_load.return_value = mock_model
+
+        articles = [
+            {"title": "No date case", "summary": "x", "date": None},
+        ]
+
+        result = generate_synthesis(articles)
+
+        self.assertNotEqual(result, "")
+        mock_model.create_chat_completion.assert_called_once()
+
+    @patch("synthesis._load_model")
+    def test_returns_empty_string_when_all_articles_are_too_old(
+        self, mock_load
+    ):
+        now = datetime.now(timezone.utc)
+        articles = [
+            {
+                "title": "Old case",
+                "summary": "x",
+                "date": now - timedelta(days=60),
+            },
+        ]
+
+        result = generate_synthesis(articles, max_age_days=14)
+
+        self.assertEqual(result, "")
+        mock_load.assert_not_called()
 
 
 if __name__ == "__main__":
