@@ -40,11 +40,20 @@ from keywords import (
 # ============================================================
 
 REPRESSION_TERMS_V9 = [
-    "torture", "tortured", "torture allegations", "political prisoner",
-    "political prisoners", "political repression", "political crackdown",
-    "persecution", "persecuted", "arbitrary detention", "arbitrarily detained",
-    "imprisoned", "imprisonment", "jailed", "prison sentence",
-    "sentenced to prison", "arrested", "detained", "convicted",
+    "torture", "tortured", "tortures", "torture allegations",
+    "political prisoner", "political prisoners", "political repression",
+    "political crackdown", "persecution", "persecuted", "persecutes",
+    "arbitrary detention", "arbitrarily detained",
+    "imprisoned", "imprisons", "imprisonment", "jailed", "jails",
+    "prison sentence", "sentenced to prison", "sentences to prison",
+    "sentenced", "sentences", "arrested", "arrests", "detained", "detains",
+    "convicted", "convicts", "prosecuted", "prosecutes",
+    # Titres journalistiques au présent d'action ("X Jails/Sentences/
+    # Detains Y") : les formes passées ci-dessus ratent systématiquement
+    # ce registre très courant (ex. "Kazakhstan Jails Activists for
+    # Peaceful Xinjiang Protest", repéré en audit réel le 2026-09-11 —
+    # article HRW correctement récupéré mais noté 30/BRUIT faute de
+    # "jails" dans cette liste).
     "criminal prosecution", "censorship", "media blocked", "website blocked",
     "internet shutdown", "online censorship", "press restrictions",
     "media restrictions", "forced marriage", "child marriage",
@@ -160,7 +169,15 @@ EXPLICIT_HR_ACTION_TERMS_V9 = [
     "arrested", "detained", "imprisoned", "jailed", "prosecuted",
     "convicted", "sentenced", "tortured", "persecuted", "harassed",
     "threatened", "censored", "blocked", "banned", "deported",
-    "extradited", "abducted", "forced", "задержан", "арестован",
+    "extradited", "abducted", "forced",
+    # Présent journalistique ("Court Sentences Activist", "Police
+    # Detain Blogger"...) : même limite que REPRESSION_TERMS_V9,
+    # voir le commentaire là-bas.
+    "arrests", "detains", "imprisons", "jails", "prosecutes",
+    "convicts", "sentences", "tortures", "persecutes", "harasses",
+    "threatens", "censors", "blocks", "bans", "deports",
+    "extradites", "abducts", "forces",
+    "задержан", "арестован",
     "осужден", "приговорен", "заключен", "пытал", "преследовал",
     "преследуется", "угрожал", "запрещен", "заблокирован", "депортирован",
     "экстрадирован", "похищен", "принужден",

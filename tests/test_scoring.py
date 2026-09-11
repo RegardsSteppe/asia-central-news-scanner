@@ -46,6 +46,42 @@ class CityGeographyTests(unittest.TestCase):
         )
 
 
+class PresentTenseHeadlineVerbTests(unittest.TestCase):
+    """
+    Régression réelle (audit du 2026-09-11) : un article HRW
+    correctement récupéré ("Kazakhstan Jails Activists for Peaceful
+    Xinjiang Protest") restait noté 30/BRUIT car "jails" (présent
+    journalistique) n'était dans aucune liste de termes de
+    répression — seule la forme passée "jailed" y figurait. Les
+    titres de presse utilisent très souvent le présent d'action
+    ("X Jails/Sentences/Detains Y").
+    """
+
+    def test_present_tense_jails_reaches_level_a(self):
+        article = {
+            "title": "Kazakhstan Jails Activists for Peaceful Xinjiang Protest",
+            "summary": "",
+            "body": "",
+            "source": "Human Rights Watch",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["level"], "A")
+
+    def test_present_tense_sentences_reaches_level_b_or_above(self):
+        article = {
+            "title": "Uzbekistan Court Sentences Independent Journalist to 12 Years",
+            "summary": "",
+            "body": "",
+            "source": "Human Rights Watch",
+        }
+
+        classify_article(article)
+
+        self.assertIn(article["level"], ("A", "B"))
+
+
 class RegionalEqualityTests(unittest.TestCase):
     """
     Le Caucase est une région ciblée à part entière, au même titre
