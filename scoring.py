@@ -175,6 +175,11 @@ TARGET_TERMS_V9 = [
     "civil society", "ngo", "ngos", "правозащитник", "правозащитники",
     "активист", "активисты", "диссидент", "диссиденты", "журналист",
     "журналисты", "блогер", "блогеры", "адвокат", "адвокаты",
+    # Formes féminines (voir la note dans ACTIVIST_TERMS/keywords.py) :
+    # правозащитница change de radical par rapport au masculin.
+    "активистка", "активистки", "правозащитница", "правозащитницы",
+    "журналистка", "журналистки", "диссидентка", "диссидентки",
+    "корреспондент", "корреспондентка", "корреспондента",
     "militant", "militants", "activiste", "activistes",
     "défenseur des droits humains", "défenseurs des droits humains",
     "défenseur des droits de l'homme", "défenseurs des droits de l'homme",
@@ -340,6 +345,64 @@ def has_russian_repression_morphology(text):
     return contains_pattern(text, REPRESSION_MORPHOLOGY_PATTERNS_V9)
 
 
+# Le russe est une langue à déclinaisons : un pays/une ville n'apparaît
+# sous sa forme nominative exacte ("Узбекистан") que lorsqu'il est
+# sujet — la tournure la plus courante dans une dépêche ("в
+# Узбекистане", "власти Казахстана", "с Таджикистаном") le décline au
+# génitif/prépositionnel/instrumental, jamais couvert par le matching
+# de phrase exacte (find_terms/phrase_present). Repéré en audit réel
+# le 2026-09-11 : "Наманганская правозащитница" (adjectif de Namangan)
+# et "хлопковых полях Узбекистана" (génitif) ne franchissaient jamais
+# la porte géographique malgré un vrai cas de défenseure des droits
+# condamnée. Chaque paire (nom canonique, motif) complète — sans les
+# remplacer — les listes CENTRAL_ASIA_TERMS/CAUCASUS_TERMS existantes.
+_RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS = (
+    ("казахстан", r"\bказахстан\w*\b"),
+    ("казах", r"\bказах\w*\b"),
+    ("узбекистан", r"\bузбекистан\w*\b"),
+    ("узбек", r"\bузбек\w*\b"),
+    ("кыргызстан", r"\bкыргызстан\w*\b"),
+    ("киргизия", r"\bкиргизи\w*\b"),
+    ("киргиз", r"\bкиргиз\w*\b"),
+    ("таджикистан", r"\bтаджикистан\w*\b"),
+    ("таджик", r"\bтаджик\w*\b"),
+    ("туркменистан", r"\bтуркменистан\w*\b"),
+    ("туркмен", r"\bтуркмен\w*\b"),
+    ("наманган", r"\bнаманган\w*\b"),
+    ("ташкент", r"\bташкент\w*\b"),
+    ("алматы", r"\bалмат\w*\b"),
+    ("астана", r"\bастан\w*\b"),
+    ("бишкек", r"\bбишкек\w*\b"),
+    ("ашхабад", r"\bашхабад\w*\b"),
+    ("худжанд", r"\bхуджанд\w*\b"),
+)
+
+_RUSSIAN_CAUCASUS_STEM_PATTERNS = (
+    ("армения", r"\bармени\w*\b"),
+    ("азербайджан", r"\bазербайджан\w*\b"),
+    ("грузия", r"\bгрузи\w*\b"),
+    ("чечня", r"\bчечн\w*\b"),
+    ("чечня", r"\bчечен\w*\b"),
+    ("дагестан", r"\bдагестан\w*\b"),
+    ("осетия", r"\bосети\w*\b"),
+    ("ингушетия", r"\bингуш\w*\b"),
+    ("ереван", r"\bереван\w*\b"),
+)
+
+
+def _find_terms_with_russian_stems(text, terms, stem_patterns):
+    matches = list(find_terms(text, terms))
+
+    for name, pattern in stem_patterns:
+        if name in matches:
+            continue
+
+        if _compiled(pattern, re.I).search(text):
+            matches.append(name)
+
+    return matches
+
+
 def classify_article(article):
     title = normalize(article.get("title", ""))
     summary = normalize(article.get("summary", ""))
@@ -355,8 +418,12 @@ def classify_article(article):
 
     reasons = []
 
-    central_asia = find_terms(headline, CENTRAL_ASIA_TERMS)
-    caucasus = find_terms(headline, CAUCASUS_TERMS)
+    central_asia = _find_terms_with_russian_stems(
+        headline, CENTRAL_ASIA_TERMS, _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS
+    )
+    caucasus = _find_terms_with_russian_stems(
+        headline, CAUCASUS_TERMS, _RUSSIAN_CAUCASUS_STEM_PATTERNS
+    )
     uyghur = find_terms(headline, UYGHUR_TERMS)
 
     # Uniquement des médias EXCLUSIVEMENT dédiés à la région : "Radio
@@ -376,9 +443,15 @@ def classify_article(article):
     ]
     central_asia_source = find_terms(source_context, central_asia_source_terms)
 
-    body_geography = find_terms(
-        body, CENTRAL_ASIA_TERMS + CAUCASUS_TERMS + UYGHUR_TERMS
-    )
+    body_geography = list(dict.fromkeys(
+        _find_terms_with_russian_stems(
+            body, CENTRAL_ASIA_TERMS, _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS
+        )
+        + _find_terms_with_russian_stems(
+            body, CAUCASUS_TERMS, _RUSSIAN_CAUCASUS_STEM_PATTERNS
+        )
+        + find_terms(body, UYGHUR_TERMS)
+    ))
     body_geo_count = len(body_geography)
     body_has_geography = body_geo_count >= 1
     strong_body_geography = body_geo_count >= 2
@@ -977,9 +1050,19 @@ def classify_article(article):
     # distingué du pur bruit (sport, économie ordinaire, culture...) :
     # niveau D, réservé aux activistes/répression d'autres régions.
     # Le niveau E regroupe tout le reste (l'ancien niveau D).
+    # "primary_repression" seul (mots comme "arrêté"/"détenu" sans
+    # aucune cible activiste/journaliste identifiée) est trop
+    # permissif ici : de la pure actualité criminelle/militaire sans
+    # rapport avec les droits humains (ex. TASS/Regnum sur un agent
+    # ukrainien du SBU détenu, un Moldave arrêté pour un projet
+    # d'assassinat) déclenchait "primary_repression" et atterrissait
+    # dans le niveau D "activistes d'autres régions" au lieu du bruit
+    # (repéré en audit réel le 2026-09-11). "severe_detected" (torture,
+    # disparition forcée, exécution extrajudiciaire...) reste un
+    # signal fort même sans cible identifiée par son nom.
     global_hr_signal = bool(
         has_activist or has_journalist or has_hr_defender
-        or primary_repression or primary_defender_case
+        or severe_detected or primary_defender_case
         or primary_forced_labor or primary_specific_right
         or primary_press or primary_gender or primary_transnational
         or primary_political_prisoner or primary_journalist_pressure
