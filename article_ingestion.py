@@ -83,6 +83,26 @@ def parse_rss(
             # l'enrichissement (corps de l'article).
             summary = ""
 
+        # Repéré en audit réel le 2026-09-11 : le flux Google News
+        # (site:hrw.org...) indexe aussi de vieilles pages de
+        # navigation du site ("Table of Contents Europe & Central
+        # Asia", "Countries") au même titre que les vrais articles.
+        # looks_like_article_link() n'était jamais appliqué aux
+        # entrées RSS (seulement au scraping HTML) : le titre seul
+        # ("Countries" — 1 mot) suffit à les rejeter. Pour Google
+        # News uniquement le titre compte : son URL de redirection
+        # opaque (news.google.com/rss/articles/<hash>) contient
+        # littéralement "/rss", ce que looks_like_article_link()
+        # rejetterait toujours à tort si on lui passait cette URL. Le
+        # suffixe Google News doit être retiré AVANT ce test, sinon
+        # "Countries - Human Rights Watch" (5 mots) masquerait que le
+        # vrai titre "Countries" (1 mot) devrait être rejeté.
+        if is_google_news:
+            if not _title_passes_generic_filter(title):
+                continue
+        elif not looks_like_article_link(link, title):
+            continue
+
         articles.append(
             build_article(
                 source=source,
@@ -300,6 +320,12 @@ _GENERIC_LINK_TEXTS = {
     "«",
     ">>",
     "<<",
+    # Repéré en audit réel le 2026-09-11 (indexé par Google News
+    # depuis d'anciennes pages hrw.org) : sommaire/index générique,
+    # pas un article.
+    "table of contents",
+    "table of contents europe & central asia",
+    "countries",
 }
 
 # Motif d'une date dans le chemin d'URL, ex. /2024/03/15/ ou /2024-03-15/
@@ -329,15 +355,17 @@ def _has_repeated_path_prefix(path: str) -> bool:
     return False
 
 
-def looks_like_article_link(url: str, title: str) -> bool:
+def _title_passes_generic_filter(title: str) -> bool:
     """
-    Heuristique conservatrice pour ne garder que les liens
-    ressemblant à de vrais articles.
-
-    Rejette les liens de navigation/catégories/tags/pages
-    utilitaires ainsi que les libellés de lien trop génériques.
+    Vérifications sur le seul titre (longueur, nombre de mots,
+    libellés génériques) — réutilisées pour les entrées RSS Google
+    News, dont l'URL est un lien de redirection opaque
+    (news.google.com/rss/articles/<hash>) sur lequel les vérifications
+    de chemin de looks_like_article_link() n'ont aucun sens (il
+    contient toujours littéralement "/rss", ce qui les rejetterait
+    toutes à tort).
     """
-    if not url or not title:
+    if not title:
         return False
 
     normalized_title = title.strip().lower()
@@ -349,6 +377,23 @@ def looks_like_article_link(url: str, title: str) -> bool:
         return False
 
     if normalized_title in _GENERIC_LINK_TEXTS:
+        return False
+
+    return True
+
+
+def looks_like_article_link(url: str, title: str) -> bool:
+    """
+    Heuristique conservatrice pour ne garder que les liens
+    ressemblant à de vrais articles.
+
+    Rejette les liens de navigation/catégories/tags/pages
+    utilitaires ainsi que les libellés de lien trop génériques.
+    """
+    if not url or not title:
+        return False
+
+    if not _title_passes_generic_filter(title):
         return False
 
     parsed = urlparse(url)
