@@ -836,7 +836,7 @@ def collect_articles(
 
         parse_started = time.perf_counter()
         if as_rss:
-            articles = parse_rss(content, source)
+            articles = parse_rss(content, source, feed_url=url)
         else:
             articles = extract_links_from_html(content, url, source)
         parse_elapsed = time.perf_counter() - parse_started

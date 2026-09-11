@@ -365,6 +365,17 @@ SOURCES = [
         # qu'un article HRW manquant lui ait été signalé. Fallback sur
         # l'ancienne page HTML si le flux échoue aussi — non vérifié
         # depuis cet environnement, à valider via les logs du run réel.
+        # hrw.org bloque en 403 TOUTES les URLs testées depuis cet
+        # environnement — page HTML et flux RSS propre inclus — signe
+        # d'un blocage au niveau du domaine/IP (probablement les
+        # plages d'IP des runners GitHub Actions), pas d'un chemin en
+        # particulier. Contournement : Google News agrège hrw.org sur
+        # son propre domaine (news.google.com), jamais bloqué par HRW.
+        # Google ajoute systématiquement " - Human Rights Watch" à la
+        # fin de chaque titre : nettoyé automatiquement dans
+        # parse_rss() pour les flux news.google.com uniquement.
+        # Non vérifié depuis cet environnement (accès réseau sortant
+        # bloqué) : à valider via les logs du run réel.
         "name": "Human Rights Watch",
         "short_name": "HRW",
         "profile": "human_rights",
@@ -376,6 +387,7 @@ SOURCES = [
 
         "feeds": [
             "https://www.hrw.org/rss/news",
+            "https://news.google.com/rss/search?q=site:hrw.org&hl=en-US&gl=US&ceid=US:en",
         ],
 
         "fallbacks": [
@@ -397,6 +409,7 @@ SOURCES = [
 
         "feeds": [
             "https://www.hrw.org/fr/rss/news",
+            "https://news.google.com/rss/search?q=site:hrw.org/fr&hl=fr&gl=FR&ceid=FR:fr",
         ],
 
         "fallbacks": [
@@ -418,6 +431,7 @@ SOURCES = [
 
         "feeds": [
             "https://www.hrw.org/ru/rss/news",
+            "https://news.google.com/rss/search?q=site:hrw.org/ru&hl=ru&gl=RU&ceid=RU:ru",
         ],
 
         "fallbacks": [
