@@ -204,6 +204,34 @@ CENTRAL_ASIA_TERMS = [
     "بیشکک",
     "عشق‌آباد",
     "عشق آباد",
+
+    # French — plusieurs sources publient en français (HRW, Amnesty,
+    # RSF, Novastan...) : sans les formes françaises, un article sur
+    # "l'Ouzbékistan" ou "Douchanbé" ne franchit jamais la porte
+    # géographique et reste plafonné en niveau E quel que soit son
+    # contenu (repéré en audit réel le 2026-09-11 sur un article HRW
+    # français concernant Anar Mammadli, resté à 7/E faute de
+    # reconnaître "Azerbaïdjan" — voir aussi CAUCASUS_TERMS).
+    "asie centrale",
+    "ouzbékistan",
+    "kirghizistan",
+    "kirghizstan",
+    "tadjikistan",
+    "turkménistan",
+
+    # adjectifs de pays — français
+    "ouzbek",
+    "kirghize",
+    "tadjik",
+    "turkmène",
+
+    # Grandes villes — français (orthographe distincte du russe/anglais)
+    "samarcande",
+    "boukhara",
+    "douchanbé",
+    "achgabat",
+    "bichkek",
+    "tachkent",
 ]
 
 # ------------------------------------------------------------
@@ -261,6 +289,28 @@ CAUCASUS_TERMS = [
     "باکو",
     "تفلیس",
     "ایروان",
+
+    # French — voir la note sur CENTRAL_ASIA_TERMS : sans ces formes,
+    # un article français sur l'Azerbaïdjan ne franchit jamais la
+    # porte géographique.
+    "azerbaïdjan",
+    "arménie",
+    "géorgie",
+    "tchétchénie",
+    "daguestan",
+    "ossétie du nord",
+    "ingouchie",
+
+    # adjectifs de pays — français
+    "azerbaïdjanais",
+    "arménien",
+    "géorgien",
+
+    # Grandes villes — français
+    "bakou",
+    "tbilissi",
+    "erevan",
+    "makhatchkala",
 ]
 
 # ------------------------------------------------------------
@@ -298,6 +348,14 @@ UYGHUR_TERMS = [
     "ترکستان شرقی",
     "ارومچی",
     "کاشغر",
+
+    # French
+    "ouïghour",
+    "ouïghours",
+    "ouïghoure",
+    "turkestan oriental",
+    "ouroumtsi",
+    "kachgar",
 ]
 
 # ------------------------------------------------------------
@@ -365,6 +423,25 @@ HUMAN_RIGHTS_TERMS = [
     "دادرسی عادلانه",
     "محاکمه عادلانه",
     "حاکمیت قانون",
+
+    # French
+    "droits humains",
+    "droits de l'homme",
+    "violation des droits humains",
+    "violations des droits humains",
+    "droits civils",
+    "droits politiques",
+    "liberté d'expression",
+    "liberté de réunion",
+    "liberté d'association",
+    "liberté de religion",
+    "liberté de conscience",
+    "liberté de circulation",
+    "droit de manifester",
+    "procès équitable",
+    "état de droit",
+    "espace civique",
+    "libertés civiles",
 ]
 
 # ------------------------------------------------------------
@@ -419,6 +496,28 @@ ACTIVIST_TERMS = [
     "اپوزیسیون",
     "چهره اپوزیسیون",
     "چهره‌های اپوزیسیون",
+
+    # French — voir la note sur CENTRAL_ASIA_TERMS : les sources
+    # HRW/Amnesty/RSF en français perdaient tout signal "activiste"
+    # faute de vocabulaire français (repéré en audit réel le
+    # 2026-09-11).
+    "militant",
+    "militants",
+    "militante",
+    "militantes",
+    "activiste",
+    "activistes",
+    "défenseur des droits humains",
+    "défenseurs des droits humains",
+    "défenseur des droits de l'homme",
+    "défenseurs des droits de l'homme",
+    "dissident",
+    "dissidente",
+    "dissidents",
+    "dissidentes",
+    "opposant",
+    "opposante",
+    "opposants",
 ]
 
 # ------------------------------------------------------------
@@ -477,6 +576,22 @@ REPRESSION_TERMS = [
     "ارعاب",
     "فشار سیاسی",
     "فشار دولت",
+
+    # French
+    "répression",
+    "répressif",
+    "répression politique",
+    "répression d'état",
+    "persécution",
+    "persécuté",
+    "harcèlement",
+    "intimidation",
+    "menacé",
+    "menaces",
+    "représailles",
+    "réduire au silence",
+    "pression politique",
+    "abus de pouvoir",
 ]
 
 # ------------------------------------------------------------
@@ -708,6 +823,32 @@ JOURNALIST_TERMS = [
     "قطعی اینترنت",
     "روزنامه‌نگار بازداشت",
     "روزنامه‌نگار زندانی",
+
+    # French
+    "journaliste",
+    "journalistes",
+    "rédacteur",
+    "rédactrice",
+    "média indépendant",
+    "médias indépendants",
+    "journaliste indépendant",
+    "journalistes indépendants",
+    "liberté de la presse",
+    "liberté des médias",
+    "censure",
+    "autocensure",
+    "censure en ligne",
+    "restrictions pour les médias",
+    "site bloqué",
+    "coupure d'internet",
+    "média fermé",
+    "journaliste détenu",
+    "journaliste arrêté",
+    "journaliste condamné",
+    "journaliste emprisonné",
+    "journaliste poursuivi",
+    "journaliste harcelé",
+    "journaliste menacé",
 ]
 
 # ------------------------------------------------------------

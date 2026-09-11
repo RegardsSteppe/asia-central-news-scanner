@@ -40,11 +40,20 @@ from keywords import (
 # ============================================================
 
 REPRESSION_TERMS_V9 = [
-    "torture", "tortured", "torture allegations", "political prisoner",
-    "political prisoners", "political repression", "political crackdown",
-    "persecution", "persecuted", "arbitrary detention", "arbitrarily detained",
-    "imprisoned", "imprisonment", "jailed", "prison sentence",
-    "sentenced to prison", "arrested", "detained", "convicted",
+    "torture", "tortured", "tortures", "torture allegations",
+    "political prisoner", "political prisoners", "political repression",
+    "political crackdown", "persecution", "persecuted", "persecutes",
+    "arbitrary detention", "arbitrarily detained",
+    "imprisoned", "imprisons", "imprisonment", "jailed", "jails",
+    "prison sentence", "sentenced to prison", "sentences to prison",
+    "sentenced", "sentences", "arrested", "arrests", "detained", "detains",
+    "convicted", "convicts", "prosecuted", "prosecutes",
+    # Titres journalistiques au présent d'action ("X Jails/Sentences/
+    # Detains Y") : les formes passées ci-dessus ratent systématiquement
+    # ce registre très courant (ex. "Kazakhstan Jails Activists for
+    # Peaceful Xinjiang Protest", repéré en audit réel le 2026-09-11 —
+    # article HRW correctement récupéré mais noté 30/BRUIT faute de
+    # "jails" dans cette liste).
     "criminal prosecution", "censorship", "media blocked", "website blocked",
     "internet shutdown", "online censorship", "press restrictions",
     "media restrictions", "forced marriage", "child marriage",
@@ -62,6 +71,18 @@ REPRESSION_TERMS_V9 = [
     "محکوم", "محکومیت", "پرونده سیاسی", "محاکمه سیاسی", "شکنجه",
     "سانسور", "رسانه مسدود", "سایت مسدود", "قطعی اینترنت",
     "ازدواج اجباری", "ازدواج کودکان", "کار اجباری",
+
+    # French — sans ce vocabulaire, les sources HRW/Amnesty/RSF en
+    # français (repéré en audit réel le 2026-09-11 sur un article HRW
+    # français concernant Anar Mammadli) ne franchissent jamais
+    # l'ancrage HR principal, quel que soit le contenu réel.
+    "torture", "torturé", "torturée", "prisonnier politique",
+    "prisonniers politiques", "répression politique",
+    "détention arbitraire", "emprisonné", "emprisonnement",
+    "peine de prison", "condamné à la prison", "condamné", "condamne",
+    "arrêté", "arrête", "détenu", "détient", "poursuivi", "poursuit",
+    "censure", "site bloqué", "coupure d'internet", "mariage forcé",
+    "travail forcé",
 ]
 
 CENTRAL_ASIA_HR_EVENT_TERMS_V9 = [
@@ -154,16 +175,33 @@ TARGET_TERMS_V9 = [
     "civil society", "ngo", "ngos", "правозащитник", "правозащитники",
     "активист", "активисты", "диссидент", "диссиденты", "журналист",
     "журналисты", "блогер", "блогеры", "адвокат", "адвокаты",
+    "militant", "militants", "activiste", "activistes",
+    "défenseur des droits humains", "défenseurs des droits humains",
+    "défenseur des droits de l'homme", "défenseurs des droits de l'homme",
+    "journaliste", "journalistes", "avocat", "avocate", "avocats",
+    "blogueur", "blogueuse", "blogueurs", "société civile", "ong",
 ]
 
 EXPLICIT_HR_ACTION_TERMS_V9 = [
     "arrested", "detained", "imprisoned", "jailed", "prosecuted",
     "convicted", "sentenced", "tortured", "persecuted", "harassed",
     "threatened", "censored", "blocked", "banned", "deported",
-    "extradited", "abducted", "forced", "задержан", "арестован",
+    "extradited", "abducted", "forced",
+    # Présent journalistique ("Court Sentences Activist", "Police
+    # Detain Blogger"...) : même limite que REPRESSION_TERMS_V9,
+    # voir le commentaire là-bas.
+    "arrests", "detains", "imprisons", "jails", "prosecutes",
+    "convicts", "sentences", "tortures", "persecutes", "harasses",
+    "threatens", "censors", "blocks", "bans", "deports",
+    "extradites", "abducts", "forces",
+    "задержан", "арестован",
     "осужден", "приговорен", "заключен", "пытал", "преследовал",
     "преследуется", "угрожал", "запрещен", "заблокирован", "депортирован",
     "экстрадирован", "похищен", "принужден",
+    "arrêté", "arrête", "détenu", "détient", "emprisonné", "emprisonne",
+    "condamné", "condamne", "torturé", "torture", "persécuté", "persécute",
+    "harcelé", "harcèle", "menacé", "menace", "censuré", "censure",
+    "bloqué", "bloque", "interdit", "expulsé", "expulse",
 ]
 
 STRONG_PRIMARY_RIGHTS_V9 = [

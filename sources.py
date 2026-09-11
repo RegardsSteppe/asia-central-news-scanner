@@ -688,6 +688,11 @@ SOURCES = [
     },
 
     {
+        # 0/0 articles sur la racine du site (audit du 2026-09-11) :
+        # la page d'accueil ne semble pas exposer de liens d'article
+        # directs. Remplacé par la page de listing "/articles/",
+        # trouvée par recherche web — beaucoup de contenu pertinent
+        # Asie centrale y est indexé.
         "name": "International Partnership for Human Rights",
         "short_name": "IPHR",
         "profile": "human_rights",
@@ -695,7 +700,11 @@ SOURCES = [
         "type": "html",
         "language": "en",
 
-        "url": "https://www.iphronline.org/",
+        "url": "https://iphronline.org/articles/",
+
+        "fallbacks": [
+            "https://www.iphronline.org/",
+        ],
 
         "max_articles": 150,
     },
@@ -723,6 +732,28 @@ SOURCES = [
         "language": "en",
 
         "url": "https://www.fidh.org/en/",
+
+        "max_articles": 150,
+    },
+
+    {
+        # Trouvé par recherche web en diagnostiquant un cas réel
+        # (Kazakhstan, 19 défenseurs des droits d'Atajurt) : OMCT
+        # co-publie régulièrement ses "urgent interventions" avec
+        # la FIDH sur exactement ce type de dossier (détention
+        # arbitraire, torture) en Asie centrale et au Caucase.
+        "name": "OMCT — interventions urgentes",
+        "short_name": "OMCT",
+        "profile": "human_rights",
+        "label": "International · droits humains · torture",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.omct.org/en/resources/urgent-interventions",
+
+        "fallbacks": [
+            "https://www.omct.org/en",
+        ],
 
         "max_articles": 150,
     },
