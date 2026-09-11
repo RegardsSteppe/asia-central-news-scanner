@@ -39,7 +39,11 @@ RunPod) :
             },
             ...
         ],
-        "batch_size": 200          # optionnel, mode "batch" uniquement
+        "batch_size": 200,         # optionnel, mode "batch" uniquement
+        "push_to_github": {         # optionnel — voir handler()
+            "path": "runpod_results/2026-09-11.json",
+            "branch": "runpod-results"
+        }
     }
 
 Réponse :
@@ -77,8 +81,10 @@ Réponse :
 from __future__ import annotations
 
 import logging
+import time
 from typing import Any
 
+from github_push import DEFAULT_BRANCH, GitHubPushError, push_json_to_github
 from scoring import classify_article
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
@@ -289,12 +295,65 @@ _MODES = {
 }
 
 
+def _push_result_to_github(
+    result: dict[str, Any],
+    push_config: Any,
+) -> dict[str, Any]:
+    """
+    Commits `result` to GitHub per `push_config` (see handler()'s
+    docstring for the payload shape). Never raises: a push failure
+    (missing token, network error, GitHub API error) is reported as
+    {"error": ...} rather than failing the whole job — the scoring
+    results in the response are still valid even if persisting them
+    to GitHub didn't work.
+    """
+    if push_config is True:
+        push_config = {}
+
+    if not isinstance(push_config, dict):
+        return {
+            "error": (
+                "'push_to_github' doit être un objet ou true "
+                f"(reçu: {type(push_config).__name__})"
+            )
+        }
+
+    path = push_config.get("path") or f"runpod_results/result_{int(time.time())}.json"
+    branch = push_config.get("branch") or DEFAULT_BRANCH
+    message = push_config.get("message") or "RunPod scoring results"
+    repo = push_config.get("repo") or ""
+
+    try:
+        return push_json_to_github(
+            result, path=path, branch=branch, message=message, repo=repo
+        )
+    except GitHubPushError as exc:
+        logger.warning("push GitHub échoué: %s", exc)
+        return {"error": str(exc)}
+
+
 def handler(event: Any) -> dict[str, Any]:
     """
     Point d'entrée RunPod Serverless. Accepte aussi bien le format
     RunPod réel (event["input"] = le payload envoyé par l'appelant)
     que le payload nu directement (pratique pour les tests locaux et
     l'appel direct hors RunPod).
+
+    Champ optionnel "push_to_github" dans le payload : quand présent
+    (objet, ou `true` pour les valeurs par défaut), les résultats de ce
+    job sont aussi commités sur GitHub via github_push.py, sur une
+    branche dédiée (par défaut "runpod-results", créée depuis la
+    branche par défaut du repo si besoin) plutôt que de rester
+    uniquement dans la réponse HTTP :
+        "push_to_github": {
+            "path": "runpod_results/2026-09-11.json",  # optionnel
+            "branch": "runpod-results",                # optionnel
+            "message": "RunPod scoring run",            # optionnel
+            "repo": "owner/repo"                         # optionnel
+        }
+    Le résultat du push (ou son erreur) est ajouté sous
+    result["github_push"]. Nécessite GITHUB_TOKEN en variable
+    d'environnement (secret RunPod) — jamais dans le payload.
     """
     if not isinstance(event, dict):
         return {"error": f"requête invalide (type={type(event).__name__})"}
@@ -319,12 +378,18 @@ def handler(event: Any) -> dict[str, Any]:
         }
 
     try:
-        return mode_handler(job_input)
+        result = mode_handler(job_input)
     except ValueError as exc:
         return {"error": str(exc)}
     except Exception as exc:  # jamais laisser le worker planter sur une requête
         logger.exception("erreur inattendue dans le handler")
         return {"error": f"{type(exc).__name__}: {exc}"}
+
+    push_config = job_input.get("push_to_github")
+    if push_config:
+        result["github_push"] = _push_result_to_github(result, push_config)
+
+    return result
 
 
 if __name__ == "__main__":
