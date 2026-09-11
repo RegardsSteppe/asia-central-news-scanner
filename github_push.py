@@ -2,7 +2,7 @@
 Push RunPod job results back to GitHub, via the REST Contents API.
 
 A RunPod Serverless run's results shouldn't just live in the HTTP
-response and vanish — this lets runpod_handler.py commit them as a
+response and vanish — this lets rp_handler.py commit them as a
 JSON file on a dedicated branch (default: "runpod-results", created
 from the repo's default branch if it doesn't exist yet), so a run is
 reviewable/reproducible later without needing to have captured the

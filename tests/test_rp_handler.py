@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from github_push import GitHubPushError
 from scoring import classify_article
-from runpod_handler import (
+from rp_handler import (
     batch_score_articles,
     handler,
     score_articles,
@@ -222,7 +222,7 @@ class HandlerTests(unittest.TestCase):
 
         self.assertIn("error", result)
 
-    @patch("runpod_handler.push_json_to_github")
+    @patch("rp_handler.push_json_to_github")
     def test_push_to_github_attaches_result_on_success(self, mock_push):
         mock_push.return_value = {
             "repo": "owner/repo",
@@ -247,7 +247,7 @@ class HandlerTests(unittest.TestCase):
             mock_push.call_args.kwargs["path"], "runpod_results/out.json"
         )
 
-    @patch("runpod_handler.push_json_to_github")
+    @patch("rp_handler.push_json_to_github")
     def test_push_to_github_failure_does_not_fail_the_job(self, mock_push):
         mock_push.side_effect = GitHubPushError("GITHUB_TOKEN manquant")
 
@@ -264,7 +264,7 @@ class HandlerTests(unittest.TestCase):
         self.assertIn("error", result["github_push"])
 
     def test_no_push_attempted_when_field_absent(self):
-        with patch("runpod_handler.push_json_to_github") as mock_push:
+        with patch("rp_handler.push_json_to_github") as mock_push:
             result = handler(
                 {"mode": "score", "articles": [dict(ACTIVIST_ARTICLE)]}
             )
@@ -273,7 +273,7 @@ class HandlerTests(unittest.TestCase):
 
         self.assertNotIn("github_push", result)
 
-    @patch("runpod_handler.push_json_to_github")
+    @patch("rp_handler.push_json_to_github")
     def test_push_to_github_true_uses_defaults(self, mock_push):
         mock_push.return_value = {"commit_sha": "x"}
 

@@ -1,9 +1,9 @@
-# Dépendances du handler RunPod Serverless (runpod_handler.py) UNIQUEMENT.
+# Dépendances du handler RunPod Serverless (rp_handler.py) UNIQUEMENT.
 #
 # Volontairement séparé de requirements.txt (utilisé par le workflow
 # GitHub Actions). scoring.py/keywords.py sont du Python pur ; requests
 # n'est là que pour github_push.py (l'appel à l'API REST de GitHub,
-# voir "push_to_github" dans runpod_handler.py), pas pour du scraping —
+# voir "push_to_github" dans rp_handler.py), pas pour du scraping —
 # aucune des autres dépendances du scanner complet (feedparser,
 # beautifulsoup4, llama-cpp-python, huggingface_hub...) n'est
 # nécessaire ici. Les garder hors de l'image RunPod la garde minimale

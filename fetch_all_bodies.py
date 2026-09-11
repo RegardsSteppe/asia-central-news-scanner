@@ -23,7 +23,7 @@ Decoupled from the daily scan on purpose:
   headline.
 
 Needs the full project dependencies (feedparser/beautifulsoup4/requests
-— see requirements.txt), unlike runpod_handler.py's deliberately
+— see requirements.txt), unlike rp_handler.py's deliberately
 minimal requirements-runpod.txt: this script is not part of the RunPod
 image, it's what produces the JSON you'd feed to it.
 
