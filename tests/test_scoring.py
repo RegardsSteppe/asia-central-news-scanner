@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scoring import classify_article
+from scoring import classify_article, detect_language
 
 
 class CityGeographyTests(unittest.TestCase):
@@ -425,16 +425,20 @@ class RussianMorphologyGapTests(unittest.TestCase):
     unique, ratant les tournures les plus courantes d'une dépêche.
     """
 
-    def test_stem_matching_only_runs_for_declared_russian_sources(self):
+    def test_stem_matching_runs_via_detected_language_when_source_declares_none(self):
         # Suggestion de l'utilisateur le 2026-09-11 (les vérifications
-        # regex russes ralentissaient le scan sur tout le corpus,
-        # y compris les articles non-russes) : la source connaît sa
-        # langue (sources.py), donc build_article() la propage sur
-        # chaque article, et classify_article() ne lance ces
-        # vérifications coûteuses que si "language" vaut "ru" — pas
-        # un gain de justesse, un gain de vitesse : sans "language"
-        # (ou une autre langue), la détection par radical est
-        # simplement sautée plutôt que de tourner pour rien.
+        # regex russes ralentissaient le scan sur tout le corpus, y
+        # compris les articles non-russes) : la source connaît
+        # généralement sa langue (sources.py), donc build_article() la
+        # propage sur chaque article et classify_article() ne lance ces
+        # vérifications coûteuses que sur les articles concernés — un
+        # gain de vitesse, pas de justesse. Mais le 2026-09-11
+        # (deuxième demande) : quand la source ne déclare aucune
+        # langue unique (absente, ou "multi" — ex: RFE/RL qui mélange
+        # plusieurs services linguistiques), classify_article() doit
+        # quand même détecter la langue réelle du texte (script
+        # cyrillique/persan/latin) plutôt que de sauter silencieusement
+        # les vérifications russes sur du contenu qui EST en russe.
         article = {
             "title": (
                 "На хлопковых полях Узбекистана задержана "
@@ -444,7 +448,30 @@ class RussianMorphologyGapTests(unittest.TestCase):
             "body": "",
             "source": "Centre1",
             # Pas de "language" ici : simule une source dont la langue
-            # n'a pas été propagée, ou un article non russe.
+            # n'a pas été propagée (ou "multi") — doit être détectée.
+        }
+
+        classify_article(article)
+
+        self.assertTrue(
+            any("Asie centrale" in reason for reason in article["reasons"])
+        )
+        self.assertEqual(article["language"], "ru")
+
+    def test_stem_matching_skipped_for_explicitly_declared_non_russian_source(self):
+        # À l'inverse : quand la source déclare explicitement une
+        # langue non-russe, on fait confiance à cette déclaration et on
+        # saute les vérifications russes (coûteuses) sans lancer de
+        # détection par script.
+        article = {
+            "title": (
+                "На хлопковых полях Узбекистана задержана "
+                "корреспондент «Штерн»"
+            ),
+            "summary": "",
+            "body": "",
+            "source": "Centre1",
+            "language": "en",
         }
 
         classify_article(article)
@@ -452,6 +479,7 @@ class RussianMorphologyGapTests(unittest.TestCase):
         self.assertFalse(
             any("Asie centrale" in reason for reason in article["reasons"])
         )
+        self.assertEqual(article["language"], "en")
 
     def test_recognizes_declined_country_name_in_russian(self):
         # "Узбекистана" est le génitif de "Узбекистан" — la forme la
@@ -507,6 +535,104 @@ class RussianMorphologyGapTests(unittest.TestCase):
         result = classify_article(article)
 
         self.assertTrue(result["signals"]["has_activist"])
+
+
+class LanguageTaggingTests(unittest.TestCase):
+    """
+    Suite à la demande de l'utilisateur le 2026-09-11 : le premier
+    passage de scope-par-langue ne couvrait que les vérifications
+    russes (radicaux + morphologie), en laissant tourner
+    inconditionnellement ACTIVIST_REPRESSION_RU_PATTERNS/FA_PATTERNS et
+    JOURNALIST_REPRESSION_RU_PATTERNS/FA_PATTERNS sur tous les
+    articles quelle que soit leur langue. Chaque article doit ressortir
+    de classify_article() tagué avec sa langue effective (détectée par
+    script quand la source ne déclare rien d'unique), et ce tag doit
+    être utilisé pour scoper *toutes* les vérifications regex
+    langue-spécifiques, pas seulement le russe.
+    """
+
+    def test_detect_language_recognizes_cyrillic_script(self):
+        self.assertEqual(
+            detect_language("Активист задержан в Узбекистане после протеста"),
+            "ru",
+        )
+
+    def test_detect_language_recognizes_persian_script(self):
+        self.assertEqual(
+            detect_language("فعال حقوق بشر تاجیک بازداشت و شکنجه شد"),
+            "fa",
+        )
+
+    def test_detect_language_defaults_to_en_for_latin_script(self):
+        self.assertEqual(
+            detect_language("Kazakhstan jails activist over peaceful protest"),
+            "en",
+        )
+
+    def test_detect_language_returns_empty_for_too_little_text(self):
+        self.assertEqual(detect_language("ok"), "")
+        self.assertEqual(detect_language(""), "")
+
+    def test_farsi_repression_pattern_gated_to_detected_farsi_language(self):
+        # Même texte/motif que FarsiVocabularyTests.
+        # test_farsi_activist_detained_reaches_level_a, sans "language"
+        # déclaré : doit toujours atteindre le niveau A grâce à la
+        # détection par script (fa), pas malgré elle.
+        article = {
+            "title": "فعال حقوق بشر تاجیک بازداشت و شکنجه شد",
+            "summary": (
+                "فعال مدنی پس از اعتراض در تاجیکستان به‌طور خودسرانه "
+                "بازداشت و شکنجه شد."
+            ),
+            "body": "",
+            "source": "Fararu",
+            "url": "https://www.fararu.com/example-lang-tag",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["language"], "fa")
+        self.assertEqual(article["level"], "A")
+
+    def test_farsi_repression_pattern_skipped_for_declared_russian_source(self):
+        # Motif farsi présent dans le texte (citation, translittération...)
+        # mais la source déclare explicitement "ru" : le motif FA ne
+        # doit pas être testé, on fait confiance à la déclaration.
+        article = {
+            "title": "فعال حقوق بشر تاجیک بازداشت و شکنجه شد",
+            "summary": "",
+            "body": "",
+            "source": "Test Source",
+            "language": "ru",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["language"], "ru")
+
+    def test_multi_language_source_resolves_via_detection(self):
+        # Sources déclarées "multi" (ex: RFE/RL) mélangent plusieurs
+        # services linguistiques dans un seul flux : classify_article()
+        # doit détecter la langue réelle de chaque article plutôt que
+        # de rester bloqué sur "multi" (ce qui aurait pour effet de ne
+        # jamais lancer les vérifications russes/farsi sur ces sources).
+        article = {
+            "title": (
+                "На хлопковых полях Узбекистана задержана "
+                "корреспондент «Штерн»"
+            ),
+            "summary": "",
+            "body": "",
+            "source": "Radio Free Europe / Radio Liberty",
+            "language": "multi",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["language"], "ru")
+        self.assertTrue(
+            any("Asie centrale" in reason for reason in article["reasons"])
+        )
 
 
 class FrenchVocabularyTests(unittest.TestCase):

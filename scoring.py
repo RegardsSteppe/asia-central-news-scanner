@@ -290,6 +290,36 @@ def normalize(text):
     return re.sub(r"\s+", " ", str(text)).strip().lower()
 
 
+_CYRILLIC_CHARS_RE = re.compile(r"[а-яё]", re.I)
+_PERSIAN_CHARS_RE = re.compile(r"[؀-ۿ]")
+_LATIN_CHARS_RE = re.compile(r"[a-z]", re.I)
+
+
+def detect_language(text):
+    """
+    Cheap script-ratio language detection, used only as a fallback for
+    articles whose source doesn't declare a single language in
+    sources.py (missing, or "multi" — e.g. RFE/RL, which mixes several
+    language services in one feed list). Not a general-purpose language
+    identifier: it only distinguishes Russian/Farsi script from a Latin
+    default, which is exactly what the language-scoped regex checks
+    below need to decide whether to run.
+    """
+    if not text:
+        return ""
+    cyrillic = len(_CYRILLIC_CHARS_RE.findall(text))
+    persian = len(_PERSIAN_CHARS_RE.findall(text))
+    latin = len(_LATIN_CHARS_RE.findall(text))
+    total = cyrillic + persian + latin
+    if total < 20:
+        return ""
+    if cyrillic / total > 0.3:
+        return "ru"
+    if persian / total > 0.3:
+        return "fa"
+    return "en"
+
+
 @lru_cache(maxsize=None)
 def _compiled(pattern, flags=0):
     """
@@ -492,15 +522,31 @@ def classify_article(article):
 
     reasons = []
 
-    # La langue déclarée de la source (sources.py) permet de ne
-    # lancer les vérifications regex spécifiquement russes (bien plus
-    # coûteuses qu'une simple recherche de phrase) que sur les
-    # articles de cette langue — un article anglais/farsi/français
-    # n'a jamais besoin d'être passé au crible des déclinaisons
-    # russes. Suggéré par l'utilisateur le 2026-09-11 après avoir
-    # remarqué le ralentissement des runs suite à l'ajout de ces
-    # vérifications.
-    is_russian_source = (article.get("language") or "").lower() == "ru"
+    # Chaque article est tagué avec sa langue pour ne lancer les
+    # vérifications regex spécifiques à une langue (déclinaisons russes,
+    # motifs farsi...) que sur les articles concernés — un article
+    # anglais/français n'a jamais besoin d'être passé au crible des
+    # déclinaisons russes ou des motifs persans. La plupart des sources
+    # déclarent leur langue dans sources.py ; pour les quelques-unes
+    # qui n'en déclarent pas une seule (ex: RFE/RL, "multi", qui mélange
+    # plusieurs services linguistiques dans un même flux), on retombe
+    # sur une détection par script (Cyrillique/Persan/Latin) du texte
+    # réel de l'article. Le résultat est réécrit sur l'article lui-même
+    # : chaque article ressort de classify_article() tagué avec la
+    # langue effectivement utilisée pour le scorer, pas seulement la
+    # langue déclarée par la source. Suggéré par l'utilisateur le
+    # 2026-09-11 après avoir remarqué le ralentissement des runs suite
+    # à l'ajout des vérifications russes, puis élargi à toutes les
+    # vérifications langue-spécifiques (pas seulement le russe).
+    declared_language = (article.get("language") or "").strip().lower()
+    if declared_language in ("", "multi"):
+        resolved_language = detect_language(full_text) or declared_language
+    else:
+        resolved_language = declared_language
+    article["language"] = resolved_language
+
+    is_russian_source = resolved_language == "ru"
+    is_farsi_source = resolved_language == "fa"
     ru_central_asia_stems = (
         _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS if is_russian_source else ()
     )
@@ -729,23 +775,26 @@ def classify_article(article):
     # V9 — TARGET / ACTION RELATIONS
     # --------------------------------------------------------
 
+    # ACTIVIST_REPRESSION_RU_PATTERNS/FA_PATTERNS ne peuvent matcher que
+    # du texte écrit dans leur script (cyrillique / persan) — inutile de
+    # les lancer sur un article dont la langue résolue n'est pas celle-là.
     activist_relation = (
         contains_pattern(headline, ACTIVIST_REPRESSION_PATTERNS)
         or contains_pattern(body[:12000], ACTIVIST_REPRESSION_PATTERNS)
-        or contains_pattern(headline, ACTIVIST_REPRESSION_RU_PATTERNS)
-        or contains_pattern(body[:12000], ACTIVIST_REPRESSION_RU_PATTERNS)
-        or contains_pattern(headline, ACTIVIST_REPRESSION_FA_PATTERNS)
-        or contains_pattern(body[:12000], ACTIVIST_REPRESSION_FA_PATTERNS)
+        or (is_russian_source and contains_pattern(headline, ACTIVIST_REPRESSION_RU_PATTERNS))
+        or (is_russian_source and contains_pattern(body[:12000], ACTIVIST_REPRESSION_RU_PATTERNS))
+        or (is_farsi_source and contains_pattern(headline, ACTIVIST_REPRESSION_FA_PATTERNS))
+        or (is_farsi_source and contains_pattern(body[:12000], ACTIVIST_REPRESSION_FA_PATTERNS))
         or relation_present(full_text, ACTIVIST_TERMS, EXPLICIT_HR_ACTION_TERMS_V9)
     )
 
     journalist_relation = (
         contains_pattern(headline, JOURNALIST_REPRESSION_PATTERNS)
         or contains_pattern(body[:12000], JOURNALIST_REPRESSION_PATTERNS)
-        or contains_pattern(headline, JOURNALIST_REPRESSION_RU_PATTERNS)
-        or contains_pattern(body[:12000], JOURNALIST_REPRESSION_RU_PATTERNS)
-        or contains_pattern(headline, JOURNALIST_REPRESSION_FA_PATTERNS)
-        or contains_pattern(body[:12000], JOURNALIST_REPRESSION_FA_PATTERNS)
+        or (is_russian_source and contains_pattern(headline, JOURNALIST_REPRESSION_RU_PATTERNS))
+        or (is_russian_source and contains_pattern(body[:12000], JOURNALIST_REPRESSION_RU_PATTERNS))
+        or (is_farsi_source and contains_pattern(headline, JOURNALIST_REPRESSION_FA_PATTERNS))
+        or (is_farsi_source and contains_pattern(body[:12000], JOURNALIST_REPRESSION_FA_PATTERNS))
         or relation_present(full_text, JOURNALIST_TERMS, EXPLICIT_HR_ACTION_TERMS_V9)
     )
 
