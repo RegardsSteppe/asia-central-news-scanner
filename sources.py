@@ -357,14 +357,26 @@ SOURCES = [
     # ========================================================
 
     {
+        # hrw.org/asia/ (comme /fr/, /ru/) est bloqué en 403 depuis le
+        # tout début du projet — blocage anti-bot côté serveur. HRW a
+        # cependant un flux RSS public (hrw.org/rss/news), souvent
+        # exempté de ce type de protection (pas de défi JS pour un
+        # lecteur RSS) : testé à la demande de l'utilisateur après
+        # qu'un article HRW manquant lui ait été signalé. Fallback sur
+        # l'ancienne page HTML si le flux échoue aussi — non vérifié
+        # depuis cet environnement, à valider via les logs du run réel.
         "name": "Human Rights Watch",
         "short_name": "HRW",
         "profile": "human_rights",
         "label": "International · droits humains",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://www.hrw.org/asia/",
+
+        "feeds": [
+            "https://www.hrw.org/rss/news",
+        ],
 
         "fallbacks": [
             "https://www.hrw.org/asia",
@@ -378,10 +390,18 @@ SOURCES = [
         "short_name": "HRW FR",
         "profile": "human_rights",
         "label": "International · droits humains · français",
-        "type": "html",
+        "type": "rss",
         "language": "fr",
 
         "url": "https://www.hrw.org/fr/",
+
+        "feeds": [
+            "https://www.hrw.org/fr/rss/news",
+        ],
+
+        "fallbacks": [
+            "https://www.hrw.org/fr/",
+        ],
 
         "max_articles": 200,
     },
@@ -391,10 +411,18 @@ SOURCES = [
         "short_name": "HRW RU",
         "profile": "human_rights",
         "label": "International · droits humains · russe",
-        "type": "html",
+        "type": "rss",
         "language": "ru",
 
         "url": "https://www.hrw.org/ru/",
+
+        "feeds": [
+            "https://www.hrw.org/ru/rss/news",
+        ],
+
+        "fallbacks": [
+            "https://www.hrw.org/ru/",
+        ],
 
         "max_articles": 200,
     },
