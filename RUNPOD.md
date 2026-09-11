@@ -17,14 +17,19 @@ already built (title, summary, body...) in the request.
 ## Files
 
 - `runpod_handler.py` — the handler (`score`/`batch` modes, see below).
+- `github_push.py` — pushes a job's results to GitHub (see
+  "Persisting results to GitHub" below), via the REST Contents API.
 - `Dockerfile` — minimal image: `python:3.11-slim` + the `runpod`
-  package + `scoring.py`/`keywords.py`. No `feedparser`/`requests`/
-  `beautifulsoup4` (only needed by the full scanner, never by this
-  handler) and no `llama-cpp-python`/`huggingface_hub` (no LLM runs in
-  this handler — that's a later step, see the project's broader plan).
-- `requirements-runpod.txt` — just `runpod`. Kept separate from the
-  main `requirements.txt` (used by the GitHub Actions workflow) so the
-  two deployment targets don't share an unrelated dependency.
+  package + `requests` + `scoring.py`/`keywords.py`/`github_push.py`.
+  No `feedparser`/`beautifulsoup4` (only needed by the full scanner,
+  never by this handler) and no `llama-cpp-python`/`huggingface_hub`
+  (no LLM runs in this handler — that's a later step, see the
+  project's broader plan).
+- `requirements-runpod.txt` — `runpod` + `requests` (the latter only
+  for `github_push.py`'s calls to the GitHub API, not for scraping).
+  Kept separate from the main `requirements.txt` (used by the GitHub
+  Actions workflow) so the two deployment targets don't share an
+  unrelated dependency.
 
 ## Local test (no RunPod account needed)
 
@@ -132,9 +137,52 @@ missing fields).
 }
 ```
 
+When `"push_to_github"` was set in the request, the response also
+carries a `"github_push"` field — either `{"repo", "path", "branch",
+"commit_sha", "html_url"}` on success, or `{"error": "..."}` if the
+push failed (see below).
+
 A malformed article (missing `title`, wrong type) never aborts the
 batch — it's reported in `"errors"` (`{"index", "error", ...}`) while
 every other article is still scored.
+
+## Persisting results to GitHub
+
+A job's results are also returned in the HTTP response, but that's
+easy to lose track of once the call is out of your terminal. Add
+`"push_to_github"` to the payload and the handler commits the full
+response as a JSON file to the repo, on a dedicated branch
+(`runpod-results` by default, created from the repo's default branch
+the first time), via `github_push.py`:
+
+```json
+{
+  "input": {
+    "mode": "batch",
+    "articles": [...],
+    "push_to_github": {
+      "path": "runpod_results/2026-09-11.json",
+      "branch": "runpod-results",
+      "message": "RunPod scoring run"
+    }
+  }
+}
+```
+
+`"push_to_github": true` also works and falls back to a timestamped
+path under `runpod_results/` and the `runpod-results` branch.
+
+**Required setup**: set `GITHUB_TOKEN` as a **RunPod secret** on the
+endpoint (Settings → Environment Variables → mark it as a secret, not
+a plain env var) — a fine-grained personal access token with
+**Contents: Read and write** on this repo is enough, nothing broader.
+Never pass a token in the request payload itself: it would end up in
+RunPod's request logs. `GITHUB_REPO` (env var, `owner/repo`) overrides
+the default target repo if you ever need to point elsewhere.
+
+A push failure (missing token, network error, GitHub API error) never
+fails the job — the scoring results are still returned; the push's own
+outcome (or error) is attached under `result["github_push"]`.
 
 ## Feeding it ~6,800 articles
 
