@@ -9,14 +9,14 @@ breakdowns) without touching the CI pipeline.
 
 `news_scanner.py` (the full scan: RSS/HTML fetching, enrichment, site
 generation) is **not** turned into an endpoint and is never imported by
-the handler. `runpod_handler.py` only imports `classify_article` from
+the handler. `rp_handler.py` only imports `classify_article` from
 `scoring.py` — the scoring logic itself is never duplicated. The handler
 never makes a network request or writes to disk: articles arrive
 already built (title, summary, body...) in the request.
 
 ## Files
 
-- `runpod_handler.py` — the handler (`score`/`batch` modes, see below).
+- `rp_handler.py` — the handler (`score`/`batch` modes, see below).
 - `github_push.py` — pushes a job's results to GitHub (see
   "Persisting results to GitHub" below), via the REST Contents API.
 - `Dockerfile` — minimal image: `python:3.11-slim` + the `runpod`
@@ -36,7 +36,7 @@ already built (title, summary, body...) in the request.
 ```bash
 pip install -r requirements-runpod.txt
 python -c "
-from runpod_handler import handler
+from rp_handler import handler
 print(handler({'mode': 'score', 'articles': [
     {'title': 'Kazakhstan Jails Activist for Ten Years Over Peaceful Protest',
      'summary': 'A court sentenced a human rights activist to ten years in prison.'}
@@ -44,7 +44,7 @@ print(handler({'mode': 'score', 'articles': [
 "
 ```
 
-Run the test suite (includes `tests/test_runpod_handler.py`):
+Run the test suite (includes `tests/test_rp_handler.py`):
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
@@ -64,7 +64,7 @@ docker push <your-dockerhub-user>/asia-central-scoring:latest
 3. No GPU needed for this step (CPU-only worker) — the handler does
    pure-Python regex scoring, nothing GPU-bound.
 4. Container start command: leave default (`Dockerfile`'s `CMD` already
-   runs `python -u runpod_handler.py`, which calls
+   runs `python -u rp_handler.py`, which calls
    `runpod.serverless.start(...)`).
 5. Deploy, then use the endpoint's `/run` or `/runsync` URL with your
    RunPod API key.

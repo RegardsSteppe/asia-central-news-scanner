@@ -88,7 +88,7 @@ from github_push import DEFAULT_BRANCH, GitHubPushError, push_json_to_github
 from scoring import classify_article
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
-logger = logging.getLogger("runpod_handler")
+logger = logging.getLogger("rp_handler")
 
 DEFAULT_BATCH_SIZE = 200
 
