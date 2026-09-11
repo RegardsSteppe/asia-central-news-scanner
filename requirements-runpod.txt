@@ -1,0 +1,11 @@
+# Dépendances du handler RunPod Serverless (runpod_handler.py) UNIQUEMENT.
+#
+# Volontairement séparé de requirements.txt (utilisé par le workflow
+# GitHub Actions) : le handler n'importe que scoring.py + keywords.py,
+# qui sont du Python pur (aucune dépendance réseau/HTML/LLM). Aucune
+# des dépendances du scanner complet (feedparser, requests,
+# beautifulsoup4, llama-cpp-python, huggingface_hub...) n'est
+# nécessaire ici — les garder hors de l'image RunPod la garde minimale
+# et évite en particulier de compiler llama-cpp-python (lourd, inutile
+# tant qu'aucun LLM ne tourne dans ce handler).
+runpod>=1.7,<2
