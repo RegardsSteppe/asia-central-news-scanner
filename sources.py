@@ -477,6 +477,22 @@ SOURCES = [
         "max_articles": 200,
     },
 
+    {
+        # Trouvé par recherche web : ONG liberté d'expression, publie
+        # régulièrement des rapports pays sur l'Asie centrale
+        # (numérique, médias, assemblée).
+        "name": "ARTICLE 19",
+        "short_name": "ARTICLE 19",
+        "profile": "press_freedom",
+        "label": "International · liberté d'expression",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.article19.org/resources/",
+
+        "max_articles": 150,
+    },
+
     # ========================================================
     # DROITS HUMAINS — ORGANISATIONS INTERGOUVERNEMENTALES
     #
@@ -584,6 +600,70 @@ SOURCES = [
         "url": "https://www.iphronline.org/",
 
         "max_articles": 150,
+    },
+
+    {
+        # Trouvé par recherche web (à la demande de l'utilisateur) :
+        # fédération internationale de ligues de droits humains,
+        # publie régulièrement sur l'Asie centrale et le Caucase.
+        "name": "FIDH",
+        "short_name": "FIDH",
+        "profile": "human_rights",
+        "label": "International · droits humains",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.fidh.org/en/region/europe-central-asia/",
+
+        "max_articles": 150,
+    },
+
+    {
+        # Trouvé par recherche web. Organisation historique de défense
+        # des droits humains et des libertés civiles.
+        "name": "Freedom House",
+        "short_name": "Freedom House",
+        "profile": "human_rights",
+        "label": "International · droits humains & démocratie",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://freedomhouse.org/",
+
+        "max_articles": 150,
+    },
+
+    {
+        # Trouvé par recherche web : ONG spécialisée sur les droits des
+        # minorités et personnes LGBT en Asie centrale/ex-URSS —
+        # exactement le type de signal faible qu'un thème générique
+        # "LGBT rights" ne suffit pas à faire remonter.
+        "name": "ADC Memorial",
+        "short_name": "ADC Memorial",
+        "profile": "human_rights",
+        "label": "International · minorités & LGBT",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://adcmemorial.org/en/",
+
+        "max_articles": 100,
+    },
+
+    {
+        # Trouvé par recherche web : commission gouvernementale
+        # américaine indépendante, source régulière sur les prisonniers
+        # religieux/politiques en Ouzbékistan et au Turkménistan.
+        "name": "USCIRF",
+        "short_name": "USCIRF",
+        "profile": "human_rights",
+        "label": "International · liberté religieuse",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://www.uscirf.gov/news-room",
+
+        "max_articles": 100,
     },
 
     # ========================================================
@@ -1027,6 +1107,36 @@ SOURCES = [
         "url": "https://en.trend.az/",
 
         "max_articles": 200,
+    },
+
+    {
+        # Trouvé par recherche web : agrégateur quotidien de médias
+        # locaux pour les trois pays du Caucase du Sud — exactement le
+        # pendant Caucase de ce que Novastan fait pour l'Asie centrale.
+        "name": "JAMnews",
+        "short_name": "JAMnews",
+        "profile": "regional_independent",
+        "label": "Régional · Caucase",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://jam-news.net/",
+
+        "max_articles": 200,
+    },
+
+    {
+        # Trouvé par recherche web : analyse dédiée Caucase du Sud.
+        "name": "Caucasus Watch",
+        "short_name": "Caucasus Watch",
+        "profile": "regional_analysis",
+        "label": "Régional · analyse · Caucase",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://caucasuswatch.de/en/",
+
+        "max_articles": 150,
     },
 
     # ========================================================
