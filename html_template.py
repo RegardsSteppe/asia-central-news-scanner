@@ -148,7 +148,7 @@ def render_article_card(
 
     level = article.get(
         "level",
-        "D",
+        "E",
     )
 
     score = article.get(
@@ -331,7 +331,7 @@ def render_audit_row(
 
     level = article.get(
         "level",
-        "D",
+        "E",
     )
 
     retained = (
@@ -555,7 +555,12 @@ def render_dashboard(
 
         {render_stat(
             stats["level_d"],
-            "⚪ Niveau D"
+            "⚪ Niveau D — activistes hors région"
+        )}
+
+        {render_stat(
+            stats["level_e"],
+            "⬜ Niveau E — bruit"
         )}
 
         {render_stat(
@@ -897,6 +902,11 @@ h1 {
     background: #eeeeee;
 }
 
+.badge-E {
+    background: #f7f7f7;
+    color: #999999;
+}
+
 .score {
 
     font-size: 19px;
@@ -1195,7 +1205,7 @@ def create_web_page(
 
         level = article.get(
             "level",
-            "D",
+            "E",
         )
 
         if level in grouped:

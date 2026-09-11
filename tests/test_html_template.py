@@ -18,6 +18,7 @@ EMPTY_STATS = {
     "level_b": 0,
     "level_c": 0,
     "level_d": 0,
+    "level_e": 0,
     "sources_successful": 0,
     "sources_total": 0,
     "relevance_rate": 0.0,
