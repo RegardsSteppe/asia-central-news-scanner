@@ -425,6 +425,34 @@ class RussianMorphologyGapTests(unittest.TestCase):
     unique, ratant les tournures les plus courantes d'une dépêche.
     """
 
+    def test_stem_matching_only_runs_for_declared_russian_sources(self):
+        # Suggestion de l'utilisateur le 2026-09-11 (les vérifications
+        # regex russes ralentissaient le scan sur tout le corpus,
+        # y compris les articles non-russes) : la source connaît sa
+        # langue (sources.py), donc build_article() la propage sur
+        # chaque article, et classify_article() ne lance ces
+        # vérifications coûteuses que si "language" vaut "ru" — pas
+        # un gain de justesse, un gain de vitesse : sans "language"
+        # (ou une autre langue), la détection par radical est
+        # simplement sautée plutôt que de tourner pour rien.
+        article = {
+            "title": (
+                "На хлопковых полях Узбекистана задержана "
+                "корреспондент «Штерн»"
+            ),
+            "summary": "",
+            "body": "",
+            "source": "Centre1",
+            # Pas de "language" ici : simule une source dont la langue
+            # n'a pas été propagée, ou un article non russe.
+        }
+
+        classify_article(article)
+
+        self.assertFalse(
+            any("Asie centrale" in reason for reason in article["reasons"])
+        )
+
     def test_recognizes_declined_country_name_in_russian(self):
         # "Узбекистана" est le génitif de "Узбекистан" — la forme la
         # plus courante dans une phrase ("sur les champs de coton
@@ -437,6 +465,7 @@ class RussianMorphologyGapTests(unittest.TestCase):
             "summary": "",
             "body": "",
             "source": "Centre1",
+            "language": "ru",
         }
 
         classify_article(article)
@@ -457,6 +486,7 @@ class RussianMorphologyGapTests(unittest.TestCase):
             "summary": "",
             "body": "",
             "source": "Centre1",
+            "language": "ru",
         }
 
         classify_article(article)

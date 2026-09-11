@@ -618,6 +618,11 @@ def build_article(
     return {
         "source": source.get("name", ""),
         "source_label": source.get("label") or source.get("name", ""),
+        # Langue déclarée de la source (voir sources.py) : utilisée en
+        # scoring pour ne lancer les vérifications regex coûteuses
+        # spécifiques à une langue (morphologie russe...) que sur les
+        # articles de cette langue, plutôt que sur tout le corpus.
+        "language": source.get("language", ""),
         "title": clean_title(title),
         "summary": clean_text(summary),
         "url": normalize_url(url),

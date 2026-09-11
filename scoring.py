@@ -418,11 +418,27 @@ def classify_article(article):
 
     reasons = []
 
+    # La langue déclarée de la source (sources.py) permet de ne
+    # lancer les vérifications regex spécifiquement russes (bien plus
+    # coûteuses qu'une simple recherche de phrase) que sur les
+    # articles de cette langue — un article anglais/farsi/français
+    # n'a jamais besoin d'être passé au crible des déclinaisons
+    # russes. Suggéré par l'utilisateur le 2026-09-11 après avoir
+    # remarqué le ralentissement des runs suite à l'ajout de ces
+    # vérifications.
+    is_russian_source = (article.get("language") or "").lower() == "ru"
+    ru_central_asia_stems = (
+        _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS if is_russian_source else ()
+    )
+    ru_caucasus_stems = (
+        _RUSSIAN_CAUCASUS_STEM_PATTERNS if is_russian_source else ()
+    )
+
     central_asia = _find_terms_with_russian_stems(
-        headline, CENTRAL_ASIA_TERMS, _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS
+        headline, CENTRAL_ASIA_TERMS, ru_central_asia_stems
     )
     caucasus = _find_terms_with_russian_stems(
-        headline, CAUCASUS_TERMS, _RUSSIAN_CAUCASUS_STEM_PATTERNS
+        headline, CAUCASUS_TERMS, ru_caucasus_stems
     )
     uyghur = find_terms(headline, UYGHUR_TERMS)
 
@@ -445,10 +461,10 @@ def classify_article(article):
 
     body_geography = list(dict.fromkeys(
         _find_terms_with_russian_stems(
-            body, CENTRAL_ASIA_TERMS, _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS
+            body, CENTRAL_ASIA_TERMS, ru_central_asia_stems
         )
         + _find_terms_with_russian_stems(
-            body, CAUCASUS_TERMS, _RUSSIAN_CAUCASUS_STEM_PATTERNS
+            body, CAUCASUS_TERMS, ru_caucasus_stems
         )
         + find_terms(body, UYGHUR_TERMS)
     ))
@@ -525,7 +541,7 @@ def classify_article(article):
 
     primary_repression = bool(
         find_terms(primary_hr_text, REPRESSION_TERMS_V9)
-        or has_russian_repression_morphology(primary_hr_text)
+        or (is_russian_source and has_russian_repression_morphology(primary_hr_text))
         or contains_pattern(primary_hr_text, [
             r"\bconvicted\b", r"\bsentenc\w*\b", r"\bbehind bars\b",
             r"\bunder threat\b", r"\bunder pressure\b",
@@ -619,7 +635,9 @@ def classify_article(article):
     body_v9_actions = find_terms(body, EXPLICIT_HR_ACTION_TERMS_V9)
     body_v9_events = find_terms(body, CENTRAL_ASIA_HR_EVENT_TERMS_V9)
 
-    body_morphology = has_russian_repression_morphology(body[:12000])
+    body_morphology = (
+        is_russian_source and has_russian_repression_morphology(body[:12000])
+    )
 
     body_strong_hr_confirmation = bool(
         body_v9_repression

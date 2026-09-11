@@ -329,6 +329,19 @@ class BuildArticleTests(unittest.TestCase):
         self.assertEqual(article["body"], "")
         self.assertIsNotNone(article["date"])
 
+    def test_carries_source_language_for_language_scoped_scoring(self):
+        # scoring.py n'active les vérifications regex spécifiques à
+        # une langue (morphologie russe...) que si l'article porte la
+        # langue déclarée de sa source.
+        article = build_article(
+            source={"name": "Centre1", "language": "ru"},
+            title="Titre",
+            summary="",
+            url="https://example.com/news/1",
+            published=None,
+        )
+        self.assertEqual(article["language"], "ru")
+
     def test_missing_source_name_defaults_to_empty(self):
         article = build_article(
             source={},
