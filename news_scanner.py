@@ -142,6 +142,27 @@ MAX_CACHED_ARTICLES_PER_SOURCE = max(
     int(os.getenv("SCANNER_MAX_CACHED_ARTICLES_PER_SOURCE", "250")),
 )
 
+# Cache du corps déjà extrait, par URL (memory["body_cache"]) : un
+# article qui reste visible dans un flux plusieurs runs de suite (très
+# fréquent) n'a pas besoin d'être retéléchargé et reparsé chaque fois —
+# son contenu publié ne change quasiment jamais. Contrairement au
+# cache HTTP de http_utils.py (http_cache.json, jamais persisté entre
+# les runs GitHub Actions car gitignored — un cache mort en pratique),
+# celui-ci vit dans memory.json, qui est bien recommité après chaque
+# run. Tronqué et borné en nombre d'entrées pour ne pas faire exploser
+# la taille du fichier. Décidé avec l'utilisateur le 2026-09-11 après
+# avoir constaté que l'essentiel du temps de run restant (après le fix
+# de perf sur le scoring) est maintenant du réseau (enrichment).
+BODY_CACHE_TTL_SECONDS = max(
+    0,
+    int(os.getenv("SCANNER_BODY_CACHE_TTL", str(48 * 3600))),
+)
+BODY_CACHE_MAX_ENTRIES = max(
+    0,
+    int(os.getenv("SCANNER_BODY_CACHE_MAX_ENTRIES", "500")),
+)
+BODY_CACHE_MAX_CHARS = 8000
+
 # Small, hand-picked list kept as a safety net in case the "stop-words"
 # library is not installed or fails to load its corpus for some reason.
 _FALLBACK_STOPWORDS = {
@@ -547,6 +568,79 @@ def update_source_cache(
     }
 
 
+# ============================================================
+# CACHE DES CORPS ENRICHIS (éviter de re-télécharger un article déjà vu)
+# ============================================================
+
+def load_body_cache(memory: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    cache = memory.get("body_cache")
+    return cache if isinstance(cache, dict) else {}
+
+
+def get_cached_body(
+    body_cache: dict[str, dict[str, Any]],
+    url: str,
+    now: float,
+) -> tuple[str, Any] | None:
+    """
+    Retourne (body, date) si un corps déjà extrait est en cache pour
+    cette URL et pas encore périmé (BODY_CACHE_TTL_SECONDS), sinon
+    None (il faut le (re)télécharger).
+    """
+    entry = body_cache.get(url)
+    if not isinstance(entry, dict):
+        return None
+
+    fetched_at = parse_date(entry.get("fetched_at"))
+    if not fetched_at:
+        return None
+
+    if now - fetched_at.timestamp() >= BODY_CACHE_TTL_SECONDS:
+        return None
+
+    body = entry.get("body")
+    if not isinstance(body, str) or not body:
+        return None
+
+    return body, parse_date(entry.get("date"))
+
+
+def update_body_cache(
+    memory: dict[str, Any],
+    entries: dict[str, tuple[str, Any]],
+) -> None:
+    """
+    Ajoute/rafraîchit en mémoire les corps nouvellement téléchargés
+    (pas d'I/O ici). Borné à BODY_CACHE_MAX_ENTRIES : au-delà, les
+    entrées les plus anciennes (par date de récupération) sont
+    écartées plutôt que de laisser memory.json grossir sans limite.
+    """
+    cache = memory.get("body_cache")
+    if not isinstance(cache, dict):
+        cache = {}
+        memory["body_cache"] = cache
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    for url, (body, date) in entries.items():
+        if not url or not body:
+            continue
+
+        cache[url] = {
+            "body": body[:BODY_CACHE_MAX_CHARS],
+            "date": date.isoformat() if hasattr(date, "isoformat") else date,
+            "fetched_at": now_iso,
+        }
+
+    if len(cache) > BODY_CACHE_MAX_ENTRIES:
+        ordered = sorted(
+            cache.items(),
+            key=lambda item: item[1].get("fetched_at", ""),
+            reverse=True,
+        )
+        memory["body_cache"] = dict(ordered[:BODY_CACHE_MAX_ENTRIES])
+
+
 def compute_seen_keys(
     memory: dict[str, Any],
     force_refresh: bool,
@@ -578,6 +672,7 @@ def timed_call(label: str, func: Any, *args: Any, **kwargs: Any) -> Any:
 def enrich_articles(
     articles: list[dict[str, Any]],
     force_refresh: bool = False,
+    memory: dict[str, Any] | None = None,
 ) -> None:
 
     ranked = sorted(
@@ -626,6 +721,39 @@ def enrich_articles(
         f"ENRICH | {len(selected)} articles avec body complet"
     )
 
+    # Un article déjà enrichi dans un run récent (BODY_CACHE_TTL_SECONDS)
+    # n'a pas besoin d'être retéléchargé : son corps est mis en cache
+    # par URL dans memory.json (voir update_body_cache/get_cached_body).
+    # --force-refresh ignore ce cache comme il ignore déjà le cache HTTP.
+    body_cache = (
+        load_body_cache(memory)
+        if memory is not None and not force_refresh
+        else {}
+    )
+    now = time.time()
+
+    to_fetch: list[dict[str, Any]] = []
+    cache_hits = 0
+
+    for article in selected:
+        cached = get_cached_body(body_cache, article.get("url", ""), now)
+        if cached is None:
+            to_fetch.append(article)
+            continue
+
+        cache_hits += 1
+        body, published_date = cached
+        article["body"] = body
+        if not article.get("date") and published_date:
+            article["date"] = published_date
+        classify_article(article)
+
+    if cache_hits:
+        print(
+            f"ENRICH | {cache_hits}/{len(selected)} déjà en cache "
+            f"(pas de retéléchargement)"
+        )
+
     def _enrich_article(article: dict[str, Any]) -> tuple[str, Any]:
         return extract_body(
             article["url"],
@@ -634,13 +762,15 @@ def enrich_articles(
             expected_title=article.get("title", ""),
         )
 
+    newly_fetched: dict[str, tuple[str, Any]] = {}
+
     done = 0
     with ThreadPoolExecutor(
-        max_workers=min(ENRICH_WORKERS, len(selected) or 1)
+        max_workers=min(ENRICH_WORKERS, len(to_fetch) or 1)
     ) as executor:
         futures = {
             executor.submit(_enrich_article, article): article
-            for article in selected
+            for article in to_fetch
         }
 
         for future in as_completed(futures):
@@ -653,21 +783,27 @@ def enrich_articles(
                 )
                 body, published_date = "", None
 
-            if body:
-                article["body"] = body
-
             # La date de l'article (page de listing / flux RSS) fait parfois
             # défaut : on la complète avec celle trouvée sur la page elle-même.
             if not article.get("date") and published_date:
                 article["date"] = published_date
+
+            if body:
+                article["body"] = body
+                url = article.get("url", "")
+                if url:
+                    newly_fetched[url] = (body, article.get("date"))
 
             classify_article(article)
 
             done += 1
             if done % 10 == 0:
                 print(
-                    f"ENRICH | {done}/{len(selected)}"
+                    f"ENRICH | {done}/{len(to_fetch)}"
                 )
+
+    if memory is not None and newly_fetched:
+        update_body_cache(memory, newly_fetched)
 
 
 # ============================================================
@@ -1308,6 +1444,7 @@ def run_scan(
         enrich_articles,
         all_articles,
         force_refresh=force_refresh,
+        memory=memory,
     )
 
     # --------------------------------------------------------

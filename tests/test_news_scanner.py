@@ -1,4 +1,5 @@
 import sys
+import time
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -16,7 +17,9 @@ from news_scanner import (
     deduplicate,
     enrich_articles,
     final_sort_key,
+    get_cached_body,
     load_seen_keys,
+    update_body_cache,
 )
 
 
@@ -302,6 +305,192 @@ class EnrichArticlesTests(unittest.TestCase):
             enrich_articles(articles)
 
         self.assertEqual(articles[-1]["body"], "full body text")
+
+    @patch("news_scanner.extract_body")
+    def test_skips_network_fetch_when_body_already_cached(
+        self, mock_extract
+    ):
+        # Décidé avec l'utilisateur le 2026-09-11 : un article déjà
+        # enrichi lors d'un run récent (il reste souvent visible dans
+        # un flux plusieurs runs de suite) ne doit pas être retéléchargé
+        # — son corps est réutilisé depuis memory["body_cache"].
+        sources = [{"name": "Generic Source", "profile": "regional_media"}]
+        articles = [
+            {
+                "source": "Generic Source",
+                "score": 90,
+                "url": "https://example.com/1",
+                "title": "A" * 10,
+                "date": None,
+            }
+        ]
+        memory = {
+            "body_cache": {
+                "https://example.com/1": {
+                    "body": "cached body text",
+                    "date": None,
+                    "fetched_at": datetime.now(timezone.utc).isoformat(),
+                }
+            }
+        }
+
+        with patch("news_scanner.SOURCES", new=sources), patch(
+            "news_scanner.ENRICH_LIMIT", 5
+        ), patch("news_scanner.ENRICH_PER_SOURCE_LIMIT", 15):
+            enrich_articles(articles, memory=memory)
+
+        self.assertEqual(articles[0]["body"], "cached body text")
+        mock_extract.assert_not_called()
+
+    @patch("news_scanner.extract_body")
+    def test_refetches_when_cached_body_is_stale(self, mock_extract):
+        mock_extract.return_value = ("fresh body text", None)
+
+        sources = [{"name": "Generic Source", "profile": "regional_media"}]
+        articles = [
+            {
+                "source": "Generic Source",
+                "score": 90,
+                "url": "https://example.com/1",
+                "title": "A" * 10,
+            }
+        ]
+        stale_timestamp = (
+            datetime.now(timezone.utc) - timedelta(hours=72)
+        ).isoformat()
+        memory = {
+            "body_cache": {
+                "https://example.com/1": {
+                    "body": "old cached body text",
+                    "date": None,
+                    "fetched_at": stale_timestamp,
+                }
+            }
+        }
+
+        with patch("news_scanner.SOURCES", new=sources), patch(
+            "news_scanner.ENRICH_LIMIT", 5
+        ), patch("news_scanner.ENRICH_PER_SOURCE_LIMIT", 15):
+            enrich_articles(articles, memory=memory)
+
+        self.assertEqual(articles[0]["body"], "fresh body text")
+        mock_extract.assert_called_once()
+
+    @patch("news_scanner.extract_body")
+    def test_force_refresh_bypasses_body_cache(self, mock_extract):
+        mock_extract.return_value = ("fresh body text", None)
+
+        sources = [{"name": "Generic Source", "profile": "regional_media"}]
+        articles = [
+            {
+                "source": "Generic Source",
+                "score": 90,
+                "url": "https://example.com/1",
+                "title": "A" * 10,
+            }
+        ]
+        memory = {
+            "body_cache": {
+                "https://example.com/1": {
+                    "body": "cached body text",
+                    "date": None,
+                    "fetched_at": datetime.now(timezone.utc).isoformat(),
+                }
+            }
+        }
+
+        with patch("news_scanner.SOURCES", new=sources), patch(
+            "news_scanner.ENRICH_LIMIT", 5
+        ), patch("news_scanner.ENRICH_PER_SOURCE_LIMIT", 15):
+            enrich_articles(articles, force_refresh=True, memory=memory)
+
+        self.assertEqual(articles[0]["body"], "fresh body text")
+        mock_extract.assert_called_once()
+
+    @patch("news_scanner.extract_body")
+    def test_newly_fetched_bodies_are_written_back_to_memory(
+        self, mock_extract
+    ):
+        mock_extract.return_value = ("fresh body text", None)
+
+        sources = [{"name": "Generic Source", "profile": "regional_media"}]
+        articles = [
+            {
+                "source": "Generic Source",
+                "score": 90,
+                "url": "https://example.com/1",
+                "title": "A" * 10,
+            }
+        ]
+        memory: dict = {}
+
+        with patch("news_scanner.SOURCES", new=sources), patch(
+            "news_scanner.ENRICH_LIMIT", 5
+        ), patch("news_scanner.ENRICH_PER_SOURCE_LIMIT", 15):
+            enrich_articles(articles, memory=memory)
+
+        cached = memory["body_cache"]["https://example.com/1"]
+        self.assertEqual(cached["body"], "fresh body text")
+
+
+class BodyCacheTests(unittest.TestCase):
+    """
+    Cache du corps déjà extrait par URL, dans memory.json — voir
+    enrich_articles(). Contrairement au cache HTTP de http_utils.py
+    (jamais persisté entre les runs GitHub Actions, gitignored), celui-
+    ci vit dans memory.json, recommité après chaque run.
+    """
+
+    def test_get_cached_body_returns_none_when_missing(self):
+        self.assertIsNone(get_cached_body({}, "https://example.com/x", time.time()))
+
+    def test_get_cached_body_returns_fresh_entry(self):
+        cache = {
+            "https://example.com/x": {
+                "body": "some body",
+                "date": None,
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+            }
+        }
+
+        result = get_cached_body(cache, "https://example.com/x", time.time())
+
+        self.assertEqual(result, ("some body", None))
+
+    def test_get_cached_body_returns_none_when_expired(self):
+        stale_timestamp = (
+            datetime.now(timezone.utc) - timedelta(hours=72)
+        ).isoformat()
+        cache = {
+            "https://example.com/x": {
+                "body": "some body",
+                "date": None,
+                "fetched_at": stale_timestamp,
+            }
+        }
+
+        result = get_cached_body(cache, "https://example.com/x", time.time())
+
+        self.assertIsNone(result)
+
+    def test_update_body_cache_truncates_and_bounds_entries(self):
+        memory: dict = {}
+
+        with patch("news_scanner.BODY_CACHE_MAX_CHARS", 10), patch(
+            "news_scanner.BODY_CACHE_MAX_ENTRIES", 1
+        ):
+            update_body_cache(
+                memory,
+                {"https://example.com/1": ("a" * 100, None)},
+            )
+            update_body_cache(
+                memory,
+                {"https://example.com/2": ("b" * 100, None)},
+            )
+
+        self.assertEqual(len(memory["body_cache"]), 1)
+        cached = next(iter(memory["body_cache"].values()))
+        self.assertEqual(len(cached["body"]), 10)
 
 
 class MemorySeenKeysTests(unittest.TestCase):
