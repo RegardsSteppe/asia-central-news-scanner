@@ -302,5 +302,50 @@ class FarsiVocabularyTests(unittest.TestCase):
         )
 
 
+class FrenchVocabularyTests(unittest.TestCase):
+    """
+    Régression réelle (audit du 2026-09-11) : un article HRW en
+    français sur Anar Mammadli (Azerbaïdjan) ne franchissait ni la
+    porte géographique ("Azerbaïdjan" absent de CAUCASUS_TERMS) ni
+    l'ancrage HR principal (aucun vocabulaire français dans
+    TARGET_TERMS_V9/EXPLICIT_HR_ACTION_TERMS_V9/REPRESSION_TERMS_V9),
+    alors que l'équivalent anglais/russe passait sans problème. Plusieurs
+    sources (HRW FR, Amnesty FR, RSF, Novastan FR) publient en français.
+    """
+
+    def test_recognizes_azerbaijan_in_french(self):
+        article = {
+            "title": "Azerbaïdjan : un défenseur des droits humains condamné",
+            "summary": "",
+            "body": "",
+            "source": "Human Rights Watch — français",
+            "url": "https://example.com/fr-1",
+        }
+
+        classify_article(article)
+
+        self.assertTrue(
+            any("Caucase" in reason for reason in article["reasons"])
+        )
+
+    def test_french_activist_detained_reaches_level_a(self):
+        article = {
+            "title": "Un défenseur des droits humains tadjik arrêté et torturé",
+            "summary": (
+                "Un militant a été arbitrairement détenu et torturé après "
+                "une manifestation au Tadjikistan, selon des défenseurs "
+                "des droits humains."
+            ),
+            "body": "",
+            "source": "Human Rights Watch — français",
+            "url": "https://example.com/fr-2",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["level"], "A")
+        self.assertTrue(article["relevant"])
+
+
 if __name__ == "__main__":
     unittest.main()
