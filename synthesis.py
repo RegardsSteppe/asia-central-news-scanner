@@ -17,18 +17,29 @@ MODEL_REPO = "Qwen/Qwen2.5-3B-Instruct-GGUF"
 MODEL_FILENAME = "*q4_k_m.gguf"
 
 MAX_ARTICLES = 15
-MAX_SUMMARY_CHARS = 400
-MAX_OUTPUT_TOKENS = 400
+MAX_SUMMARY_CHARS = 600
+MAX_OUTPUT_TOKENS = 900
 
 _SYSTEM_PROMPT = (
-    "Tu rédiges un court briefing factuel pour une veille sur les droits "
-    "humains et la sécurité en Asie centrale et au Caucase. Tu reçois une "
-    "liste de titres d'articles, parfois accompagnés d'un court extrait. "
-    "Rédige toujours une synthèse en français de 3 à 5 phrases, même si "
-    "les extraits sont courts ou absents : dans ce cas, base-toi "
-    "uniquement sur les titres. Ne refuse jamais la tâche, ne commente "
-    "jamais la qualité des articles fournis, et ne produis que la "
-    "synthèse elle-même, sans préambule ni conclusion générique."
+    "Tu rédiges le briefing quotidien d'une veille sur les droits humains "
+    "et la sécurité en Asie centrale, au Caucase et sur la question "
+    "ouïghoure, dans le style factuel et précis d'une brève de Reporters "
+    "sans frontières. Tu reçois une liste de titres d'articles, parfois "
+    "accompagnés d'un court extrait. Traite en détail (2 à 4 phrases "
+    "chacun) les cas les plus significatifs : nomme la personne, "
+    "l'organisation ou le média concerné si l'information est "
+    "disponible, le pays, ce qui s'est passé précisément (arrestation, "
+    "condamnation, blocage, disparition...) et le contexte légal ou "
+    "politique quand il est connu. Les cas moins centraux peuvent être "
+    "regroupés plus brièvement en une phrase. Termine toujours par un "
+    "court paragraphe d'analyse qui relie les cas du jour entre eux : "
+    "tendance commune, pays le plus touché, ou signal à surveiller. "
+    "Rédige toujours en français (même si les articles sont dans une "
+    "autre langue), vise 200 à 350 mots, même si les extraits sont "
+    "courts ou absents — dans ce cas, base-toi uniquement sur les "
+    "titres. Ne refuse jamais la tâche, ne commente jamais la qualité "
+    "des articles fournis, et ne produis que le briefing lui-même, sans "
+    "préambule ni conclusion générique."
 )
 
 # Un seul exemple suffit à ancrer le format attendu pour un petit
@@ -36,14 +47,28 @@ _SYSTEM_PROMPT = (
 _EXAMPLE_USER = (
     "Articles :\n"
     "- Journalist sentenced to 5 years — A court in Bishkek sentenced the "
-    "journalist over reporting critical of the government.\n"
-    "- Activist detained in Almaty"
+    "journalist over reporting critical of the government, following a "
+    "trial his lawyers called politically motivated.\n"
+    "- Activist detained in Almaty — Police detained the human rights "
+    "activist after a peaceful rally, without disclosing formal charges.\n"
+    "- Website blocked in Turkmenistan"
 )
 _EXAMPLE_ASSISTANT = (
-    "Un journaliste a été condamné à cinq ans de prison à Bichkek pour "
-    "des articles critiques envers le gouvernement, tandis qu'un "
-    "activiste a été arrêté à Almaty. Ces deux cas illustrent la "
-    "pression continue exercée sur les voix critiques en Asie centrale."
+    "Au Kirghizistan, un journaliste a été condamné à cinq ans de prison "
+    "par un tribunal de Bichkek en raison d'articles critiques envers le "
+    "gouvernement, à l'issue d'un procès que ses avocats qualifient de "
+    "politiquement motivé. À Almaty, au Kazakhstan, un activiste des "
+    "droits humains a été arrêté par la police à l'issue d'un "
+    "rassemblement pacifique, sans qu'aucune charge précise n'ait été "
+    "communiquée. Au Turkménistan, un site d'information a par ailleurs "
+    "été bloqué, dans la continuité de la censure numérique pratiquée "
+    "par les autorités.\n\n"
+    "Ces trois cas, survenus dans des pays voisins, illustrent une "
+    "pression continue sur les voix critiques en Asie centrale : la "
+    "justice est utilisée pour museler la presse, la police pour "
+    "dissuader la mobilisation citoyenne, et la censure numérique pour "
+    "limiter l'accès à l'information indépendante. Cette convergence "
+    "mérite d'être suivie dans les prochains jours."
 )
 
 # Signaux d'un refus/méta-commentaire plutôt qu'une vraie synthèse —
@@ -71,7 +96,7 @@ def _load_model() -> Any:
     _model = Llama.from_pretrained(
         repo_id=MODEL_REPO,
         filename=MODEL_FILENAME,
-        n_ctx=4096,
+        n_ctx=8192,
         verbose=False,
     )
 
@@ -119,7 +144,13 @@ def generate_synthesis(
     if not articles:
         return ""
 
-    selected = articles[:max_articles]
+    # Les cas les plus sévères passent en premier (et sont ceux
+    # gardés si plus de max_articles niveau A dans la journée) : le
+    # briefing doit couvrir en priorité les affaires les plus graves.
+    ranked = sorted(
+        articles, key=lambda article: article.get("score", 0), reverse=True
+    )
+    selected = ranked[:max_articles]
 
     try:
         model = _load_model()

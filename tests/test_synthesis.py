@@ -73,6 +73,36 @@ class GenerateSynthesisTests(unittest.TestCase):
         self.assertNotIn("Article 3", articles_prompt)
 
     @patch("synthesis._load_model")
+    def test_prioritizes_highest_scored_articles_when_over_limit(
+        self, mock_load
+    ):
+        # Le briefing doit couvrir en priorité les cas les plus
+        # graves : si plus de max_articles niveau A dans la journée,
+        # on garde les mieux notés, pas les premiers dans l'ordre de
+        # collecte.
+        mock_model = MagicMock()
+        mock_model.create_chat_completion.return_value = {
+            "choices": [{"message": {"content": "ok"}}]
+        }
+        mock_load.return_value = mock_model
+
+        articles = [
+            {"title": "Low score case", "summary": "x", "score": 10},
+            {"title": "High score case", "summary": "x", "score": 95},
+            {"title": "Mid score case", "summary": "x", "score": 50},
+        ]
+
+        generate_synthesis(articles, max_articles=2)
+
+        messages = mock_model.create_chat_completion.call_args.kwargs[
+            "messages"
+        ]
+        articles_prompt = messages[-1]["content"]
+        self.assertIn("High score case", articles_prompt)
+        self.assertIn("Mid score case", articles_prompt)
+        self.assertNotIn("Low score case", articles_prompt)
+
+    @patch("synthesis._load_model")
     def test_falls_back_to_titles_only_when_no_summary_or_body(
         self, mock_load
     ):
