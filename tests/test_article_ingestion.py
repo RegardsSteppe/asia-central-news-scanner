@@ -151,6 +151,25 @@ class LooksLikeArticleLinkTests(unittest.TestCase):
                 "ViewAllCountryMandates.aspx?Type=TM",
                 "Thematic mandates",
             ),
+            # Niveau C, même audit : pages de listing/agrégation et
+            # contenu hors-sujet (sport) atteignant un faux score.
+            (
+                "https://uhrp.org/news_cat/uhrp-in-the-news/",
+                "UHRP in the News",
+            ),
+            (
+                "https://www.hronikatm.com/other-media/iz-drugih-smi/",
+                "Из других источников",
+            ),
+            (
+                "https://www.aljazeera.com/sports/2026/8/14/"
+                "swiatek-defeats-rybakina-to-claim-canadian-open",
+                "Swiatek defeats Rybakina to claim Canadian Open title",
+            ),
+            (
+                "https://www.uscirf.gov/news-room/uscirf-spotlight",
+                "USCIRF Spotlight Podcast",
+            ),
         ]
 
         for url, title in cases:
