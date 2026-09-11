@@ -53,6 +53,21 @@ OUTPUT_FILE = BASE_DIR / "index.html"
 CSV_OUTPUT_FILE = BASE_DIR / "articles.csv"
 
 ENRICH_LIMIT = 80
+
+# Sources sur ces profils sont le cœur éditorial du projet (droits
+# humains, liberté de la presse, investigation) : on leur garantit des
+# créneaux d'enrichissement dédiés, indépendants du classement par
+# score-titre général. Sans ça, un article régional précis (ex : une
+# condamnation nommément visée) peut se faire noyer dans le classement
+# par le pur volume d'une source généraliste comme HRW (des centaines
+# d'articles/run via son contournement Google News) et ne jamais
+# recevoir son corps complet — donc rester plafonné à un score
+# titre-seul pour toujours.
+PRIORITY_ENRICH_PROFILES = {"human_rights", "press_freedom", "investigative"}
+ENRICH_PRIORITY_LIMIT = max(
+    0,
+    int(os.getenv("SCANNER_ENRICH_PRIORITY_LIMIT", "150")),
+)
 VOCABULARY_LIMIT = 300
 FETCH_WORKERS = max(
     1,
@@ -540,16 +555,34 @@ def enrich_articles(
         reverse=True,
     )
 
-    selected = ranked[:ENRICH_LIMIT]
-
-    print(
-        f"ENRICH | {len(selected)} articles avec body complet"
-    )
-
     source_by_name = {
         source.get("name"): source
         for source in SOURCES
     }
+
+    # Créneaux garantis pour les sources droits humains/presse/investigation
+    # (voir PRIORITY_ENRICH_PROFILES) : sans ça, ces sources se font
+    # noyer dans le classement titre-seul par le volume d'une source
+    # généraliste et ne reçoivent jamais leur corps complet.
+    priority_ranked = [
+        article
+        for article in ranked
+        if source_by_name.get(article.get("source"), {}).get("profile")
+        in PRIORITY_ENRICH_PROFILES
+    ]
+
+    selected_ids = set()
+    selected: list[dict[str, Any]] = []
+
+    for article in priority_ranked[:ENRICH_PRIORITY_LIMIT] + ranked[:ENRICH_LIMIT]:
+        if id(article) in selected_ids:
+            continue
+        selected_ids.add(id(article))
+        selected.append(article)
+
+    print(
+        f"ENRICH | {len(selected)} articles avec body complet"
+    )
 
     def _enrich_article(article: dict[str, Any]) -> tuple[str, Any]:
         return extract_body(
