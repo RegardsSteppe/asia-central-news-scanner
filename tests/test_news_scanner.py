@@ -1,5 +1,6 @@
 import sys
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -14,6 +15,7 @@ from news_scanner import (
     compute_seen_keys,
     deduplicate,
     enrich_articles,
+    final_sort_key,
     load_seen_keys,
 )
 
@@ -127,6 +129,50 @@ class BuildAuditTests(unittest.TestCase):
             "Sécurité & géopolitique (think tanks)",
         )
         self.assertEqual(audit[2]["category"], "Autres")
+
+
+class FinalSortKeyTests(unittest.TestCase):
+    """
+    Décidé avec l'utilisateur le 2026-09-11 : le tri final groupe par
+    niveau (A > B > C > D > E), puis trie par date décroissante à
+    l'intérieur d'un même niveau — jamais par score brut, pour ne pas
+    faire remonter un vieux rapport pertinent devant un article frais
+    équivalent au sein de la même section.
+    """
+
+    def test_higher_level_always_outranks_lower_level_regardless_of_score(self):
+        now = datetime(2026, 9, 11, tzinfo=timezone.utc)
+
+        level_b_high_score = {
+            "relevant": True, "level": "B", "score": 95,
+            "date": now,
+        }
+        level_a_low_score = {
+            "relevant": True, "level": "A", "score": 76,
+            "date": now - timedelta(days=10),
+        }
+
+        self.assertGreater(
+            final_sort_key(level_a_low_score),
+            final_sort_key(level_b_high_score),
+        )
+
+    def test_within_same_level_more_recent_outranks_higher_score(self):
+        now = datetime(2026, 9, 11, tzinfo=timezone.utc)
+
+        old_high_score = {
+            "relevant": True, "level": "A", "score": 99,
+            "date": now - timedelta(days=90),
+        }
+        recent_lower_score = {
+            "relevant": True, "level": "A", "score": 76,
+            "date": now,
+        }
+
+        self.assertGreater(
+            final_sort_key(recent_lower_score),
+            final_sort_key(old_high_score),
+        )
 
 
 class CsvExportTests(unittest.TestCase):

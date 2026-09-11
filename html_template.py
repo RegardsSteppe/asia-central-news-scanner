@@ -22,6 +22,53 @@ def format_date(date):
     )
 
 
+# Seuil au-delà duquel une carte affiche le badge "republié" : purement
+# informatif, n'influence jamais le score ni le niveau (voir
+# scoring.py — le score reste une mesure de pertinence sémantique, pas
+# de fraîcheur). Sert à repérer d'un coup d'œil un vieux rapport qui
+# refait surface (ex. via le contournement Google News sur un site
+# bloqué). Décidé avec l'utilisateur le 2026-09-11.
+ARCHIVAL_AGE_DAYS = 60
+
+
+def article_age_days(date, now=None):
+    """Âge d'un article en jours (float), ou None si pas de date."""
+
+    if not date:
+        return None
+
+    reference = now or datetime.now(timezone.utc)
+
+    return (reference - date).total_seconds() / 86400
+
+
+def format_relative_age(date, now=None):
+    """Âge relatif lisible ("il y a 3 j", "hier"...) pour l'affichage."""
+
+    age_days = article_age_days(date, now=now)
+
+    if age_days is None:
+        return ""
+
+    if age_days < 0:
+        return "à l'instant"
+
+    if age_days < 1:
+        hours = max(1, int(age_days * 24))
+        return f"il y a {hours} h"
+
+    if age_days < 2:
+        return "hier"
+
+    if age_days < 30:
+        return f"il y a {int(age_days)} j"
+
+    if age_days < 365:
+        return f"il y a {int(age_days / 30)} mois"
+
+    return f"il y a {int(age_days / 365)} an(s)"
+
+
 def render_stat(
     number,
     label,
@@ -191,12 +238,28 @@ def render_article_card(
         [],
     )
 
-    date = format_date(
-        article.get("date")
-    )
+    raw_date = article.get("date")
+
+    date = format_date(raw_date)
+
+    relative_age = format_relative_age(raw_date)
+
+    age_days = article_age_days(raw_date)
+
+    is_archival = age_days is not None and age_days >= ARCHIVAL_AGE_DAYS
 
     reasons_text = " • ".join(
         reasons
+    )
+
+    archival_badge = (
+        """
+            <span class="badge badge-archival" title="Article ancien republié récemment">
+                🕓 republié
+            </span>
+        """
+        if is_archival
+        else ""
     )
 
     return f"""
@@ -214,6 +277,8 @@ def render_article_card(
             <strong class="score">
                 {esc(score)}/100
             </strong>
+
+            {archival_badge}
 
         </div>
 
@@ -242,6 +307,7 @@ def render_article_card(
         <div class="date">
 
             📅 {esc(date)}
+            {f'<span class="relative-age">({esc(relative_age)})</span>' if relative_age else ""}
 
         </div>
 
@@ -907,6 +973,11 @@ h1 {
     color: #999999;
 }
 
+.badge-archival {
+    background: #fff3c4;
+    color: #7a5b00;
+}
+
 .score {
 
     font-size: 19px;
@@ -971,6 +1042,13 @@ h1 {
         8px 0;
 
     color: #444;
+}
+
+.relative-age {
+
+    font-weight: 400;
+
+    color: #888;
 }
 
 .theme {
