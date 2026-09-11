@@ -23,6 +23,8 @@ from keywords import (
     JOURNALIST_REPRESSION_PATTERNS,
     ACTIVIST_REPRESSION_RU_PATTERNS,
     JOURNALIST_REPRESSION_RU_PATTERNS,
+    ACTIVIST_REPRESSION_FA_PATTERNS,
+    JOURNALIST_REPRESSION_FA_PATTERNS,
     REPRESSION_WEIGHTS,
     SPECIFIC_RIGHTS_WEIGHTS,
     LEGAL_CONTEXT_TERMS,
@@ -54,6 +56,11 @@ REPRESSION_TERMS_V9 = [
     "политический заключенный", "политическое преследование",
     "политически мотивирован", "произвольное задержание",
     "принудительный труд", "трудовая мобилизация", "принудительная уборка хлопка",
+    "بازداشت", "دستگیر", "زندانی سیاسی", "زندانیان سیاسی", "سرکوب سیاسی",
+    "سرکوب", "آزار و اذیت", "بازداشت خودسرانه", "زندانی", "حبس",
+    "محکوم", "محکومیت", "پرونده سیاسی", "محاکمه سیاسی", "شکنجه",
+    "سانسور", "رسانه مسدود", "سایت مسدود", "قطعی اینترنت",
+    "ازدواج اجباری", "ازدواج کودکان", "کار اجباری",
 ]
 
 CENTRAL_ASIA_HR_EVENT_TERMS_V9 = [
@@ -502,6 +509,8 @@ def classify_article(article):
         or contains_pattern(body[:12000], ACTIVIST_REPRESSION_PATTERNS)
         or contains_pattern(headline, ACTIVIST_REPRESSION_RU_PATTERNS)
         or contains_pattern(body[:12000], ACTIVIST_REPRESSION_RU_PATTERNS)
+        or contains_pattern(headline, ACTIVIST_REPRESSION_FA_PATTERNS)
+        or contains_pattern(body[:12000], ACTIVIST_REPRESSION_FA_PATTERNS)
         or relation_present(full_text, ACTIVIST_TERMS, EXPLICIT_HR_ACTION_TERMS_V9)
     )
 
@@ -510,6 +519,8 @@ def classify_article(article):
         or contains_pattern(body[:12000], JOURNALIST_REPRESSION_PATTERNS)
         or contains_pattern(headline, JOURNALIST_REPRESSION_RU_PATTERNS)
         or contains_pattern(body[:12000], JOURNALIST_REPRESSION_RU_PATTERNS)
+        or contains_pattern(headline, JOURNALIST_REPRESSION_FA_PATTERNS)
+        or contains_pattern(body[:12000], JOURNALIST_REPRESSION_FA_PATTERNS)
         or relation_present(full_text, JOURNALIST_TERMS, EXPLICIT_HR_ACTION_TERMS_V9)
     )
 

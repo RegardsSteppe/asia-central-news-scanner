@@ -97,5 +97,65 @@ class SecurityIsolationTests(unittest.TestCase):
         self.assertTrue(article["relevant"])
 
 
+class FarsiVocabularyTests(unittest.TestCase):
+    """
+    Après l'ajout de sources iraniennes (IRNA, Fararu) : sans
+    vocabulaire persan, un article en farsi ne pouvait jamais franchir
+    la porte géographique ni atteindre le niveau A, quel que soit son
+    contenu.
+    """
+
+    def test_recognizes_tajikistan_in_farsi(self):
+        article = {
+            "title": "تاجیکستان می‌کوشد یک منتقد را از ترکیه بازگرداند",
+            "summary": "",
+            "body": "",
+            "source": "Fararu",
+            "url": "https://www.fararu.com/example",
+        }
+
+        classify_article(article)
+
+        self.assertGreater(article["score"], 0)
+        self.assertTrue(
+            any("Asie centrale" in reason for reason in article["reasons"])
+        )
+
+    def test_farsi_activist_detained_reaches_level_a(self):
+        article = {
+            "title": "فعال حقوق بشر تاجیک بازداشت و شکنجه شد",
+            "summary": (
+                "فعال مدنی پس از اعتراض در تاجیکستان به‌طور خودسرانه "
+                "بازداشت و شکنجه شد."
+            ),
+            "body": "",
+            "source": "Fararu",
+            "url": "https://www.fararu.com/example-2",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["level"], "A")
+        self.assertTrue(article["relevant"])
+
+    def test_ambiguous_dushanbe_word_does_not_grant_geography(self):
+        # "دوشنبه" veut aussi dire "lundi" en persan : volontairement
+        # absent de CENTRAL_ASIA_TERMS pour éviter qu'un simple jour
+        # de la semaine ne fasse passer la porte géographique.
+        article = {
+            "title": "قیمت طلا روز دوشنبه اعلام شد",
+            "summary": "",
+            "body": "",
+            "source": "Fararu",
+            "url": "https://www.fararu.com/example-3",
+        }
+
+        classify_article(article)
+
+        self.assertFalse(
+            any("Asie centrale" in reason for reason in article["reasons"])
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

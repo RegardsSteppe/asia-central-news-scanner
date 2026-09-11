@@ -142,6 +142,17 @@ _EXTRA_STOPWORDS = {
     "new",
     "central",
     "asia",
+    "utc",
+
+    # Mois russes : très fréquents dans les titres ("15 сентября"...)
+    # mais sans aucun signal thématique.
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря",
+
+    # Farsi : quelques mots-outils/verbes fréquents absents du corpus
+    # "persian" de la librairie stop-words (variantes d'écriture de
+    # میشود/است, ou verbes auxiliaires très courants).
+    "می‌شود", "میشود", "شود", "می‌کند", "کرد", "کند", "بود", "ادعای",
 }
 
 
@@ -149,7 +160,7 @@ def _load_stopwords() -> set[str]:
     words: set[str] = set(_FALLBACK_STOPWORDS)
 
     if get_stop_words is not None:
-        for language in ("en", "ru"):
+        for language in ("en", "ru", "fa"):
             try:
                 words |= set(get_stop_words(language))
             except Exception:
