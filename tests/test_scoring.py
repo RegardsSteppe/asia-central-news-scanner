@@ -266,6 +266,47 @@ class NonRegionalActivistLevelTests(unittest.TestCase):
 
         self.assertEqual(article["level"], "E")
 
+    def test_routine_crime_or_war_reporting_is_not_promoted_to_level_d(self):
+        # Régression réelle (audit du 2026-09-11) : de la pure
+        # actualité criminelle/militaire russe (un agent détenu, un
+        # suspect arrêté) déclenchait "primary_repression" tout seul
+        # (mots "détenu"/"arrêté" sans aucune cible activiste/
+        # journaliste identifiée) et atterrissait dans le niveau D
+        # au lieu du bruit pur — un détenu de droit commun n'est pas
+        # un cas droits humains.
+        article = {
+            "title": "Задержанный молдаванин рассказал о задании Киева убить генерала",
+            "summary": "",
+            "body": "",
+            "source": "TASS — russe",
+            "url": "https://example.com/tass-1",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["level"], "E")
+
+    def test_severe_repression_without_named_target_still_reaches_level_d(self):
+        # Le remplacement de "primary_repression" par "severe_detected"
+        # ne doit pas perdre les cas graves (torture, condamnation à
+        # mort...) qui ne nomment pas explicitement un "activiste"/
+        # "journaliste" — seuls les mots-clés d'une répression
+        # ordinaire (arrêté/détenu tout seul) doivent être exclus.
+        article = {
+            "title": "Twin sisters tortured over protests, one sentenced to death",
+            "summary": (
+                "The sisters were tortured in custody and one was "
+                "sentenced to death, human rights groups say."
+            ),
+            "body": "",
+            "source": "Radio Free Europe / Radio Liberty",
+            "url": "https://example.com/rfe-1",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["level"], "D")
+
 
 class SecurityIsolationTests(unittest.TestCase):
     """
@@ -373,6 +414,69 @@ class FarsiVocabularyTests(unittest.TestCase):
         self.assertFalse(
             any("Asie centrale" in reason for reason in article["reasons"])
         )
+
+
+class RussianMorphologyGapTests(unittest.TestCase):
+    """
+    Audit réel du 2026-09-11 (échantillon niveau D) : le russe est
+    une langue à déclinaisons/genre — la correspondance de phrase
+    exacte utilisée pour la géographie et les rôles (activiste,
+    journaliste...) ne reconnaissait qu'une forme nominative/masculine
+    unique, ratant les tournures les plus courantes d'une dépêche.
+    """
+
+    def test_recognizes_declined_country_name_in_russian(self):
+        # "Узбекистана" est le génitif de "Узбекистан" — la forme la
+        # plus courante dans une phrase ("sur les champs de coton
+        # D'Ouzbékistan"), jamais la forme nominative isolée.
+        article = {
+            "title": (
+                "На хлопковых полях Узбекистана задержана "
+                "корреспондент «Штерн»"
+            ),
+            "summary": "",
+            "body": "",
+            "source": "Centre1",
+        }
+
+        classify_article(article)
+
+        self.assertTrue(
+            any("Asie centrale" in reason for reason in article["reasons"])
+        )
+        self.assertEqual(article["level"], "B")
+
+    def test_recognizes_adjectival_city_name_in_russian(self):
+        # "Наманганская" (adjectif dérivé de la ville de Namangan) ne
+        # correspond pas à "наманган" en recherche de phrase exacte.
+        article = {
+            "title": (
+                "Наманганская правозащитница приговорена к "
+                "исправительным работам"
+            ),
+            "summary": "",
+            "body": "",
+            "source": "Centre1",
+        }
+
+        classify_article(article)
+
+        self.assertEqual(article["level"], "A")
+
+    def test_recognizes_feminine_human_rights_defender(self):
+        # "правозащитницА" (féminin) change la fin du radical par
+        # rapport à "правозащитниК" (masculin) — pas une simple
+        # forme déclinée, un vrai gap de vocabulaire avant ce fix.
+        article = {
+            "title": "Правозащитница осуждена за пост в соцсетях",
+            "summary": "",
+            "body": "",
+            "source": "Kazakhstan",
+        }
+
+        result = classify_article(article)
+
+        self.assertTrue(result["signals"]["has_activist"])
 
 
 class FrenchVocabularyTests(unittest.TestCase):
