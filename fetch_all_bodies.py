@@ -38,9 +38,11 @@ import argparse
 import csv
 import json
 import logging
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
+from urllib.parse import urlparse
 
 from article_ingestion import extract_body
 from sources import SOURCES
@@ -54,6 +56,28 @@ SOURCE_LANGUAGE = {
     source.get("name", ""): source.get("language", "")
     for source in SOURCES
 }
+
+# Repéré en conditions réelles le 2026-09-11 : à l'échelle de tout le
+# corpus (~6800 URLs, dont une grosse part via le contournement Google
+# News sur ~21 sources), lancer autant de requêtes news.google.com en
+# parallèle que le reste (15-20 workers) déclenche du rate-limiting
+# de Google (503 Service Unavailable en rafale) — chaque échec brûle
+# jusqu'à ~90s en retries (voir http_utils.MAX_ATTEMPTS) et un run de
+# 6800 articles a été tué par son timeout de 3h à seulement 38% (2600/
+# 6725), la quasi-totalité des échecs pointant vers news.google.com.
+# Le scan quotidien n'a jamais ce problème (il n'enrichit qu'environ
+# 600 articles), donc ce throttle reste local à ce script plutôt que
+# de toucher http_utils.py (partagé avec le pipeline principal).
+GOOGLE_NEWS_HOST = "news.google.com"
+DEFAULT_GOOGLE_NEWS_CONCURRENCY = 2
+DEFAULT_GOOGLE_NEWS_DELAY = 1.0  # secondes, appliqué après chaque requête
+
+
+def _is_google_news_url(url: str) -> bool:
+    try:
+        return urlparse(url).netloc == GOOGLE_NEWS_HOST
+    except ValueError:
+        return False
 
 
 def load_rows(
@@ -71,6 +95,8 @@ def load_rows(
 
 def _fetch_one(
     row: dict[str, Any],
+    google_news_semaphore: threading.Semaphore,
+    google_news_delay: float,
 ) -> tuple[dict[str, Any], str, Any, Exception | None]:
     url = row.get("url") or ""
     title = row.get("title") or ""
@@ -78,16 +104,32 @@ def _fetch_one(
     if not url:
         return row, "", None, ValueError("URL manquante")
 
+    is_google_news = _is_google_news_url(url)
+
+    if is_google_news:
+        google_news_semaphore.acquire()
+
     try:
         body, published_date = extract_body(url, expected_title=title)
         return row, body, published_date, None
     except Exception as exc:  # un site qui plante ne doit pas arrêter les autres
         return row, "", None, exc
+    finally:
+        if is_google_news:
+            # Délai maintenu APRÈS la requête, avant de relâcher le
+            # slot : limite le nombre de créneaux simultanés (via le
+            # sémaphore) ET l'espacement entre deux requêtes
+            # successives (sinon N slots qui se relaient sans pause
+            # suffiraient à re-déclencher le rate-limiting de Google).
+            time.sleep(google_news_delay)
+            google_news_semaphore.release()
 
 
 def fetch_all_bodies(
     rows: list[dict[str, Any]],
     workers: int = DEFAULT_WORKERS,
+    google_news_concurrency: int = DEFAULT_GOOGLE_NEWS_CONCURRENCY,
+    google_news_delay: float = DEFAULT_GOOGLE_NEWS_DELAY,
 ) -> list[dict[str, Any]]:
     """
     Récupère le corps complet de chaque ligne en parallèle. Ne lève
@@ -96,16 +138,25 @@ def fetch_all_bodies(
     le lot — sur plusieurs milliers d'URLs, une partie échouera
     toujours (les mêmes sources déjà bloquées dans le scan normal), ce
     n'est pas une raison de perdre le reste.
+
+    Les URLs news.google.com (contournement Google News, une grosse
+    part du corpus) sont limitées à `google_news_concurrency` requêtes
+    simultanées avec `google_news_delay` secondes d'espacement — le
+    reste du corpus garde la pleine concurrence de `workers`. Voir la
+    note au-dessus de GOOGLE_NEWS_HOST.
     """
     results: list[dict[str, Any]] = []
     done = 0
     failed = 0
 
     started = time.perf_counter()
+    google_news_semaphore = threading.Semaphore(max(1, google_news_concurrency))
 
     with ThreadPoolExecutor(max_workers=max(1, workers)) as executor:
         futures = {
-            executor.submit(_fetch_one, row): row
+            executor.submit(
+                _fetch_one, row, google_news_semaphore, google_news_delay
+            ): row
             for row in rows
         }
 
@@ -152,6 +203,18 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=None,
         help="Ne traiter que les N premières lignes (pour un essai rapide).",
     )
+    parser.add_argument(
+        "--google-news-concurrency",
+        type=int,
+        default=DEFAULT_GOOGLE_NEWS_CONCURRENCY,
+        help="Requêtes news.google.com simultanées max (throttle anti rate-limiting).",
+    )
+    parser.add_argument(
+        "--google-news-delay",
+        type=float,
+        default=DEFAULT_GOOGLE_NEWS_DELAY,
+        help="Délai (s) après chaque requête news.google.com avant de relâcher le créneau.",
+    )
     return parser.parse_args(argv)
 
 
@@ -161,7 +224,12 @@ def main(argv: list[str] | None = None) -> None:
     rows = load_rows(args.input, limit=args.limit)
     logger.info("%s article(s) chargé(s) depuis %s", len(rows), args.input)
 
-    results = fetch_all_bodies(rows, workers=args.workers)
+    results = fetch_all_bodies(
+        rows,
+        workers=args.workers,
+        google_news_concurrency=args.google_news_concurrency,
+        google_news_delay=args.google_news_delay,
+    )
 
     with open(args.output, "w", encoding="utf-8") as handle:
         json.dump({"articles": results}, handle, ensure_ascii=False, indent=2)
