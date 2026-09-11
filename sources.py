@@ -666,6 +666,22 @@ SOURCES = [
         "max_articles": 100,
     },
 
+    {
+        # Ajouté à la demande de l'utilisateur : ONG internationale
+        # (fondée par Thor Halvorssen) documentant les prisonniers
+        # politiques et la répression sous les régimes autoritaires.
+        "name": "Human Rights Foundation",
+        "short_name": "HRF",
+        "profile": "human_rights",
+        "label": "International · droits humains",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://hrf.org/latest/",
+
+        "max_articles": 150,
+    },
+
     # ========================================================
     # RÉGIONAL
     # ========================================================
