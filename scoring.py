@@ -359,21 +359,42 @@ def classify_article(article):
     caucasus = find_terms(headline, CAUCASUS_TERMS)
     uyghur = find_terms(headline, UYGHUR_TERMS)
 
+    # Uniquement des médias EXCLUSIVEMENT dédiés à la région : "Radio
+    # Free Europe / Radio Liberty" et "Current Time" en ont été retirés
+    # (audit réel du 2026-09-11) — RFE/RL couvre des dizaines de pays
+    # (son service iranien Radio Farda notamment), donc cette porte de
+    # secours faisait passer n'importe quel article RFE/RL sans rapport
+    # avec l'Asie centrale/le Caucase (ex : jumelles iraniennes
+    # torturées, prix du pétrole) comme pleinement régional, jusqu'au
+    # niveau A. La géographie de ces articles reste jugée normalement
+    # sur leur contenu (titre/corps), comme pour toute autre source.
     central_asia_source_terms = [
         "turkmen.news", "turkmen news", "the times of central asia",
         "times of central asia", "eurasianet", "eurasianet.org",
         "uzdaily", "kabar", "akipress", "gazeta.uz", "kun.uz",
-        "fergana.agency", "fergana", "ozodlik", "radio free europe",
-        "current time", "ca-news", "novastan",
+        "fergana.agency", "fergana", "ozodlik", "ca-news", "novastan",
     ]
     central_asia_source = find_terms(source_context, central_asia_source_terms)
 
     body_geography = find_terms(
         body, CENTRAL_ASIA_TERMS + CAUCASUS_TERMS + UYGHUR_TERMS
     )
+    body_geo_count = len(body_geography)
+    body_has_geography = body_geo_count >= 1
+    strong_body_geography = body_geo_count >= 2
+
+    # Une SEULE mention incidente dans le corps (ex : "press freedom
+    # issues have also been documented in Uzbekistan, Syria...") ne
+    # doit pas, à elle seule, faire passer un article sans aucun
+    # ancrage régional en titre : repéré en audit réel le 2026-09-11
+    # sur un article CPJ concernant un journaliste allemand détenu en
+    # SYRIE, remonté en niveau A ("CAS HR CRITIQUE") uniquement parce
+    # que le mot "Uzbekistan" apparaissait une fois dans le corps.
+    # Deux mentions distinctes (strong_body_geography) restent un
+    # signal suffisant quand le titre lui-même ne porte aucun ancrage.
     regional_context = bool(
-        central_asia or body_geography or caucasus or uyghur
-        or central_asia_source
+        central_asia or caucasus or uyghur or central_asia_source
+        or strong_body_geography
     )
 
     human_rights = find_terms(headline, HUMAN_RIGHTS_TERMS)
@@ -400,10 +421,6 @@ def classify_article(article):
     body_journalists = find_terms(body, JOURNALIST_TERMS)
     body_activists = find_terms(body, ACTIVIST_TERMS)
     body_legal_context = find_terms(body, LEGAL_CONTEXT_TERMS)
-
-    body_geo_count = len(body_geography)
-    body_has_geography = body_geo_count >= 1
-    strong_body_geography = body_geo_count >= 2
 
     has_hr_defender = any(normalize(x) in full_text for x in HUMAN_RIGHTS_DEFENDER_TERMS)
     forced_labor_detected = any(normalize(x) in full_text for x in FORCED_LABOR_TERMS)

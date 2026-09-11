@@ -82,6 +82,79 @@ class PresentTenseHeadlineVerbTests(unittest.TestCase):
         self.assertIn(article["level"], ("A", "B"))
 
 
+class FalsePositiveCoherenceTests(unittest.TestCase):
+    """
+    Audit de cohérence réel (2026-09-11, revue systématique de tous
+    les articles de niveau A) : deux articles sans aucun rapport avec
+    l'Asie centrale/le Caucase/les Ouïghours atteignaient le niveau A
+    par deux mécanismes différents.
+    """
+
+    def test_rfe_rl_article_about_iran_is_not_auto_regional(self):
+        # RFE/RL couvre l'Iran (service Radio Farda), la Russie,
+        # l'Ukraine... "radio free europe" ne doit plus, à lui seul,
+        # rendre un article régional : la géographie doit être jugée
+        # sur le contenu, comme pour toute autre source.
+        article = {
+            "title": (
+                "Iranian Twin Sisters Reportedly Tortured Over January "
+                "Protests; One Sentenced To Death, Other Gets 25 Years"
+            ),
+            "summary": (
+                "Iranian twin sisters turned 20 behind bars this year, "
+                "awaiting the outcome of a case that has drawn scrutiny "
+                "over allegations of torture and severe mistreatment."
+            ),
+            "body": "",
+            "source": "Radio Free Europe / Radio Liberty",
+        }
+
+        classify_article(article)
+
+        self.assertNotEqual(article["level"], "A")
+
+    def test_single_incidental_body_mention_does_not_grant_regional_context(self):
+        # Une mention isolée d'un pays cible, perdue dans un article
+        # sur un sujet totalement différent (ici la Syrie), ne doit
+        # pas suffire à faire passer la porte régionale.
+        article = {
+            "title": (
+                "German journalist recounts 5-month detention in Syria, "
+                "urges colleague's release"
+            ),
+            "summary": "",
+            "body": (
+                "The journalist was held in Syria. Press freedom issues "
+                "have also been documented in Uzbekistan and elsewhere, "
+                "CPJ said."
+            ),
+            "source": "Committee to Protect Journalists",
+        }
+
+        classify_article(article)
+
+        self.assertNotEqual(article["level"], "A")
+
+    def test_two_distinct_body_mentions_still_grant_regional_context(self):
+        # À l'inverse, deux mentions distinctes dans le corps restent
+        # un signal suffisant quand le titre lui-même n'en porte aucun
+        # (comportement existant, à ne pas casser).
+        article = {
+            "title": "Rights group publishes annual report",
+            "summary": "",
+            "body": (
+                "The report documents an activist arrested in Tashkent "
+                "and another detained in Bishkek, both held without "
+                "trial for months."
+            ),
+            "source": "Test Source",
+        }
+
+        classify_article(article)
+
+        self.assertTrue(article["signals"]["regional_context"])
+
+
 class RegionalEqualityTests(unittest.TestCase):
     """
     Le Caucase est une région ciblée à part entière, au même titre
