@@ -297,6 +297,45 @@ class ParseRssTests(unittest.TestCase):
         articles = parse_rss("this is not xml at all", {"name": "Test"})
         self.assertEqual(articles, [])
 
+    def test_strips_google_news_source_suffix(self):
+        # Google News agrège hrw.org (contournement de son blocage
+        # 403) mais ajoute " - <site>" à chaque titre.
+        content = """<?xml version="1.0"?>
+        <rss version="2.0"><channel>
+        <item>
+          <title>Man Sentenced to Prison - Human Rights Watch</title>
+          <link>https://news.google.com/rss/articles/abc123</link>
+          <description>Summary</description>
+        </item>
+        </channel></rss>
+        """
+        articles = parse_rss(
+            content,
+            {"name": "Human Rights Watch"},
+            feed_url="https://news.google.com/rss/search?q=site:hrw.org",
+        )
+        self.assertEqual(len(articles), 1)
+        self.assertEqual(articles[0]["title"], "Man Sentenced to Prison")
+
+    def test_does_not_strip_suffix_for_non_google_feeds(self):
+        # Un vrai titre se terminant par un tiret ne doit pas être
+        # tronqué en dehors d'un flux Google News.
+        content = """<?xml version="1.0"?>
+        <rss version="2.0"><channel>
+        <item>
+          <title>Report Covers 2020 - 2025</title>
+          <link>https://example.com/news/1</link>
+          <description>Summary</description>
+        </item>
+        </channel></rss>
+        """
+        articles = parse_rss(
+            content,
+            {"name": "Test"},
+            feed_url="https://example.com/rss",
+        )
+        self.assertEqual(articles[0]["title"], "Report Covers 2020 - 2025")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -28,8 +28,26 @@ HEADERS = {
 }
 
 
-def parse_rss(content: str, source: dict[str, Any]) -> list[dict[str, Any]]:
+# Google News ajoute systématiquement " - <nom du site>" à la fin de
+# chaque titre dans ses flux RSS (ex. "Foo Sentenced - Human Rights
+# Watch") : coupé uniquement pour les flux news.google.com, jamais en
+# général, pour ne pas tronquer un vrai titre qui se terminerait
+# légitimement par un tiret.
+_GOOGLE_NEWS_TITLE_SUFFIX_RE = re.compile(r"\s+-\s+[^-]{2,60}$")
+
+
+def _strip_google_news_suffix(title: str) -> str:
+    return _GOOGLE_NEWS_TITLE_SUFFIX_RE.sub("", title).strip()
+
+
+def parse_rss(
+    content: str,
+    source: dict[str, Any],
+    feed_url: str = "",
+) -> list[dict[str, Any]]:
     feed = feedparser.parse(content or "")
+
+    is_google_news = "news.google.com" in feed_url
 
     articles: list[dict[str, Any]] = []
 
@@ -50,6 +68,11 @@ def parse_rss(content: str, source: dict[str, Any]) -> list[dict[str, Any]]:
 
         if not title or not link:
             continue
+
+        if is_google_news:
+            title = _strip_google_news_suffix(title)
+            if not title:
+                continue
 
         articles.append(
             build_article(
