@@ -191,14 +191,21 @@ SOURCES = [
     },
 
     {
+        # apnews.com renvoie systématiquement 403 depuis cet
+        # environnement (audit du 2026-09-11) : contournement Google
+        # News, même technique que pour HRW (voir plus bas).
         "name": "AP News — Kazakhstan",
         "short_name": "AP Kazakhstan",
         "profile": "international_independent",
         "label": "International · Kazakhstan",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://apnews.com/hub/kazakhstan",
+
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aapnews.com%20Kazakhstan&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 100,
     },
@@ -208,10 +215,14 @@ SOURCES = [
         "short_name": "AP Uzbekistan",
         "profile": "international_independent",
         "label": "International · Ouzbékistan",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://apnews.com/hub/uzbekistan",
+
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aapnews.com%20Uzbekistan&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 100,
     },
@@ -221,10 +232,14 @@ SOURCES = [
         "short_name": "AP Kyrgyzstan",
         "profile": "international_independent",
         "label": "International · Kirghizistan",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://apnews.com/hub/kyrgyzstan",
+
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aapnews.com%20Kyrgyzstan&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 100,
     },
@@ -234,10 +249,14 @@ SOURCES = [
         "short_name": "AP Tajikistan",
         "profile": "international_independent",
         "label": "International · Tadjikistan",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://apnews.com/hub/tajikistan",
+
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aapnews.com%20Tajikistan&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 100,
     },
@@ -247,10 +266,14 @@ SOURCES = [
         "short_name": "AP Turkmenistan",
         "profile": "international_independent",
         "label": "International · Turkménistan",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://apnews.com/hub/turkmenistan",
+
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aapnews.com%20Turkmenistan&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 100,
     },
@@ -540,10 +563,17 @@ SOURCES = [
         "short_name": "ARTICLE 19",
         "profile": "press_freedom",
         "label": "International · liberté d'expression",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://www.article19.org/",
+
+        # 403 persistant depuis cet environnement (audit du
+        # 2026-09-11) : contournement Google News, même technique que
+        # pour HRW.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aarticle19.org&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 150,
     },
@@ -560,13 +590,19 @@ SOURCES = [
         "short_name": "OHCHR",
         "profile": "human_rights",
         "label": "International · ONU · droits humains",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         # "/en/press-releases" 404 sur un run réel — remplacé par la
         # racine du site (même pattern que Hudson/Jamestown/etc. :
-        # découverte générique des liens d'articles).
+        # découverte générique des liens d'articles). La racine
+        # elle-même renvoie 403 (audit du 2026-09-11) : contournement
+        # Google News, même technique que pour HRW.
         "url": "https://www.ohchr.org/en",
+
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aohchr.org&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 200,
     },
@@ -595,10 +631,17 @@ SOURCES = [
         "short_name": "UN Women ECA",
         "profile": "human_rights",
         "label": "International · ONU · droits des femmes",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://eca.unwomen.org/en",
+
+        # 403 persistant depuis cet environnement (audit du
+        # 2026-09-11) : contournement Google News, même technique que
+        # pour HRW.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aeca.unwomen.org&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 150,
     },
@@ -954,10 +997,17 @@ SOURCES = [
         "short_name": "Centre1",
         "profile": "regional_media",
         "label": "Média régional · Kazakhstan · russe",
-        "type": "html",
+        "type": "rss",
         "language": "ru",
 
         "url": "https://centre1.com/kazakhstan/",
+
+        # Certificat SSL expiré côté serveur (audit du 2026-09-11) :
+        # le contournement Google News évite toute connexion directe
+        # au domaine, donc évite aussi le problème de certificat.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:centre1.com&hl=ru&gl=RU&ceid=RU:ru",
+        ],
 
         "fallbacks": [
             "https://centre1.com/",
@@ -1280,14 +1330,21 @@ SOURCES = [
     },
 
     {
+        # 403 persistant depuis cet environnement (audit du
+        # 2026-09-11), sur l'URL comme sur le fallback : contournement
+        # Google News, même technique que pour HRW.
         "name": "World Uyghur Congress",
         "short_name": "WUC",
         "profile": "human_rights",
         "label": "International · droits humains · Ouïghours",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://www.uyghurcongress.org/en/category/press-release/",
+
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:uyghurcongress.org&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "fallbacks": [
             "https://www.uyghurcongress.org/en/",
@@ -1297,6 +1354,10 @@ SOURCES = [
     },
 
     {
+        # Le flux deviné ("uyghur_news/rss2.xml") répond 200 mais ne
+        # contient aucun article (0/0, sans erreur) — chemin
+        # probablement incorrect. Remplacé par le contournement Google
+        # News, seule méthode déjà validée sur ce projet.
         "name": "Radio Free Asia — Uyghur (anglais)",
         "short_name": "RFA Uyghur",
         "profile": "international_independent",
@@ -1307,7 +1368,7 @@ SOURCES = [
         "url": "https://www.rfa.org/english/uyghur/",
 
         "feeds": [
-            "https://www.rfa.org/english/news/uyghur_news/rss2.xml",
+            "https://news.google.com/rss/search?q=site:rfa.org/english/uyghur&hl=en-US&gl=US&ceid=US:en",
         ],
 
         "fallbacks": [
@@ -1364,10 +1425,17 @@ SOURCES = [
         "short_name": "Crisis Group",
         "profile": "security_analysis",
         "label": "International · prévention des conflits",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://www.crisisgroup.org/",
+
+        # 403 persistant depuis cet environnement (audit du
+        # 2026-09-11) : contournement Google News, même technique que
+        # pour HRW.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:crisisgroup.org&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 200,
     },
@@ -1468,10 +1536,17 @@ SOURCES = [
         "short_name": "Marshall Center",
         "profile": "security_analysis",
         "label": "International · études de sécurité",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://www.marshallcenter.org/",
+
+        # Chaîne de certificat SSL cassée côté serveur (audit du
+        # 2026-09-11) : le contournement Google News évite toute
+        # connexion directe au domaine.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:marshallcenter.org&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 200,
     },
@@ -1567,10 +1642,17 @@ SOURCES = [
         "short_name": "TASS RU",
         "profile": "state_media",
         "label": "Média officiel · agence de presse russe · russe",
-        "type": "html",
+        "type": "rss",
         "language": "ru",
 
         "url": "https://tass.ru/",
+
+        # 403 persistant depuis cet environnement (audit du
+        # 2026-09-11), alors que tass.com fonctionne : contournement
+        # Google News, même technique que pour HRW.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:tass.ru&hl=ru&gl=RU&ceid=RU:ru",
+        ],
 
         "max_articles": 200,
     },
@@ -1608,10 +1690,18 @@ SOURCES = [
         "short_name": "Sputnik",
         "profile": "state_media",
         "label": "Média officiel · propagande internationale russe",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://sputniknews.com/",
+
+        # Timeout de connexion persistant depuis cet environnement
+        # (audit du 2026-09-11), pas un simple 403 mais le même
+        # symptôme (impossible d'atteindre le domaine directement) :
+        # contournement Google News, même technique que pour HRW.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:sputniknews.com&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 200,
     },
@@ -1621,10 +1711,17 @@ SOURCES = [
         "short_name": "Regnum",
         "profile": "state_media",
         "label": "Média officiel · espace post-soviétique",
-        "type": "html",
+        "type": "rss",
         "language": "ru",
 
         "url": "https://regnum.ru/",
+
+        # 403 persistant depuis cet environnement (audit du
+        # 2026-09-11) : contournement Google News, même technique que
+        # pour HRW.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:regnum.ru&hl=ru&gl=RU&ceid=RU:ru",
+        ],
 
         "max_articles": 200,
     },
@@ -1818,10 +1915,17 @@ SOURCES = [
         "short_name": "CIDCA",
         "profile": "state_media",
         "label": "Média officiel · aide au développement chinoise",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://en.cidca.gov.cn/",
+
+        # Certificat SSL mal configuré côté serveur (hostname
+        # mismatch, audit du 2026-09-11) : le contournement Google
+        # News évite toute connexion directe au domaine.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site:cidca.gov.cn&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 100,
     },
@@ -1876,10 +1980,17 @@ SOURCES = [
         "short_name": "SPSR",
         "profile": "academic_research",
         "label": "Recherche académique · science politique",
-        "type": "html",
+        "type": "rss",
         "language": "en",
 
         "url": "https://onlinelibrary.wiley.com/journal/16626370",
+
+        # 403 anti-bot global à toute la plateforme Wiley (audit du
+        # 2026-09-11) : contournement Google News, restreint au nom de
+        # la revue pour ne pas remonter les autres revues Wiley.
+        "feeds": [
+            "https://news.google.com/rss/search?q=site%3Aonlinelibrary.wiley.com%20%22Swiss%20Political%20Science%20Review%22&hl=en-US&gl=US&ceid=US:en",
+        ],
 
         "max_articles": 150,
     },
