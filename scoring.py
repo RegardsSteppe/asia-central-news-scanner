@@ -290,6 +290,36 @@ def normalize(text):
     return re.sub(r"\s+", " ", str(text)).strip().lower()
 
 
+_CYRILLIC_CHARS_RE = re.compile(r"[а-яё]", re.I)
+_PERSIAN_CHARS_RE = re.compile(r"[؀-ۿ]")
+_LATIN_CHARS_RE = re.compile(r"[a-z]", re.I)
+
+
+def detect_language(text):
+    """
+    Cheap script-ratio language detection, used only as a fallback for
+    articles whose source doesn't declare a single language in
+    sources.py (missing, or "multi" — e.g. RFE/RL, which mixes several
+    language services in one feed list). Not a general-purpose language
+    identifier: it only distinguishes Russian/Farsi script from a Latin
+    default, which is exactly what the language-scoped regex checks
+    below need to decide whether to run.
+    """
+    if not text:
+        return ""
+    cyrillic = len(_CYRILLIC_CHARS_RE.findall(text))
+    persian = len(_PERSIAN_CHARS_RE.findall(text))
+    latin = len(_LATIN_CHARS_RE.findall(text))
+    total = cyrillic + persian + latin
+    if total < 20:
+        return ""
+    if cyrillic / total > 0.3:
+        return "ru"
+    if persian / total > 0.3:
+        return "fa"
+    return "en"
+
+
 @lru_cache(maxsize=None)
 def _compiled(pattern, flags=0):
     """
@@ -310,8 +340,40 @@ def phrase_present(text, phrase):
     return bool(_compiled(pattern).search(text))
 
 
+@lru_cache(maxsize=None)
+def _terms_alternation(terms):
+    """
+    Combine a term list into one alternation regex plus a lookup from
+    normalized term text back to the original term string, so find_terms
+    can scan the text once instead of running a separate compile+search
+    per term (classify_article calls find_terms ~50 times per article,
+    against lists of dozens of terms each). Cached on the term tuple:
+    the static lists from keywords.py/scoring.py are reused across every
+    article, same as _compiled/_alternation_pattern.
+    """
+    entries = []
+    lookup = {}
+    for term in terms:
+        norm = normalize(term)
+        if not norm or norm in lookup:
+            continue
+        lookup[norm] = term
+        entries.append(norm)
+    if not entries:
+        return None, {}
+    entries.sort(key=len, reverse=True)
+    pattern_text = "|".join(r"(?<!\w)" + re.escape(norm) + r"(?!\w)" for norm in entries)
+    return _compiled(pattern_text), lookup
+
+
 def find_terms(text, terms):
-    return [term for term in terms if phrase_present(text, term)]
+    if not text or not terms:
+        return []
+    pattern, lookup = _terms_alternation(tuple(terms))
+    if pattern is None:
+        return []
+    found = {lookup[match.group(0)] for match in pattern.finditer(text) if match.group(0) in lookup}
+    return [term for term in terms if term in found]
 
 
 def capped_add(current, value, maximum):
@@ -329,14 +391,56 @@ def weighted_score(terms, weights, maximum):
     return min(score, maximum)
 
 
+@lru_cache(maxsize=None)
+def _alternation_pattern(terms):
+    """
+    Combine a term list into one alternation regex instead of matching
+    each term separately. Terms are sorted longest-first so overlapping
+    alternatives (e.g. "activist" vs "activists") prefer the longer match.
+    Cached on the term tuple: the same static lists (ACTIVIST_TERMS,
+    TARGET_TERMS_V9, ...) are reused across every article.
+    """
+    escaped = sorted(
+        (re.escape(normalize(term)) for term in terms if term),
+        key=len,
+        reverse=True,
+    )
+    if not escaped:
+        return None
+    return _compiled("|".join(escaped), re.I | re.S)
+
+
 def relation_present(text, targets, actions, window=140):
-    for target in targets:
-        for action in actions:
-            a = re.escape(normalize(target))
-            b = re.escape(normalize(action))
-            if _compiled(rf"{a}.{{0,{window}}}{b}", re.I | re.S).search(text):
+    """
+    True if any target term and any action term co-occur within `window`
+    characters of each other, in either order.
+
+    Previously this compiled a dedicated regex per (target, action) pair
+    (thousands of pairs for the larger term lists) and searched the full
+    article text with each one. Instead, build one combined alternation
+    regex per side, collect match spans, and compare positions — this
+    turns O(targets x actions) regex compiles/searches into O(targets +
+    actions).
+    """
+    if not text:
+        return False
+    target_pattern = _alternation_pattern(tuple(targets))
+    if target_pattern is None:
+        return False
+    target_spans = [m.span() for m in target_pattern.finditer(text)]
+    if not target_spans:
+        return False
+    action_pattern = _alternation_pattern(tuple(actions))
+    if action_pattern is None:
+        return False
+    action_spans = [m.span() for m in action_pattern.finditer(text)]
+    if not action_spans:
+        return False
+    for target_start, target_end in target_spans:
+        for action_start, action_end in action_spans:
+            if target_end <= action_start <= target_end + window:
                 return True
-            if _compiled(rf"{b}.{{0,{window}}}{a}", re.I | re.S).search(text):
+            if action_end <= target_start <= action_end + window:
                 return True
     return False
 
@@ -418,11 +522,43 @@ def classify_article(article):
 
     reasons = []
 
+    # Chaque article est tagué avec sa langue pour ne lancer les
+    # vérifications regex spécifiques à une langue (déclinaisons russes,
+    # motifs farsi...) que sur les articles concernés — un article
+    # anglais/français n'a jamais besoin d'être passé au crible des
+    # déclinaisons russes ou des motifs persans. La plupart des sources
+    # déclarent leur langue dans sources.py ; pour les quelques-unes
+    # qui n'en déclarent pas une seule (ex: RFE/RL, "multi", qui mélange
+    # plusieurs services linguistiques dans un même flux), on retombe
+    # sur une détection par script (Cyrillique/Persan/Latin) du texte
+    # réel de l'article. Le résultat est réécrit sur l'article lui-même
+    # : chaque article ressort de classify_article() tagué avec la
+    # langue effectivement utilisée pour le scorer, pas seulement la
+    # langue déclarée par la source. Suggéré par l'utilisateur le
+    # 2026-09-11 après avoir remarqué le ralentissement des runs suite
+    # à l'ajout des vérifications russes, puis élargi à toutes les
+    # vérifications langue-spécifiques (pas seulement le russe).
+    declared_language = (article.get("language") or "").strip().lower()
+    if declared_language in ("", "multi"):
+        resolved_language = detect_language(full_text) or declared_language
+    else:
+        resolved_language = declared_language
+    article["language"] = resolved_language
+
+    is_russian_source = resolved_language == "ru"
+    is_farsi_source = resolved_language == "fa"
+    ru_central_asia_stems = (
+        _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS if is_russian_source else ()
+    )
+    ru_caucasus_stems = (
+        _RUSSIAN_CAUCASUS_STEM_PATTERNS if is_russian_source else ()
+    )
+
     central_asia = _find_terms_with_russian_stems(
-        headline, CENTRAL_ASIA_TERMS, _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS
+        headline, CENTRAL_ASIA_TERMS, ru_central_asia_stems
     )
     caucasus = _find_terms_with_russian_stems(
-        headline, CAUCASUS_TERMS, _RUSSIAN_CAUCASUS_STEM_PATTERNS
+        headline, CAUCASUS_TERMS, ru_caucasus_stems
     )
     uyghur = find_terms(headline, UYGHUR_TERMS)
 
@@ -445,10 +581,10 @@ def classify_article(article):
 
     body_geography = list(dict.fromkeys(
         _find_terms_with_russian_stems(
-            body, CENTRAL_ASIA_TERMS, _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS
+            body, CENTRAL_ASIA_TERMS, ru_central_asia_stems
         )
         + _find_terms_with_russian_stems(
-            body, CAUCASUS_TERMS, _RUSSIAN_CAUCASUS_STEM_PATTERNS
+            body, CAUCASUS_TERMS, ru_caucasus_stems
         )
         + find_terms(body, UYGHUR_TERMS)
     ))
@@ -525,7 +661,7 @@ def classify_article(article):
 
     primary_repression = bool(
         find_terms(primary_hr_text, REPRESSION_TERMS_V9)
-        or has_russian_repression_morphology(primary_hr_text)
+        or (is_russian_source and has_russian_repression_morphology(primary_hr_text))
         or contains_pattern(primary_hr_text, [
             r"\bconvicted\b", r"\bsentenc\w*\b", r"\bbehind bars\b",
             r"\bunder threat\b", r"\bunder pressure\b",
@@ -619,7 +755,9 @@ def classify_article(article):
     body_v9_actions = find_terms(body, EXPLICIT_HR_ACTION_TERMS_V9)
     body_v9_events = find_terms(body, CENTRAL_ASIA_HR_EVENT_TERMS_V9)
 
-    body_morphology = has_russian_repression_morphology(body[:12000])
+    body_morphology = (
+        is_russian_source and has_russian_repression_morphology(body[:12000])
+    )
 
     body_strong_hr_confirmation = bool(
         body_v9_repression
@@ -637,23 +775,26 @@ def classify_article(article):
     # V9 — TARGET / ACTION RELATIONS
     # --------------------------------------------------------
 
+    # ACTIVIST_REPRESSION_RU_PATTERNS/FA_PATTERNS ne peuvent matcher que
+    # du texte écrit dans leur script (cyrillique / persan) — inutile de
+    # les lancer sur un article dont la langue résolue n'est pas celle-là.
     activist_relation = (
         contains_pattern(headline, ACTIVIST_REPRESSION_PATTERNS)
         or contains_pattern(body[:12000], ACTIVIST_REPRESSION_PATTERNS)
-        or contains_pattern(headline, ACTIVIST_REPRESSION_RU_PATTERNS)
-        or contains_pattern(body[:12000], ACTIVIST_REPRESSION_RU_PATTERNS)
-        or contains_pattern(headline, ACTIVIST_REPRESSION_FA_PATTERNS)
-        or contains_pattern(body[:12000], ACTIVIST_REPRESSION_FA_PATTERNS)
+        or (is_russian_source and contains_pattern(headline, ACTIVIST_REPRESSION_RU_PATTERNS))
+        or (is_russian_source and contains_pattern(body[:12000], ACTIVIST_REPRESSION_RU_PATTERNS))
+        or (is_farsi_source and contains_pattern(headline, ACTIVIST_REPRESSION_FA_PATTERNS))
+        or (is_farsi_source and contains_pattern(body[:12000], ACTIVIST_REPRESSION_FA_PATTERNS))
         or relation_present(full_text, ACTIVIST_TERMS, EXPLICIT_HR_ACTION_TERMS_V9)
     )
 
     journalist_relation = (
         contains_pattern(headline, JOURNALIST_REPRESSION_PATTERNS)
         or contains_pattern(body[:12000], JOURNALIST_REPRESSION_PATTERNS)
-        or contains_pattern(headline, JOURNALIST_REPRESSION_RU_PATTERNS)
-        or contains_pattern(body[:12000], JOURNALIST_REPRESSION_RU_PATTERNS)
-        or contains_pattern(headline, JOURNALIST_REPRESSION_FA_PATTERNS)
-        or contains_pattern(body[:12000], JOURNALIST_REPRESSION_FA_PATTERNS)
+        or (is_russian_source and contains_pattern(headline, JOURNALIST_REPRESSION_RU_PATTERNS))
+        or (is_russian_source and contains_pattern(body[:12000], JOURNALIST_REPRESSION_RU_PATTERNS))
+        or (is_farsi_source and contains_pattern(headline, JOURNALIST_REPRESSION_FA_PATTERNS))
+        or (is_farsi_source and contains_pattern(body[:12000], JOURNALIST_REPRESSION_FA_PATTERNS))
         or relation_present(full_text, JOURNALIST_TERMS, EXPLICIT_HR_ACTION_TERMS_V9)
     )
 

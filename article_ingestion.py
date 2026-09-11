@@ -618,6 +618,16 @@ def build_article(
     return {
         "source": source.get("name", ""),
         "source_label": source.get("label") or source.get("name", ""),
+        # Langue déclarée de la source (voir sources.py) : point de
+        # départ pour scoper en scoring les vérifications regex
+        # coûteuses spécifiques à une langue (morphologie russe, motifs
+        # farsi...) sur les articles concernés plutôt que sur tout le
+        # corpus. Pour les quelques sources qui ne déclarent aucune
+        # langue unique (absente, ou "multi"), classify_article()
+        # détecte la langue réelle de chaque article et réécrit ce
+        # champ en conséquence — donc ce n'est qu'une valeur initiale,
+        # pas la langue finale garantie de l'article.
+        "language": source.get("language", ""),
         "title": clean_title(title),
         "summary": clean_text(summary),
         "url": normalize_url(url),
