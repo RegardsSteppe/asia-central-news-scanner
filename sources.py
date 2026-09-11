@@ -697,6 +697,26 @@ SOURCES = [
         "max_articles": 150,
     },
 
+    {
+        # Ajouté après coup : le flux général ci-dessus ne remonte que
+        # les 8 derniers articles tous sujets confondus (Chine, Zambie,
+        # Venezuela...), jamais assez ciblé pour faire remonter du
+        # contenu Caucase/Asie centrale précis — ex. un activiste
+        # syndical condamné en Azerbaïdjan, repéré par l'utilisateur
+        # sur le vrai site de HRF mais absent du scanner. HRF a sa
+        # propre catégorie régionale, on l'utilise directement.
+        "name": "Human Rights Foundation — Europe & Asie centrale",
+        "short_name": "HRF Europe/CA",
+        "profile": "human_rights",
+        "label": "International · Europe & Asie centrale",
+        "type": "html",
+        "language": "en",
+
+        "url": "https://hrf.org/latest-category/europe-and-central-asia/",
+
+        "max_articles": 150,
+    },
+
     # ========================================================
     # RÉGIONAL
     # ========================================================
