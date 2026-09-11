@@ -481,6 +481,10 @@ SOURCES = [
         # Trouvé par recherche web : ONG liberté d'expression, publie
         # régulièrement des rapports pays sur l'Asie centrale
         # (numérique, médias, assemblée).
+        # "/resources/" 404 sur un run réel — remplacé par la racine
+        # (même pattern que Hudson/Jamestown/etc. et la leçon FIDH
+        # ci-dessus : partir d'une page-liste profonde risque des
+        # liens relatifs mal résolus).
         "name": "ARTICLE 19",
         "short_name": "ARTICLE 19",
         "profile": "press_freedom",
@@ -488,7 +492,7 @@ SOURCES = [
         "type": "html",
         "language": "en",
 
-        "url": "https://www.article19.org/resources/",
+        "url": "https://www.article19.org/",
 
         "max_articles": 150,
     },
@@ -606,6 +610,17 @@ SOURCES = [
         # Trouvé par recherche web (à la demande de l'utilisateur) :
         # fédération internationale de ligues de droits humains,
         # publie régulièrement sur l'Asie centrale et le Caucase.
+        #
+        # URL volontairement à la racine du site, pas sur la page
+        # "/en/region/europe-central-asia/" : un run réel a montré que
+        # cette page-liste génère des liens relatifs sans "/" en tête
+        # (ex. href="en/region/europe-central-asia/azerbaijan/...") —
+        # combinés à une URL de base qui a déjà ce même chemin, ça
+        # produit une URL dupliquée et cassée
+        # (.../europe-central-asia/en/region/europe-central-asia/...,
+        # 403 à l'enrichissement). Partir de la racine évite la
+        # collision ; la pertinence géographique reste jugée sur le
+        # contenu de chaque article, pas sur cette page de filtre.
         "name": "FIDH",
         "short_name": "FIDH",
         "profile": "human_rights",
@@ -613,7 +628,7 @@ SOURCES = [
         "type": "html",
         "language": "en",
 
-        "url": "https://www.fidh.org/en/region/europe-central-asia/",
+        "url": "https://www.fidh.org/en/",
 
         "max_articles": 150,
     },

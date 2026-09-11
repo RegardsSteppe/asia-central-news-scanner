@@ -250,6 +250,25 @@ _MIN_TITLE_LENGTH = 8
 _MIN_TITLE_WORDS = 2
 
 
+def _has_repeated_path_prefix(path: str) -> bool:
+    """
+    Détecte un chemin qui répète son propre préfixe à l'identique
+    (ex. /en/region/x/en/region/x/y) — trouvé en réel sur FIDH : leur
+    page cible sert des liens relatifs sans "/" initial, qui se
+    combinent avec une URL source déjà profonde pour produire une URL
+    cassée. Toujours un bug de construction d'URL, jamais un article
+    légitime.
+    """
+    segments = [segment for segment in path.split("/") if segment]
+    n = len(segments)
+
+    for prefix_len in range(2, n // 2 + 1):
+        if segments[:prefix_len] == segments[prefix_len:2 * prefix_len]:
+            return True
+
+    return False
+
+
 def looks_like_article_link(url: str, title: str) -> bool:
     """
     Heuristique conservatrice pour ne garder que les liens
@@ -279,6 +298,9 @@ def looks_like_article_link(url: str, title: str) -> bool:
         return False
 
     if any(pattern in path for pattern in _NON_ARTICLE_PATH_PATTERNS):
+        return False
+
+    if _has_repeated_path_prefix(path):
         return False
 
     if any(pattern in path for pattern in _ARTICLE_PATH_PATTERNS):
