@@ -188,6 +188,48 @@ class ExtractPublishedDateTests(unittest.TestCase):
         soup = BeautifulSoup("<html><body>No date here</body></html>", "html.parser")
         self.assertIsNone(extract_published_date(soup))
 
+    def test_reads_json_ld_date_published(self):
+        # Régression réelle : Al Jazeera/HRF exposent leur date
+        # uniquement via un bloc JSON-LD schema.org, sans balise
+        # meta/time classique — l'article était enrichi (corps
+        # récupéré, score correct) mais restait sans date affichée.
+        soup = BeautifulSoup(
+            '<html><head><script type="application/ld+json">'
+            '{"@context": "https://schema.org", "@type": "NewsArticle", '
+            '"datePublished": "2021-11-12T08:00:00+00:00"}'
+            "</script></head><body></body></html>",
+            "html.parser",
+        )
+        date = extract_published_date(soup)
+        self.assertIsNotNone(date)
+        self.assertEqual(date.year, 2021)
+        self.assertEqual(date.month, 11)
+        self.assertEqual(date.day, 12)
+
+    def test_reads_json_ld_date_inside_graph(self):
+        soup = BeautifulSoup(
+            '<html><head><script type="application/ld+json">'
+            '{"@context": "https://schema.org", "@graph": ['
+            '{"@type": "WebPage"}, '
+            '{"@type": "NewsArticle", "datePublished": "2026-05-15"}'
+            "]}"
+            "</script></head><body></body></html>",
+            "html.parser",
+        )
+        date = extract_published_date(soup)
+        self.assertIsNotNone(date)
+        self.assertEqual(date.year, 2026)
+        self.assertEqual(date.month, 5)
+
+    def test_ignores_malformed_json_ld(self):
+        soup = BeautifulSoup(
+            '<html><head><script type="application/ld+json">'
+            "not valid json"
+            "</script></head><body>No date here</body></html>",
+            "html.parser",
+        )
+        self.assertIsNone(extract_published_date(soup))
+
 
 class ExtractBodySoftRedirectTests(unittest.TestCase):
     """

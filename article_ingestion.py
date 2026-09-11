@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from datetime import datetime, timezone
 from typing import Any
@@ -362,11 +363,48 @@ _DATE_META_LOCATIONS = (
 )
 
 
+def _dates_from_json_ld(soup: BeautifulSoup):
+    """
+    Certains sites (Al Jazeera, HRF...) n'exposent leur date de
+    publication que dans un bloc JSON-LD schema.org
+    (<script type="application/ld+json">datePublished...), sans
+    aucune des balises meta/time classiques. On y cherche
+    "datePublished" (à défaut "dateCreated"), y compris dans un
+    @graph imbriqué.
+    """
+    for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
+        try:
+            data = json.loads(script.get_text() or "")
+        except (ValueError, TypeError):
+            continue
+
+        candidates = data if isinstance(data, list) else [data]
+
+        expanded = []
+        for item in candidates:
+            if isinstance(item, dict) and isinstance(item.get("@graph"), list):
+                expanded.extend(item["@graph"])
+            else:
+                expanded.append(item)
+
+        for item in expanded:
+            if not isinstance(item, dict):
+                continue
+
+            for key in ("datePublished", "dateCreated"):
+                parsed = parse_date(item.get(key))
+                if parsed:
+                    return parsed
+
+    return None
+
+
 def extract_published_date(soup: BeautifulSoup):
     """
     Cherche la date de publication d'une page d'article dans les
-    métadonnées standard (Open Graph, schema.org, etc.) puis dans une
-    balise <time>. Retourne un datetime (via parse_date) ou None.
+    métadonnées standard (Open Graph, schema.org, etc.), une balise
+    <time>, puis en dernier recours un bloc JSON-LD. Retourne un
+    datetime (via parse_date) ou None.
     """
     for tag_name, attrs, source_attr in _DATE_META_LOCATIONS:
         tag = soup.find(tag_name, attrs=attrs)
@@ -388,7 +426,7 @@ def extract_published_date(soup: BeautifulSoup):
         if parsed:
             return parsed
 
-    return None
+    return _dates_from_json_ld(soup)
 
 
 def _significant_words(text: str) -> set[str]:
