@@ -949,6 +949,23 @@ SOURCES = [
         "max_articles": 250,
     },
 
+    {
+        "name": "Centre1",
+        "short_name": "Centre1",
+        "profile": "regional_media",
+        "label": "Média régional · Kazakhstan · russe",
+        "type": "html",
+        "language": "ru",
+
+        "url": "https://centre1.com/kazakhstan/",
+
+        "fallbacks": [
+            "https://centre1.com/",
+        ],
+
+        "max_articles": 250,
+    },
+
     # ========================================================
     # KIRGHIZISTAN
     # ========================================================
