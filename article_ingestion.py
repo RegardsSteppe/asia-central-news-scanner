@@ -163,6 +163,25 @@ _NON_ARTICLE_PATH_PATTERNS = (
     "/profiles/",
     "/bio/",
     "/bios/",
+    # Pages thématiques/outils génériques (pas un article précis) : le
+    # filtre générique (titre suffisant + 2 segments de chemin) les
+    # laissait passer, ex. Amnesty amnesty.org/en/what-we-do/
+    # armed-conflict/, CPJ cpj.org/data/missing, RSF rsf.org/fr/
+    # pays-<pays> (page listant tous les articles sur un pays,
+    # pas un article) ou rsf.org/fr/classement (l'outil de
+    # classement, pas une actualité).
+    "/what-we-do/",
+    "/human-rights-education",
+    "/issue/",
+    "/issues/",
+    "/topic/",
+    "/topics/",
+    "/petition/",
+    "/petitions/",
+    "/pays-",
+    "/classement",
+    "/barometre",
+    "/data/",
 )
 
 # Segments d'URL qui indiquent plutôt une page d'article.

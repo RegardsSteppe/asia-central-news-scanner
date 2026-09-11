@@ -104,6 +104,41 @@ class LooksLikeArticleLinkTests(unittest.TestCase):
             )
         )
 
+    def test_rejects_topic_and_tool_pages(self):
+        # Régression : Amnesty/RSF/CPJ ont des pages thématiques/outils
+        # (pas un article précis) avec un titre assez long pour passer
+        # le filtre générique — l'utilisateur les a repérées sur le
+        # site publié comme des "articles" qui n'en sont pas.
+        cases = [
+            (
+                "https://www.amnesty.org/en/what-we-do/armed-conflict/",
+                "Armed Conflict",
+            ),
+            (
+                "https://www.amnesty.org/en/human-rights-education/",
+                "Human Rights Education",
+            ),
+            (
+                "https://www.amnesty.org/en/petition/ban-stun-grenades/",
+                "Ban stun grenades in policing protests in Greece",
+            ),
+            (
+                "https://rsf.org/fr/pays-r%C3%A9publique-d%C3%A9mocratique-du-congo",
+                "République démocratique du Congo",
+            ),
+            ("https://rsf.org/fr/classement", "Classement mondial"),
+            ("https://rsf.org/fr/barometre", "Baromètre en temps réel"),
+            (
+                "https://cpj.org/issue/press-freedom-in-the-us/",
+                "Press freedom in the US",
+            ),
+            ("https://cpj.org/data/missing", "Missing Journalists"),
+        ]
+
+        for url, title in cases:
+            with self.subTest(url=url):
+                self.assertFalse(looks_like_article_link(url, title))
+
 
 class ExtractPublishedDateTests(unittest.TestCase):
     def test_reads_article_published_time_meta(self):
