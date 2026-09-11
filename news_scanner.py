@@ -55,18 +55,28 @@ CSV_OUTPUT_FILE = BASE_DIR / "articles.csv"
 ENRICH_LIMIT = 80
 
 # Sources sur ces profils sont le cœur éditorial du projet (droits
-# humains, liberté de la presse, investigation) : on leur garantit des
-# créneaux d'enrichissement dédiés, indépendants du classement par
-# score-titre général. Sans ça, un article régional précis (ex : une
-# condamnation nommément visée) peut se faire noyer dans le classement
-# par le pur volume d'une source généraliste comme HRW (des centaines
-# d'articles/run via son contournement Google News) et ne jamais
-# recevoir son corps complet — donc rester plafonné à un score
-# titre-seul pour toujours.
-PRIORITY_ENRICH_PROFILES = {"human_rights", "press_freedom", "investigative"}
-ENRICH_PRIORITY_LIMIT = max(
+# humains, liberté de la presse, investigation, médias internationaux
+# indépendants dédiés à la région comme Al Jazeera/AP par pays) : on
+# leur garantit des créneaux d'enrichissement dédiés par SOURCE,
+# indépendants du classement par score-titre général. Sans ça, un
+# article régional précis (ex : une condamnation nommément visée, ou
+# une page Al Jazeera par pays qui ne produit que quelques articles/
+# run) peut se faire noyer — soit par le volume d'une source
+# généraliste hors de ce groupe, soit même par une AUTRE source de ce
+# même groupe (ex : HRW déverse des centaines d'articles/run via son
+# contournement Google News et écraserait un pool partagé) — et ne
+# jamais recevoir son corps complet, donc rester sans date/plafonné à
+# un score titre-seul pour toujours. La garantie est donc par source,
+# pas par un pool commun au groupe.
+PRIORITY_ENRICH_PROFILES = {
+    "human_rights",
+    "press_freedom",
+    "investigative",
+    "international_independent",
+}
+ENRICH_PER_SOURCE_LIMIT = max(
     0,
-    int(os.getenv("SCANNER_ENRICH_PRIORITY_LIMIT", "150")),
+    int(os.getenv("SCANNER_ENRICH_PER_SOURCE_LIMIT", "15")),
 )
 VOCABULARY_LIMIT = 300
 FETCH_WORKERS = max(
@@ -560,21 +570,29 @@ def enrich_articles(
         for source in SOURCES
     }
 
-    # Créneaux garantis pour les sources droits humains/presse/investigation
-    # (voir PRIORITY_ENRICH_PROFILES) : sans ça, ces sources se font
-    # noyer dans le classement titre-seul par le volume d'une source
-    # généraliste et ne reçoivent jamais leur corps complet.
-    priority_ranked = [
+    # Créneaux garantis, PAR SOURCE, pour les profils prioritaires (voir
+    # PRIORITY_ENRICH_PROFILES) : une garantie par groupe de profil ne
+    # suffit pas, une source à fort volume (ex : HRW via son
+    # contournement Google News) pourrait à elle seule remplir un pool
+    # partagé et écraser des sources sœurs plus modestes (Al Jazeera
+    # par pays, HRF...). Chaque source garde donc ses propres créneaux.
+    priority_by_source: dict[str, list[dict[str, Any]]] = {}
+    for article in ranked:
+        profile = source_by_name.get(article.get("source"), {}).get("profile")
+        if profile not in PRIORITY_ENRICH_PROFILES:
+            continue
+        priority_by_source.setdefault(article.get("source"), []).append(article)
+
+    priority_selected = [
         article
-        for article in ranked
-        if source_by_name.get(article.get("source"), {}).get("profile")
-        in PRIORITY_ENRICH_PROFILES
+        for group in priority_by_source.values()
+        for article in group[:ENRICH_PER_SOURCE_LIMIT]
     ]
 
     selected_ids = set()
     selected: list[dict[str, Any]] = []
 
-    for article in priority_ranked[:ENRICH_PRIORITY_LIMIT] + ranked[:ENRICH_LIMIT]:
+    for article in priority_selected + ranked[:ENRICH_LIMIT]:
         if id(article) in selected_ids:
             continue
         selected_ids.add(id(article))

@@ -188,7 +188,7 @@ class EnrichArticlesTests(unittest.TestCase):
 
         with patch("news_scanner.SOURCES", new=sources), patch(
             "news_scanner.ENRICH_LIMIT", 2
-        ), patch("news_scanner.ENRICH_PRIORITY_LIMIT", 10):
+        ), patch("news_scanner.ENRICH_PER_SOURCE_LIMIT", 10):
             enrich_articles(articles)
 
         self.assertEqual(articles[3]["body"], "full body text")
@@ -210,11 +210,52 @@ class EnrichArticlesTests(unittest.TestCase):
 
         with patch("news_scanner.SOURCES", new=sources), patch(
             "news_scanner.ENRICH_LIMIT", 1
-        ), patch("news_scanner.ENRICH_PRIORITY_LIMIT", 10):
+        ), patch("news_scanner.ENRICH_PER_SOURCE_LIMIT", 10):
             enrich_articles(articles)
 
         self.assertEqual(articles[0]["body"], "full body text")
         self.assertNotIn("body", articles[1])
+
+    @patch("news_scanner.extract_body")
+    def test_high_volume_priority_source_does_not_crowd_out_sibling_sources(
+        self, mock_extract
+    ):
+        # Régression réelle : le contournement Google News de HRW
+        # déverse des centaines d'articles/run. Si les sources
+        # prioritaires partageaient un même pool classé par score,
+        # HRW pouvait à elle seule remplir ce pool et laisser Al
+        # Jazeera/HRF (même groupe de profil, bien plus modestes en
+        # volume) sans aucun créneau — donc sans date affichée.
+        mock_extract.return_value = ("full body text", None)
+
+        sources = [
+            {"name": "Human Rights Watch", "profile": "human_rights"},
+            {"name": "Al Jazeera — Turkmenistan", "profile": "international_independent"},
+        ]
+
+        articles = [
+            {
+                "source": "Human Rights Watch",
+                "score": 20,
+                "url": f"https://example.com/hrw/{i}",
+                "title": f"HRW headline number {i}",
+            }
+            for i in range(50)
+        ] + [
+            {
+                "source": "Al Jazeera — Turkmenistan",
+                "score": 15,
+                "url": "https://example.com/aj/1",
+                "title": "Turkmenistan dissidents fear crackdown in exile",
+            }
+        ]
+
+        with patch("news_scanner.SOURCES", new=sources), patch(
+            "news_scanner.ENRICH_LIMIT", 0
+        ), patch("news_scanner.ENRICH_PER_SOURCE_LIMIT", 15):
+            enrich_articles(articles)
+
+        self.assertEqual(articles[-1]["body"], "full body text")
 
 
 class MemorySeenKeysTests(unittest.TestCase):
