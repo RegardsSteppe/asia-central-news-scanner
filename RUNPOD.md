@@ -226,3 +226,15 @@ the JSON you feed to it. The output is already shaped as
 failures on the same sources the daily scan already struggles with
 (403s, timeouts) — a failed fetch is marked with `"fetch_error"`
 rather than dropped, so you can see exactly what's missing.
+
+**Google News throttling**: a real full-corpus run (2026-09-11) was
+killed by its 3h timeout at only 38% done — every single warning in
+the log was a `503` from `news.google.com`. A large slice of the
+corpus goes through the Google News RSS workaround (~21 sources), and
+hitting it with the same 15-20 concurrent workers as everything else
+triggers Google's rate-limiting, and each failure burns up to ~90s in
+retries (`http_utils.MAX_ATTEMPTS`). `fetch_all_bodies.py` now caps
+`news.google.com` specifically to `--google-news-concurrency` requests
+at a time (default 2) with `--google-news-delay` seconds between them
+(default 1.0) — the rest of the corpus keeps full `--workers`
+concurrency. Tune both down further if 503s still show up in the logs.
