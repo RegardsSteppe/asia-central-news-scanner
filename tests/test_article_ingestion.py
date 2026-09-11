@@ -378,6 +378,50 @@ class ParseRssTests(unittest.TestCase):
         )
         self.assertEqual(articles[0]["title"], "Report Covers 2020 - 2025")
 
+    def test_discards_google_news_html_description(self):
+        # Régression réelle : la <description> Google News n'est
+        # jamais un vrai résumé, juste le titre ré-empaqueté en lien
+        # HTML + le nom de la source
+        # ('<a href="...">Titre</a> <font ...>Source</font>'), affiché
+        # tel quel sur le site (visible dans le HTML et le CSV
+        # exportés) au lieu d'un vrai résumé.
+        content = """<?xml version="1.0"?>
+        <rss version="2.0"><channel>
+        <item>
+          <title>Kazakhstan Activist Arrested - Human Rights Watch</title>
+          <link>https://news.google.com/rss/articles/abc123</link>
+          <description>
+            &lt;a href="https://news.google.com/rss/articles/abc123" target="_blank"&gt;Kazakhstan Activist Arrested&lt;/a&gt; &lt;font color="#6f6f6f"&gt;Human Rights Watch&lt;/font&gt;
+          </description>
+        </item>
+        </channel></rss>
+        """
+        articles = parse_rss(
+            content,
+            {"name": "Human Rights Watch"},
+            feed_url="https://news.google.com/rss/search?q=site:hrw.org",
+        )
+        self.assertEqual(articles[0]["summary"], "")
+
+    def test_keeps_real_description_for_non_google_feeds(self):
+        content = """<?xml version="1.0"?>
+        <rss version="2.0"><channel>
+        <item>
+          <title>Real article</title>
+          <link>https://example.com/news/1</link>
+          <description>A genuine summary of the article.</description>
+        </item>
+        </channel></rss>
+        """
+        articles = parse_rss(
+            content,
+            {"name": "Test"},
+            feed_url="https://example.com/rss",
+        )
+        self.assertEqual(
+            articles[0]["summary"], "A genuine summary of the article."
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
