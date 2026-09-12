@@ -466,6 +466,20 @@ _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS = (
     ("узбекистан", r"\bузбекистан\w*\b"),
     ("узбек", r"\bузбек\w*\b"),
     ("кыргызстан", r"\bкыргызстан\w*\b"),
+    # "кыргызский"/"кыргызские"/"кыргызской"... : l'adjectif russe
+    # moderne (orthographe post-1991, celle qu'utilise le Kirghizistan
+    # lui-même) ne partage pas le radical de "кыргызстан" (qui ne
+    # couvre que "кыргызстана", "кыргызстане"...) — sans ce motif, un
+    # article ne nommant JAMAIS le pays autrement que par cet adjectif
+    # (ex. "кыргызские власти", "les autorités kirghizes") ne franchit
+    # jamais la porte géographique. Repéré en audit réel le 2026-09-12
+    # sur un article Kloop concernant un activiste kirghize (Kloop
+    # Кенжебаев) resté à 0/E faute de reconnaître "кыргызские". Les 4
+    # autres pays d'Asie centrale (казах/узбек/таджик/туркмен) avaient
+    # déjà leur forme adjectivale nue ci-dessous ; seul le kirghize
+    # manquait la sienne (only "киргиз", l'orthographe soviétique
+    # antérieure, était couverte).
+    ("кыргыз", r"\bкыргыз\w*\b"),
     ("киргизия", r"\bкиргизи\w*\b"),
     ("киргиз", r"\bкиргиз\w*\b"),
     ("таджикистан", r"\bтаджикистан\w*\b"),
