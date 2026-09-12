@@ -950,6 +950,16 @@ def build_audit(
                     "signals",
                     {},
                 ),
+                "categorisation": article.get(
+                    "categorisation",
+                ),
+                "categorisation_pertinent": article.get(
+                    "categorisation_pertinent",
+                ),
+                "categorisation_reason": article.get(
+                    "categorisation_reason",
+                    "",
+                ),
             }
         )
 
