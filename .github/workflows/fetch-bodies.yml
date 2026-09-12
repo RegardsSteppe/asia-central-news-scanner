@@ -21,7 +21,12 @@ permissions:
 jobs:
   fetch-bodies:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    # 180 min a été atteint deux fois de suite (voir fetch_all_bodies.py:
+    # le vrai correctif du 2026-09-12 sépare le pool Google News du pool
+    # principal, qui ne devrait plus être affamé) — marge de sécurité en
+    # plus au cas où d'autres sources lentes/à répétition ralentissent
+    # le pool principal.
+    timeout-minutes: 240
 
     steps:
       - name: Checkout

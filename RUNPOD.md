@@ -229,12 +229,22 @@ rather than dropped, so you can see exactly what's missing.
 
 **Google News throttling**: a real full-corpus run (2026-09-11) was
 killed by its 3h timeout at only 38% done — every single warning in
-the log was a `503` from `news.google.com`. A large slice of the
-corpus goes through the Google News RSS workaround (~21 sources), and
-hitting it with the same 15-20 concurrent workers as everything else
-triggers Google's rate-limiting, and each failure burns up to ~90s in
-retries (`http_utils.MAX_ATTEMPTS`). `fetch_all_bodies.py` now caps
-`news.google.com` specifically to `--google-news-concurrency` requests
-at a time (default 2) with `--google-news-delay` seconds between them
-(default 1.0) — the rest of the corpus keeps full `--workers`
-concurrency. Tune both down further if 503s still show up in the logs.
+the log was a `503` from `news.google.com`. About a third of the
+corpus (2220/6725, verified) goes through the Google News RSS
+workaround, and hitting it with the same 15-20 concurrent workers as
+everything else triggers Google's rate-limiting, and each failure
+burns up to ~90s in retries (`http_utils.MAX_ATTEMPTS`).
+
+A first fix (a `threading.Semaphore` shared with the main worker pool)
+made things *worse*: once more worker threads picked up Google News
+URLs than `google_news_concurrency` allowed through, the excess threads
+blocked on `.acquire()` — unavailable to process the other two-thirds
+of the corpus. A second run finished slower than the first (2100/6725
+in 180 min, throughput dropping monotonically from ~39/min to
+~5.6/min as more of the pool got stuck waiting). `fetch_all_bodies.py`
+now runs `news.google.com` URLs in their own dedicated
+`ThreadPoolExecutor` (sized to `--google-news-concurrency`, default 2,
+with `--google-news-delay` seconds — default 1.0 — between one of its
+threads' requests) — the main pool (`--workers`) never blocks on it.
+Tune `--google-news-concurrency`/`--google-news-delay` further if 503s
+still show up in the logs.
