@@ -55,6 +55,7 @@ from scoring import (
     find_terms,
     relation_present,
     detect_language,
+    contains_pattern,
     _find_terms_with_russian_stems,
     _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS,
     _RUSSIAN_CAUCASUS_STEM_PATTERNS,
@@ -105,8 +106,12 @@ _register_geo_terms("ouzbekistan", [
 _register_geo_terms("kirghizistan", [
     "kyrgyzstan", "kyrgyz republic", "kyrgyz", "bishkek", "osh",
     "jalal-abad", "karakol",
-    "кыргызстан", "киргизия", "киргиз", "бишкек", "ош", "джалал-абад",
-    "каракол",
+    # "кыргыз" (adjectif russe moderne, ex. "кыргызские власти") ajouté
+    # le 2026-09-12 aux côtés de "кыргызстан"/"киргиз" (voir
+    # _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS dans scoring.py pour le même
+    # correctif côté détection).
+    "кыргызстан", "киргизия", "киргиз", "кыргыз", "бишкек", "ош",
+    "джалал-абад", "каракол",
     "قرقیزستان", "قیرقیزستان", "قرقیز", "بیشکک",
     "kirghizistan", "kirghizstan", "kirghize", "bichkek",
 ])
@@ -315,41 +320,52 @@ ACTEUR_TYPE_TERMS: dict[str, list[str]] = {
 # contient à la fois "détention" et "condamnation") — pas de nouveau
 # vocabulaire inventé, juste une scission.
 
-# Sous-ensemble de LEGAL_CONTEXT_TERMS (keywords.py).
+# Sous-ensemble de LEGAL_CONTEXT_TERMS (keywords.py). Les formes
+# russes fléchies individuelles ("задержан", "арестован"...) ne
+# couvrent pas leurs propres variantes (ex. "арест" ne matche pas
+# "аресты", pluriel, via find_terms — limite de mot exigée juste
+# après le terme) : couvertes par _TRAITEMENT_STEM_PATTERNS
+# ci-dessous plutôt que d'énumérer chaque forme une à une.
 DETENTION_TERMS = [
     "detained", "detention", "arrest", "arrested",
-    "задержан", "задержана", "задержание", "арест", "арестован",
-    "арестована",
     "بازداشت", "دستگیری", "دستگیر",
 ]
 
 # Sous-ensemble de LEGAL_CONTEXT_TERMS + LEGAL_REPRESSION_TERMS
-# (keywords.py).
+# (keywords.py). Mêmes racines russes fléchies déplacées vers
+# _TRAITEMENT_STEM_PATTERNS que pour DETENTION_TERMS ci-dessus.
 CONDAMNATION_TERMS = [
     "conviction", "convicted", "sentenced", "sentence", "imprisoned",
     "prisoner of conscience", "prisoners of conscience",
     "political prisoner", "political prisoners",
-    "осужден", "осуждена", "осуждены", "приговор", "заключен",
-    "заключена", "политзаключенный", "политзаключенные",
+    "политзаключенный", "политзаключенные",
     "محکومیت", "محکوم", "حکم زندان", "زندانی",
 ]
 
-# Sous-ensemble de SPECIFIC_RIGHTS_TERMS (keywords.py).
+# Sous-ensemble de SPECIFIC_RIGHTS_TERMS (keywords.py). "пытк"/
+# "истязани" retirés d'ici : ce sont des racines russes délibérément
+# incomplètes (voir le commentaire "Russian stems / morphology handled
+# by substring matching" sur REPRESSION_TERMS dans keywords.py) —
+# find_terms() exige une limite de mot juste après le terme, donc ne
+# matche jamais une forme fléchie réelle ("пытки", "пытками"...).
+# Couvertes séparément par _TRAITEMENT_STEM_PATTERNS ci-dessous.
 TORTURE_TERMS = [
     "torture", "tortured", "ill-treatment", "mistreatment",
     "abuse in custody", "custodial abuse", "police abuse",
     "police brutality",
-    "пытк", "истязани", "жестокое обращение",
+    "жестокое обращение",
     "насилие в местах лишения свободы", "полицейское насилие",
     "насилие полиции",
     "شکنجه", "بدرفتاری", "خشونت پلیس",
 ]
 
-# Sous-ensemble de SPECIFIC_RIGHTS_TERMS (keywords.py).
+# Sous-ensemble de SPECIFIC_RIGHTS_TERMS (keywords.py). "исчезнувш"
+# retiré d'ici pour la même raison que "пытк" ci-dessus (racine
+# incomplète) — couvert par _TRAITEMENT_STEM_PATTERNS.
 DISPARITION_TERMS = [
     "forced disappearance", "enforced disappearance", "disappeared",
     "missing after detention",
-    "насильственное исчезновение", "насильственно исчез", "исчезнувш",
+    "насильственное исчезновение", "насильственно исчез",
     "ناپدید شدن اجباری",
 ]
 
@@ -377,6 +393,53 @@ TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
     "pression_administrative": REPRESSION_TERMS,
     "contrainte_travail": FORCED_LABOR_TERMS,
     "expulsion_extradition": TRANSNATIONAL_REPRESSION_TERMS_V9,
+}
+
+# Repéré en audit réel le 2026-09-12 sur un article HRW russe
+# ("Киргизия: пытки и произвольные аресты нагнетают напряженность",
+# ressorti traitement=aucun malgré "пытки" dans le titre) : plusieurs
+# des listes ci-dessus contiennent des racines russes délibérément
+# incomplètes (REPRESSION_TERMS — "репресс", "преследован",
+# "преследова", "давлен", "запугив", "угроз", "подавлен", "подавля",
+# "гонен", "притеснен", "притесн", "давлени", "репрессив" — le
+# commentaire d'origine dans keywords.py dit explicitement "Russian
+# stems / morphology handled by substring matching") que find_terms()
+# ne peut jamais matcher : il exige une limite de mot immédiatement
+# après le terme, donc "давлен" ne correspond à aucune forme réelle
+# ("давление", "давлением"...). Sur un exemple concret, ça rendait
+# "pression_administrative" (basé sur REPRESSION_TERMS en entier)
+# systématiquement muet sur du texte russe, même très explicite.
+#
+# Motifs \bRACINE\w*\b — même principe que
+# _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS/REPRESSION_MORPHOLOGY_PATTERNS_V9
+# (scoring.py) : capture la racine et tout suffixe fléchi, sans jamais
+# matcher à l'intérieur d'un autre mot (contrairement à une simple
+# recherche de sous-chaîne, qui matcherait par exemple "сми" au début
+# de "смирение").
+_TRAITEMENT_STEM_PATTERNS: dict[str, list[str]] = {
+    # "арест"/"задерж" : racines russes couvrant à la fois le nom et
+    # le verbe/participe (арест/аресты/арестован/арестованный,
+    # задержан/задержание/задержания) — remplace l'énumération forme
+    # par forme de DETENTION_TERMS, incomplète par construction (le
+    # pluriel "аресты" de l'exemple réel ne matchait aucune des formes
+    # listées individuellement).
+    "detention": [r"\bарест\w*\b", r"\bзадерж\w*\b"],
+    # "осужден"/"заключен"/"приговор" : mêmes raisons pour
+    # CONDAMNATION_TERMS (осужден couvre aussi осуждена/осуждены/
+    # осужденный ; заключен couvre заключена/заключенный ; приговор
+    # couvre aussi приговорен/приговорили, verbe/participe).
+    "condamnation": [r"\bосужден\w*\b", r"\bзаключен\w*\b", r"\bприговор\w*\b"],
+    "torture_mauvais_traitement": [r"\bпытк\w*\b", r"\bистязани\w*\b"],
+    "disparition": [r"\bисчезнувш\w*\b"],
+    # "преследован" et "притеснен" ne sont pas repris séparément :
+    # déjà couverts par les préfixes plus courts "преследова"/
+    # "притесн" ci-dessous (ex. "преследован" = "преследова" + "н").
+    "pression_administrative": [
+        r"\bрепресс\w*\b", r"\bпреследова\w*\b",
+        r"\bдавлен\w*\b", r"\bзапугив\w*\b", r"\bугроз\w*\b",
+        r"\bподавлен\w*\b", r"\bподавля\w*\b", r"\bгонен\w*\b",
+        r"\bпритесн\w*\b",
+    ],
 }
 
 
@@ -521,6 +584,15 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
     preuves_traitement: dict[str, list[str]] = {}
     for key, terms in TRAITEMENT_TYPE_TERMS.items():
         matched = find_terms(full_text, terms)
+
+        # Racines russes délibérément incomplètes (voir
+        # _TRAITEMENT_STEM_PATTERNS) : find_terms() ne peut jamais les
+        # matcher (limite de mot exigée juste après le terme), donc
+        # vérifiées séparément via des motifs \bRACINE\w*\b.
+        stem_patterns = _TRAITEMENT_STEM_PATTERNS.get(key)
+        if stem_patterns and contains_pattern(full_text, stem_patterns):
+            matched = list(matched) + ["(racine russe détectée)"]
+
         if matched:
             traitement.append(key)
             preuves_traitement[key] = matched

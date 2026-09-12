@@ -521,6 +521,30 @@ class RussianMorphologyGapTests(unittest.TestCase):
 
         self.assertEqual(article["level"], "A")
 
+    def test_recognizes_modern_kyrgyz_adjective_form(self):
+        # "кыргызские" (adjectif russe moderne, orthographe post-1991)
+        # ne partage pas le radical de "кыргызстан" (qui ne couvre que
+        # "кыргызстана", "кыргызстане"...) — seule la forme "киргиз"
+        # (orthographe soviétique) était couverte avant ce fix. Repéré
+        # en audit réel le 2026-09-12 sur un article Kloop resté à
+        # 0/E faute de reconnaître "кыргызские власти".
+        article = {
+            "title": (
+                "Кыргызские власти пытались арестовать активиста "
+                "за рубежом"
+            ),
+            "summary": "",
+            "body": "",
+            "source": "Centre1",
+            "language": "ru",
+        }
+
+        classify_article(article)
+
+        self.assertTrue(
+            any("Asie centrale" in reason for reason in article["reasons"])
+        )
+
     def test_recognizes_feminine_human_rights_defender(self):
         # "правозащитницА" (féminin) change la fin du radical par
         # rapport à "правозащитниК" (masculin) — pas une simple
