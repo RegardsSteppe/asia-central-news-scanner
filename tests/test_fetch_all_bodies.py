@@ -1,5 +1,6 @@
 import csv
 import json
+import os
 import sys
 import tempfile
 import threading
@@ -14,6 +15,7 @@ from fetch_all_bodies import (
     _fetch_one,
     _is_google_news_url,
     fetch_all_bodies,
+    load_previous_results,
     load_rows,
     main,
 )
@@ -333,6 +335,195 @@ class GoogleNewsThrottleTests(unittest.TestCase):
         # x 1s / 2 threads).
         self.assertEqual(len(other_call_times), 5)
         self.assertLess(max(other_call_times), 1.0)
+
+
+class LoadPreviousResultsTests(unittest.TestCase):
+    def test_missing_file_returns_empty_dict(self):
+        self.assertEqual(load_previous_results("/no/such/file.json"), {})
+
+    def test_invalid_json_returns_empty_dict(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = str(Path(tmp) / "broken.json")
+            Path(path).write_text("not json", encoding="utf-8")
+
+            self.assertEqual(load_previous_results(path), {})
+
+    def test_only_keeps_successful_articles(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = str(Path(tmp) / "previous.json")
+            data = {
+                "articles": [
+                    {"url": "https://example.com/ok", "body": "Full text."},
+                    {
+                        "url": "https://example.com/failed",
+                        "body": "",
+                        "fetch_error": "boom",
+                    },
+                    {
+                        "url": "https://example.com/empty-body",
+                        "body": "",
+                    },
+                    {"url": "", "body": "Full text."},  # pas de clé exploitable
+                ],
+            }
+            Path(path).write_text(json.dumps(data), encoding="utf-8")
+
+            done = load_previous_results(path)
+
+        self.assertEqual(list(done.keys()), ["https://example.com/ok"])
+
+
+class ResumeAndCheckpointTests(unittest.TestCase):
+    """
+    Décidé le 2026-09-12 : sur ~6800 articles, un run peut prendre
+    plusieurs heures et être tué par le timeout du job GitHub Actions
+    avant de finir — 4 runs consécutifs ont perdu 100% de leur
+    progression faute d'avoir jamais rien écrit sur disque avant la
+    toute fin. fetch_all_bodies() checkpointe désormais sur disque en
+    cours de route, et --resume-from permet de repartir d'un run
+    précédent (complet ou partiel) sans re-télécharger ce qui a déjà
+    réussi.
+    """
+
+    @patch("fetch_all_bodies.extract_body")
+    def test_checkpoint_file_reflects_already_done_plus_new_results(
+        self, mock_extract
+    ):
+        mock_extract.return_value = ("Fresh body.", None)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            checkpoint_path = str(Path(tmp) / "out.json")
+
+            already_done = [
+                dict(SAMPLE_ROW, url="https://example.com/already", body="Old body.")
+            ]
+            new_rows = [dict(SAMPLE_ROW, url="https://example.com/new")]
+
+            fetch_all_bodies(
+                new_rows,
+                workers=1,
+                checkpoint_path=checkpoint_path,
+                already_done=already_done,
+            )
+
+            with open(checkpoint_path, encoding="utf-8") as handle:
+                data = json.load(handle)
+
+        by_url = {a["url"]: a for a in data["articles"]}
+        self.assertEqual(by_url["https://example.com/already"]["body"], "Old body.")
+        self.assertEqual(by_url["https://example.com/new"]["body"], "Fresh body.")
+
+    @patch("fetch_all_bodies.extract_body")
+    def test_checkpoint_is_written_mid_run_not_just_at_the_end(self, mock_extract):
+        mock_extract.return_value = ("Body.", None)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            checkpoint_path = str(Path(tmp) / "out.json")
+            seen_partial_counts: list[int] = []
+
+            original_replace = os.replace
+
+            def spy_replace(src, dst):
+                with open(src, encoding="utf-8") as handle:
+                    data = json.load(handle)
+                seen_partial_counts.append(len(data["articles"]))
+                original_replace(src, dst)
+
+            rows = [
+                dict(SAMPLE_ROW, url=f"https://example.com/{i}") for i in range(150)
+            ]
+
+            with patch("fetch_all_bodies.os.replace", side_effect=spy_replace):
+                fetch_all_bodies(rows, workers=4, checkpoint_path=checkpoint_path)
+
+        # Un checkpoint intermédiaire (à 100) ET un final (à 150) :
+        # jamais un seul et unique écrit tout à la fin.
+        self.assertIn(100, seen_partial_counts)
+        self.assertIn(150, seen_partial_counts)
+
+    @patch("fetch_all_bodies.extract_body")
+    def test_main_resume_from_skips_previously_successful_articles(
+        self, mock_extract
+    ):
+        mock_extract.return_value = ("Fresh body.", None)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = str(Path(tmp) / "articles.csv")
+            output_path = str(Path(tmp) / "out.json")
+            previous_path = str(Path(tmp) / "previous.json")
+
+            write_csv(
+                input_path,
+                [
+                    dict(SAMPLE_ROW, url="https://example.com/already-ok"),
+                    dict(SAMPLE_ROW, url="https://example.com/previously-failed"),
+                    dict(SAMPLE_ROW, url="https://example.com/never-tried"),
+                ],
+            )
+            Path(previous_path).write_text(
+                json.dumps(
+                    {
+                        "articles": [
+                            {
+                                "url": "https://example.com/already-ok",
+                                "body": "Old successful body.",
+                            },
+                            {
+                                "url": "https://example.com/previously-failed",
+                                "body": "",
+                                "fetch_error": "boom",
+                            },
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            main(
+                [
+                    "--input", input_path,
+                    "--output", output_path,
+                    "--workers", "2",
+                    "--resume-from", previous_path,
+                ]
+            )
+
+            with open(output_path, encoding="utf-8") as handle:
+                data = json.load(handle)
+
+        fetched_urls = {call.args[0] for call in mock_extract.call_args_list}
+        self.assertNotIn("https://example.com/already-ok", fetched_urls)
+        self.assertIn("https://example.com/previously-failed", fetched_urls)
+        self.assertIn("https://example.com/never-tried", fetched_urls)
+
+        by_url = {a["url"]: a for a in data["articles"]}
+        self.assertEqual(len(by_url), 3)
+        self.assertEqual(
+            by_url["https://example.com/already-ok"]["body"], "Old successful body."
+        )
+        self.assertEqual(
+            by_url["https://example.com/previously-failed"]["body"], "Fresh body."
+        )
+        self.assertEqual(
+            by_url["https://example.com/never-tried"]["body"], "Fresh body."
+        )
+
+    @patch("fetch_all_bodies.extract_body")
+    def test_main_without_resume_from_is_unaffected(self, mock_extract):
+        mock_extract.return_value = ("Body.", None)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = str(Path(tmp) / "articles.csv")
+            output_path = str(Path(tmp) / "out.json")
+            write_csv(input_path, [dict(SAMPLE_ROW)])
+
+            main(["--input", input_path, "--output", output_path, "--workers", "1"])
+
+            with open(output_path, encoding="utf-8") as handle:
+                data = json.load(handle)
+
+        self.assertEqual(len(data["articles"]), 1)
+        self.assertEqual(data["articles"][0]["body"], "Body.")
 
 
 if __name__ == "__main__":
