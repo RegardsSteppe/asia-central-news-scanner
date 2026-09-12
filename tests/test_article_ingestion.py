@@ -390,6 +390,44 @@ class ExtractBodyWrongContainerTests(unittest.TestCase):
         self.assertIn("full real article text", body)
         self.assertNotIn("commentaire", body)
 
+    @patch("article_ingestion.fetch_url")
+    def test_accepts_a_realistic_long_body_that_paraphrases_the_title(
+        self, mock_fetch
+    ):
+        # Régression du 2026-09-12 (run #6 en production, 940/1000
+        # échecs) : _body_matches_expected_title() comparait par erreur
+        # les mots distinctifs du TITRE aux mots distinctifs DU CORPS
+        # (ses 2 mots les plus longs à LUI) plutôt qu'à tout son
+        # vocabulaire. Sur un corps de plusieurs centaines de mots,
+        # les 2 mots les plus longs sont presque toujours des noms
+        # propres/mots composés sans rapport avec le titre (ici
+        # "spokesperson" et "infrastructure" sont plus longs que
+        # "kocharyan"), ce qui rejetait la quasi-totalité des vrais
+        # articles. Les tests ci-dessus utilisaient des corps d'une
+        # seule phrase, trop courts pour révéler le bug.
+        long_body = (
+            "A spokesperson for the government confirmed the detention "
+            "on Tuesday. Kocharyan has denied all wrongdoing through his "
+            "lawyers, who say the corruption case against him is "
+            "politically motivated. The investigation, which has spanned "
+            "several years, also touches on infrastructure contracts "
+            "awarded during his time in office. Prosecutors declined to "
+            "comment further on the ongoing proceedings."
+        )
+
+        mock_fetch.return_value = (
+            "<html><head><title>Armenia Detains Ex-President Kocharyan In "
+            "Corruption Probe</title></head>"
+            f"<body><article>{long_body}</article></body></html>"
+        )
+
+        body, _ = extract_body(
+            "https://www.occrp.org/en/news/armenia-detains-ex-president-kocharyan-in-corruption-probe",
+            expected_title="Armenia detains ex-president Kocharyan in corruption probe",
+        )
+
+        self.assertIn("Kocharyan", body)
+
 
 class BuildArticleTests(unittest.TestCase):
     def test_builds_expected_shape(self):
