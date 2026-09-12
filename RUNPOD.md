@@ -248,3 +248,19 @@ with `--google-news-delay` seconds — default 1.0 — between one of its
 threads' requests) — the main pool (`--workers`) never blocks on it.
 Tune `--google-news-concurrency`/`--google-news-delay` further if 503s
 still show up in the logs.
+
+That fix alone still wasn't enough (run #3, 2026-09-12): the failure
+rate on the rest of the corpus dropped sharply (81% -> 24%), but
+throughput still degraded over the run (~39 -> ~7.7 articles/min over
+4h), and only 4000/6725 (59%) finished before the timeout. A handful
+of sources hang or time out rather than failing fast (chathamhouse.org
+alone: 125/125 of its articles failed, some via slow retries), and
+`http_utils.py`'s default retry budget (30s timeout x up to 3 attempts
++ backoff) can burn up to ~93s of a worker thread on a single doomed
+article — enough of those scattered through 6725 articles adds up. The
+workflow now overrides `http_utils.py`'s retry env vars (only for this
+one-off script, never the daily scan) to fail faster:
+`SCANNER_HTTP_CONNECT_TIMEOUT=5`, `SCANNER_HTTP_READ_TIMEOUT=12`,
+`SCANNER_HTTP_MAX_ATTEMPTS=2` — cutting the worst case to ~25s per
+article. `--workers` was also bumped from 20 to 30 in the workflow's
+default, now that the main pool is no longer starved by Google News.
