@@ -280,4 +280,36 @@ up automatically: its "Upload result as artifact" step now runs with
 checkpoint), and a new step looks up the most recent
 `articles-with-body` artifact from a prior run of this same workflow
 and passes it as `--resume-from` if one exists — so re-triggering the
-workflow after a timeout resumes instead of starting over.
+workflow after a timeout resumes instead of starting over. Pass
+`resume: false` to the workflow's `workflow_dispatch` inputs to force a
+full fresh re-fetch instead (e.g. right after an `extract_body()` fix —
+see below — since a previous body being non-empty doesn't mean it was
+extracted correctly, just that some checkpoint had a body for that URL).
+
+**Bad extraction, not just failed extraction**: checking a sample of
+the ~415 bodies already cached in `memory.json` (2026-09-12) found
+`extract_body()` silently returning the *wrong* content on some sites
+even though the fetch itself "succeeded" (non-empty body, no
+`fetch_error`):
+- `occrp.org` (100% of its 16 cached bodies): the page's `<title>`
+  matches the requested article, but the div picked as the body is an
+  unrelated "latest articles" teaser (site likely renders the real
+  article client-side in JS, so the static fetch never sees it).
+- `turkmen.news` (12/15 sampled): its WordPress theme marks up each
+  *comment* with the semantic `<article>` tag, which `extract_body()`
+  was grabbing instead of the post's own content.
+- `hrf.org` (5/14 sampled): the body picked was just the boilerplate
+  string `"Human Rights Foundation"`.
+
+Fixed in `article_ingestion.py`: comment sections (elements whose
+class/id contains "comment") are now stripped before selecting the
+main content container, and a new `_body_matches_expected_title()`
+check rejects the extracted text (falls back to `fetch_error`, same as
+the existing soft-redirect guard) unless at least one of the expected
+title's two longest words appears in it — long generic words that
+recur across many different articles from the same source (e.g.
+"Armenia", "corruption" on occrp.org) are deliberately excluded from
+that check by only keeping the very longest terms, which are almost
+always the ones actually specific to that one article (a name, a rare
+term). This affects the daily scan's enrichment too, not just this
+batch script — both call the same `extract_body()`.

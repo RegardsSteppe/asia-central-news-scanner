@@ -14,6 +14,14 @@ on:
         description: "Téléchargements en parallèle"
         required: false
         default: "30"
+      resume:
+        description: >-
+          Reprendre depuis le dernier artefact articles-with-body
+          (false pour repartir de zéro sur TOUT le corpus, ex. après un
+          correctif de extract_body() qui doit ré-extraire ce qui a
+          déjà été récupéré avec l'ancienne logique)
+        required: false
+        default: "true"
 
 permissions:
   contents: read
@@ -58,6 +66,7 @@ jobs:
         # produit par CE workflow (même partiel) pour ne jamais
         # re-télécharger ce qui a déjà réussi.
         id: previous_artifact
+        if: ${{ github.event.inputs.resume != 'false' }}
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -311,6 +311,86 @@ class ExtractBodySoftRedirectTests(unittest.TestCase):
         self.assertIn("Samarkand", body)
 
 
+class ExtractBodyWrongContainerTests(unittest.TestCase):
+    """
+    Régression du 2026-09-12 : contrairement au cas "redirection douce"
+    ci-dessus, certains sites renvoient une page dont le <title>/<h1>
+    est bien celui de l'article demandé, mais dont le conteneur choisi
+    par extract_body() comme corps de l'article n'est pas le bon
+    (occrp.org : une vignette "derniers articles" sans rapport ; les
+    thèmes WordPress marquant chaque commentaire avec <article> comme
+    turkmen.news).
+    """
+
+    @patch("article_ingestion.fetch_url")
+    def test_rejects_unrelated_article_teaser_despite_matching_page_title(
+        self, mock_fetch
+    ):
+        # Le <title> de la page correspond bien à l'article demandé,
+        # mais le <div class="article-teaser"> choisi comme corps est
+        # une vignette pour un tout autre article (cas réel occrp.org).
+        mock_fetch.return_value = (
+            "<html><head>"
+            "<title>Armenia Detains Ex-President Kocharyan In Corruption "
+            "Probe</title></head>"
+            "<body><div class='article-teaser'>Sep 10, 2026 Armenia "
+            "Unveils Raid Footage in Ex-Tax Chief Probe</div></body>"
+            "</html>"
+        )
+
+        body, _ = extract_body(
+            "https://www.occrp.org/en/news/armenia-detains-ex-president-kocharyan-in-corruption-probe",
+            expected_title="Armenia detains ex-president Kocharyan in corruption probe",
+        )
+
+        self.assertEqual(body, "")
+
+    @patch("article_ingestion.fetch_url")
+    def test_rejects_boilerplate_body_despite_matching_page_title(self, mock_fetch):
+        # Cas réel hrf.org : le <title> correspond, mais le conteneur
+        # choisi comme corps n'est qu'un fragment de boilerplate.
+        mock_fetch.return_value = (
+            "<html><head><title>My Brother's 16-Year Sentence Was Not "
+            "Enough for Uzbekistan | HRF</title></head>"
+            "<body><div class='article-byline'>Human Rights Foundation"
+            "</div></body></html>"
+        )
+
+        body, _ = extract_body(
+            "https://hrf.org/latest/my-brothers-16-year-sentence",
+            expected_title=(
+                "My brother's 16-year sentence was not enough for Uzbekistan"
+            ),
+        )
+
+        self.assertEqual(body, "")
+
+    @patch("article_ingestion.fetch_url")
+    def test_strips_wordpress_style_comment_articles_before_selecting_main(
+        self, mock_fetch
+    ):
+        # Cas réel turkmen.news : le thème marque chaque commentaire
+        # avec la balise <article>, que soup.find("article") récupérait
+        # avant le vrai corps.
+        mock_fetch.return_value = (
+            "<html><head><title>Turkmenistan Defense Minister Story"
+            "</title></head><body>"
+            "<article class='comment'>Anonyme: ceci est un commentaire "
+            "sans rapport avec le sujet réel.</article>"
+            "<article class='post'>Turkmenistan Defense Minister Story: "
+            "full real article text goes here.</article>"
+            "</body></html>"
+        )
+
+        body, _ = extract_body(
+            "https://turkmen.news/2026/09/04/some-slug/",
+            expected_title="Turkmenistan Defense Minister Story",
+        )
+
+        self.assertIn("full real article text", body)
+        self.assertNotIn("commentaire", body)
+
+
 class BuildArticleTests(unittest.TestCase):
     def test_builds_expected_shape(self):
         article = build_article(
