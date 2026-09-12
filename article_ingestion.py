@@ -588,7 +588,15 @@ def _body_matches_expected_title(expected_title: str, body_text: str) -> bool:
     if not expected_distinctive:
         return True
 
-    return bool(expected_distinctive & _distinctive_words(body_text))
+    # Cherche les mots distinctifs du TITRE n'importe où dans le
+    # vocabulaire du corps entier — pas seulement parmi les mots les
+    # plus longs DU CORPS. Un vrai article de plusieurs centaines de
+    # mots contient presque toujours des mots plus longs que les
+    # termes-clé du titre (noms propres, mots composés, artefacts de
+    # mise en forme...) sans rapport avec eux ; restreindre aux mots
+    # les plus longs du corps rejetterait alors la quasi-totalité des
+    # articles légitimes.
+    return bool(expected_distinctive & _significant_words(body_text))
 
 
 def extract_body(
