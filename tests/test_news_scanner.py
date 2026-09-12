@@ -19,8 +19,10 @@ from news_scanner import (
     final_sort_key,
     get_cached_body,
     load_seen_keys,
+    score_first_pass,
     update_body_cache,
 )
+from html_template import render_audit_row
 
 
 class CanonicalArticleKeyTests(unittest.TestCase):
@@ -113,6 +115,71 @@ class BuildAuditTests(unittest.TestCase):
         self.assertEqual(audit[0]["url"], "https://example.com/article")
         self.assertEqual(audit[0]["date"], date)
         self.assertEqual(audit[0]["theme"], "Politique intérieure")
+
+    def test_preserves_categorisation_fields(self):
+        # Régression du 2026-09-12 : même bug que ci-dessus, pour les
+        # champs categorisation.py/regles_editoriales.py ajoutés
+        # ensuite — build_audit() ne les copiait pas non plus, donc la
+        # colonne "Catégorisation" du tableau d'audit était vide pour
+        # les ~6750 articles du site (confirmé en HTML publié), alors
+        # que les cartes articles (qui utilisent l'article original,
+        # pas cette copie filtrée) l'affichaient correctement.
+        articles = [
+            {
+                "title": "Some article",
+                "source": "Test Source",
+                "url": "https://example.com/article",
+                "categorisation": {
+                    "geo": ["kazakhstan"],
+                    "acteur": ["defenseur"],
+                    "traitement": ["detention"],
+                    "type": "evenement_date",
+                },
+                "categorisation_pertinent": True,
+                "categorisation_reason": "pertinent",
+            }
+        ]
+
+        audit = build_audit(articles)
+
+        self.assertEqual(
+            audit[0]["categorisation"]["geo"], ["kazakhstan"]
+        )
+        self.assertTrue(audit[0]["categorisation_pertinent"])
+        self.assertEqual(audit[0]["categorisation_reason"], "pertinent")
+
+    def test_end_to_end_audit_row_never_empty_after_score_first_pass(self):
+        # Test bout-en-bout (score_first_pass -> build_audit ->
+        # render_audit_row) qui aurait directement attrapé la
+        # régression ci-dessus : un test qui appelle render_audit_row()
+        # sur l'article brut (contournant build_audit()) ne la
+        # détecte pas, puisque les cartes articles (qui utilisent
+        # l'article original) fonctionnaient bien — seul le chemin
+        # complet via build_audit() révèle le problème.
+        import re
+
+        articles = [
+            {
+                "title": "Kazakhstan Jails Activist for Ten Years",
+                "summary": "A court sentenced a human rights activist to prison.",
+                "body": "",
+                "source": "Human Rights Watch",
+                "source_label": "HRW",
+                "url": "https://www.hrw.org/news/example",
+                "language": "en",
+                "date": None,
+            }
+        ]
+
+        score_first_pass(articles)
+        audit = build_audit(articles)
+        row_html = render_audit_row(audit[0])
+
+        cell = re.search(
+            r'<td class="audit-categorisation">(.*?)</td>', row_html, re.S
+        )
+        self.assertIsNotNone(cell)
+        self.assertTrue(cell.group(1).strip())
 
     def test_maps_source_to_display_category(self):
         # La table d'audit du site regroupe les milliers de lignes de
