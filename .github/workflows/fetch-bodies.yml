@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: read
+  actions: read  # pour retrouver l'artefact du run précédent (reprise, voir plus bas)
 
 jobs:
   fetch-bodies:
@@ -46,6 +47,47 @@ jobs:
           curl -sSf -o articles.csv
           "https://raw.githubusercontent.com/${{ github.repository }}/gh-pages/articles.csv"
 
+      - name: Look up previous run's results (for --resume-from)
+        # 4 runs consécutifs (2026-09-11/12) ont chacun perdu 100% de
+        # leur progression au timeout : un corpus de ~6800 articles
+        # prend plusieurs heures, et rien n'était jamais écrit sur
+        # disque avant la toute fin. fetch_all_bodies.py checkpointe
+        # désormais en cours de route (voir son "Upload result as
+        # artifact" ci-dessous, qui tourne même si ce job est annulé) —
+        # ce step retrouve le dernier artefact "articles-with-body"
+        # produit par CE workflow (même partiel) pour ne jamais
+        # re-télécharger ce qui a déjà réussi.
+        id: previous_artifact
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          curl -sS -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts?name=articles-with-body&per_page=20" \
+            -o artifacts.json
+
+          DOWNLOAD_URL=$(python3 -c "
+          import json
+
+          with open('artifacts.json', encoding='utf-8') as handle:
+              data = json.load(handle)
+
+          artifacts = [a for a in data.get('artifacts', []) if not a.get('expired')]
+          artifacts.sort(key=lambda a: a['created_at'], reverse=True)
+          print(artifacts[0]['archive_download_url'] if artifacts else '')
+          ")
+
+          if [ -n "$DOWNLOAD_URL" ]; then
+            curl -sSL -H "Authorization: Bearer $GH_TOKEN" -o previous_artifact.zip "$DOWNLOAD_URL"
+            mkdir -p previous_result
+            unzip -o previous_artifact.zip -d previous_result
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Fetch full bodies for every article
         # Run #3 (2026-09-12) : le pool séparé Google News a bien
         # marché (taux d'échec 81% -> 24%), mais le débit ralentissait
@@ -67,10 +109,17 @@ jobs:
           --input articles.csv
           --output articles_with_body.json
           --workers "${{ github.event.inputs.workers }}"
+          ${{ steps.previous_artifact.outputs.found == 'true' && '--resume-from previous_result/articles_with_body.json' || '' }}
 
       - name: Upload result as artifact
+        # if: always() : ce step doit tourner même si le précédent a
+        # été annulé par le timeout du job, pour uploader le dernier
+        # checkpoint écrit sur disque (voir fetch_all_bodies.py) au
+        # lieu de perdre toute la progression du run.
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: articles-with-body
           path: articles_with_body.json
           retention-days: 30
+          if-no-files-found: ignore

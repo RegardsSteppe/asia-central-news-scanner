@@ -30,6 +30,11 @@ image, it's what produces the JSON you'd feed to it.
 Usage:
     python fetch_all_bodies.py --input articles.csv --output articles_with_body.json
     python fetch_all_bodies.py --input articles.csv --output sample.json --limit 50  # test run
+
+    # Reprendre un run interrompu (timeout du job, etc.) sans
+    # re-télécharger ce qui a déjà réussi :
+    python fetch_all_bodies.py --input articles.csv --output articles_with_body.json \
+        --resume-from previous_articles_with_body.json
 """
 
 from __future__ import annotations
@@ -38,6 +43,7 @@ import argparse
 import csv
 import json
 import logging
+import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
@@ -107,6 +113,39 @@ def load_rows(
     return rows
 
 
+def load_previous_results(path: str) -> dict[str, dict[str, Any]]:
+    """
+    Charge un articles_with_body.json d'un run précédent (typiquement
+    partiel, si ce run a été tué par le timeout du job) et renvoie les
+    articles déjà récupérés AVEC SUCCÈS (body non vide, sans
+    fetch_error), indexés par url. Décidé le 2026-09-12 après 4 runs
+    consécutifs perdus dans leur intégralité au timeout : sur un corpus
+    de ~6800 articles qui prend plusieurs heures, il ne faut jamais
+    re-télécharger ce qui a déjà été récupéré avec succès.
+
+    Renvoie {} silencieusement si le fichier n'existe pas ou est
+    invalide (première tentative, ou artefact introuvable) — ce n'est
+    pas une erreur, juste l'absence de progrès à reprendre.
+    """
+    try:
+        with open(path, encoding="utf-8") as handle:
+            data = json.load(handle)
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+    articles = data.get("articles", []) if isinstance(data, dict) else []
+
+    done: dict[str, dict[str, Any]] = {}
+    for row in articles:
+        if not isinstance(row, dict):
+            continue
+        url = row.get("url") or ""
+        if url and row.get("body") and not row.get("fetch_error"):
+            done[url] = row
+
+    return done
+
+
 def _fetch_one(
     row: dict[str, Any],
     google_news_delay: float,
@@ -139,6 +178,8 @@ def fetch_all_bodies(
     workers: int = DEFAULT_WORKERS,
     google_news_concurrency: int = DEFAULT_GOOGLE_NEWS_CONCURRENCY,
     google_news_delay: float = DEFAULT_GOOGLE_NEWS_DELAY,
+    checkpoint_path: str | None = None,
+    already_done: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     """
     Récupère le corps complet de chaque ligne en parallèle. Ne lève
@@ -157,12 +198,36 @@ def fetch_all_bodies(
     premier. Voir la note au-dessus de GOOGLE_NEWS_HOST (un sémaphore
     partagé par le même pool avait été essayé d'abord et avait
     empiré les choses).
+
+    Si `checkpoint_path` est fourni, le résultat cumulé
+    (`already_done` + ce que cet appel a déjà traité) est réécrit sur
+    disque à la même cadence que les logs de progression, de façon
+    atomique (fichier temporaire + os.replace, jamais de JSON
+    tronqué/corrompu). Décidé le 2026-09-12 après 4 runs consécutifs
+    tués par le timeout du job GitHub Actions sans qu'aucun résultat ne
+    soit jamais écrit sur disque avant la fin — chaque run repartait de
+    zéro. Avec ce checkpoint + `--resume-from`/`load_previous_results`,
+    un run interrompu laisse un fichier réutilisable par le suivant.
     """
+    already_done = already_done or []
     results: list[dict[str, Any]] = []
     done = 0
     failed = 0
 
     started = time.perf_counter()
+
+    def _write_checkpoint() -> None:
+        if not checkpoint_path:
+            return
+        tmp_path = f"{checkpoint_path}.tmp"
+        with open(tmp_path, "w", encoding="utf-8") as handle:
+            json.dump(
+                {"articles": already_done + results},
+                handle,
+                ensure_ascii=False,
+                indent=2,
+            )
+        os.replace(tmp_path, checkpoint_path)
 
     google_news_rows = [r for r in rows if _is_google_news_url(r.get("url") or "")]
     other_rows = [r for r in rows if not _is_google_news_url(r.get("url") or "")]
@@ -209,6 +274,9 @@ def fetch_all_bodies(
                     "%s/%s articles traités | %s échec(s) | %.0fs écoulées",
                     done, len(rows), failed, elapsed,
                 )
+                _write_checkpoint()
+
+    _write_checkpoint()
 
     return results
 
@@ -236,6 +304,16 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=DEFAULT_GOOGLE_NEWS_DELAY,
         help="Délai (s) après chaque requête news.google.com avant de relâcher le créneau.",
     )
+    parser.add_argument(
+        "--resume-from",
+        default=None,
+        help=(
+            "articles_with_body.json d'un run précédent (même "
+            "partiel/interrompu par un timeout) : les articles déjà "
+            "récupérés avec succès (body non vide, sans fetch_error) "
+            "sont réutilisés tels quels, sans être re-téléchargés."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -245,20 +323,36 @@ def main(argv: list[str] | None = None) -> None:
     rows = load_rows(args.input, limit=args.limit)
     logger.info("%s article(s) chargé(s) depuis %s", len(rows), args.input)
 
+    previous_done: dict[str, dict[str, Any]] = {}
+    if args.resume_from:
+        previous_done = load_previous_results(args.resume_from)
+        logger.info(
+            "%s article(s) déjà récupéré(s) avec succès dans %s, ignoré(s)",
+            len(previous_done), args.resume_from,
+        )
+
+    remaining_rows = [
+        row for row in rows if (row.get("url") or "") not in previous_done
+    ]
+
     results = fetch_all_bodies(
-        rows,
+        remaining_rows,
         workers=args.workers,
         google_news_concurrency=args.google_news_concurrency,
         google_news_delay=args.google_news_delay,
+        checkpoint_path=args.output,
+        already_done=list(previous_done.values()),
     )
 
-    with open(args.output, "w", encoding="utf-8") as handle:
-        json.dump({"articles": results}, handle, ensure_ascii=False, indent=2)
+    combined = list(previous_done.values()) + results
 
-    succeeded = sum(1 for r in results if r.get("body"))
+    with open(args.output, "w", encoding="utf-8") as handle:
+        json.dump({"articles": combined}, handle, ensure_ascii=False, indent=2)
+
+    succeeded = sum(1 for r in combined if r.get("body"))
     logger.info(
         "terminé | %s/%s corps récupérés | écrit dans %s",
-        succeeded, len(results), args.output,
+        succeeded, len(combined), args.output,
     )
 
 

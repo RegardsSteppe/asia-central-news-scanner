@@ -264,3 +264,20 @@ one-off script, never the daily scan) to fail faster:
 `SCANNER_HTTP_MAX_ATTEMPTS=2` — cutting the worst case to ~25s per
 article. `--workers` was also bumped from 20 to 30 in the workflow's
 default, now that the main pool is no longer starved by Google News.
+
+**Resuming an interrupted run**: on a corpus this size a run can take
+hours, and up to run #4 every single timeout lost 100% of that run's
+progress — nothing was ever written to disk before the very end.
+`fetch_all_bodies()` now checkpoints its accumulated results to
+`--output` periodically (same cadence as its progress logs), written
+atomically (temp file + `os.replace`, never a truncated/corrupt JSON).
+`--resume-from <previous_articles_with_body.json>` reads that file (or
+any previous run's output, complete or partial) and skips every URL
+that already has a real body and no `fetch_error` — only what's
+missing or previously failed gets re-fetched. The workflow wires this
+up automatically: its "Upload result as artifact" step now runs with
+`if: always()` (so a cancelled/timed-out run still uploads its last
+checkpoint), and a new step looks up the most recent
+`articles-with-body` artifact from a prior run of this same workflow
+and passes it as `--resume-from` if one exists — so re-triggering the
+workflow after a timeout resumes instead of starting over.
