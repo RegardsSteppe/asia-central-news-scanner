@@ -6,7 +6,7 @@ import threading
 import time
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -188,63 +188,60 @@ class GoogleNewsThrottleTests(unittest.TestCase):
     articles a été tué par son timeout après seulement 38% (2600/6725)
     — 180/180 avertissements du log pointaient vers des 503 sur
     news.google.com (rate-limiting de Google face au volume de
-    requêtes en parallèle). Ce throttle limite juste news.google.com,
-    le reste du corpus garde sa pleine concurrence.
+    requêtes en parallèle).
+
+    Un premier correctif (sémaphore partagé par le même pool que le
+    reste du corpus) a été essayé puis abandonné le 2026-09-12 : un
+    tiers du corpus (2220/6725, vérifié) est du Google News, donc les
+    threads du pool principal bloqués sur semaphore.acquire()
+    finissaient par affamer le reste — un deuxième run a terminé PLUS
+    LENTEMENT que le premier (débit passant de ~39/min à ~5.6/min de
+    façon monotone). Google News est maintenant un ThreadPoolExecutor
+    séparé et dédié : ses requêtes ne consomment jamais un slot du pool
+    principal.
     """
 
     @patch("fetch_all_bodies.extract_body")
     @patch("fetch_all_bodies.time.sleep")
-    def test_non_google_news_url_does_not_touch_semaphore_or_sleep(
-        self, mock_sleep, mock_extract
-    ):
+    def test_non_google_news_url_does_not_sleep(self, mock_sleep, mock_extract):
         mock_extract.return_value = ("Body.", None)
-        fake_semaphore = MagicMock()
 
         row = dict(SAMPLE_ROW, url="https://example.com/article")
-        _fetch_one(row, fake_semaphore, google_news_delay=5.0)
+        _fetch_one(row, google_news_delay=5.0)
 
-        fake_semaphore.acquire.assert_not_called()
-        fake_semaphore.release.assert_not_called()
         mock_sleep.assert_not_called()
 
     @patch("fetch_all_bodies.extract_body")
     @patch("fetch_all_bodies.time.sleep")
-    def test_google_news_url_acquires_semaphore_and_sleeps(
-        self, mock_sleep, mock_extract
-    ):
+    def test_google_news_url_sleeps_after_fetch(self, mock_sleep, mock_extract):
         mock_extract.return_value = ("Body.", None)
-        fake_semaphore = MagicMock()
 
         row = dict(
             SAMPLE_ROW, url="https://news.google.com/rss/articles/abc?oc=5"
         )
-        _fetch_one(row, fake_semaphore, google_news_delay=2.5)
+        _fetch_one(row, google_news_delay=2.5)
 
-        fake_semaphore.acquire.assert_called_once()
-        fake_semaphore.release.assert_called_once()
         mock_sleep.assert_called_once_with(2.5)
 
     @patch("fetch_all_bodies.extract_body")
     @patch("fetch_all_bodies.time.sleep")
-    def test_semaphore_is_released_even_when_extract_body_raises(
+    def test_sleep_still_happens_when_extract_body_raises(
         self, mock_sleep, mock_extract
     ):
         mock_extract.side_effect = ConnectionError("boom")
-        fake_semaphore = MagicMock()
 
         row = dict(
             SAMPLE_ROW, url="https://news.google.com/rss/articles/abc?oc=5"
         )
-        _fetch_one(row, fake_semaphore, google_news_delay=0.1)
+        _fetch_one(row, google_news_delay=0.1)
 
-        fake_semaphore.acquire.assert_called_once()
-        fake_semaphore.release.assert_called_once()
+        mock_sleep.assert_called_once_with(0.1)
 
     @patch("fetch_all_bodies.extract_body")
     def test_concurrency_is_actually_capped_for_google_news(self, mock_extract):
-        # Pas juste que le sémaphore est appelé : vérifie que le
-        # nombre RÉEL d'appels news.google.com simultanés ne dépasse
-        # jamais google_news_concurrency, avec un vrai ThreadPoolExecutor.
+        # Pas juste un appel de mock : vérifie que le nombre RÉEL
+        # d'appels news.google.com simultanés ne dépasse jamais
+        # google_news_concurrency, avec un vrai ThreadPoolExecutor.
         lock = threading.Lock()
         state = {"current": 0, "max_seen": 0}
 
@@ -271,9 +268,7 @@ class GoogleNewsThrottleTests(unittest.TestCase):
         self.assertLessEqual(state["max_seen"], 2)
 
     @patch("fetch_all_bodies.extract_body")
-    def test_non_google_news_urls_are_not_throttled_by_the_semaphore(
-        self, mock_extract
-    ):
+    def test_non_google_news_urls_are_not_throttled(self, mock_extract):
         mock_extract.return_value = ("Body.", None)
 
         rows = [
@@ -289,6 +284,55 @@ class GoogleNewsThrottleTests(unittest.TestCase):
         # raisonnable (5 x 10s en série) — il termine en pratique quasi
         # instantanément.
         self.assertEqual(len(results), 5)
+
+    @patch("fetch_all_bodies.extract_body")
+    def test_google_news_backlog_never_starves_the_main_pool(self, mock_extract):
+        # Le bug corrigé le 2026-09-12 : avec un sémaphore partagé dans
+        # le même pool, un grand nombre d'URLs Google News en tête de
+        # liste bloquait tous les threads du pool principal, empêchant
+        # les articles non-Google-News (pourtant rapides) d'avancer.
+        # Avec des pools séparés, extract_body() doit être appelé pour
+        # les URLs non-Google-News presque immédiatement, sans attendre
+        # que le backlog Google News (lent) libère des threads.
+        started = time.perf_counter()
+        other_call_times: list[float] = []
+        lock = threading.Lock()
+
+        def fake_extract(url, expected_title=""):
+            if "news.google.com" in url:
+                time.sleep(1.0)
+            else:
+                with lock:
+                    other_call_times.append(time.perf_counter() - started)
+            return "Body.", None
+
+        mock_extract.side_effect = fake_extract
+
+        google_rows = [
+            dict(SAMPLE_ROW, url=f"https://news.google.com/rss/articles/{i}")
+            for i in range(20)
+        ]
+        other_rows = [
+            dict(SAMPLE_ROW, url=f"https://example.com/{i}") for i in range(5)
+        ]
+
+        results = fetch_all_bodies(
+            other_rows + google_rows,
+            workers=5,
+            google_news_concurrency=2,
+            google_news_delay=0.0,
+        )
+
+        self.assertEqual(len(results), 25)
+        by_url = {r["url"]: r for r in results}
+        for row in other_rows:
+            self.assertEqual(by_url[row["url"]]["body"], "Body.")
+        # Les 5 articles non-Google-News doivent tous démarrer quasi
+        # instantanément (pas après avoir attendu des slots du pool
+        # Google News, occupé pendant ~10s par son backlog de 20 URLs
+        # x 1s / 2 threads).
+        self.assertEqual(len(other_call_times), 5)
+        self.assertLess(max(other_call_times), 1.0)
 
 
 if __name__ == "__main__":

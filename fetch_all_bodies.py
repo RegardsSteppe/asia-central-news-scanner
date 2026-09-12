@@ -38,7 +38,6 @@ import argparse
 import csv
 import json
 import logging
-import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
@@ -58,13 +57,28 @@ SOURCE_LANGUAGE = {
 }
 
 # Repéré en conditions réelles le 2026-09-11 : à l'échelle de tout le
-# corpus (~6800 URLs, dont une grosse part via le contournement Google
-# News sur ~21 sources), lancer autant de requêtes news.google.com en
-# parallèle que le reste (15-20 workers) déclenche du rate-limiting
-# de Google (503 Service Unavailable en rafale) — chaque échec brûle
-# jusqu'à ~90s en retries (voir http_utils.MAX_ATTEMPTS) et un run de
-# 6800 articles a été tué par son timeout de 3h à seulement 38% (2600/
-# 6725), la quasi-totalité des échecs pointant vers news.google.com.
+# corpus (~6800 URLs, dont environ un tiers passe par le contournement
+# Google News), lancer autant de requêtes news.google.com en parallèle
+# que le reste (15-20 workers) déclenche du rate-limiting de Google
+# (503 Service Unavailable en rafale) — chaque échec brûle jusqu'à ~90s
+# en retries (voir http_utils.MAX_ATTEMPTS) et un run de 6800 articles
+# a été tué par son timeout de 3h à seulement 38% (2600/6725), la
+# quasi-totalité des échecs pointant vers news.google.com.
+#
+# Un premier correctif (2026-09-11, un simple threading.Semaphore
+# partagé par le même pool de `workers` threads) a empiré les choses :
+# un tiers du corpus (2220/6725, vérifié) est du Google News, donc dès
+# qu'un nombre de threads du pool dépassant google_news_concurrency
+# récupère une URL Google News, ces threads restent bloqués sur
+# semaphore.acquire() — indisponibles pour traiter les 2/3 d'articles
+# restants. Un deuxième run a fini plus lent que le premier (2100/6725
+# en 180 min, débit passant de ~39/min à ~5.6/min de façon monotone à
+# mesure que de plus en plus de threads du pool se retrouvaient
+# bloqués). Le pool Google News est donc désormais un
+# ThreadPoolExecutor séparé et dédié (borné à google_news_concurrency
+# threads) : ses requêtes ne consomment jamais un slot du pool
+# principal, qui garde sa pleine capacité pour le reste du corpus.
+#
 # Le scan quotidien n'a jamais ce problème (il n'enrichit qu'environ
 # 600 articles), donc ce throttle reste local à ce script plutôt que
 # de toucher http_utils.py (partagé avec le pipeline principal).
@@ -95,7 +109,6 @@ def load_rows(
 
 def _fetch_one(
     row: dict[str, Any],
-    google_news_semaphore: threading.Semaphore,
     google_news_delay: float,
 ) -> tuple[dict[str, Any], str, Any, Exception | None]:
     url = row.get("url") or ""
@@ -106,9 +119,6 @@ def _fetch_one(
 
     is_google_news = _is_google_news_url(url)
 
-    if is_google_news:
-        google_news_semaphore.acquire()
-
     try:
         body, published_date = extract_body(url, expected_title=title)
         return row, body, published_date, None
@@ -116,13 +126,12 @@ def _fetch_one(
         return row, "", None, exc
     finally:
         if is_google_news:
-            # Délai maintenu APRÈS la requête, avant de relâcher le
-            # slot : limite le nombre de créneaux simultanés (via le
-            # sémaphore) ET l'espacement entre deux requêtes
-            # successives (sinon N slots qui se relaient sans pause
-            # suffiraient à re-déclencher le rate-limiting de Google).
+            # Espace les requêtes successives d'un même thread du pool
+            # Google News dédié (voir fetch_all_bodies) : la limite de
+            # concurrence vient du nombre de threads de ce pool, ce
+            # délai évite juste qu'un seul thread ne re-déclenche le
+            # rate-limiting en enchaînant les requêtes sans pause.
             time.sleep(google_news_delay)
-            google_news_semaphore.release()
 
 
 def fetch_all_bodies(
@@ -139,26 +148,38 @@ def fetch_all_bodies(
     toujours (les mêmes sources déjà bloquées dans le scan normal), ce
     n'est pas une raison de perdre le reste.
 
-    Les URLs news.google.com (contournement Google News, une grosse
-    part du corpus) sont limitées à `google_news_concurrency` requêtes
-    simultanées avec `google_news_delay` secondes d'espacement — le
-    reste du corpus garde la pleine concurrence de `workers`. Voir la
-    note au-dessus de GOOGLE_NEWS_HOST.
+    Les URLs news.google.com (contournement Google News, environ un
+    tiers du corpus) sont traitées par un pool de threads séparé et
+    dédié, borné à `google_news_concurrency` threads, avec
+    `google_news_delay` secondes d'espacement entre deux requêtes d'un
+    même thread — le reste du corpus garde la pleine concurrence de
+    `workers` dans son propre pool, jamais bloqué par le débit du
+    premier. Voir la note au-dessus de GOOGLE_NEWS_HOST (un sémaphore
+    partagé par le même pool avait été essayé d'abord et avait
+    empiré les choses).
     """
     results: list[dict[str, Any]] = []
     done = 0
     failed = 0
 
     started = time.perf_counter()
-    google_news_semaphore = threading.Semaphore(max(1, google_news_concurrency))
 
-    with ThreadPoolExecutor(max_workers=max(1, workers)) as executor:
+    google_news_rows = [r for r in rows if _is_google_news_url(r.get("url") or "")]
+    other_rows = [r for r in rows if not _is_google_news_url(r.get("url") or "")]
+
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as executor, ThreadPoolExecutor(
+        max_workers=max(1, google_news_concurrency)
+    ) as google_news_executor:
         futures = {
-            executor.submit(
-                _fetch_one, row, google_news_semaphore, google_news_delay
-            ): row
-            for row in rows
+            executor.submit(_fetch_one, row, google_news_delay): row
+            for row in other_rows
         }
+        futures.update(
+            {
+                google_news_executor.submit(_fetch_one, row, google_news_delay): row
+                for row in google_news_rows
+            }
+        )
 
         for future in as_completed(futures):
             row, body, published_date, error = future.result()
