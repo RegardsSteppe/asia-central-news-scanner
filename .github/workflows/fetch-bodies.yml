@@ -13,7 +13,7 @@ on:
       workers:
         description: "Téléchargements en parallèle"
         required: false
-        default: "20"
+        default: "30"
 
 permissions:
   contents: read
@@ -47,6 +47,21 @@ jobs:
           "https://raw.githubusercontent.com/${{ github.repository }}/gh-pages/articles.csv"
 
       - name: Fetch full bodies for every article
+        # Run #3 (2026-09-12) : le pool séparé Google News a bien
+        # marché (taux d'échec 81% -> 24%), mais le débit ralentissait
+        # quand même avec le temps (39 -> 7.7 articles/min sur 4h) :
+        # certaines sources (chathamhouse.org, stimson.org, ng.ru...)
+        # traînent ou expirent, et chaque échec de ce type peut coûter
+        # jusqu'à ~93s (30s de timeout x jusqu'à 3 tentatives +
+        # backoff, voir http_utils.py) à un thread du pool. Ce script
+        # étant un one-off (jamais le scan quotidien), on réduit ce
+        # budget ici seulement via les variables d'env déjà prévues par
+        # http_utils.py, sans toucher son comportement par défaut.
+        env:
+          SCANNER_HTTP_CONNECT_TIMEOUT: "5"
+          SCANNER_HTTP_READ_TIMEOUT: "12"
+          SCANNER_HTTP_MAX_ATTEMPTS: "2"
+          SCANNER_HTTP_RETRY_BACKOFF_BASE: "1"
         run: >-
           python fetch_all_bodies.py
           --input articles.csv
