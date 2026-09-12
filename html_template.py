@@ -185,6 +185,43 @@ def render_title_vocabulary(
 
 
 # ============================================================
+# CATÉGORISATION (categorisation.py / regles_editoriales.py)
+# ============================================================
+#
+# Signal indépendant de scoring.py : décrit l'article (région, acteur
+# visé, traitement subi, type...) sans jamais influencer
+# score/level/theme/relevant ci-dessus, qui restent entièrement
+# décidés par classify_article(). "" si l'article n'a pas encore été
+# catégorisé (categorisation.py pas branché à ce point du pipeline).
+
+def _categorisation_summary(article):
+    cat = article.get("categorisation")
+    if not cat:
+        return ""
+
+    geo = ", ".join(cat.get("geo") or []) or "aucun"
+    acteur = ", ".join(cat.get("acteur") or ["aucun"])
+    traitement = ", ".join(cat.get("traitement") or ["aucun"])
+    type_article = cat.get("type") or ""
+
+    return f"geo: {geo} · acteur: {acteur} · traitement: {traitement} · type: {type_article}"
+
+
+def _categorisation_pertinence(article):
+    """
+    (icône, raison) pour categorisation_pertinent/categorisation_reason
+    — distinct du "Retenu" existant (article["relevant"], calculé par
+    scoring.py). Tant que regles_editoriales.py n'a aucune constante
+    configurée, ceci vaut toujours (True, "pertinent").
+    """
+    if "categorisation_pertinent" not in article:
+        return "", ""
+
+    icon = "✓" if article.get("categorisation_pertinent") else "—"
+    return icon, article.get("categorisation_reason", "")
+
+
+# ============================================================
 # ARTICLE CARD
 # ============================================================
 
@@ -262,6 +299,25 @@ def render_article_card(
         else ""
     )
 
+    categorisation_summary = _categorisation_summary(article)
+    categorisation_icon, categorisation_reason = _categorisation_pertinence(article)
+    categorisation_block = (
+        f"""
+        <div class="categorisation">
+
+            <strong>
+                Catégorisation (indépendante du score) :
+            </strong>
+            {esc(categorisation_summary)}
+
+            {f'<div class="categorisation-pertinence">{esc(categorisation_icon)} {esc(categorisation_reason)}</div>' if categorisation_icon else ""}
+
+        </div>
+        """
+        if categorisation_summary
+        else ""
+    )
+
     return f"""
     <article class="article-card">
 
@@ -332,6 +388,8 @@ def render_article_card(
             {esc(reasons_text)}
 
         </div>
+
+        {categorisation_block}
 
     </article>
     """
@@ -408,6 +466,9 @@ def render_audit_row(
         )
         else "—"
     )
+
+    categorisation_summary = _categorisation_summary(article)
+    categorisation_icon, categorisation_reason = _categorisation_pertinence(article)
 
     return f"""
     <tr>
@@ -500,6 +561,19 @@ def render_audit_row(
 
         </td>
 
+        <td class="audit-categorisation">
+
+            {esc(categorisation_summary)}
+
+        </td>
+
+        <td>
+
+            {esc(categorisation_icon)}
+            <span class="audit-reason">{esc(categorisation_reason)}</span>
+
+        </td>
+
     </tr>
     """
 
@@ -534,6 +608,8 @@ def render_audit_group(
             <th>Thème</th>
             <th>Article</th>
             <th>Retenu</th>
+            <th>Catégorisation</th>
+            <th>Pertinent (règles)</th>
         </tr>
         </thead>
 
@@ -1080,6 +1156,30 @@ h1 {
     line-height: 1.5;
 }
 
+.categorisation {
+
+    margin-top: 8px;
+
+    padding: 10px;
+
+    background: #eef4fb;
+
+    border-radius: 6px;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    color: #444;
+}
+
+.categorisation-pertinence {
+
+    margin-top: 4px;
+
+    color: #666;
+}
+
 
 /* ========================================================
    AUDIT
@@ -1174,6 +1274,24 @@ td a {
 td a:hover {
 
     text-decoration: underline;
+}
+
+.audit-categorisation {
+
+    font-size: 12px;
+
+    color: #555;
+
+    max-width: 280px;
+}
+
+.audit-reason {
+
+    display: block;
+
+    font-size: 11px;
+
+    color: #888;
 }
 
 
