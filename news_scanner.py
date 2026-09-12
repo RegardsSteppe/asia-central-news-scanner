@@ -19,6 +19,8 @@ except ImportError:  # pragma: no cover - library not installed
 
 from sources import SOURCES, PROFILE_GROUPS
 from scoring import classify_article
+from categorisation import categoriser
+from regles_editoriales import est_pertinent
 from html_template import create_web_page
 from synthesis import generate_synthesis
 
@@ -665,6 +667,23 @@ def timed_call(label: str, func: Any, *args: Any, **kwargs: Any) -> Any:
     return result
 
 
+def _apply_categorisation(article: dict[str, Any]) -> None:
+    """
+    Calcule categorisation.py/regles_editoriales.py en plus de
+    classify_article() (scoring.py) — un signal indépendant, purement
+    informationnel pour l'instant : aucune constante de
+    regles_editoriales.py n'est encore configurée (tout est à None,
+    voir ce module), donc categorisation_pertinent vaut toujours True
+    aujourd'hui. N'affecte jamais score/level/theme/relevant, qui
+    restent entièrement décidés par classify_article().
+    """
+    categorisation = categoriser(article)
+    pertinent, reason = est_pertinent(categorisation)
+    article["categorisation"] = categorisation
+    article["categorisation_pertinent"] = pertinent
+    article["categorisation_reason"] = reason
+
+
 # ============================================================
 # ENRICHISSEMENT
 # ============================================================
@@ -747,6 +766,7 @@ def enrich_articles(
         if not article.get("date") and published_date:
             article["date"] = published_date
         classify_article(article)
+        _apply_categorisation(article)
 
     if cache_hits:
         print(
@@ -795,6 +815,7 @@ def enrich_articles(
                     newly_fetched[url] = (body, article.get("date"))
 
             classify_article(article)
+            _apply_categorisation(article)
 
             done += 1
             if done % 10 == 0:
@@ -992,6 +1013,30 @@ def build_csv_rows(
                 for field in score_fields
             }
         )
+
+        # categorisation.py/regles_editoriales.py : signal indépendant
+        # de scoring.py (voir _apply_categorisation) — n'affecte jamais
+        # les colonnes ci-dessus. categorisation_pertinent vaut
+        # toujours True tant qu'aucune constante de
+        # regles_editoriales.py n'est configurée.
+        categorisation = article.get("categorisation") or {}
+        row.update({
+            "categorisation_geo": ", ".join(categorisation.get("geo") or []),
+            "categorisation_geo_role": categorisation.get("geo_role", ""),
+            "categorisation_acteur": ", ".join(categorisation.get("acteur") or []),
+            "categorisation_traitement": ", ".join(categorisation.get("traitement") or []),
+            "categorisation_relation_acteur_traitement": categorisation.get(
+                "relation_acteur_traitement", False
+            ),
+            "categorisation_type": categorisation.get("type", ""),
+            "categorisation_age_jours": categorisation.get("age_jours"),
+            "categorisation_source_specialisee": categorisation.get(
+                "source_specialisee", False
+            ),
+            "categorisation_pertinent": article.get("categorisation_pertinent", False),
+            "categorisation_reason": article.get("categorisation_reason", ""),
+        })
+
         rows.append(row)
 
     return rows
@@ -1020,6 +1065,16 @@ def export_csv(articles: list[dict[str, Any]]) -> None:
         "rights_score",
         "journalism_score",
         "geopolitical_score",
+        "categorisation_geo",
+        "categorisation_geo_role",
+        "categorisation_acteur",
+        "categorisation_traitement",
+        "categorisation_relation_acteur_traitement",
+        "categorisation_type",
+        "categorisation_age_jours",
+        "categorisation_source_specialisee",
+        "categorisation_pertinent",
+        "categorisation_reason",
     ]
 
     with CSV_OUTPUT_FILE.open("w", encoding="utf-8", newline="") as handle:
@@ -1308,6 +1363,7 @@ def score_first_pass(
     for article in articles:
         article["body"] = ""
         classify_article(article)
+        _apply_categorisation(article)
 
 
 def export_html(
