@@ -557,6 +557,40 @@ def _page_matches_expected_title(
     return len(overlap) / len(expected_words) >= 0.3
 
 
+def _distinctive_words(text: str, top_n: int = 2) -> set[str]:
+    # Les `top_n` mots significatifs les plus longs d'un texte, plutôt
+    # qu'un simple seuil de longueur : un mot long mais générique
+    # ("Armenia", "corruption"...) revient dans de nombreux articles
+    # différents d'une même source et ne suffit pas à distinguer LEUR
+    # sujet réel — repéré le 2026-09-12 sur occrp.org, où deux articles
+    # sans rapport partagent souvent "Armenia"/"probe". Le terme
+    # vraiment spécifique à un article (un nom propre, un terme rare)
+    # est presque toujours parmi les plus longs du titre.
+    words = sorted(_significant_words(text), key=lambda w: (-len(w), w))
+    return set(words[:top_n])
+
+
+def _body_matches_expected_title(expected_title: str, body_text: str) -> bool:
+    """
+    Filet de sécurité complémentaire à _page_matches_expected_title() :
+    repéré le 2026-09-12 sur occrp.org (le <title>/<h1> de la page est
+    correct, mais le conteneur choisi comme corps de l'article est en
+    fait une vignette "derniers articles" sans rapport avec l'article
+    demandé) et hrf.org (le corps extrait n'est que "Human Rights
+    Foundation", un fragment de boilerplate). Exige qu'au moins un
+    terme distinctif du titre attendu apparaisse dans le texte
+    réellement extrait — pas une fraction de recouvrement globale
+    comme pour le titre de page, car un corps d'article reformule
+    souvent son titre plutôt que de le répéter mot pour mot.
+    """
+    expected_distinctive = _distinctive_words(expected_title)
+
+    if not expected_distinctive:
+        return True
+
+    return bool(expected_distinctive & _distinctive_words(body_text))
+
+
 def extract_body(
     url: str,
     source: dict[str, Any] | None = None,
@@ -594,6 +628,20 @@ def extract_body(
     ):
         tag.decompose()
 
+    # Repéré le 2026-09-12 sur turkmen.news : le thème WordPress marque
+    # chaque commentaire avec la balise sémantique <article> (pratique
+    # courante), et soup.find("article") ci-dessous récupérait alors le
+    # fil de commentaires au lieu du corps réel. On retire toute
+    # section dont la classe/l'id évoque des commentaires avant de
+    # chercher le conteneur principal.
+    for tag in soup.find_all(
+        lambda t: (
+            (t.get("class") and any("comment" in c.lower() for c in t.get("class", [])))
+            or (t.get("id") and "comment" in t.get("id", "").lower())
+        )
+    ):
+        tag.decompose()
+
     main = (
         soup.find("article")
         or soup.find("main")
@@ -605,7 +653,17 @@ def extract_body(
     else:
         text = soup.get_text(" ", strip=True)
 
-    return clean_text(text), published_date
+    text = clean_text(text)
+
+    if expected_title and not _body_matches_expected_title(expected_title, text):
+        # Le <title>/<h1> de la page correspondait bien (sinon on
+        # serait déjà sorti plus haut), mais le conteneur choisi comme
+        # corps de l'article n'a aucun terme distinctif en commun avec
+        # le titre attendu — probablement un widget/une vignette sans
+        # rapport plutôt que le vrai contenu (voir occrp.org, hrf.org).
+        return "", None
+
+    return text, published_date
 
 
 def build_article(
