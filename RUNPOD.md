@@ -204,17 +204,23 @@ Answering needs labelled articles. Labelling 6,800 by hand is out of
 reach. This is what makes it tractable:
 
 ```bash
-# 1. Full bodies for the whole corpus (one-off, see above)
-python fetch_all_bodies.py --input articles.csv --output articles_with_body.json
-
-# 2. Second opinion from the LLM, on a GPU endpoint built from
+# 1. Second opinion from the LLM, on a GPU endpoint built from
 #    Dockerfile.juge. Payload: {"input": {"mode": "judge",
-#    "articles": [...]}} — same article shape as the other modes.
+#    "articles": [...]}} — feed it articles.csv's rows as-is
+#    (title + summary, the same fields the daily scan itself sees for
+#    ~99% of the corpus — see "Two things worth knowing" below).
+#    juge_llm.construire_invite() only falls back to "body" when
+#    "summary" is empty, so no body-fetching step is required here.
 #    The response carries "verdicts", not "labels". The name matters.
 
-# 3. Cross it with the deterministic scoring
+# 2. Cross it with the deterministic scoring
 python verite_terrain.py --verdicts verdicts.json
 ```
+
+`fetch_all_bodies.py` (below) stays useful on its own — mainly to check
+whether reading past the headline would change the scanner's verdict on
+specific articles — but it is no longer a prerequisite for this
+comparison.
 
 Step 3 prints the agreement rate and, more usefully, **what to fix** —
 derived from the disagreements alone, with no human labelling:
