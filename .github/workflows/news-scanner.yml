@@ -8,11 +8,6 @@ on:
         required: false
         type: boolean
         default: false
-      show_all_articles:
-        description: "Show every article currently on each source, including ones already shown in a past run — keeps the fast per-source cache, only disables the seen-article filter"
-        required: false
-        type: boolean
-        default: false
   schedule:
     - cron: "0 6 * * *"
 
@@ -41,8 +36,15 @@ jobs:
 
       - name: Run scanner
         env:
-          SCANNER_SKIP_PREVIOUSLY_SEEN: >-
-            ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.show_all_articles == 'true') && '0' || '1' }}
+          # index.html/articles.csv are fully regenerated (not merged) on
+          # every run, so filtering out "already seen" articles here does
+          # not trim a running history — it silently shrinks the *whole*
+          # published site down to only what's new since the last run.
+          # Confirmed live 2026-09-13: a run that had just marked ~6700
+          # articles as seen was followed six hours later by the next
+          # scheduled run publishing only the ~2100 genuinely-new ones.
+          # Always publish the full current corpus instead.
+          SCANNER_SKIP_PREVIOUSLY_SEEN: "0"
         run: >-
           python news_scanner.py
           ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.force_refresh == 'true') && '--scan' || '' }}
