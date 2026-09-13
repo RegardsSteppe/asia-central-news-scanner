@@ -4,6 +4,7 @@ import html
 from datetime import datetime, timezone
 
 from sources import PROFILE_GROUP_ORDER
+from text_utils import article_age_days
 
 
 def esc(value):
@@ -29,17 +30,6 @@ def format_date(date):
 # refait surface (ex. via le contournement Google News sur un site
 # bloqué). Décidé avec l'utilisateur le 2026-09-11.
 ARCHIVAL_AGE_DAYS = 60
-
-
-def article_age_days(date, now=None):
-    """Âge d'un article en jours (float), ou None si pas de date."""
-
-    if not date:
-        return None
-
-    reference = now or datetime.now(timezone.utc)
-
-    return (reference - date).total_seconds() / 86400
 
 
 def format_relative_age(date, now=None):

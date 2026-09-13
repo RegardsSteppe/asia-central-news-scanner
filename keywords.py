@@ -1880,20 +1880,50 @@ JOURNALIST_REPRESSION_FA_PATTERNS = [
 # 32. V9 — STRONG MORPHOLOGICAL REPRESSION PATTERNS
 # ------------------------------------------------------------
 
+# Cette liste a longtemps existé en double : une copie plus courte
+# vivait dans scoring.py et masquait celle-ci, qui n'était donc jamais
+# utilisée. Les deux avaient divergé, et chacune couvrait des cas que
+# l'autre ratait (mesuré sur le corpus réel le 2026-09-13) :
+#   - "обвин" (accusations), ici seulement : sans lui, un article HRW
+#     russe sur un activiste turkmène visé par de "nouvelles accusations
+#     douteuses" était plafonné faute d'ancrage répression (35 -> 67).
+#   - "осуждён" (avec ё), dans la copie de scoring.py seulement : le
+#     russe écrit indifféremment е ou ё, et "\bосужден\w*" ne matche
+#     PAS "осуждённый". Sans les deux graphies, un titre sur ё passait
+#     au travers.
+# Liste unique désormais, union des deux, importée par matching.py.
 REPRESSION_MORPHOLOGY_PATTERNS_V9 = [
     r"\bзадерж\w*\b",
     r"\bарест\w*\b",
     r"\bпреслед\w*\b",
     r"\bрепресс\w*\b",
-    r"\bпыт\w*\b",
+    # "пытка" (torture) et "пытаться" (essayer) partagent la racine
+    # "пыт" : "\bпыт\w*\b" classait en répression "Путин заявил, что
+    # Запад пытается..." ou "мужчина пытался затащить ребенка"
+    # (mesuré sur le corpus réel le 2026-09-13). D'où des motifs
+    # précis :
+    #   - "пытк\w*"  : пытки, пытками, пыткам...
+    #   - "пыток"    : génitif pluriel, où un о s'intercale (la racine
+    #                  "пытк" ne le couvre donc pas)
+    #   - "пытал[аио]?" : verbe au passé (пытал/пытали), sans jamais
+    #                  matcher le réflexif "пытался/пытались"
+    #                  ("пытали" y est suivi de "сь", donc la limite
+    #                  de mot échoue)
+    r"\bпытк\w*\b",
+    r"\bпыток\b",
+    r"\bпытал[аио]?\b",
     r"\bцензур\w*\b",
+    # "запрет" (le nom) ne couvre pas "запрещать"/"запрещено" (le verbe) :
+    # les deux racines sont nécessaires.
     r"\bзапрет\w*\b",
+    r"\bзапрещ\w*\b",
     r"\bподав\w*\b",
     r"\bпритесн\w*\b",
     r"\bугрож\w*\b",
     r"\bзапуг\w*\b",
     r"\bзаключ\w*\b",
     r"\bосужден\w*\b",
+    r"\bосуждён\w*\b",
     r"\bприговор\w*\b",
     r"\bобвин\w*\b",
 ]

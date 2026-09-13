@@ -756,3 +756,48 @@ class FrenchVocabularyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RussianRepressionMorphologyTests(unittest.TestCase):
+    """
+    Régression du 2026-09-13 : la liste de morphologie répressive
+    existait en double (keywords.py et une copie plus courte dans
+    scoring.py qui la masquait). En les unifiant, la racine large
+    "\\bпыт\\w*\\b" est apparue — elle couvre "пытка" (torture) mais
+    aussi "пытаться" (essayer), deux mots sans rapport.
+    """
+
+    def _has_morphology(self, text):
+        from matching import has_russian_repression_morphology
+
+        return has_russian_repression_morphology(text)
+
+    def test_detects_torture_noun_including_genitive_plural(self):
+        # "пыток" (génitif pluriel) intercale un о : la racine "пытк"
+        # ne le couvre pas, d'où un motif dédié.
+        self.assertTrue(self._has_morphology("пытки в тюрьме"))
+        self.assertTrue(self._has_morphology("применение пыток"))
+
+    def test_detects_torture_verb_past_tense(self):
+        self.assertTrue(self._has_morphology("его пытали в сизо"))
+
+    def test_does_not_confuse_torture_with_trying(self):
+        # Cas réels du corpus publié du 2026-09-13.
+        self.assertFalse(
+            self._has_morphology("запад пытается вернуть былое лидерство")
+        )
+        self.assertFalse(
+            self._has_morphology("мужчина пытался затащить ребенка в автомобиль")
+        )
+
+    def test_detects_charges_stem_missing_from_the_old_scoring_copy(self):
+        # "обвинения" : présent seulement dans la liste de keywords.py,
+        # qui n'était jamais utilisée. Un article HRW russe sur un
+        # activiste turkmène visé par de "nouvelles accusations
+        # douteuses" était plafonné faute de ce motif.
+        self.assertTrue(self._has_morphology("предъявлены новые обвинения"))
+
+    def test_detects_both_spellings_of_sentenced(self):
+        # Le russe écrit indifféremment е ou ё.
+        self.assertTrue(self._has_morphology("осужденный активист"))
+        self.assertTrue(self._has_morphology("осуждённый активист"))

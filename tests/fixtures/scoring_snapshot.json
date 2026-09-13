@@ -1,0 +1,5996 @@
+[
+ {
+  "level": "A",
+  "priority": "ABSOLUE",
+  "reasons": [
+   "Caucase: azerbaijan",
+   "géographie confirmée dans le corps",
+   "journaliste / média ciblé",
+   "journaliste + action répressive",
+   "signal HR confirmé par le corps",
+   "répression grave confirmée",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 100,
+  "signals_sha256": "fa6839ec4b5ffd1f",
+  "theme": "Journalistes sous pression",
+  "url": "https://www.amnesty.org/en/latest/news/2026/09/azerbaijan-lengthy-sentences-for-anar-mammadli-and-other-independent-voices-point-to-the-shocking-scale-of-the-crackdown-on-dissent/"
+ },
+ {
+  "level": "A",
+  "priority": "ABSOLUE",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 92,
+  "signals_sha256": "45920073df266df1",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQRnZ6VmNJZUxFVjEtQkFHQUpUQ2xLWVRGM09aaDJkb2F1RUNfdnROQmRJd0dDdU8ybmZlaU9xLVdyRndlVkU0d0tXeFlBVkZXeG4yQ1ZSMXZfVHlGSF9NZGZ0MVhsSm1NeTIyMV9ja0xWa0xlb2RwQXIyZUFwUlExUnFfYlhMVUlMdFRrUXBHQ1RwaHFaTnJr?oc=5"
+ },
+ {
+  "level": "A",
+  "priority": "ABSOLUE",
+  "reasons": [
+   "source spécialisée Asie centrale",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
+   "répression grave confirmée",
+   "peine de prison liée à un activiste",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 100,
+  "signals_sha256": "2521a920f137bea5",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://turkmen.news/2025/10/19/aktivist-saddam-gulamov-osuzhden-na-8-let-ego-derzhat-v-pytochnyh-usloviyah-v-shizo/"
+ },
+ {
+  "level": "A",
+  "priority": "TRÈS HAUTE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "signal HR confirmé par le corps",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 84,
+  "signals_sha256": "d8e77bba27b2c9eb",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2025/6/4/kyrgyzstan-court-sentences-ex-leader-atambayev-to-11-years-in-absentia"
+ },
+ {
+  "level": "A",
+  "priority": "ABSOLUE",
+  "reasons": [
+   "Asie centrale: казахстан, казах, узбекистан, узбек",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 92,
+  "signals_sha256": "68569f08ac00f7cb",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNbXVWT2IyY1h6djIyU21wUTVMWnpoLTVncGwweW1TQmlWbDRmOFZtRHM2d1dud3BhRUFkR0NSX3JoN3BsODFJNHBHRGJxZ0Zia2djN0ZkOGFmNG92NkFrMmVGUXpZUjJYVmNtN2tqajdUblhfdzdfM2toVWZSY3hYU05LX1dIYzNvYUZhYmZHcHhXNGFxSEoyT29ZOA?oc=5"
+ },
+ {
+  "level": "A",
+  "priority": "ABSOLUE",
+  "reasons": [
+   "Asie centrale: uzbek",
+   "géographie confirmée dans le corps",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
+   "signal HR confirmé par le corps",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 100,
+  "signals_sha256": "5a12972b08888679",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://www.aljazeera.com/news/2024/2/5/did-an-arrested-uzbek-mafia-chieftain-organise-killings-of-dissidents"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: turkmenistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "a25e9448bb16e472",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2021/11/12/turkmenistans-dissidents-fear-crackdown-in-turkish-exile"
+ },
+ {
+  "level": "A",
+  "priority": "ABSOLUE",
+  "reasons": [
+   "Caucase: azerbaijan",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 92,
+  "signals_sha256": "698267bf34a84cad",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOSllNdFJkemtXV3g0Y1RUVkk4aTVZR09ackM4WmsyUjhNY01WRGlTbW4zdXFubWdpTXRCaEgxS3hsRUNxeF9zTlAwVXdkd3pkeHJuMjNMZFhWbUt4NHhwcGxVYU0yUFZJUmVndTZWLTR3aDhqSnpVVEdrYmM1UlcyQ0VrYWhQMUJKenZxOUxSaUdJN0NWLTZGSnk2TjJ2VDQ?oc=5"
+ },
+ {
+  "level": "A",
+  "priority": "ABSOLUE",
+  "reasons": [
+   "Asie centrale: киргизия, киргиз",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 92,
+  "signals_sha256": "d5838a5a8f71a5c7",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1zbUdzTEVGOGNnQWFkVmFWLTQ2NGlLbmlwV1ZvazZtbFJJRjdPdmMzZk1nVE9kWGo0V09tXzV5V2FERVN2Y0NmdnlienhnR05JMEU2NHZ3d1M?oc=5"
+ },
+ {
+  "level": "B",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Caucase: azerbaijan, georgia",
+   "journaliste / média ciblé",
+   "journaliste + action répressive",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": true,
+  "score": 55,
+  "signals_sha256": "d2e6d7695203a7ab",
+  "theme": "Journalistes sous pression",
+  "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQNHFiWi11TDRaUEN5Nk5NaTRVakJ0Nnk3aFlsbERTZFZBcFcwSzZQZlpjWHJtd01JSGVjc0l2UldLalpVZTFSTHE0UmlvdFhna0N1MU5XeGF6eWd6NjZzbWFjaEFpZ2dTSWFuQkE0LUxjVkVOcmY1dmlmWWpfSFo1bmhTWGVVdjNfQVlkeXJXeHlQZFQ1Qmd1VlZSUzhRTFU?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "75a0f4e4fdb6faed",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2026/5/27/kyrgyzstan-russia-tensions"
+ },
+ {
+  "level": "B",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Caucase: азербайджан",
+   "géographie confirmée dans le corps",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
+   "journaliste + action répressive",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": true,
+  "score": 55,
+  "signals_sha256": "9307e351acee09c2",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://www.amnesty.org/ru/projects/azerbaijan-freedom-of-expression/"
+ },
+ {
+  "level": "B",
+  "priority": "HAUTE",
+  "reasons": [
+   "Asie centrale: казахстан, казах",
+   "CAS HR CRITIQUE"
+  ],
+  "relevant": true,
+  "score": 65,
+  "signals_sha256": "d9b776e8e1a1a44c",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOb09JY0lKcGt6ay0tT0RyUTVWVEliWi1kcHp4V3REeVBsUWVXRU80U1d1UGx5dU5NaGRiZFQwd01ZN19TcUZMNmlRUTdsTW80YTMtb0o3Wk9KdXR2OEhBSV9sLVZtLUtUcWtJWVpaMEp3NWN0UWNNd1JOYVBDaUNlc1FFY1VHX3JnbUZrTjJTVWhBMkF2ekFETFAwZE5BaHZOQ1ZQOGlvZUhEVHpu?oc=5"
+ },
+ {
+  "level": "B",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: tajik",
+   "géographie confirmée dans le corps",
+   "répression grave confirmée",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": true,
+  "score": 55,
+  "signals_sha256": "c419a49febf95c36",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2025/10/8/tajik-war-prisoner-captured-by-ukraine-fears-being-swapped"
+ },
+ {
+  "level": "B",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Ouïghours: uyghur",
+   "droit spécifique fortement signalé",
+   "répression grave confirmée"
+  ],
+  "relevant": true,
+  "score": 55,
+  "signals_sha256": "5a84dec2dc40c782",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQLS14LUIxNFNIOXF2aFY1dEN5MV9KSHhCamVzeERZUDJxd2ZURGtnMEpFcEJnSDA1MVQxejhYUjFHYnVHTDBIR3Nhd29iSFRPeTlUTFNtUUtnSzFMZ1NwZmgtVWVOUVRuT2FBY0tKV05VdFZIZ3ZBS1ROZlhQNzNNdTAxVWM4Y2cwVEQ4WmQtWFRDMno3OUpCVnNHRGxCVkgw?oc=5"
+ },
+ {
+  "level": "B",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: tajikistan",
+   "géographie confirmée dans le corps",
+   "journaliste / média ciblé",
+   "journaliste + action répressive",
+   "répression grave confirmée",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": true,
+  "score": 55,
+  "signals_sha256": "e16760701c1d8286",
+  "theme": "Journalistes sous pression",
+  "url": "https://www.aljazeera.com/opinions/2024/12/15/the-world-bank-should-reconsider-its-mega-dam-project-in-tajikistan"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: uzbek",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "0716ed60aa937b1b",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/features/2024/10/25/remembering-shamshad-abdullaev-the-world-class-uzbek-poet-too-few-knew"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "d32acba826ca187d",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/features/2024/7/18/in-kyrgyzstan-an-unprecedented-crackdown-on-free-press-raises-alarm"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 34,
+  "signals_sha256": "4a5111f1e2be73a6",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2023/8/30/kyrgyzstan-brings-back-95-isil-wives-children-from-syrian-internment-camps"
+ },
+ {
+  "level": "B",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: таджикистан, таджик",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": true,
+  "score": 55,
+  "signals_sha256": "a2ceafd574d42418",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1Ba1ZoeUR1WWtRVUgwNm9GWEl4SHltbHROU0UwNHV4d0dzLTMxa1cxekU5VGUwdHFIbFFFUGJVSE1RZFJKd2k2TldWRG9CM0twYnJBbWdsM3NlelJ0dzgtV0c1SEUxMHRHeGhURkNsYWVYMEtEZF9rVk1pRWluT2M?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "droit spécifique fortement signalé",
+   "répression grave confirmée"
+  ],
+  "relevant": true,
+  "score": 48,
+  "signals_sha256": "d300d8e0a2c6e26e",
+  "theme": "Répression / droits humains",
+  "url": "https://turkmen.news/2026/06/15/mot-prizvala-turkmenistan-likvidirovat-prinuditelnyy-trud-i-otmenit-kvoty-na-proizvodstvo-i-sbor-hlopka/"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: turkmenistan",
+   "répression transnationale"
+  ],
+  "relevant": true,
+  "score": 43,
+  "signals_sha256": "238bccfb47241801",
+  "theme": "Répression transnationale",
+  "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQVkYzM1Y5R1dOYXJyMlJrUkIxSFZleVA5Z1plZ0JQaHZQcXJhQUNSOXNCSW8yWHM1bnVZaW1VenNvWU1uTnBjdjlmakhqYVQyMU81WXBpdlNVMUZFZlNsUDhlY2dLWDNXUWJTeUNGNjVhMXBWSEFiOTE4LXRyWXUtclBDSHp4X2V5R2NDc1VJY3dDWTM4RU9YRGdsZVplLTMxUVlNOENKUEI4UG5na3J0LXgzRTZtUQ?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": true,
+  "score": 45,
+  "signals_sha256": "ed17718e27b62a4b",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2025/11/30/kyrgyzstan-votes-in-snap-parliamentary-election-with-no-opposition"
+ },
+ {
+  "level": "B",
+  "priority": "HAUTE",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive"
+  ],
+  "relevant": true,
+  "score": 67,
+  "signals_sha256": "60d298fd1edbf1f3",
+  "theme": "Activistes / dissidents sous pression",
+  "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOeDF2TEtQTHNYMHRzT2dqTjRWMl9JTGw0aGJuUTR6NXJ2UTVyQm1tMGd3SndkMEpINlR6UnRPZzJYVGx2SnM3RE93MFMyQThIZ19jdGg0RTV2eGhEdnFGRWZxSFUwdmJmZHhXMzZUanl6NjRjZXJoODhmU1RXS2wxNUlTR3RnYWQ1SDN6T3hVWUdYWFh2bEdIWVNqQXMxdw?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Ouïghours: uyghur",
+   "répression transnationale"
+  ],
+  "relevant": true,
+  "score": 54,
+  "signals_sha256": "c6683a25564d1e77",
+  "theme": "Répression transnationale",
+  "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOMEcxbzRQVG5pempOWFVzSVhyUEw0VTA2RHE3SXJuam1yVlV4bGxFRk1IRVU5cWJ4dFFabEFJUW9NZ3NiZ01uVnZxdEUyQ3NHb1UydXYxWnBpeUFxZk1wcG82R0xmcG5ucVBLcFd3ZXl3b2FHUER3Um5ZZnFNSktEQXdHSXpWeF95aDRyaTdvR2ZFdVhz?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Ouïghours: uyghur",
+   "droit spécifique fortement signalé",
+   "répression grave confirmée"
+  ],
+  "relevant": true,
+  "score": 48,
+  "signals_sha256": "e3c9279174d03331",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPOUVGVXZ1NkFYM1hYQ18yNXhuM3J6QVFObTZ4UTFDYmhtN040ajBScGJJVGEzOTVKeW1XRi1yZmxBZEJmNnlwaXJpMnRJeFVVVUY0aUh6VXY1RTZOY2piSWFvbi11dk1sbmZBekFLeWFtNEwxVGpwc1pBMlg1TmdELXh3TldJdGFBeDFWbjdpZ2M1MmF5RVJZRUFfaHd2UFFvOFJXY2luRWVWX0JlUmNSbg?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "violence / droits des femmes",
+   "droit spécifique fortement signalé"
+  ],
+  "relevant": true,
+  "score": 41,
+  "signals_sha256": "24d9a7df5a090cd5",
+  "theme": "Droits des femmes / violences",
+  "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOcFg1aG8xZWE0UmZ2Q3FwWld4QXpjQUluTXlQWi1qUUtPVXJ4ZGI4SWlMM1ZRSG5mYlVROFpoeDVNM2I3TmtvbVFCLUxPNWpOLXFwVWtTTDdnNnhucFZxLTFOVHlTZXBXUDg0dTVlZVZFTm5wdVdCM1dadnNWckphQ3VDSHdwZWF1VTJ4X3RKaHowb29PVmkwQjBKeHJlVk00U05uTUx0aDY5V3VI?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: turkmenistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": true,
+  "score": 45,
+  "signals_sha256": "734bf41cb68381bf",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2022/3/12/turkmenistan-votes-presidents-son-expected-to-win"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "violence / droits des femmes",
+   "droit spécifique fortement signalé"
+  ],
+  "relevant": true,
+  "score": 41,
+  "signals_sha256": "b0e9f58346ee2719",
+  "theme": "Droits des femmes / violences",
+  "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPZjhJQWNWQ1hfNVZKWUMwcUUxWUl1WFItcG9LSkVURmRwVF9Calh6ZGR1d09kbmQ2MGxoTm5QVkN3MnpOcTQ0WmRTaHNVWVg0amVIb1ktMVAyUDZEREM5d1JDY0k2N3g1QTZDd1ozREkwYndCQVZiRG9rR1hZMEliMXNVMERRcVpod0ZuaVd4MDUweHV2bGtv?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "MOYENNE",
+  "reasons": [
+   "Asie centrale: узбекистан, узбек",
+   "droit spécifique fortement signalé",
+   "répression grave confirmée"
+  ],
+  "relevant": true,
+  "score": 48,
+  "signals_sha256": "de373135ce4b589a",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5ja0ViajJ2d0d5b2pReWpQem5pR0VzOG1mY1lLVFJtNEtWLVFJZDE0QXVqVGl6TmpraXN5Z0kxQ2dJVTF6V2ZtVnpGaFVNanJPRE9MWUFwWWw?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "9b744102d53528cd",
+  "theme": "Répression / droits humains",
+  "url": "https://en.kabar.kg/news/central-asia-and-china-to-strengthen-security-cooperation/"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "3f47ed0a7b069fa5",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2026/8/23/kazakhstan-parliamentary-elections-begin-whats-at-stake"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Ouïghours: uyghur",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "df1fb64663154c76",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQZjMzckJtSVkyaHJKOEFsZkM1SWJtOGVGbHMwS3ROaHhhOUJXNjZIOWVJSGVDeXJJbmZoeS1jak9oLTFUajVYbExMMVE4a3haNzU3UnI3M2VGTWFCdzZIaGNHVHc2OHJXbzFEUS0zOW1FV2NnRFFzTWhLZmhwNy1TOFFETG1Uam5FVjNKWWU0TjRMS3NzVkRGckxJNUc0OHdLbTZBZEkxdmNRaFhqcGx6dzVJeFJJTmprcVpUVFp4eFhFYjRLUFZxSFhzUFZ4SE0?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: казахстан, казах",
+   "droit spécifique fortement signalé"
+  ],
+  "relevant": false,
+  "score": 36,
+  "signals_sha256": "a1f6b62b8cff8b40",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPSkJRZEFJOUpNMnZnYnppOWxLSWZGXzZ2dHFmblc0NDBteUNCa3p0Z0pLQU1LLTB2ckhxWUxQdldrNlVmMFdQR3NPcHFsT2xlMmVRenRMa29WTXFMUWljcG9pd3R3dnlKX3dSTzNXMzNJSm5hYUZjbHpQcnY4VUpyUVgxYlE5M0ZsMnhxbGtELWg4ZEh4UkFZSg?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "9024aa662f36c1a3",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2025/11/6/why-is-trump-hosting-c-asia-leaders-can-he-compete-with-russia-china"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "e33d5044d248181a",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2024/3/22/maximally-pragmatic-how-central-asia-navigates-russias-war-on-ukraine"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: turkmenistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "970bfc2920e332e2",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2022/3/15/turkmenistan-leaders-son-wins-presidential-election"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "répression grave confirmée",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 38,
+  "signals_sha256": "a120ddc168776b9a",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2021/11/18/us-issues-religious-freedom-concern-list-removes-nigeria"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asian",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 31,
+  "signals_sha256": "2e6836c57bee25d0",
+  "theme": "Droits spécifiques",
+  "url": "https://www.aljazeera.com/news/2021/8/19/afghanistans-ex-soviet-neighbours-panic-reject-refugees"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "aef0059acda9a7ae",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2021/8/6/central-asia-taliban-afghanistan"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "violence / droits des femmes",
+   "droit spécifique fortement signalé"
+  ],
+  "relevant": false,
+  "score": 36,
+  "signals_sha256": "3d900486a87e2373",
+  "theme": "Droits des femmes / violences",
+  "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNZkhyaUJjTUg4UmcyQ1FUSEVoNDVVVFp2a244VUtwQU15dE42Q28wUmJ6TEFMS3NSdkRJM0VsNkxHaEIzMUJpZE1OTHg2dm5DaFU5VlI2b0lqMlQ1ZUttbVlzQ2FNSTUxWThmTEtUUExmMWNKbGNaOUdCZzQtcVc4Qi14SnNDaVpaMXhUM0JyZndsUEhDeG9uSXh6dGdXWEYxbFdBTjNhMHRoZ19kcEhTZGktLXJCWUhX?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: узбекистан, узбек",
+   "répression grave confirmée"
+  ],
+  "relevant": false,
+  "score": 38,
+  "signals_sha256": "53957e7552d43a73",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE01bUl3ekJ2bGVkemFyYU4tdWN2a3c0T2Rla29kVHBWV3JOZHYzWHNsdmFXTmtvSWJxOTBSemtfclZ2dDFmLWZVcUk0LVd3ZDNJZ0ZldTZMbWY?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: киргизия, киргиз",
+   "répression grave confirmée"
+  ],
+  "relevant": false,
+  "score": 38,
+  "signals_sha256": "597a8be3f8a97c57",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE4yMkFncENkbnUxODV3YnJ5R25sRUpBR0draVJoa3RvOTVqZE1IME5jbkZvay14b3g2M25KdFJ0UVFpTEZBRXBCcmd1RGhKMG15empTTmMzam4?oc=5"
+ },
+ {
+  "level": "C",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 35,
+  "signals_sha256": "10d4070ad82dfa72",
+  "theme": "Répression / droits humains",
+  "url": "https://www.cacianalyst.org/publications/feature-articles/item/13948-the-wakhan-corridor’s-increasing-role-in-central-asia-afghanistan-china-interaction.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "64f9499bfc0e6282",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/z/7641"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "dc5b24ac6deef48a",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001661/%D8%AC%D9%86%DA%AF-%D8%AA%D8%AD%D8%B1%DB%8C%D9%85-%DA%86%D9%87-%D8%A8%D8%B1-%D8%B3%D8%B1-%D8%B1%D8%B4%D8%AF-%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF%DB%8C-%D8%A2%D9%88%D8%B1%D8%AF"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "887515221f8431f3",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001658/%D8%B2%DB%8C%D8%A8%D8%A7%DA%A9%D9%84%D8%A7%D9%85-%D9%81%D9%82%D8%B7-%DB%8C%DA%A9-%D9%85%D9%88%D8%B1%D8%AF-%D9%86%D8%B4%D8%A7%D9%86-%D8%AF%D9%87%DB%8C%D8%AF-%DA%A9%D9%87-%D8%AF%D8%B4%D9%85%D9%86%DB%8C-%D8%A8%D8%A7-%D8%A2%D9%85%D8%B1%DB%8C%DA%A9%D8%A7-%D8%B3%D9%88%D8%AF%DB%8C-%D8%A8%D8%B1%D8%A7%DB%8C-%D9%85%D9%86%D8%A7%D9%81%D8%B9-%D9%85%D9%84%DB%8C-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%AF%D8%A7%D8%B4%D8%AA%D9%87-%D8%A7%D8%B3%D8%AA"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "3328bae38dff1f62",
+  "theme": "Politique intérieure",
+  "url": "https://www.rferl.org/a/zelenskyy-putin-trump-miami-g20-war-talks/33853066.html"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "e3adf16dde6e2186",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001538/%D9%BE%D8%B0%DB%8C%D8%B1%D9%87-%D9%86%D9%88%DB%8C%D8%B3%DB%8C-%D8%B5%D9%86%D8%AF%D9%88%D9%82-%D8%B3%D8%B1%D9%85%D8%A7%DB%8C%D9%87-%DA%AF%D8%B0%D8%A7%D8%B1%DB%8C-%D8%A7%D8%B1%D8%B2%DB%8C-%D8%AF%D9%84%D8%A7%D8%B1%D9%87%D8%A7%DB%8C-%D8%AE%D8%A7%D9%86%DA%AF%DB%8C-%D8%A8%D9%87-%D8%A8%D9%88%D8%B1%D8%B3-%D9%85%DB%8C-%D8%B1%D9%88%D9%86%D8%AF"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "dc5b24ac6deef48a",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001514/%D9%BE%DB%8C%D8%B4-%D8%A8%DB%8C%D9%86%DB%8C-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AE%D8%A7%D9%86%D9%87-%D8%A8%D8%AE%D8%B1%DB%8C%D9%85-%DB%8C%D8%A7-%D8%B5%D8%A8%D8%B1-%DA%A9%D9%86%DB%8C%D9%85"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 19,
+  "signals_sha256": "f356fd778a9df7c0",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTFAwa3RpaFhwS1NWZEJJbFBnU3FwNlN4YnE0cVVQV3J4VGVXb19UTFk3Vzk4bTVzaTE0eGtNSEtHdnRUUXdR?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "2718cf2f6acaa485",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE1ZbTJaS3h2Q0o1S29hbDJoc3RYcmN5YWNlVEJaclpzbWhsYTVDRXVHeHFVSzVTOEIzMnd1dEl4RUZjMlo5?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "68bf999f06ebc891",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTFBJTkhWeXZoRm1YTE5JVFdibmhaX3plMVlTRWplZ2xXV29HNFFPZkpPb29OYV81RUNINl80Q2xKRXRnZGtM?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "223030f91eb61cef",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE0wOWJFUExMVXNGclhhN0JIMGdlQjdiOTliVzluUlZvVVg0WndCcmEzNVYtQVZOOExXaUJ1Xy01ZW9FMkY5bU5oVDd2T3BFQQ?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "8986478c9701f7f1",
+  "theme": "Politique intérieure",
+  "url": "https://www.amnesty.org/en/latest/news/2026/09/media-freedom-journalism/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "b0306faa75f96703",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.amnesty.org/en/latest/news/2026/09/usa-israel-iran-investigation-into-us-israeli-strikes-on-tehran-neighbourhoods-reveals-devastating-civilian-harm/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 11,
+  "signals_sha256": "76b21c988d3be3d7",
+  "theme": "Droits spécifiques",
+  "url": "https://www.amnesty.org/en/latest/news/2026/09/hungary-meta-failed-to-stop-anti-lgbti-content-on-facebook/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/latest/news/2026/09/hungary-meta-failed-to-stop-anti-lgbti-content-on-facebook/"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "a2e7500f847c3adc",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.amnesty.org/en/latest/news/2026/09/russia-ecthr-decision-to-strike-out-more-than-800-complaints-denies-victims-truth-justice-and-reparation-and-should-be-reversed/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "34e2f21ddaf2dbb1",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOODhWWm9GcjF0OTE2QzgzT3ltYnR5Tmx5cGZMOFdkeU5MektnWF8zUTBvckZFb1hlelA5TFozOHdvR0JPYVg3UmxwS2NhREE0X1FmbHBDVnlhOG5jcnhndllDeFF2RWxCMFJaNGRvdlJJSjVaclNSbm9uZWlLc0xScU5EVk91bEVlakMwR2MzRmZrZU04bjZENl9Qb05XaFhHcDcwX29Zd1VqUTNFOU5FUUhsUVU?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "497b20f6d1bc03bb",
+  "theme": "Droits spécifiques",
+  "url": "https://www.amnesty.org/fr/latest/news/2026/09/eu-return-hub-plans-in-rwanda-and-uganda-risk-becoming-cruel-black-holes-for-human-rights/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 16,
+  "signals_sha256": "3bac676b5398e43b",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/latest/news/2026/09/russia-detention-of-charity-leader-lida-moniava-for-anti-war-social-media-posts-a-brazen-attack-on-freedom-of-expression/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "96d0f426a25bf040",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/ru/latest/news/2026/08/cuba-more-than-27000-of-solidarity-letters-reach-luis-manuel-otero-alcantara/"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "8698208e0194cc8d",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/ru/latest/news/2026/08/turkiye-osman-kavala-must-be-immediately-released-following-european-court-order-to-quash-his-conviction/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "76d90adb7d1d8b9a",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/ru/latest/news/2026/08/palestine-hamas-must-stamp-out-extrajudicial-executions-and-ensure-justice-for-victims/"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "signal HR confirmé par le corps",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "314aba3485a1893d",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/ru/latest/news/2026/08/hong-kong-dismaying-tiananmen-convictions-part-of-campaign-to-erase-chinese-history/"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "violence / droits des femmes",
+   "droit spécifique fortement signalé",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "3399019c7d657854",
+  "theme": "Droits des femmes / violences",
+  "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPZDZTMXRzZ1NWNWU4NE5RSkl1bVdFRDc0dlBaNWlJQVdoaUczdlBRSVNYUHcyS0hmakJoVHZGeTF4TFlVWUlaWlFCNG9yb2pGZ2tQQ05TT0JVWjN0WUpMcnJ4enFoaFlXRHFZWmJqOWJBam5MbW9hcGFYd1E5OEl0TzRSSThfZ1FKQUVtc094eWJGbnlwWWlkZGM5Mzl3Z0lMSWxMM05iUjBfNkF3RDZFejFyNmw0Zw?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "8c08646f1a4667fe",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOLUNTX3gyQ3ZYZnVzbldlUUNCTWI5TWoxSEQyVjhNU3Z4SHhwam9fZmZnYW1raVVTOUdOTTNSdlk2QzNTM200WnhNT0k4YkY2anJjVjhtbDhwanNfSjk3OTJhNUZBMXJSdExTRE1FbjE1WFctWlBtTGJVU3pyVTZFbHB3RjQxTDBnaEpoTnhnSmRDd0xNalBRRGVZN0toZjZOWGRVbUJJWUU1MzBDZDMtVjNLRlhzNmVNZHc?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 8,
+  "signals_sha256": "4dced7851a82be7f",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQREVaU1pLa3Vma1hQOEVYZzRhcUltVHZQZDY1NWpsTFI3RnVKa0dEU3UyUmlJbTYtX1ZXaC1uQkxGbm9XVnUzTHFDQWRDbVNpd2k2UHNnYndNVHdsQnYySDFZR003aFNBSGpiT1M4UDNyZkU3MF9ET1gtOXNtNW5RNFFrNWFVN3ZheFhrRXhRaHlRazgxMTQ1bXNkc29BODc5RUt2YzRhSXk5YmJxNE5EUUdqRQ?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 19,
+  "signals_sha256": "bfa06582e3a2645c",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOUmdDbGQteHphb3dpd3l3X09KaU5zOXpNcDgxSWptSTRJUzdiN2dpcXRqU2Jab3hhaHF2Ykc2ZDV1YlJBTDM4RmdGTTZ4YmVLM1pwRWtPcWd2SW9yOWpVR3lLck5yaGJGa2t1YkdRRmVHbDBSaTd6WHpna0R0dU9kSUluVEtJa1VIMWlpc2lReFhHU2JmOG5mcHh2Z3Y?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "f344dd562f9443f4",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPdU9RQURNZVdqdXFPZ3BCSi1mTHlET0R0ZGM0RGJHZHgwVnREVkNRc1o4aFJndkhtRXg1REM3c1VMYTM5UkdxTXFmR2Zpb3lvRnR0amJ1RWNhanl2RFJja0pwSnlHNFpGQk42ZVYwQlk2OG5lOFBHNVA3c1hrV2dNaU45YlM5VDM5YmxpMGpPRDRYeWRRd2Fz?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 9,
+  "signals_sha256": "e8a7def95cd3c8d5",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNal9Lc3lMNk1CQWRtUWZNVTQ1SUNBbGVsZG96SHJ4cDBudnh3UDhFbE9CNlAzMndzV0RNUlVCby0zeS1QMzNoaFJJVG0zSW9qdlJVenpad2VBN2xYYnBqMkgwN3NWNjlhV1lxTjJqSUNKVGlDWUVpa3JRb3IxOXUyTnZyYi1PUmNTOFV1VGRTWXZNYTdLcE5NT3ZjSmFyTENHb1Qxb0NkaUh2V2FBb0VRdHlGTW1kZFI5?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "f344dd562f9443f4",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPZXpHQ2l1eXl6Tm02REtvV2UxOVdOdHVxbmN2LUpzWmtseGxrQ0pDem9heElpM3U3ZzhVeXZpNmZjcy16aVJHYi1tWWRpQUxvMWE3d2xtU0FpWHZUUUpRazlNcGR4SkVOdWNzYlR0aFBvYnhJSnJiNlJJZEs4RXJKTVpxbw?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 18,
+  "signals_sha256": "2ed1c80a794aef02",
+  "theme": "Politique intérieure",
+  "url": "https://www.amnesty.org/ru/projects/anti-war-protest-in-russia/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "c6c0f37b7f4d4d2f",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPTzN3T1hyU1d2M3RKcVdGcF9oM1IzdHJkX0pGRmJEYXZrYUpWVldNaEh1aHpVelhhUVl1LWV1SmtvMm1mLUhfNWIwOFBZc25ZYmNZZC10N1R5S1l2OTZ6YlVnaGZjTWRsUlhfUjFUb3dLUGZJS1ZjVUJCck9KaDRyWXBPWm0?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "827e731f32d28225",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTFBEdzlxX2FleVdZclVFQzgyeXY0emQtbzJqbG9ubVJTdlpaaDZ2QmRUTEl2NkNlTkpwWVdWejI3d0tkNDZNdGJEZ3VHWHZZUQ?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 8,
+  "signals_sha256": "4dced7851a82be7f",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOaGEtbVVtcWRaWDFPcldOZkVYVHJYSG9paG9vUWZ6a0ZwLTdpRmxPeHpBQ3c2MUkzckhzZDlTa0tFb2tDWHVBbjF5Mm40Zmh4c3ZSVU1DbGFCWHdsaEJIOUtZLVRoOGY5alV5RGdvX1Iwek5nYXVOQmRNRlU4dFpndlFTeHdWb3N6MjVtRG5uRjhEVHZOVHNzR2VZMGt5dnlqaERyekVHem9XanZNR0tISFhJcjlwQQ?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "droit spécifique fortement signalé",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "b657ca87e18f9425",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1jOWxoZGg0N25FWVhIOWh6X0lGLWJuVVpGWHRPZ3RaYmlMRENNVEttOEVtNWY0YXotQ3BuNzJvVmVpUndWY0toZ0JnVmlScC15cTlsX1BOYUdCeHRqa1RuMVU0T1RJeUU?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "354f7134820743df",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/ru/projects/russias-aggression-in-ukraine/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "aea988252de2fd61",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPUjYtNEoyRV9OeTJTVEtaUVhUOWtEYlJJcVJoS09oVnBiMVJMUzNoOTZ1Y0RWYWVBOWdycjJsWmUydWxIcEJrenQ2bVQ3TFhRTGREeExTOHFzd3BubC1JOFpUX25tU09haHloYXdNSmpXRUZyZnRQeFNDSDY1NWU4UFRjZmFxRnA2blh2NXV0Zw?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "847785beeb5bc9d8",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5zX0E1XzVJNkViQ0wxdzcyM2RjdGZ1a0Jaa3dldEtXN1BjTTdHM0ZEV24tTGJxWHdjRW9VYUc4QkxHeHp3bmRyczEyQmtQNDI4cnIwb3lpRmZGclhwR1NlM3NTVlotLWk2dGtCU0w5MHNWdw?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 8,
+  "signals_sha256": "4dced7851a82be7f",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBhak1KOXJkcmlCVG9KcTczN0s1czlMZVM5dnN4YmRVYmhfTG5kNVlvWFUtWVNMYlBNQmFicnRVVmxPbzJ6dXBua2d1UHpNMDA3QXh1Tg?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 8,
+  "signals_sha256": "4dced7851a82be7f",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBIbVVTU3loTjR6TWdueFN1MWt5Um9OcWtfcE9VVTNvOWVoTmg2ZGVRWnRBaWFubzNLelczSDRjUloyakdOYWk4WUw3UFByQkFMalBVSA?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "6317e3a2cd99d6f1",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/en/annual-report-archive/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "eb140e48756e0151",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/permissions/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "7e90c6a54a0be300",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/donate/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "15f35904ee66f240",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/en/media-centre/"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "2376ea523f8aa911",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5FLWZjZ2ZsN09XOThKTmdQR1N2MV8tbWFlZmJIU0VSSlNQRGpTRi1nUHc5SzBJcUFQRllIb3J3cXJQbEZtUzdaajd6VVJmc2FYTWY0TmVLTEc?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "49327038738b44b3",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE96Y2ZCUmRocl9MRjludzdYYkxiX1lvWkYyQW9jSjd6eVI2ZFdqb2d5Mk9RbTUtd0gwSHhfUWhOaHlFSEQtX2ExaGxjbmduV18xcmJFUnduQUw?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "9fdfa8a7fe1af0bd",
+  "theme": "Droits spécifiques",
+  "url": "https://www.amnesty.org/en/donate/"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "violence / droits des femmes",
+   "droit spécifique fortement signalé",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "e50772b1370e7aaa",
+  "theme": "Droits des femmes / violences",
+  "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNeE9tSldjVnRPQWY3YXE0RGxhaUoxMmY1M3JMVjcyd1ZtbF94TmJDX20xUHBjLThUbUpWZFcwZmQ2c09LUUhHQllaVlExMGlaaS02bXJTNDJBMzVYdjdwUGJfSEd0N3R5bU9adzN1NXZ2SlgtQW9nV055TWk4RHNjOFRySUdYa2xoSXRrYy1rZmxUZUgtN2ZhMVBZR2hfU2NfUTZycXhZZDY4OTlpenFMQQ?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "violence / droits des femmes",
+   "droit spécifique fortement signalé",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "46eced2f11d708bb",
+  "theme": "Droits des femmes / violences",
+  "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOQ3VzYmdxRWN2NXJ4ZmNDQ1pGQnlYRFpzSFpmS2lvUGh4VWNJcHEzS3ZPLUpOQmlKSjhLdVdIMWc3MDVpUzlDUUdTa1FrVll1V01sWExwVTA3cnBYdG0zdkhTcl9pVFRtamxrd0ppUXVmNFdCT0plSmVvYUZKbXA1RG4yeXVsTHFy?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "0fabce596124333a",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1SVDR5eTEtaTd6Y1JJXzMyeUpTLU1oSXQ0XzRJbFcySklnVk1MUk5vUV9YRTZuWU1RdUV0UzVzY2doTHdYQW14bEFuOWxNbDlST3FiakVMWGU?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "droit spécifique fortement signalé",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "61390334ccbaf950",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE0wdEZIaXJtQ0gtLWFNbTdhRWFFbWxacXB0U1pyamNEejhRVmtfYWJwa1U4TVp2c3lpTkNyRHJuSnVTNVN0ajBCN1VuRXJzQQ?oc=5"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "a6f9a41754117c85",
+  "theme": "Faible priorité",
+  "url": "https://www.fidh.org/en/en/region/asia/thailand/thailand-new-report-details-more-than-a-decade-of-lese-majeste-abuse-33104"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "16d3913b02921d76",
+  "theme": "Faible priorité",
+  "url": "https://www.fidh.org/en/en/region/Africa/democratic-republic-of-congo/congo-semlex-company-referred-to-the-criminal-court-on-charges-of"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "état de droit / concentration du pouvoir",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "401f7a99b2734169",
+  "theme": "État de droit / espace civique",
+  "url": "https://www.fidh.org/en/en/region/Africa/chad/chad-s-withdrawal-from-the-international-criminal-court-a-blow-to-the"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "d4deb51e3ea772f7",
+  "theme": "Droits spécifiques",
+  "url": "https://www.fidh.org/en/en/region/americas/ecuador/ecuador-international-organizations-warn-of-a-rapid-deterioration-of"
+ },
+ {
+  "level": "D",
+  "priority": "FAIBLE",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "98202a4805b32a23",
+  "theme": "Droits spécifiques",
+  "url": "https://www.fidh.org/en/en/region/asia/india/india-united-nations-body-concerned-over-racial-discrimination"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 11,
+  "signals_sha256": "3b5582213c0e7525",
+  "theme": "Droits spécifiques",
+  "url": "https://www.fidh.org/en/en/region/Africa/sudan/sudan-extend-the-fact-finding-mission-s-mandate-and-ensure-adequate"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "223030f91eb61cef",
+  "theme": "Faible priorité",
+  "url": "https://www.fidh.org/en/en/com/on-the-internet/instagram/international-day-of-the-victims-of-enforced-disappearances-29918"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "6a5639cc076dea5e",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/english/70524-rights-watchdogs-condemn-sentencing-of-kazakhstani-journalist.html"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "5d159b7006931e37",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/p/7009.html"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "b4999c3922fb1984",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/p/7262.html"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "ceaded1f7ad60473",
+  "theme": "Faible priorité",
+  "url": "https://www.cacianalyst.org/editorial/editor-page.html"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "4d7df6301f4e437b",
+  "theme": "Faible priorité",
+  "url": "https://www.chathamhouse.org/2026/08/water-footprints-global-minerals-trade"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 9,
+  "signals_sha256": "da21a8feb62fde5c",
+  "theme": "Politique intérieure",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/iraq-initiative-conference-2026"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "68bf999f06ebc891",
+  "theme": "Faible priorité",
+  "url": "https://ria.ru/20260913/zapad-2117363302.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 2,
+  "signals_sha256": "af30480524a4e75b",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001663/%D8%B3%D8%A7%DB%8C%D9%87-%D8%A7%D9%84%D9%82%D8%A7%D8%B9%D8%AF%D9%87-%D8%AF%D9%88%D8%A8%D8%A7%D8%B1%D9%87-%D8%A8%D8%B1-%D8%A7%D9%81%D8%BA%D8%A7%D9%86%D8%B3%D8%AA%D8%A7%D9%86-%D8%A8%D8%A7%D8%B2%DA%AF%D8%B4%D8%AA-%DB%8C%DA%A9-%D8%AA%D9%87%D8%AF%DB%8C%D8%AF-%D9%82%D8%AF%DB%8C%D9%85%DB%8C-%D8%A8%D8%A7-%DA%86%D9%87%D8%B1%D9%87-%D8%A7%DB%8C-%D8%AA%D8%A7%D8%B2%D9%87"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001689/%D9%BE%D8%B2%D8%B4%DA%A9%DB%8C%D8%A7%D9%86-%D9%85%D8%A7-%D8%A8%D8%A7-%D8%B9%D8%B1%D8%A8%D8%B3%D8%AA%D8%A7%D9%86-%D8%B3%D8%B9%D9%88%D8%AF%DB%8C-%D8%AF%D8%B1-%D8%AC%D9%86%DA%AF-%D9%86%DB%8C%D8%B3%D8%AA%DB%8C%D9%85"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001649/%DA%A9%DB%8C%D8%B4-%D8%AF%D9%88%D8%A8%D8%A7%D8%B1%D9%87-%D8%B4%D9%84%D9%88%D8%BA-%D8%B4%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001684/%D8%AA%D8%B5%D8%A7%D9%88%DB%8C%D8%B1-%D8%AF%D8%B1-%D8%B2%D8%A7%D9%87%D8%AF%D8%A7%D9%86-%DA%86%D9%87-%D8%AE%D8%A8%D8%B1-%D8%A7%D8%B3%D8%AA"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 2,
+  "signals_sha256": "024d003837844ddb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001627/%D8%AA%D9%81%D8%A7%D9%87%D9%85-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D9%85%D8%B3%D9%82%D8%B7-%D8%A8%D8%B1-%D8%B3%D8%B1-%D9%87%D8%B1%D9%85%D8%B2-%D8%B1%D8%A7%D9%87%DB%8C-%D8%A8%D8%B1%D8%A7%DB%8C-%DA%A9%D8%A7%D9%87%D8%B4-%D8%AA%D9%86%D8%B4-%DB%8C%D8%A7-%D8%A2%D8%BA%D8%A7%D8%B2-%D9%81%D8%B5%D9%84-%D8%AA%D8%A7%D8%B2%D9%87-%D8%AC%D9%86%DA%AF-%D9%85%DB%8C%D8%A7%D9%86-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%A2%D9%85%D8%B1%DB%8C%DA%A9%D8%A7"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 3,
+  "signals_sha256": "8241bbc5b9c5bf33",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001679/%D8%AA%D8%B5%D8%A7%D9%88%DB%8C%D8%B1-%D8%A8%D8%A7%D8%B2%DA%AF%D8%B4%D8%AA-%D8%B5%DB%8C%D8%A7%D8%AF-%D8%A2%D8%B2%D8%A7%D8%AF%D8%B4%D8%AF%D9%87-%D8%A7%D8%B2-%D8%B2%D9%86%D8%AF%D8%A7%D9%86-%D8%A7%D9%85%D8%A7%D8%B1%D8%A7%D8%AA-%D8%A8%D9%87-%D8%A8%D9%86%D8%AF%D8%B1%D8%B9%D8%A8%D8%A7%D8%B3"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001672/%D9%82%DB%8C%D9%85%D8%AA-%D8%AF%D9%84%D8%A7%D8%B1-%D8%AF%D8%B1-%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1-%D8%A2%D8%B2%D8%A7%D8%AF-%D8%A7%D9%85%D8%B1%D9%88%D8%B2-%DB%8C%DA%A9%D8%B4%D9%86%D8%A8%D9%87-22-%D8%B4%D9%87%D8%B1%DB%8C%D9%88%D8%B1-1405"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "8c94da3038e0a4bc",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/toqaev-aqsh-prezidentinin-ontustik-zhane-ortalyq-aziya-boiynsha-arnaiy-okilimen-kezdesti/33853237.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/frantsiyada-poiyz-relsten-shygyp-ondagan-adam-zardap-shekti/33853233.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/33853067.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001409/%D8%AC%D9%86%DA%AF-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%A2%D9%85%D8%B1%DB%8C%DA%A9%D8%A7-%D9%88%D8%A7%D8%B1%D8%AF-%D9%85%D8%B1%D8%AD%D9%84%D9%87-%D8%AC%D8%AF%DB%8C%D8%AF%DB%8C-%D8%B4%D8%AF%D9%87-%D8%A7%D8%B3%D8%AA"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001458/%D8%B3%D9%87%D9%85%DB%8C%D9%87-%D8%A8%D9%86%D8%B2%DB%8C%D9%86-%D8%A7%D9%86%D9%88%D8%A7%D8%B9-%D9%88%D8%B3%D8%A7%DB%8C%D9%84-%D9%86%D9%82%D9%84%DB%8C%D9%87-%DA%86%D9%82%D8%AF%D8%B1-%D8%A7%D8%B3%D8%AA"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001411/%D8%AC%D9%86%DA%AF-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%A2%D9%85%D8%B1%DB%8C%DA%A9%D8%A7-%DA%86%D9%87-%D8%B2%D9%85%D8%A7%D9%86%DB%8C-%D9%BE%D8%A7%DB%8C%D8%A7%D9%86-%D9%85%DB%8C-%DB%8C%D8%A7%D8%A8%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/saud-arabiyasy-dron-shabuylynan-keiin-manyzdy-munai-qubyrynyn-zhumysyn-toqtatty/33852945.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "2876ca128e326a8c",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.azattyq.org/a/iran-iordaniyadagy-bazaga-soqqy-zhasamai-turyp-qytaidan-sputnik-suretterin-algan/33852905.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "572b8991eb3aee88",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.azattyq.org/a/33852443.html"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Caucase: azerbaijan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 34,
+  "signals_sha256": "ed529617163ec630",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.azernews.az/nation/263745.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "1e8146f175baa6d3",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.azattyq.org/a/33852319.html"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kazakh",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "e745d9dd43efa233",
+  "theme": "Géopolitique majeure",
+  "url": "https://thediplomat.com/2026/09/turkish-kazakh-and-malaysian-companies-hit-with-new-us-sanctions-over-iran/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kyrgyz",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "95480f9d7f04e410",
+  "theme": "Géopolitique majeure",
+  "url": "https://thediplomat.com/2026/09/rethinking-russia-re-evaluating-risk-the-changing-face-of-kyrgyz-migration/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: uzbekistan, kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "1f86bd029df77b5d",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.cgtn.com/news/2026-09-05/China-Kyrgyzstan-Uzbekistan-railway-achieves-breakthrough-1Qc3rDBAukw/p.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "fb5f6275033c62c7",
+  "theme": "Politique intérieure",
+  "url": "https://turkmen.news/2026/09/04/ministr-oborony-turkmenistana-sdelal-byvshih-voennyh-nevyezdnymi/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/latest/news/2026/09/israel-opt-israel-steps-up-annexation-measures-with-unlawful-land-seizure-orders-in-the-occupied-west-bank/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "géopolitique / économie ordinaire",
+   "plafond V9: sujet non-HR"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "b7458d8349de2147",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2026/9/3/kyrgyzstan-hosts-pivotal-sco-summit-amid-global-geopolitical-shifts"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 11,
+  "signals_sha256": "6af8b81723bdbd54",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/latest/news/2026/09/tunisia-final-judicial-avenue-to-overturn-convictions-in-unjust-conspiracy-case/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "88b2f8fa75f0aaed",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2026/8/31/putin-and-xi-affirm-strategic-alliance-amid-unpredictable-world"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "c95073f0263ee0b5",
+  "theme": "Politique intérieure",
+  "url": "https://www.aljazeera.com/news/2026/8/31/kazakhstans-president-taps-longtime-adviser-for-vice-president-role"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "plafond V9: sujet non-HR"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "0e3b4c2139553d61",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://www.aljazeera.com/news/2026/8/31/xi-modi-and-putin-set-to-meet-for-sco-summit-whats-on-the-agenda"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "17e94ffa7b047b93",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2026/8/31/russia-china-leaders-to-meet-at-shanghai-cooperation-organisation-summit"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "5271b03e436aa998",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.amnesty.org/ru/latest/news/2026/08/usa-metas-18-billion-settlement-should-be-a-turning-point-that-leads-to-sweeping-social-media-reforms-to-protect-children-online/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "géopolitique / économie ordinaire",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "eab9d662d8509d41",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2026/8/26/chinas-xi-to-visit-kyrgyzstan-egypt"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: таджикистан, душанбе, таджик",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "f6b1275fb11b447d",
+  "theme": "Géopolitique majeure",
+  "url": "https://vlast.kz/politika/70596-neftanoj-obhod-dusanbe-tegeran-novaa-energeticeskaa-dilemma-centralnoj-azii.html"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: ашхабад"
+  ],
+  "relevant": false,
+  "score": 23,
+  "signals_sha256": "cb60f0d3ac89ce33",
+  "theme": "Répression / droits humains",
+  "url": "https://turkmen.news/2026/08/25/snesyonnyy-v-ashkhabade-uchastok-prinadlezhal-prezidentskomu-kuzenu-ego-glavnogo-arendatora-zaderzhali-s-narkotikami/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: туркмен"
+  ],
+  "relevant": false,
+  "score": 23,
+  "signals_sha256": "fc72313d27d7b8d0",
+  "theme": "Répression / droits humains",
+  "url": "https://turkmen.news/2026/08/25/v-turkmenabade-pokupateli-vozmutilis-cenami-na-myaso-ih-zaderzhali-specsluzhby/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "ad3e1b400343ed22",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2026/8/24/ukraines-offensive-against-russia-causes-petrol-panic-across-central-asia"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 24,
+  "signals_sha256": "290b93b11eb64236",
+  "theme": "Politique intérieure",
+  "url": "https://www.aljazeera.com/news/2026/8/24/kazakhstans-newly-formed-pro-government-party-wins-parliamentary-election"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 26,
+  "signals_sha256": "05c07d1bce27c61d",
+  "theme": "Politique intérieure",
+  "url": "https://www.aljazeera.com/news/2026/8/23/kazakhstan-holds-parliamentary-election-expected-to-cement-presidents-grip"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "a0acfae83d087cd3",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/economy/2026/8/20/taliban-secures-pragmatic-global-alliances-without-formal-recognition"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "3e094f0660aeb9e0",
+  "theme": "Politique intérieure",
+  "url": "https://turkmen.news/2026/08/18/prezident-turkmenistana-smenil-hyakima-etrapa-avaza-upravlyayushego-kurortnoy-zonoy/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 24,
+  "signals_sha256": "b5a2f62672dc841d",
+  "theme": "Géopolitique majeure",
+  "url": "https://turkmen.news/2026/08/04/ssha-zakrepili-i-povysili-vizovyj-zalog-dlya-grazhdan-turkmenistana-i-eshyo-49-stran/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "90ae084104c72842",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.caspianpolicy.org/research/azerbaijan/trans-caspian-fiber-optic-cable-unpacked"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "5a081e9e1d16a60f",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/news/2026/7/14/us-russian-astronauts-launch-into-orbit-for-joint-space-mission"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "264dcd18246be202",
+  "theme": "Politique intérieure",
+  "url": "https://turkmen.news/2026/07/13/prezident-turkmenistana-smenil-chetyryoh-hyakimov-i-dvuh-ministrov/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "7bcf50821831fa65",
+  "theme": "Géopolitique majeure",
+  "url": "https://turkmen.news/2026/07/10/ssha-porazili-zheleznodorozhnyy-most-v-irane-na-marshrute-kitay-turkmenistan-iran/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/website-terms-of-use/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "géographie confirmée dans le corps"
+  ],
+  "relevant": false,
+  "score": 26,
+  "signals_sha256": "89f77dbc875458cf",
+  "theme": "Répression / droits humains",
+  "url": "https://turkmen.news/2026/06/26/v-rossii-zaderzhali-grazhdanina-turkmenistana-podozrevaemogo-v-masturbacii-vblizi-detskoy-ploshadki/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "signal HR confirmé par le corps"
+  ],
+  "relevant": false,
+  "score": 31,
+  "signals_sha256": "e9c28b2963dade28",
+  "theme": "Répression / droits humains",
+  "url": "https://turkmen.news/2026/06/23/v-turkmenistane-arestovan-byvshiy-zamministra-vnutrennih-del/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 2,
+  "signals_sha256": "0983457e6cab4aaa",
+  "theme": "Droits spécifiques",
+  "url": "https://www.aljazeera.com/news/2026/6/17/satellite-images-show-10-places-where-water-is-disappearing-globally"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: tajikistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "1c9fa52af138376e",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/news/2026/5/29/on-the-road-to-rogun-dam-tajikistans-greatest-dream"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "de827e4bda6331b6",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/ru/projects/israels-occupation-of-palestinian-territory/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "e5c592f7abba9144",
+  "theme": "Géopolitique majeure",
+  "url": "https://turkmen.news/2026/04/07/mezhdu-rodinoy-i-domom-novyy-posol-turkmenistana-v-ssha-22-goda-nazad-kupil-tam-kvartiru/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: туркмен"
+  ],
+  "relevant": false,
+  "score": 23,
+  "signals_sha256": "ac14e471adf58abd",
+  "theme": "Répression / droits humains",
+  "url": "https://turkmen.news/2026/03/16/osujdennyy-za-narkotiki-turkmenskiy-pevec-nazir-habibov-snova-vyshel-na-svobodu-po-pomilovaniyu/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "763c5d55685d9e3f",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2026/2/20/indonesia-morocco-kosovo-among-5-countries-to-send-troops-under-gaza-plan"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: turkmenistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: sujet non-HR"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "9492d597e64b803d",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/news/2026/1/2/turkmenistan-legalises-crypto-mining-and-exchanges-in-shift-for-economy"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: tajikistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "0dca59750b4c7a47",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2025/12/26/tajikistan-taliban-border-clashes-whats-behind-them-why-it-affects-china"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: tajikistan, tajik",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "510cc5d7cc27dc90",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/news/2025/12/25/five-killed-at-tajikistan-afghanistan-border-in-armed-clash"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 16,
+  "signals_sha256": "ae6a5feaf48e42bd",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2025/11/8/ukraines-fm-says-over-1400-africans-recruited-to-fight-for-russia-in-war"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "1db0bd636dc27b2e",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/news/2025/11/6/kazakhstan-which-already-recognises-israel-to-join-abraham-accords"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 31,
+  "signals_sha256": "63052dd5f141703b",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2025/8/30/sco-summit-in-china-whos-attending-whats-at-stake-amid-trump-tariffs"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: central asian",
+   "géographie confirmée dans le corps",
+   "géopolitique / économie ordinaire",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "f8ebead80cae6e6d",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2025/6/16/chinas-xi-jinping-meets-central-asian-leaders-why-their-summit-matters"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "source spécialisée Asie centrale",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "0a6384027d2cb32f",
+  "theme": "Faible priorité",
+  "url": "https://turkmen.news/2024/11/23/mansuru-mingelovu-50-let-pravozashitnik-provedet-yubiley-za-reshetkoy/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: uzbek",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "9f92acb951be506c",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/features/2024/10/12/from-uzbek-disco-to-uighur-rock-forgotten-sounds-of-the-silk-road"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: uzbekistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: confirmation HR dans le body"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "d6458108f955faf3",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/features/2024/9/8/koreans-in-uzbekistan-k-pop-and-a-brewing-cultural-clash"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: uzbekistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "d9ae28628cfa0ef0",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2024/5/27/russia-to-build-nuclear-power-plant-in-uzbekistan"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kyrgyzstan, bishkek",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "6fb31b9f12999a81",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/news/2024/5/20/panic-in-bishkek-why-were-pakistani-students-attacked-in-kyrgyzstan"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "84944350c3ad02b7",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2024/3/23/moscow-concert-hall-attack-why-is-isil-targeting"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 31,
+  "signals_sha256": "bb7bc6baa634cbce",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2023/10/12/russias-putin-makes-rare-visit-to-kyrgyzstan-despite-icc-arrest-warrant"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "0a741022368c2597",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2023/9/30/russia-ukraine-war-list-of-key-events-day-584"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: tajikistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "e4d0355166308872",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/news/2023/8/30/torrential-rains-kill-at-least-21-people-in-tajikistan"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "047db199df726125",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/opinions/2023/6/6/russia-faces-a-new-neighbourhood-threat-china"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "b116b685fa6e97b4",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2023/2/28/blinken-in-central-asia-to-boost-ties-amid-ukraine-war"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: tajikistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 15,
+  "signals_sha256": "336710f71fd9f94a",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/news/2023/2/23/remote-tajikistan-region-shaken-by-magnitude-6-8-earthquake"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 20,
+  "signals_sha256": "9d6f52af860a8964",
+  "theme": "Répression / droits humains",
+  "url": "https://www.aljazeera.com/news/2023/2/17/where-does-central-asia-stand-on-russia"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 22,
+  "signals_sha256": "dabfb663681132ad",
+  "theme": "Faible priorité",
+  "url": "https://turkmen.news/2022/04/26/new-political-prisoners/"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "6d2c3a34e93be35d",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2022/3/25/ukraine-war-is-central-asia-loosening-ties-with-russia"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: turkmenistan",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 24,
+  "signals_sha256": "3adde45dffe4ef8e",
+  "theme": "Politique intérieure",
+  "url": "https://www.aljazeera.com/news/2022/2/12/turkmenistan-to-hold-early-presidential-election-on-march-12"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asian",
+   "géographie confirmée dans le corps",
+   "plafond V9: sujet non-HR"
+  ],
+  "relevant": false,
+  "score": 22,
+  "signals_sha256": "18bc6fa5f8aeee5e",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/economy/2022/1/27/indias-modi-central-asian-leaders-pledge-closer-economic-ties"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "eb9607c19a0c7c64",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/news/2021/8/23/us-military-presence-in-central-asia-unlikely-amid-taliban-rise"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/refunds-of-donations/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/cookie-statement/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "dbd5ce068ece5b02",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/fr/countries/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/en/cookie-statement/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/ru/accessibility/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.amnesty.org/ru/cookie-statement/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/video/live"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "0709697dbf2538c3",
+  "theme": "Politique intérieure",
+  "url": "https://www.aljazeera.com/video/newsfeed/2026/8/24/08-24-26-kazakh-elections-sv-mp4"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "df06a2c8027dd2dd",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/video/newsfeed/2026/8/4/kazakhstan-releases-first-tiger-to-restore-extinct-species"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/video/newsfeed/2026/7/14/us-russian-crew-launches-on-mission-to-space-station"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "df06a2c8027dd2dd",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/video/101-east/2026/2/28/kazakhstans-train-hospital-brings-healthcare-to-remote-regions"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "4649a8affd20990e",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/video/newsfeed/2026/9/1/video-sco-summit-leaders-meet-in-aftermath-of-us-war-on-iran"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/opinion/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/video/in-the-field/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: central asia, tajikistan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "3912842b8c77a038",
+  "theme": "Faible priorité",
+  "url": "https://www.aljazeera.com/video/in-the-field/2024/7/21/tajikistans-glacial-crisis-central-asias-melting-heart"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: tajik",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 28,
+  "signals_sha256": "b5f8fa087cd401c5",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.aljazeera.com/video/talk-to-al-jazeera/2024/6/16/tajik-fm-melting-glaciers-human-rights-and-geopolitical-strife"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 9,
+  "signals_sha256": "7aa8e2a1fbc2176d",
+  "theme": "Politique intérieure",
+  "url": "https://www.fidh.org/en/en/region/asia/japan/japan-first-execution-under-prime-minister-takaichi-condemned"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/p/8433.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/p/8764.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/resei-askeri-krivoi-rog-pen-odessaga-shabuyldady-qaza-bolgandar-bar/33852928.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/qazaqstan-qorganys-onerkasibi-zauytyn-auktsionga-shygardy/33852846.html"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Caucase: georgia",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 27,
+  "signals_sha256": "9f30733991757d81",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.cacianalyst.org/publications/feature-articles/item/13974-how-russia-won-the-hybrid-war-in-georgia-—-and-what-the-west-got-wrong.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001601/%D8%A8%D9%87-%D8%AC%D8%A7%DB%8C-%D8%AF%D8%B3%D8%AA%D9%BE%D8%A7%DA%86%DA%AF%DB%8C-%D9%82%D8%B1%D8%A7%D8%B1%D8%AF%D8%A7%D8%AF-%D9%82%D9%84%D8%B9%D9%87-%D9%86%D9%88%DB%8C%DB%8C-%D8%B1%D8%A7-%D9%85%D9%86%D8%AA%D8%B4%D8%B1-%DA%A9%D9%86%DB%8C%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001584/%D8%AA%D8%B1%D8%A7%D9%81%DB%8C%DA%A9-%DA%A9%DB%8C%D9%84%D9%88%D9%85%D8%AA%D8%B1%DB%8C-%D8%AF%D8%B1-%D8%AC%D8%A7%D8%AF%D9%87-%DA%A9%D9%86%D8%AF%D9%88%D8%A7%D9%86-%DA%86%D8%A7%D9%84%D9%88%D8%B3-%D9%85%D8%B3%D8%AF%D9%88%D8%AF-%D8%B4%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001581/%D8%A7%D8%AF%D8%B9%D8%A7%DB%8C-%D8%B3%D9%86%D8%AA%DA%A9%D8%A7%D9%85-%D8%AF%D8%B1%D8%A8%D8%A7%D8%B1%D9%87-%D8%AA%D8%AF%D8%A7%D9%88%D9%85-%D9%85%D8%AD%D8%A7%D8%B5%D8%B1%D9%87-%D8%AF%D8%B1%DB%8C%D8%A7%DB%8C%DB%8C-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001576/%D8%AC%D8%B2%D8%A6%DB%8C%D8%A7%D8%AA-%D8%AC%D8%AF%DB%8C%D8%AF-%D8%AF%D8%B1%D8%A8%D8%A7%D8%B1%D9%87-%D8%AA%D9%81%D8%A7%D9%87%D9%85-%D9%86%D9%87%D8%A7%DB%8C%DB%8C-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%B9%D9%85%D8%A7%D9%86"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "e3adf16dde6e2186",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001565/%D8%A8%D9%87%D8%AA%D8%B1%DB%8C%D9%86-%D8%A7%D8%AF%D9%88%DB%8C%D9%87-%D9%87%D8%A7-%D8%A8%D8%B1%D8%A7%DB%8C-%D8%B3%D9%84%D8%A7%D9%85%D8%AA-%DA%A9%D8%A8%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001563/%D8%AE%D8%A8%D8%B1%DB%8C-%D8%A7%D8%B2-%D8%AA%D9%88%D8%A7%D9%81%D9%82-%D8%A8%D8%A7%D8%B2%DA%AF%D8%B4%D8%A7%DB%8C%DB%8C-%D8%AA%D9%86%DA%AF%D9%87-%D9%87%D8%B1%D9%85%D8%B2-%D8%AF%D8%B1-%D9%86%D8%B4%D8%B3%D8%AA-%D8%B9%D9%85%D8%A7%D9%86-%D9%86%DB%8C%D8%B3%D8%AA"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001504/%D9%87%D8%B2%DB%8C%D9%86%D9%87-%D8%B1%D9%87%D9%86-%D8%A7%D8%AC%D8%A7%D8%B1%D9%87-%D8%A2%D9%BE%D8%A7%D8%B1%D8%AA%D9%85%D8%A7%D9%86-%D8%AF%D8%B1-%D8%B4%D8%B1%D9%82-%D8%BA%D8%B1%D8%A8-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%DA%86%D9%82%D8%AF%D8%B1-%D8%A7%D8%B3%D8%AA"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001533/%D8%B4%D8%A7%DB%8C%D8%B9%D9%87-%D8%AA%D9%88%D9%82%D9%81-%D9%BE%D8%B1%D9%88%D8%A7%D8%B2%D9%87%D8%A7%DB%8C-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%A8%D9%87-%D8%B9%D8%B1%D8%A7%D9%82-%D8%AA%DA%A9%D8%B0%DB%8C%D8%A8-%D8%B4%D8%AF"
+ },
+ {
+  "level": "D",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "e3adf16dde6e2186",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001413/%D8%A2%DB%8C%D8%A7-%D9%BE%DB%8C%D8%B4%D8%B1%D9%88%DB%8C-%D8%A7%D9%86%D8%B5%D8%A7%D8%B1%D8%A7%D9%84%D9%84%D9%87-%D8%A8%D9%87-%D8%B3%D9%88%D8%AF-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%AA%D9%85%D8%A7%D9%85-%D9%85%DB%8C-%D8%B4%D9%88%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001435/%DA%A9%D9%86%D8%B3%D8%B1%D8%AA-%D8%AF%D8%B1-%DA%A9%D8%B1%D9%87-%D8%B4%D9%85%D8%A7%D9%84%DB%8C"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "ae09a64479ea7bce",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOUVJGZXh2YkIweHBDbFpWbkFreTlBYVV4Z2ZfNjBhU0dGWUJOSXhiLUVGS01DUmFQaUdPdXJQT09QWWZiOTVjTF9QWl92U3VycW5tT2kwTjg2eWZiSHZ3S0F0LWRxZldMeldtcW80UWNHZlFfZ3Rabm5DOHFWOHhla2RwSUxCdUplalFHWlJpSXJrekFsZ05RbGRWOTd0NDlmWDFwcVd2VTk4dVcxdE15VVZpTEdsbVBzYTFn?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.cgtn.com/specials/2026/china-crafted.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8952776?from=most_read_3"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.atlanticcouncil.org/region/south-central-africa/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "95d3351a5e63c912",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQeU9QOC1KajlSc2JvcUVHN3NkamZONUgydFhsQWFpZUhfc1RXdVlfU3JRdHg0N19LaFNDLUJTMWp2cnE4bXJJNGlsd1lMeHRLZ3lrY3Zna3pNMkJ4R2stQTUxTTlRYWdXdGRzUTU2MGQxeDVKRjBsOFJLNmRSZlZPOXBTOVBvYU9lOHNVQ2NsRC1JS0pXTDhiekdPMlF6SVpaYmt0d1FuSk9xZk5TZFRwdzBPYmZzSkk?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001454/%DB%8C%DA%A9-%DA%86%D9%87%D8%B1%D9%87-%D9%BE%D8%B1%D8%AF%D8%A7%D8%B2-%D8%B3%DB%8C%D9%86%D9%85%D8%A7-%D9%86%D9%85%DB%8C-%D8%AE%D9%88%D8%A7%D9%87%DB%8C%D9%85-%DA%86%D9%87%D8%B1%D9%87-%D8%A8%D8%A7%D8%B2%DB%8C%DA%AF%D8%B1-%D8%B1%D8%A7-%D9%86%D8%A7%D8%A8%D9%88%D8%AF-%DA%A9%D9%86%DB%8C%D9%85"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001555/%D8%B3%D9%81%D8%B1-%D8%A8%D9%87-%D8%B9%D8%B5%D8%B1-%D9%82%D8%A7%D8%AC%D8%A7%D8%B1-%D8%A7%D8%B2-%D8%A7%DB%8C%D8%B3%D8%AA-%D8%A8%D8%A7%D8%B2%D8%B1%D8%B3%DB%8C-%D8%AC%D8%A7%D8%AF%D9%87-%D9%87%D9%85%D8%AF%D8%A7%D9%86-%D8%AA%D8%A7-%D8%A2%D8%A8-%D8%AA%D9%86%DB%8C-%D8%AF%D8%B1-%D8%B3%D8%A7%D8%AD%D9%84-%D8%A7%D9%86%D8%B2%D9%84%DB%8C"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1jTzRHN1ZlOHpMNC1CbXJ3X3Q2cVF1UlVOeFZwR2JZZ0F6OTVuMzVwekdGMjdiZTloSHFIOWNucTFDbXhWcHVNOXFneGFONWl6dHlMdUllbmo3QkIzSUxyTld3dFhwZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPTjhJdmNxRkk2Y0Z5MEg4X25mVzdHeERkNUNaUW1rRkdOUXVoaUdRRENYWm55RFk5NXZsamFUWUJMWUJ5dndsMFEwNThwZjVoY1pncjZ4czBicHduekhweUtka1ZtaENJbXdtbV9SWWJDVk5vdVBYbm5FTmtXTDdIUjBYX2hSSTdLU1J2OUsyOXZVaWNFWVpkRE1pcExfdTUzcFVNenVvRHVCbk1lLTIzX01xTjhyNWstRXdv?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001492/%D8%A7%D8%AF%D8%B9%D8%A7%DB%8C-%D8%AA%D8%B1%D8%A7%D9%85%D9%BE-%D8%AC%D9%86%DA%AF-%D8%A8%D8%A7-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%B2%D9%88%D8%AF-%D8%AA%D9%85%D8%A7%D9%85-%D9%85%DB%8C-%D8%B4%D9%88%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNSGJwTnM2dmpHSHpVVlN6MUN6Z3h6Q2JnZ3k5U0xfRFNjNmtKTlJJRHpwVVEzN0ZFYzRuX0NwQ2hERjN0U0hOUDVrbDdEN2RTMFBORTg1V2xxeHVWbll3UElPZ1BtSWx1T25PWndrX0VILU1SRHJjcHhKa0JrdDhzcEZ1QS1aNFBjSzFmZ0F3d3g5TTBUWmg1ZG1WLU9ab0lHbE1tYTcxSzBfTGpwbU9WQnJwbw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQRXNaMWtjcWJlR1QwOFdkandIRDM3UVlZYXkzVndnQWJ4T1NKRTRQckYzUU9DYUN2ZXlTUFgtLU9fcVAxOWFQNnE5clBycXk4MG5IRmhFQUFrT3RFX2JMZk9jVDIwS0FnMUw0MmRjSDNtbnZ5UFVVZ2RKWXFhS0VCc01JTENiSVJlaTlVMERIcktteHBkaHRad2RrXzU4dEJRT1dWR0RYRmNGX2lPSU42LUE4U3FGdDVHM2wwR21B?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/region/263680.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001673/%DA%86%D8%B1%D8%A7-%D9%85%D8%AC%D9%88%D8%B2-%DA%AF%D9%88%D8%A7%D9%87%DB%8C%D9%86%D8%A7%D9%85%D9%87-%D9%85%D9%88%D8%AA%D9%88%D8%B1%D8%B3%DB%8C%DA%A9%D9%84%D8%AA-%D8%B2%D9%86%D8%A7%D9%86-%DA%A9%D9%87-%D9%85%D9%86%D8%B9-%D9%82%D8%A7%D9%86%D9%88%D9%86%DB%8C-%D9%86%D8%AF%D8%A7%D8%B1%D8%AF-%D8%A7%D8%AC%D8%B1%D8%A7-%D9%86%D8%B4%D8%AF%D9%87"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBtbXQyNTZVV0ZtRG9LOGNSTHFSOTQzWGpyZ09nbmZzU1ptbjV5ZGFGNDlLMkhReWdHM2REdmxaLXBiU1N0aXM5c2pUUjl5TU9mOUltdjB2REFaYVdUbWc?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chathamhouse.org/2026/09/what-united-nations-for-independent-thinking-podcast"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: almaty",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "cc19e0d632e01061",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/english/70794-celebrating-the-life-and-works-of-saken-ata-in-almaty.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE1WWVgxckwwS2tMcTVpaG1QeElEaGpITnkzMEVfazJfNVRPUmlRYVY1MkFOdGloVEF1TjBKZWp4TWIzaUN6?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 2,
+  "signals_sha256": "bff6a9bdaaadcf81",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQNEV2RE10VkZJbHJabzZPQUh0NG1xNktGVFREQkZka00xanoxaFRGaktCMllBczJlNEllOHlhRFJWVFFsYV9lNHdOdElGZnUtUV96TXVNNG5peHJ1eXNQZFZmNzNqd2dyWlZ5ZXFOWF9Bb1F3QmRHQkE2a0hROVVLMkxYNllRRzdudDJybDZqeGdjQ1RYWFUwd0doZHBIb01aWV8yN250OV9rbTZpWjBmNUh0eG51bHNManBuOGFIaUlwVGtuMTNGRHZvN3E?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166212/2026-09-13/peskov-raziasnil-slova-putina-o-vozmozhnom-vvode-zapadnykh-voisk-na-ukrainu?main_click="
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001625/%D8%A7%D9%85%DB%8C%D8%B1-%D9%86%D9%88%D8%B1%DB%8C-%D9%85%D9%86-%D9%BE%D9%88%D9%84%D8%AF%D8%A7%D8%B1%D9%85-%D9%85%DB%8C-%D8%AE%D9%88%D8%B1%D9%85-%D9%85%DB%8C-%D8%AE%D9%88%D8%A7%D8%A8%D9%85"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/oil_and_gas/263730.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTFB2aVlQdEJkUl9rQXo3ZUhyMXVNbWxPNEJXWGtqTWY2YmJ6OUQ2QnRlUUFXRmRJSlZkaXJmZFVIXzVaS3pYZjhhY1BR?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "75eb47a513c171ea",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOdFBic0JFTnJ1cFEyMVlvQ1IxUFZIWEVPTzBGUW5mdm1aNWY3R05tYWVvWXZnaVpFV0NSM2hrOFpvVkw0VGx3ay00emhPcDJaN0cxX2lYSXF0bWR1WUcydHF2MmZsU201V2I2d2FTR3A2U3hRWkdWNEU3NmpiNXFQYjJPbW15R0Z2dWxzQmRCT25jTjhJazhSOWdMZWtqd2VucnI3TXpXc253SXdlcDNlSw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE9MYmpPUUNkMjI1Sl9uMTliMF8zQnRLMDhLenZ3V21FU1BWWEowODI1N2d6UWlHYWs1VE0taG9zbmZOR2NyalNkS2Ztaw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5SUmZtX20xRURjMFJ3alV5U2owZGlLTVRjak5KWEhpMks3b0dCdnJSTDZ3cHoxek9xN1VxWFRkYzhBTzZLWDdFX3h2R0kzaW81U3lOUUhUcWlROFVOUTdXTHlaY0Joa0YxbW9Qc3YtOFVQQQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "0ecf42a0dadc576e",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFBxYkJJbjE5bXFTWlo3SEJzLXhIRDZKbHdvbDBoS1cwQmpUU0laY0FlX3pGeFlidW5tbVh2M2dXSS1DbGZVcTZUck1EWDljTXlvQUYtOGtLMk4?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "source spécialisée Asie centrale",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "86e65907c27acd88",
+  "theme": "Faible priorité",
+  "url": "https://timesca.com/our-people/javier-m-piedra/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "ce73e29a441a751e",
+  "theme": "Politique intérieure",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBISjlTZUN5STlyVkNES1lHSlZWYUhRTm4xQTFhMkNta2Q0bUpFX3RfQjJJZ0JsTEVoWVVKVDhPZnQwUDlUdm0tNjk5TDFHM0JyS29VN1pLS1hOZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001687/%D8%AC%D8%A7%D9%86%D8%B4%DB%8C%D9%86-%D8%B9%D9%84%DB%8C%D8%B1%D8%B6%D8%A7-%D8%A8%DB%8C%D8%B1%D8%A7%D9%86%D9%88%D9%86%D8%AF-%D8%AF%D8%B1-%D8%AA%D8%B1%D8%A7%DA%A9%D8%AA%D9%88%D8%B1-%D9%85%D8%B4%D8%AE%D8%B5-%D8%B4%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "4fdc3a1a493adeaf",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE0wVUN2dXZQMGRXQUVEajEzM2h3WUphRVVNQ2RjcTM4VmdDUEtJaHpUUlotZjE3UjF4aDZLS3Y5MXF1UWhYMGkzQ1NZMnNWZHEzVVA3N2xTMllURW8?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chinadaily.com.cn/a/202609/11/WS6aa35be4e4b06d4aa055d7ea.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQMTRESENlRmRUdFBQbDFoUGZuZTI3aDlDLTRRQTFLNml3V2ZVdHJOb2RQc0VZNV8zTzlZaWpETmFhY29fRjVKdTRKQ2tTQjZtWWtvaW1xRzJtOWJJTDBEOV9pYUJSQU9haWVwbVV0a09JVkd3MWlIZkJCN3ZsZDhyNUU4OVpCd1MzWGUtVGtmSmdSVFktM1BueUZaUnRyQ3ZTWmxRZg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 16,
+  "signals_sha256": "eaa58faf6f5f40b3",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9vcWxvQ1h5clNjR2lnc194X3VDTU9ZZ3lONDhOb0lZWHJ1Z0hPbEREbkJYNUh1RGE1RWs5REZRLUZkRDJsREtrLVhJdUw3Tzg2ODRsVWxzX2k?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "ea03da4d1adb6b01",
+  "theme": "Politique intérieure",
+  "url": "https://www.vedomosti.ru/politics/news/2026/09/13/1228399-cbs-eks-ministr-armii?from=newsline"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.atlanticcouncil.org/programs/middle-east-programs/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "a2e95c95fa8f8ee5",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNaUZDamJKYjdNMzBKWFJkcmpxbTdPZDVhVWVNalg5ZWVMWEFySkZGWjctbGRiYnFWSWJDLVlCalhEc3d1cHFIUEo3Z0lOYXJLWjRMTFcxUFJLSlR1OW9xT0prZkwzMF9vSmwxT3BTWHlvd2RaOU9pYWp2VGhIOS1oak0waDZTOTlCOF9Ha1hkdi1LLUNkX3Fmd3dXdVZTaC05R2ZyT1lXNm9rRGlMcjFPTXpNZDFOdEZldzMtaWtqUGpZb2gtYmdvYzdUdw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "f7446605c1ac46a0",
+  "theme": "Politique intérieure",
+  "url": "https://www.chathamhouse.org/2026/09/afds-victory-saxony-anhalt-marks-turning-point-germany-perspective-important"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: turkmenistan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "3b83f8f75dec5cc0",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNdThkdVNrQmFHQk56dGtZeTkzamZWZlAzb1dQeEszT0FramRyelBGZ05mTnJHcWJXVTgxY2lrVmdIM3dKTWpELS1WTnJPcWJtUDQ0cFMzVjJ1dzIxS0NraHZvUGJ3QkNYNzByejNHTXcwa1U1Z1lua3dCWXo0aFlTTi01bEtzYjhYYm9TVVZRZnRkNVpmTFBFcXFzME5qNjd5S2RQbjdXcVgtX2djUjNFX3lB?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "95d3351a5e63c912",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.trend.az/iran/4223344.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/region/263773.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE9ZeE81UWJEQ0duazU0OWY1bl9qdGZGSGpPaDVPbHVUajJkZkhXcUNwOTRVMDVVNnlpdzhwa2d5b3dmTWRwT3E3ODZKZURCeEJC?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8953005?from=main"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxObi1BSHhqZ3MtNE5wOFd3NXZ0WFlUYl9XWWt0RzgzQmJYcFRreVVCYmJNaDVWay1PWlU3NXM5LVV1b1czVGVER01IMThONWtCZUdIZGVKdEJZeUdYMmpoVEV6UEE3ZlU0aEs2X0I3MjVEYkZkaEFTcHhOcndNTzFQWHNFVV96WWdmUjRhbDB6aWV1RFk4Z3YzVmJtdUU2UXVnc01yS0J0WDBrWDZyUzRzcHAwa1ZDNTBsV0hpRA?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFBYS2tCeGJqbjNwQU5OYjdXbE9oQ3ppRjRNT3Ffb3pyc0pkUFFVNjhYZnhheGpGV1RrQUJKTXg2T21nNDJQQTNQT0VYWXdzUHI2dHJYVkdOSQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/nation/263709.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOT0NJWld1M3R6em5sX1liRldoT1FuRFJqd2dSVWtHNGVlOW5fWHJuUXFmMDVWbFZ6RVd2amtfZmREbDNKa1ZmZ2M1Uy1xakRPMDlSNDd4aTduWjZzem82ME4tQkM2WnkzdGFCMncybFIwc1dxVFp0M1JHRE42cklDRG1pRV9TMUFQdGFsSWwwazI4ZmNCY1MtbTBJRkVoV0xac0NwLWpJbTkyWFQ1dU9sM082VVRkZGh5UlE?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "ba7d9bf8a3ad6097",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5kMVJrblZjdnpKVVV4SklLelBjaVVPbXcxWV9ONGdoU3BlN214RXNxLWxIVWRhVG9ZazMtenhKdzhweG1RRUtlNFRDVUg5dVVmMXE1T09KaHhYbG8?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166216/2026-09-13/dva-cheloveka-pogibli-i-shest-postradali-pri-atake-bpla-na-nizhnekamsk"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: central asia, dushanbe",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "89c52bc74919a206",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/english/70595-the-dushanbe-tehran-oil-bypass-central-asias-new-energy-dilemma.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "b3ee8e6e07772de3",
+  "theme": "Faible priorité",
+  "url": "https://www.fidh.org/en/en/region/Africa/democratic-republic-of-congo/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE8wRS1ON3pwemxtSEFUSEMzWGtZa05VTEpuNUJYLUVaT281MWVQSVczUFJhQ2liMkdOUjFoaEVXTTBNcXZ2YUhLWUhnM05qYmxxU0RnZlZHZWxOU2s?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "source spécialisée Asie centrale",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "86e65907c27acd88",
+  "theme": "Faible priorité",
+  "url": "https://en.kabar.kg/news/trump-says-us-is-now-worlds-biggest-oil-producer/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "a2e95c95fa8f8ee5",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOaXZQZ1R5bV9JM2ZYTXk1eVp0dWVZUEZuV0poMzVtT0NCcGIxaVdISFozUy1QQTBjczc3cDN0cThWQkFqcnVHZDhHT1VsZ2FmczQwNkVTdTdXbV9FblRYaDF3LWkxZDE1UzhzTTJXd3NMYTFnZ1p5ZkZiSldTbDlHUm9JMVA3UFNQQjgtZk1tRXFWLTc0T3hfT0hkcElyUVpHMUhWdg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8952758?from=most_read_5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTFByeXRuSVJpWkVDbEVhamphblJwUDVzTnc4Y3NIQmxkMnhQZTJSTFMzdEdUeS16WVV3M1c2VGZXbUw4ZVdq?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "c3becb1994d5fd04",
+  "theme": "Politique intérieure",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/australian-model-navigating-us-china-divide-malcolm-turnbull"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "d2159cd726ed339b",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/iran-ceasefire-and-gulf-what-comes-next"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiY0FVX3lxTFBIdjJNZjlXU2h5dkR0Vk9KLV9Vb2NVSXFkS3A3Mm1GWW1fTXY5My1VZXNPd0xqTGJHbDhNZDNtV3hyRFJzaVJ2QjJRVk4xaEM1N0QyUHcyVUpHdWNKYXA4Tk05NA?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPelo5TnprTHZuYTRfZ01KWlM4YVMwb0I4TUNUOXZ3UjdtZEtCLVI0d091X1EtZWd1MDdQcVU4ZGtoYzdtcWstSHVwWGNYOXVGSldVMWxGVV83WmRocmdKSk5Nb0puLVNCYU5pQmlaWlc4LUN1UjdZQ0czNzQ5a0JOck9FaGl0dkhjVlMyVTBoa2dQYkVnRUtFRQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "source spécialisée Asie centrale",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "86e65907c27acd88",
+  "theme": "Faible priorité",
+  "url": "https://timesca.com/our-people/askar-alimzhanov/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE9RZ2xEaG1yc0tlVnNtMnNEOGZ0VGFyOEoxdnpnUTB2WkJEV1ZKYXVlYUZYaGY4RzNPbGgxdnJ5TzI4MkFyWWtuXw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5ydHJHUkM1SHROMmdZaTRpUFZpNm1GWEpsaWZ0TXEtWl9RSW5DTWkwYmhDRDExUVh2RG5kT2QtbTBQa3JoRVhTNjR3LU5USURkUGZqZENGLUE4dw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "source spécialisée Asie centrale",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "86e65907c27acd88",
+  "theme": "Faible priorité",
+  "url": "https://turkmen.news/2026/07/01/v-rossii-na-poryadok-povysili-poshliny-dlya-migrantov/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9uOWRjUVpZQ3dnMGRSUW9WT2JXVW1DSVhZekQxM0xjZU1XVTlpTEsyUGVscl96THlQLUxaSXBNeG5GWVpRZTE2amxuWUNGSG1mbWtFczdYSVpDb3RDZG1EZDNn?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE05djE0Zy02dk1rTFFSaTNaeGN0WUhJNFlsV21Ja1M3LVZPMWFDNWE3ZXFaSHFrbzR0dW9jT0hnYmRMS1g0WXFNSzdLUGdhTFZEbWtIMF9mamxZY2c?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE9GZFc0T3h2a1FheHVFUjROMy1RcGxnSEZhU2VPd0g0cjJreTZYcFBhUVBiR3N3a2E3Tl9WcmZJVTIwRndk?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8938274"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "8921de8ae9c29519",
+  "theme": "Politique intérieure",
+  "url": "https://www.fmprc.gov.cn/eng/xw/wjbxw/202609/t20260913_12021286.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.ng.ru/news/846895.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOWHVuQ256ZGpkR2dFUDc0dE5yRnRiLWFHNW1wUGh3NUZvRTFTZU1XTWEtTmJnUjYzZEg4Ny1HS1E4T1lMV1YxWHdzbHgtckV4R0lkNnBPUG9uMDF0RHQxT3l3X1NKQXNWcWc4UjAta1gtTWwzd1duYUViYjFaSC1jMHlBQnhLMVNObjltMXZFM1lGU3R2VEFtU0FVSXF2dFFEYkNpeDZWMVBkZzg1a1lrZGpn?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001520/%D8%A7%D8%B2-%D9%87%D8%B1%D9%85%D8%B2-%D8%AA%D8%A7-%D8%A8%D8%A7%D8%A8-%D8%A7%D9%84%D9%85%D9%86%D8%AF%D8%A8-%D8%A2%DB%8C%D8%A7-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%DB%8C%DA%A9-%D8%A7%D9%85%D9%BE%D8%B1%D8%A7%D8%AA%D9%88%D8%B1%DB%8C-%D8%AF%D8%B1%DB%8C%D8%A7%DB%8C%DB%8C-%D8%B3%D8%A7%D8%AE%D8%AA%D9%87-%D8%A7%D8%B3%D8%AA"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 2,
+  "signals_sha256": "02f2998175113bfe",
+  "theme": "Politique intérieure",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE85b1NNb1BPZFd0N2FDdG0xSm90bUxkVGhZY0FReUhjeElabHQxd2k5aHNCd3pRTFlZdVQxOFZFOUpfS0xKdnVDLVh6Q0k1dDFxX3Y5cjMtcE80Zw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: central asia",
+   "géopolitique / économie ordinaire",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 4,
+  "signals_sha256": "37830d5fac12bc00",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOdUtQQUt5SnBBUnNzc0ZTTnduSXhPSkJMSUV2Yk0wZFluelpjOGdvamhTNWRDZUxCLWNnN04wLXdqSTlQNzg3WmhHN0pUWDRwY3hQR1hYQ3FxZVJVS0ZnLTEwS1hGM1Vsckp3cHN2RUk5VWVMWE5Oa2JZYzN0N3ZOYlBqZ0YzMk5RQUh2c1JZQno4ZVJxWmh2Y0w1dw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE52UVRfXzVTWHZKV2tyUFJyWTlpQUxDTExoUGRJM2M3V2RiZ3pvbjd1NXVLZm4yRVJ1aXMyTGM1TEhCYzR3?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNSkIxV2x5bjJDVU1GbkJta1VwOWp4cnlkcUpodWRwMWRjNDZMUElnaGZVV2JfWWRUbnBzYllmZkFtakI4WHdiZDJnRFpXQ25wMTR5QlBCV04tMzdEWFY0S3NHTGdFNGphRUdvN1Rac1h0ZTdUbXFtS1E1b3ZvbHdCZjVFMTllSmcxeGQ3cUxqNUs1QlRNdURVQ016NkMzTkdf?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFAtVTktSkhvZ3U1U1k1TzlmbXRoenQ3dUd5aXMzT2RObHBiVURmV2JsdnpBNXFYNHpRajVLZlNaazFjWFZFZ0RtODNSUlcwQkFERUxJZzBqX3ZQcDdIUm5KOHFmUTM?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "1d697a6e28ee375b",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBia1FHZDJSSVExRlNzeHJSYkdCWDNsbld1R3hsOVBXWWxmR2FzMXN1VnlNa0c4Zmk1VlVCa3NsT2FIbFloZ1R3WjYwY2ZTZ0loRENKeWh2czlpZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "0c6753c49a1f58c7",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.chathamhouse.org/2026/09/chinas-humanoid-robot-industry-bubble"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: uzbekistan",
+   "plafond V9: sujet non-HR"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "a5b1308dab41ab3b",
+  "theme": "Politique intérieure",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/uzbekistan-assessing-10-years-rule-under-mirziyoyev"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE9CT3NoN0VVbnM2TFRQVi0wVjNxU1NMcmo4c0JYMzVGbUhHMlVEaTRzV2lhWkZCWE00RzNjekplNk1MS1VN?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.cgtn.com/news/2026-09-13/Int-l-experts-look-to-China-to-advance-Greater-BRICS-cooperation-1QoJoB5vSZG/p.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "fe21b0d91fc16792",
+  "theme": "Faible priorité",
+  "url": "https://turkmen.news/2026/05/06/v-turkmenistane-ot-vrachebnyh-oshibok-i-halatnosti-stradayut-dazhe-pacienty-mediki/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chinadaily.com.cn/a/202609/11/WS6aa35c61e4b06d4aa055d7f2.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/region/263778.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chinadaily.com.cn/a/202609/11/WS6aa3b57fe4b06d4aa055d9a7.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166136/v-vengrii-proshla-aktciia-protiv-antirossiiskoi-politiki-vlastei"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "8f563401e8a5d10e",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.atlanticcouncil.org/region/united-states-canada/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8952711?from=main"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE13bFA4UFhnNVVwclpTMW9PbmdqVDFiRWlScjByRWUySWJvamtmMnMyRnVaM3FZSWRVd0RZaUs1Uk1DMjhUSzRnUDRB?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/zhasandy-intellekt-adamzatty-zhoiyp-zhibere-me/33852390.html"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: казахстан, казах",
+   "violence / droits des femmes"
+  ],
+  "relevant": false,
+  "score": 28,
+  "signals_sha256": "fa4b2767c2408452",
+  "theme": "Droits des femmes / violences",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE56djhMT1J5N1RJbkZYalhYekYwbm5scjRwTHNXN1AzdWEzMDI3c2Rwdjg0cFRRdG9FbkRyLVVOS0VwODlZOUhRUmlna1BwMUowaGVqMlJMeng?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Ouïghours: uyghur",
+   "plafond V9: sujet non-HR"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "e6f0f9b65d3c7d78",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1PT1V0VWtZSGVicWlIYlhzRTNsYmtCRnZhN0xpdXpuSGliVGJlM2tUWl9kZk40YzIxUHlXVWFiMG5ZTDhZeWxxNk1JaG9oT3UtTk5PZGpBQjhpazQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8941306?from=multimedia_3"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/dr-fatih-birol-iea-executive-director-strait-hormuz-crisis-and-global"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQMlFtLWRjUWVlTGViNnFPRlZQTTQyQmJtYm5hNTBrbnp5YTBfcjY2UTNCU1BHM0JCMDNpTkhMR19pVXFlUnlyTzBILXN2R3NMSDI3Smowc1lKcXVmLURoOFdZdDMzWmZfbXlCQVJmSVlLdW9IZ1Z5OV9vYkNpYktkVjVqOUZLd2hOSXF3WW1aTTQ2YXlNWjJ3Vw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Caucase: azerbaijan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "8f1e854701c690f4",
+  "theme": "Faible priorité",
+  "url": "https://www.trend.az/azerbaijan/4223216.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE9kSnYxdEFHUzkwNGYzdmhfOXpuMkRFbE5YNVJNMi1ZNVZtSlhTTFU4SndONE1JVUFscm82THRacnV4ZFFoYmZHMg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Caucase: baku",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "3194d7ac21ea1c06",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/nation/263782.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: tadjikistan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "c89edc8ac0e7b780",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFA0MDlFa2N6bjB0cXJtQjdxeFJ0NzB3ekwxSW9WcWx2enNyMUhoUzYwTlpUMTZyVWxwTWt1UVhHd1FkYjNVNFVmS3lSWmhyRndJSVFVLUREbVY0czE1UzhjWkVsWUhMZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.vedomosti.ru/spravka/chto-takoe-mtsk"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "0ecf42a0dadc576e",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166222/na-ukraine-45-deputatov-ix-sozyva-verkhovnoi-rady-obvinili-v-korruptcii-izi?main_click="
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPRHpGVVZGTnIyXzZ2NkEtbFRjbVR5dkt0RUc3SUNwREx5bF9XSWZWbl9Wb1ZySVExbFMyLTRtOGRxNEY3LWU1OW5RN3cwWGNmamVvRUhibUNrSnBfbTFaWk1uVmJfWGtmckVETGJoTFg4c1NqQXJxd2Q3NFlPa2ZKekxHVXVPZU9fNUpoa0FoWHhLQjk4eERwRWl3?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/33852292.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "80692e3cb9391ab4",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.chathamhouse.org/2026/09/north-koreas-military-partnership-russia-has-consequences-far-beyond-ukraine"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fidh.org/en/en/region/Africa/guinea-conakry/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBhdE1WaktWTlJha3J0ZjlTaVVnb3RpM0VvTVFFTllNVlhJZTgtME5JTHBpR3NmaDJoQ3QyQWhVN0J4QXJsWDZzenk3OE1JYVdtcDJEOUJjR29qYkRn?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "76c12316b850f027",
+  "theme": "Politique intérieure",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBOZ1hWQThtUEtCQkdycGwwSmxudmlpWmJ5MGtSdHc1WlZWNFFjOVhZcDcwUWxkLXpmazFqN2MwYld2ZWZwSFEzejljZHVBcnBUWmRKZXZ6M1V0NkU?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: almaty",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "5d019202733f4535",
+  "theme": "Faible priorité",
+  "url": "https://en.tengrinews.kz/kazakhstan_news/police-launch-inspections-at-almaty-stores-273468/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "0891ab144bac6c4a",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOM3p6NlptWnFCdldxaGNBLWlTVGxkNUZzNHo1MV9mTHBkQkNxSVdLWG9mTF9acjNJbUtIbFFrTHB6clR2UGJYRUYzOF9INHE2WnFLMGtsUTNhdkdfWFY1aXdoTXBBR3duUFdlUzk4dUUwcnJqTWVDd0lIdDFkSnIzU2o2TnBYZGpFYVhSZzhnNDRrV3VNdVNqd0x3SFlSZHNsX1JNOWJyT2NnUk1LMjFFTmRqUjg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE5UbVk5R2tPQTU4UFBiNl85Wlh0NldxZjFGWVktQk44UUwwZmlldmhRV3R5QWVfS0lSSndjb0lnNXlOdzd2emxmLTRn?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: ouzbékistan"
+  ],
+  "relevant": false,
+  "score": 23,
+  "signals_sha256": "babac1b489538f7d",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOLVZKek93MjFrOW9fMHNQd3FUalh6R1hVd1p4RWhIOVZ6ZkFubzZldENpU2JqR0tXX3k5cjEybDlUMy1sWU1sMDludV9yVnMxcDNrNmIxZWRXcmxQX2Y1WnE4ZHlkaEl4UERWNk9wN0p3SjJxU1YzaVl6cjN3NENINjB6OVNGVG80MmlwQ3BZMmtFNUpRdDhCOUtJWmxJYUVISEZ3NjhB?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166219/2026-09-13/v-kremle-soobshchili-ob-ozhidanii-trekhstoronnei-vstrechi-v-obozrimoi-perspektive"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "b0251685a5899f74",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxORjBQWEUzUkZSTlRQUjRyaG0tNkR0dFctSC0xR0pMVTU4WF9rT0luZ3cwYm93MFBfalktR1lHeU5UVEdqSk5hU0szTWRrSXRTTkVIRkFJNkFQeklubUlVWW9NRExTeF95SWpvdUs4Q0IyTHhGY1BhaFI4SUtUdVR6bzFqU2pwOEpyWU5TWGc3Z2RlaHVRemdFTnlqVVIwM2MyMkl6d0NPbEtGMVhKbXBLYWpTd1QzLVdSTkhkczRLMTgycmFF?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9EWlVnV1FEeG5JTWJQd2NfVXk5d2lvenNnNUdHV3hEUzFWTmpNOVRGcEdVOFBqVzFnblBjN1hFeXIwN3JXVTlEVUY4Zkc1WThJeXhIbF94RlJxX2M?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: ouzbékistan"
+  ],
+  "relevant": false,
+  "score": 23,
+  "signals_sha256": "babac1b489538f7d",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNb3o0LUMwZ19XUmFvaTE0VHZ3UTYtZ0Z3bXhjRFVVSlJrdF9yWlJRc05JUmJ0dFFNR2FESHNOT3FWbUZpYlN1TVd5SVFDdloxaFItd1hSa2lScWV5NFdxT2pMeUYzZUF3WEowdWtJbUlhbzMxODFHMnJTTlRoekVWUndEZC1oSnNmc2wzTXdvWmJ4VTN3aE9OU2tnNFZoV1lSc3pmdVBEMA?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.atlanticcouncil.org/security-defense/nuclear-deterrence/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Caucase: baku",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "7e1fc038f900231f",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/nation/263736.html"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: tajikistan"
+  ],
+  "relevant": false,
+  "score": 23,
+  "signals_sha256": "ab93bd6a6261a9fb",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQWUhDMjhoREJHc3FlUExZS0JwbVpzbWxiblNLTEdQX0JzbHZEa0ltSDk3N1FlUm9EZ1B0X1hSeEgtX3JUalRPT2JZdjBGUnMzZG9iOXJNUXQxWFdTV3hrMktQQWVpTVd0SWZQa0dwUVVnQlNDWnQtS3VsOU9ZSjhDQlhGT0FfMnNrN2EzVGg5X2U3S05sUHdTTWNFOGFOOVVDWmk5ank0cDh4QQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001515/%D8%A7%D9%BE%D9%84-%D8%A8%D8%B1%D8%A7%DB%8C-%D9%87%D8%B1-%D9%86%D9%85%D8%A7%DB%8C%D8%B4%DA%AF%D8%B1-%D8%AA%D8%A7%D8%B4%D9%88%DB%8C-%D8%A2%DB%8C%D9%81%D9%88%D9%86-%D8%AF%D9%84%D8%A7%D8%B1-%D8%A8%D9%87-%D8%B3%D8%A7%D9%85%D8%B3%D9%88%D9%86%DA%AF-%D9%85%DB%8C-%D8%AF%D9%87%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: узбекистан, узбек",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "24c772210aba7c84",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOMTV4bXdoYThyMGw5Z3RDRlJOZHQxSlI5dm5lRW9TcWREVDZYQTBJRGMyaFlGbDZiSkN0ckhVSmw2YlY4cnBsMkkyeURzUWNHcUp3VzRXa3BtMFZ5YW8wNHdyTXd4Y3llOWFqdU9LZDRtdUpNa3VSRFlUZmdpSUxteWFWdGlvQldxUl8tV0lEZ2ZEZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxORHdaa3ZEQkdualRKV1diWGZ6YTNXdHR6TVhSVFBrM0pYTmx5N0xfZHIwM2QxZXktQ3AxZGRCY3FVSXA5Y2VHdTQxRk5meXVHSmtKVjlibWg3NGZoMGl2OV9MUWI5UExXR1ZINVB5NXBTcWJ3dnhYYmVYdHJ5RkZXVVNiekw5dGxidXB6c3FKVEtCdk5zM1RyTk9ZYXo5YmEwNGR5bnNROUMzenE5dmNBWA?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "7f398afdbb2f7715",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.atlanticcouncil.org/dispatches/the-state-of-terrorism-25-years-after-9-11/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "histoire / culture",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "37687aef670b22b2",
+  "theme": "Histoire / culture / contexte",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/film-screening-amerigo-search-american-dream"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chathamhouse.org/regions/africa/east-africa"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chathamhouse.org/2026/09/can-uk-escape-public-debt-trap"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTFBvNHBidzQtUlFlb0FYUjRSZHVjTk9odVk0Rzg0UHJOMjVQWktvZmpzWFFoVmo2SXluXzlOdWMzcUo5UmlD?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e327e8b18851659b",
+  "theme": "Politique intérieure",
+  "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNZUotQXMxMl90WFQtaGo5WnBXU0tQZ3ViT29KRDN2NGtXOWZKbVJTaEcyeVg3aWVoc2hOX2V0VGlBZ2NtX05UV3QxYWhiTEZ5WFVJZUhBVDJDTlpiR0p1QWY3WEhKWTZOQ25qREZURWIzOXNibENmRDdvX0xIdFpnMGxHclE4NmJIbGQ2RXRzRTEtMzVudjZrbXRkWVlQSjEwRVVyOHZXeUJiajhhTjI2dld1ZG1EdU5lQmwtUg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "f1946d9daa869036",
+  "theme": "Faible priorité",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/europe-after-nord-stream-limits-energy-security"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: узбекистан, узбек"
+  ],
+  "relevant": false,
+  "score": 23,
+  "signals_sha256": "ea28f67fe9dcd00a",
+  "theme": "Répression / droits humains",
+  "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQekpnRFliTVV6eGZPNzdqaGVpMEpEVzMtdGxaQk1UUlIyVUFVZTFZdHpYMVJGenhhMm45aVJkdjJJb0EzdlVNUTZ2Q1RfRTNYdDlDbk1LUGk3ckx0UjZqLXB0ZUJGdnBPZlk3cUdOXy1nbTREbUZrNWUwVUoyMW1qdmhOeFpwX0VMQmpaOWZCMlRsNjN3NkFseXVESFhlckEwa2tSYWZNcw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "bb5549809b80999e",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQV181N3RZQXNPQ1ZzRDBnSzM5dmhTdUdnUl9KWTNrZk1EbXZNQnBoOVFIUW9wVkVseXIzc3ZzU0sxUHJWZHBheVR6NmZGdUJRaTA3SFExQ2I2UklHZmxDV3V4ZjNYbTRpQy1VdHpQQXRvMXgxeU5JUklTdkJzMmpWTmpmWWZLT1NvbEtaTWstSEpZQmhNZlB3SkNXLXZkYXB3N0FtYXN1am1tOFJ4b0F3?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE4tbEJ5d3VaVElOS2llRi1sVlJDenE1SXhORk9uc0E5cC1CcUJQU3FhV3NXMFhvUm1mcXBpVGtoZGhHN295d0RzaXdua2tGT2YxQlE?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "1917856865a025f1",
+  "theme": "Politique intérieure",
+  "url": "https://www.chathamhouse.org/2026/08/what-burnham-government-should-do-its-foreign-policy"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE5lUHpBakdVaTNMa19WUWRvZ3BNcFJjQ3p4RHFKVUVBbHBUQi13d3R5MVc4NGVTU1F4Ync3WVFrUGVvVERIbUZ3RC0xSi1LblE?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiTEFVX3lxTFBaOUtLa1FiUUVNcE1heXBhZmRieEJfVmlBUERJOXhkRGxUa3JQSjVXT2llVmROWDRjQTRsUGp2cFB6Qm9CQ0NSektraXg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8953443?from=top_main_4"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE5zcnR4c3VydkdVQzZlY0F4dWJtRnd5aTFQU3hYLVQ1UmZ4dlFCRE8zSlBVZ2Z2ODBRS1NTRm5MQ0JUa3hUdUFsV1FqOFhVdw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "017529b4c4f5e1cf",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQdlc2ODRWbzc4Ujc2bkpMYWU2dGtJU3JNdk1UeHhYbThocGhLbG9WdDVGd3JpdlIxLUNRZFhWZU80TXhRMWk2RFVaYmVwRXhVdG9fcUl3Zk5Pd0Q1SHpzT0w1aURMQVVxUURyR2lZYTZGbjNfT18yTlBMRml2bTZGM3dDaWNKNmNfelRuLXlsWmw1SlIwNHY0c3ljY2cwc0pma0tId2VtUjBpVWQ4OE5TeE90QVFrWFI5UTZ5eV9HeWhVQ09WUGc?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "e87f33994bb5b5e5",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPUnZlb0E5YUJ3LVRUMURvcHN5QkQ0LUZSZjZLNEtHQy1OM01qbS1CcDZBN0hxcDdaM21Wc25fWmg4RVVIaXRQR0E5XzkwZVdRaHllM3o0Q2hRWlphdDl2SUxMd1JBMkExbmhUaEhOalJxUm14dmhlSWVyWkZwNVZ1RWpwc1h3enkxUWx0ZlphcGIwT0NHMmFSTHJfN2NZbWlxd0JrT2szc3dId2hDMU1F?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Ouïghours: ouïghours",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "1f074932df0b1f12",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNQTZqMkpfbHZlUXA1bmdhNFZZUkVxd1ViczFRUnVtQU9GbVo0c3QweV9OUmhRTWxwRDFaVjZjek1ZZ2RjY0JaMzFZazJYSjBQei1fNzFnSE1nbm1YczV3VFpEaG1ELU9OVGxPYy1tb1JRZTBGRGJ0WUt6OUh1TUk1aEhRN0IwVW1wUjJXMHNGeER6cTgxTXlxa2dMdjBuNWdxRHc?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9aTmt2clZJQ0dZN2dFS0pEXzB1aElaRjB4XzUzR0RRZV84TlpidmdjY3FIcUVqbjlDbm9vQnREREhJRVp1U3VoWkFGWE5kNFVNS0JYZEctMTZydkk?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "c6c85e1f8d511404",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/perspectives-ankara-security-and-defence-implications-nato-summit"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "e87f33994bb5b5e5",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPblRKZjFET2ZBM0tzRTFQRXQtRGhIVmhPbVJVMzRiVGJmZW50YW5XWGFCTEFLM2ZROXhMcUJXYzl6d2FiMGFvLTkyNUxyT3M1X0Q2V2tMQ1p0T0VseHJhYjBJTmplX1QyVHJ4VGVFazFNaTFyUURDMkxYZlI2dC1BTHF2bVdlYnRKWURSQjktSjE5UQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001664/%D9%81%D8%B1%D9%85%D9%88%D9%84-%D8%AF%D8%B1-%D8%B9%D9%85%D8%A7%D9%86-%D8%A8%D8%B1%D8%B1%D8%B3%DB%8C-%D8%B1%D8%A7%D9%87-%D8%AD%D9%84-%D9%85%D9%86%D8%B7%D9%82%D9%87-%D8%A7%DB%8C-%D8%A8%D8%B1%D8%A7%DB%8C-%D8%A8%D9%86-%D8%A8%D8%B3%D8%AA-%D8%B4%DA%A9%D9%86%DB%8C-%D8%AF%D8%B1-%D8%AA%D9%86%DA%AF%D9%87-%D9%87%D8%B1%D9%85%D8%B2"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1kWHNEZEVPVGdTTElBaWxPUzltMG1wNWppZUVnTnFKZjdFTm9Cblppejc2TDZjU0RhUVF6dGpYMXZGcUV6cW5vMFNyLUVUMS1Dd0MtNTN6bW4tZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://uznews.uz/en/news/103371"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPTkh4b1A3VFdfTEJ4NWM2eVVvRkdla3FRMThqd05rWUQ1V0VCYnN0MldEd1pmQjNWa3BWdW9ORnpMeDhLNFIyc2hfQ1pHVm9OTmpudlVhcHJSaE5qb2RpY3lMSWRnUXItWTRqNVYxdmpvdGUwalVhWERkYWd3UDFGNDhJNA?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/863544/%D9%82%DB%8C%D9%85%D8%AA-%D8%B1%D9%88%D8%B2-%D8%B7%D9%84%D8%A7-%D8%AF%D9%84%D8%A7%D8%B1"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "source spécialisée Asie centrale",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "86e65907c27acd88",
+  "theme": "Faible priorité",
+  "url": "https://turkmen.news/2026/06/04/akula-okazalas-zhivuchey-korrumpirovannomu-chinovniku-sdelali-vygovor-no-ostavili-na-dolzhnosti/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Caucase: géorgie",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "eafa2a3e1cdcc300",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPaFFfc1pqczFORWNJRXhxX1NES05MRGdQcTI4My1kZWIyVi1fTkpzcWZRMVVDZmp5dUt1ellWZW52RDVVdHYzQXZzaVVYS2trOHZvWVZHWl9kUkdsaDlkd0s4YlNSWDVzaTllN0o2Rms0Y0VIWVhRSUxsS2NYdzFYcEFKclZqMmJVNUgwRi10ZGNWbTZkbG1uSGNZMUNyeDE3VjJ4Wm1YOUFuTjZRUzg5aw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPT0s2TDQzNW5VUktKbWpHdWRyRzZKUHJXdXNHSjVZT2hEaWxpYmR5LXh0cndmdXdaZTF1Mm5XMDM1MkNFMFRWdWJKTGNOTmhqSDlqX3BTRkoyUEZxcUlISnpaQmFsZHpieXZoQmxrV1Y5Z2NBR3FleERBSTRyaHJseHRaaG91ZE9GNzM3UDQ4bVloSUs3YmdIbXhnanFvcHFRVW4wSUpjbURiZUN0ckhkSXY5MHd6SDNDaXd3RUJxTDBQSTg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "a2e95c95fa8f8ee5",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQZy1yMEpVNEUtYk93djMtVkJkdVppYWNLeU5NWXFlMTRDbVh6OS1wRkd0TTJhU01qWVBEZXlPb2JwWkZMZVl0dXhNR1RLSDFPSW0xTi1Vdzg5VkhnYUxQbmpnTTV2SVBtOG5nYk1ULUkwSVhORzZEZUNHTnRNQlQ2V0lrZl9kR1hrX0g0NzE5WkN2ajRHUm1EejI0WDhrX3Q5TXRJOVNRNk9mM1NvQmp4c05PdXBNWUJpOHc?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "b0251685a5899f74",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOMWNFLXFTaERWT1M3RG11LUprdzl1b090ZUpGNHQ4UUhNR2xibHJaWkJWczhoOEgtS0lLS1gyQ1VoNUlIQUtLLVk3N3VPRlRaT2IyOGozUkdPRklzUWRaT0ZHc2VFX1I0bjNUZWNkeTctTVRFb25lV0VINjFYMVA0V21Uc1pscjZ0SFE4WUxzMHBDS1ZqZ2ZvZFhaM2VGUU1NMlMtbkVfamdwOGhtclNVY21fRkNZdXNRS0N4UGxBY3VQcGxlaV9TTFpPWUU?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBQYy1ZSDhUMEJUNEJhRjFoX1hMVGkzWjJWWlFadWNMeHdlcTctTFIxeVF2OXVodndqV0NmWjBkVnZmcFMwSXowVzRpejNLS1l5LTRmeWRVaGoxajY2Znc?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166170/potreblenie-alkogolia-v-rossii-dostiglo-minimuma-s-1996-goda"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Caucase: armenia, azerbaijan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "7f18fc14591fe23b",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOWEZLWmUwOXBURjE0bTZWbTBqMWp2ak9CT0NlUzR0alFucXVvNjNVMHQwTllndFJoMUZ0SUxWYlhoMVRaSXV0Slh0ZGtEdDg5aW0xS2J5VkFfd2Y4U085VnhmR0tIckN3V0x5VkJWUUlhSVNMVXVKcXFCLWwwbGJWdVpYX09feFVmUURZN3NqaWJOaHFWX2JoRmpB?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBNTEpWYThrbzlXLUg1MmJ6ZDBjSlhOU0g4RUpnQlFueS1HeUlZMFExUzFReUZZX0dpN0pJZ0FXYVAwMXd6ZjRKS2lXdC1hZ1NEQkVXcEx4Y051emw0V1p3THN5Y3NCQ28?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8952919?from=main"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "4fdc3a1a493adeaf",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9OVWhERzdnZm5DZWJ3YzlEdWhFYXo5MDZmbFhlZTF4MmVpRnEza0hCZE9aMDJlVmR6dXpxcnpVcVVGbWVtWWc0cmg1UTlhT1VjblAwOF9JcWZoVHJVUnlfZ3ZB?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "e87f33994bb5b5e5",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE5ValpHLWlzQ2ZndUV3cWl4RjVEQTNWa0hHQ3VGY0pRRDVia3NQRGRkTk5fUWtuektaZWRJMWRUN1Y2S21oWGstajRYaGpYaDZFN0JrYW1xRGtvN0l2RlZUd2daVQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 2,
+  "signals_sha256": "6817f4d2ebbd7e80",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE93dTBtTmxCcVVpRHhsSHBCZjJNcnIzWTZjOXEyQXNwdWc4RnBXa0N2akxWb0hXaTBXNTVoNEdVOXhCallta0dKcmxjQS1INFdaR09uaElPU1JyQQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "df06a2c8027dd2dd",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/english/70657-the-week-in-kazakhstan-too-early-yes.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "1ff16d5cf08c7d3c",
+  "theme": "Politique intérieure",
+  "url": "https://news.cgtn.com/news/2026-09-13/President-Xi-addresses-Session-II-of-18th-BRICS-Summit-1Qp1cqB3v0c/p.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "df06a2c8027dd2dd",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPd3lZVlBjOWs3akt2aDdXZHhhVFgza3VySWZNdXpLQ1pHOFp3S0hMUFdHekxseG1KYVJEUHZycTQ3OVFFeTQteW5yTHBuQjFLLWJZb0djQjZYWGJxREdlVXh6a1NIbE8xaS1VTHNONjJTWWtyWmxwZ1VpWEpjbXp6cHVrZmlHZXRld0NLYXZEMmM2MF80OEdUMXQ5M2d4b0NOVVRMbmZXZ0tLOVNpd0M0QmhjY042WV96MU1uOGRnNGU?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/nation/263768.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "a2e95c95fa8f8ee5",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQYW1CSjhPSTVVSUxZRW5YNUtrOVZ1aFgxZWNkZUtiVURMNUVhOWNfSEF1QjJvZ0xaaUc5Z29JY1ZrUDJDZTYwVkNQZ0tlTF9neGh6UHZ5ZDVFX1BCX092bk13bTlYb1I2bTh6dC1RbS1UM09PX3psaTV6OWlFSVN4M0Ffd0REQUdyRWNrai0ydDhIcDFPUndBNExXamV3cm9RbUEtNHJFbFZ4aDZrRFpFU0FWSQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/persona/69627-kazybek-orazbek-scenarist-a-zakrylsa-na-god-i-nacal-pisat.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: казахстан, казах",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "f6edf9ea5724174b",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/avtory/70097-pocemu-zensinam-v-kazahstane-sloznee-kopit.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNWGJpM3d3LW9HRlNDRTdzQmhOd054YVYxVTVEUWtXNjB0V1BSS2p6dkJveldQYktfYmRIanR4dFhMR3cxT2tzcDVrU2pUSnljV0NhcVNqUFU0UUpMU0hETWlpWVdiNmJ1bHRhSXdLeFcxeV9XWS1iSU9rUU5pMDdqVWJONFAtNXlfQWVIdldUYlFCUW9lLVhJZzZCWnhUaGJfWXRkd2x3MVNNSUZWTWF5RDI1dGxLRWN1Z2gw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chinadaily.com.cn/a/202609/11/WS6aa342d4e4b06d4aa055d6e9.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.chathamhouse.org/2026/09/how-did-911-shape-world-we-live"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: кыргызстан, кыргыз",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "5006bf523a8ffdc5",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFB6bW9FbXNQdlNFcnJ5MEp0WE5PSlRza25GcEJtSHNfdTExbGx0YU4tdDJvNUZIQy04RWt2M2d3NGFPOGp4MVdzdlcxaS14QlZCQU96TXlMZXBFUWc?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/obsshestvo/70311-cem-bolse-dannyh-tem-effektivnee-borba-so-smogom.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "4fdc3a1a493adeaf",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1QR01mT1prbjRJakZfd09mUFpnVFFrUkhkbkxqYnByOXltR2hVOTJfamNUaHVYdnoyaE40RUc4cmhkZmZRdnFJY0lhWXZINzI3UV83VHJva3lhZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "c55852e8c5cccf57",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE1COEZ6NU5wYWJsdFFnaGEzZUU4bm1BTGFFNDFoRG1CaEZ3cWpLSXgwQy1Wcm1KdlI1UkM3UVl0M0xFazJv?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://tass.com/world/2186149"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/nation/263732.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.kommersant.ru/doc/8952926?from=main"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/fotoreportazh/68705-referendum-po-novoj-konstitucii.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166164/2026-09-13/dva-cheloveka-postradali-pri-padenii-snariada-v-saudovskoi-aravii"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kyrgyzstan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "74c87cf3d721c74c",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOM25nVFM3YkU5bXJISFlISmw5cVJsUDlHMlo4MHRRVWV1WWRFOEQzZ0dMYTN0VEJKVXZERUtwTUdZdnUtcmFxMnFHTTN6R3p2dWpQYTZpNXdHVUt1cDVVanV0S3BLYWpLUk1aU3NXQzNPZUFaLXlGSkVWSDR3LVlDQlQxOUs0ajZsbGxOQ1paN2JleExTMWltaExDT1hKaHVLX0dyUWdfUFc0cEk5Mk1qWnk4N1d1U29YRnZQSkNqOA?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBQNXBLYXlZV1hSb015TE8xOVlTaFl2bk5ia1hWQ0txalExTGhZWVBBZkw3Yzd3bnZremVTR1pnMHBxVjBock8tXzB0aWRIYkZV?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: kazakhstan",
+   "géopolitique / économie ordinaire",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "4517ecbdc4570966",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOenN4TVlMMzZJZ29idG54SFV6TlAxNUhfUHFDWTJXc25JQlQwSW9yYTBvY3VjQ1dPWG5fcUt4UzgwckdJMGZlTkdsTW5ZU0p3ZC05UngzZjdMNEg0b1VXcDNtRHNYaVZoaG1tT2d6ZkdQODNRWklmTWJZMmhKVVVjMDNMT2FodGt3d1RjeXhWX1pWYXJUTThiVFdWU1JyTlBOVkVF?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNNHVZNW1jam92bXVEQ1lzR2dzdTQxZGVJMDNZbWRQVGV1UXJIUm5LT3k1OG5lTVk3MVpmWTFFTE1ZRjNpRTBFczNFMENKR2pVdTk0UnAtY1VTaDdMY3RxeWk3eHhibE5nVVpGUmhGUEt6Zzk3X3dmTWVpNlhYLTN3dWVINnBmWnJEbm9nTXlTRjdVUThvVkNobkh3WkdUdUluOXo2NGxfSks2SFdMYlFvQXQzY3JZc0k?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: туркмен",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "6e7dee81ca373f47",
+  "theme": "Faible priorité",
+  "url": "https://turkmen.news/2026/07/23/eks-glavu-turkmenskih-zheleznyh-dorog-osudili-v-rossii-na-8-5-let-za-kontrabandu-mdma/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9maWZYaGMwOEpvd3RvN0U5WDQ2LV9xSmpPMEVQR3VwOWl1czNJdHJxdjRId0RZU2VsQ1NPTXJTYlBERDJ0aXJtZHIwLU02UGsxUnB2MEJTQVQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.cgtn.com/news/2026-09-13/news-1QoWEnq8Fl6/p.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE5YU1FjcEJwLXhBZW1qN205ZnhDOThqLUo2RWt6bVlKSnU5RUd4UWZkbTc1OEpDX0NXcEZCUDhkbVlwbHpEUTBlMXFSU0hpZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "source spécialisée Asie centrale",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 10,
+  "signals_sha256": "86e65907c27acd88",
+  "theme": "Faible priorité",
+  "url": "https://turkmen.news/2026/01/30/zriteley-matcha-arkadag-al-nasr-prinuditelno-peresazhivayut-radi-studentov/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "cc8f1a63acfbba82",
+  "theme": "Géopolitique majeure",
+  "url": "https://tass.com/world/2186851"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Asie centrale: таджикистан, таджик",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 22,
+  "signals_sha256": "d096a3d5253fa191",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOc3QyZk9QQ05ZUTY1aUtlc3V5MGU3QmpYWXJIWmhBZ2ItVTVLYXF2bnZCUzFjRlBjR3JOQ3dHelZoTm84alpNQTNTRUg1c1M3Vm1SNmEtX3lxb0F0RkhmWkZ1SFJfd2llRnRIaFBsWVlGLWVmdzhiZGk5ME05U1RfeWI4UkNJMDlQMHpVREJGZGdNa0E?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE9WX2w4bThwdl9hdG1HTUdsSXJpX3BFTGRYWnBUaXZVTkZXdEhKVlpJcGp0bkRkcEc5TmNRUkhOOE1rMXhEbFlwcHVn?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: казахстан, казах",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "f6edf9ea5724174b",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/jekonomika/70834-popravki-v-nalogovyj-kodeks-marketplejsy-oblozat-nds-a-kazahstancam-dadut-nalogovyj-vycet.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://tass.com/emergencies/2186871"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Ouïghours: uyghur",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "799f0889ed691955",
+  "theme": "Politique intérieure",
+  "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQbXJsNWw4SURuSjRFQ09WaV9fUmUzWUxWRnVOS3VlWFlFNl9MZjFOZ0V3cTktMjRFdkVWbE5KaVYyT19uaklrdTd2ci1OMmd1dnJSc3JoYm84QXZ3ZER2VmJpcUVfd2tPRHZLNDJfd0pWYWFmVGZBem5ibTV0SnprRFgzQnBUUmpoUzBBVVBTNU1FeXNrTUZZZnh2ak9hbTJLdTJuMFV6czlxV19Nempic1prTUJmOHZjWnBqMUFXNjVKRXUtNGtITHZVODZKdw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5SdW1EVGVvSGhpLUw2cmQwYmNkejZMZHU4d3JjZlRpazlCRXdoSWtPVDdjUWJRRnE2aGRPdEJQSlNvSmUyQnI5T0NVamp6eW9LZ0dYUnBXSE1EZnM?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5ielNMSTh4eE0zRjVwVThPQU4yT2lnMFl3TmZJelVmWjQ2bzk0TjA4S3g1SjRrZ2Q4dVQ2OEt6N202UVZ0Q1ZvRw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 7,
+  "signals_sha256": "a2e95c95fa8f8ee5",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxNQ1VhdGtMeTlXZEhtOTB1OHVib3NIVE9RZ25CV3duQnRPR2NibTAxaEFiSFpsZjN6SkdCbTl5WnFweGI3ZW9MRkZDWTg3WFVnS3dCQ1pxVzlmX1g0amVVaGlXRDRuUy1KVENjc2g1RDNaemVDWkJQX3hFYVQ0bVlGT200STM0N09tUVNkYTh6TjhMbFhYZVhrQUpsTEY4VE1yTFQzUWZUNXE0bXZNcXFJWFlRRHVqMnhFUW03Q1BrWWU?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166146/propavshaia-v-arkhyze-gruppa-iz-shesti-turistov-naidena"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE9DWWJlY2U4RmRZWUtPMk53QlBTc1NfMDExZW94b2R2azhhUVlRRGpQVWcwVk40YTBVZ0RsbTRZVDJIRFUx?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxObVJ1QUd2MU9XMVZDRW9LY0IzaUlBNFlwbUxIY2k3empFLWNDeXc1R2N3RHVmT1liTlBGdHdQSnowOXZGQWVFWDlSSTN4Y2kzSG82eVNSMnhza0ExOGZCeFJLYktTVnVZSFJnbTQyTi1FMWdVYUdINEhXWmJDeml6Zk5SaEFxNkx6QVF4eHZSRnNwZ3ZkYmxjYU54RmM5UWFUeTBaME1CcXRIQ0JoeHVjVFdDVVNSSXdq?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.cgtn.com/news/2026-09-13/China-releases-list-of-world-s-leading-sci-tech-journals-1QoI86TeFS8/p.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "e4e1f6acf54130b6",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNVXM3ZFoySjZRQVJnMjlfQnBvQVduMTVZREtxblZyUk5ZZWQ5UWhqcG9XTGZvbEJhLUhjdzQ0RmljTUJqQTB5c01qbjgzcWhURDNuVnQxTlVsOUZ1dmtNQXlodlMxMVlVUXg4R1BwblJoQnlYRlpwalY3V0haMDU2Yl9nWG9QTzhnVHJIZVVweWgzQndDcW12U3lVRkZlYnhnNGFoTFotX3o5bmZhT2RmWmxUV2NjS0xXWU10S2JKT0FFZDViNzFKaEEyc1BlNzQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/filmy/70382-kogda-teba-zabyli-vse-kakim-polucilsa-novyj-celovek-pauk.html"
+ },
+ {
+  "level": "E",
+  "priority": "FAIBLE",
+  "reasons": [
+   "Ouïghours: uyghur",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 24,
+  "signals_sha256": "517baadcb194a823",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNMW4xb3FNc2twV2ZJOWUyVFpMb1RMZ05aRUFDbnpWLWE5bEFXUkNrX1BKQm01a2dUaDZpZno4OXBrRjl2WnBiblMzaWdGS0hKR19Ic0JiOVJGRkk1N0V4c2dxR0RPZWlveUxKbUpPMURtRDhNS2NYUGhuUU9ENm5CNC13OXJMaGstRmdqc0V4WXJBR0E5OXBB?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: казахстан, казах",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "f6edf9ea5724174b",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5yTHJ6V2Z3dDRfNEwyejF6RllrNGxuZktabXBBdWpCbEJEMkR4MlFndV9ieWx5ZXRQOVk1WG5uMWVWWkpkcEFWdU9iUGozdzRZTjRkN01NRGR2czFQSXdQU2doZXdhbkIwUTJ4QkhzTWtSVkE?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "dd3a10fd0667f303",
+  "theme": "Politique intérieure",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9uTlZVamRYczVyN2NHdURpWkQ3anNCQUtXc0phYmEzalBlNTZRZTNwRzNmVUM2dUxvRWpwT0c5TUN0Si1zRXdZWWtUZ3ZRRjJ5dFhCUjVFTUNVRFU?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE1HaXB2NmtuMTNONE56WXJ6QlRVSmdUc3QzcGJZcnJNNFJQcVpXV0JlcndyZnl5TzNkWFV6RHRGcTRRQjFf?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Ouïghours: uyghur",
+   "géopolitique / économie ordinaire",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "f5f24b332eb12e00",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQeDQ1OTdtcWZhY0pmci02SXJRNDFBWDV0bHN4UEZuUGZBWW5VbXNhSUpFVng4TGJ2bWFwMGlkWlVvNU1ZdnhHMjZzQU4xX084cnluRUdBMkFYWlNqaFM0dW92dEE5VEQ0Tk5DbXUxc2plZW1tYkNkdWNGVndQX3ZWQzdMX0xpUW9tekZPc0xEYzdTN0hqVWxaSVMxVThfeDVFUk94eG1JMmlyVUhGWXhiNVFiSldvNWRa?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBFbjFzMVVtcXJCWmY3ZjNmYnh4cWZRSHBuWEtGRl9zNExxOHBDbUlhYjZRSjZDd3VWUC1vNHJXVGhrMXdLREpjNkY5QVVSbTRvV01aVlFxNFpZQQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "ee7f0b848b2e5977",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/region/263722.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Ouïghours: uyghur, uyghurs",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "1cbfc625bee26b2a",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPUXVtR1Z0WmJBRkN0bHluMWppZkpDTGxteE0zc2tvTWVLY0ZYbGhPUVRPbERXWHBsbzdCUzRXWXpHUERFZm1SNGx1ZC1relN1Z3FFRWQ2RjFrc2Nnb0x0RWRTc0V5UFV5LTd3OW9FQTJYQW5oVHFLM2RtUncxOUoxbmtLeUpYSXpROFZrN1Z0Sl9qM29ZRXptemN2RnNFSFozbFdZY2J4cGZhbnJQQy1WQm55VXJTLTdjSDFCWUlJc05ZMXpVOHZWWnJLLTl6Zw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE85dUxSQ1BXbXNIYzZHSzFCT25QWE5VSW14bFN5cE5rUmlvSUF6Unp6ZXdhczN5OVNPU2lzM1IwTW1QLUc0?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.cacianalyst.org/publications/analytical-articles.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "95d3351a5e63c912",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.azernews.az/region/263791.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE5uZ2xqdTc1aXU3M2hoYVlheXpPZHBHWmpLaGFTM1c2QUtGU2s2YjJpY1pMdXV2SS1aY0dhZ0FCSFZXUWo3dGlmc3VBYVYxSmdFQmdZUg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: центральная азия",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "7db59aa5a36db468",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE93M0pjdVhaZXJBNmhNUzZsRlBhck1NU0ZBYU1DcEc4dHVqbExMb3JVeTZ3cGVRSV90eWc1V1RDX19JOFlSMkNGOG1tTTFwWUs5VUtRdA?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "475f032467fcb81f",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://tass.com/politics/2186195"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Ouïghours: urumqi",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "ff86c002621d6cc1",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5uVW9FRXRydjktQVA3QnMyeUNaWm5lZjBKMWFEWm8xbXMzclZtb255Mi1OaVhwZDRFckdhQ0Jmd0JuX1JJSmZfLXJxWnlsRXlrV2taX3M1T1M1SmFGQUVmUVRiNmU?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 8,
+  "signals_sha256": "61ff880cc57e325b",
+  "theme": "Droits spécifiques",
+  "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE91NDYwdGxNSldweVZOYm5rU1NtV243MUV6SHNSc1F6Q3lHOEFlQ3ZObjV5VXVnWFN6X2ZGaW44RnZaby1xT1F1MDhvVndaaUxLVDZBZWJ6bEFscGFmR2NyU2hxeU5OUQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001535/%D8%A8%DB%8C%D8%A7%D9%86%DB%8C%D9%87-%D8%B6%D8%AF%D8%A7%DB%8C%D8%B1%D8%A7%D9%86%DB%8C-%D8%A8%D8%AD%D8%B1%DB%8C%D9%86-%D8%AF%D8%B1-%D9%87%DB%8C%DA%86-%D9%86%D8%B4%D8%B3%D8%AA-%D9%85%D8%B4%D8%AA%D8%B1%DA%A9%DB%8C-%D8%A8%D8%A7-%D8%AD%D8%B6%D9%88%D8%B1-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%B4%D8%B1%DA%A9%D8%AA-%D9%86%D9%85%DB%8C-%DA%A9%D9%86%DB%8C%D9%85"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE5oeDFpR1ZqZW1jbW95V0U5bnBIX19ueEZsYVlDV3IwWVZMWmdDU3UwVUtxMFpRSnk3UzU2UFhKNngwNEVaUUZYSmgzRElIWnJjZVpGTlN1VjYwRlF2NUE?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "géopolitique / économie ordinaire",
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "687591c19281f0cf",
+  "theme": "Économie / géopolitique ordinaire",
+  "url": "https://www.chathamhouse.org/events/all/standard-event/chatham-house-berlin-conference-2026"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/politika/70486-vyzzennoe-partijnoe-pole.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeWdrbHptSmgzT3dHRFV0bnVXcGp2Y3ZlemNGbUpKVWo4NGpqYjU0Y2xkOUJDQ2FCNGw5Smo3b2ZPVTM2elhPVHdkS094dEdzblpQVmVKbWVFR2JvTW0yS2ZmYUtGT0wzcXpHcnNHMDJ3ODQtZ0JNZDgzbGtOalMxc25WbjM4dENsN0hUT2VmZF8yZw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: ouzbékistan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 19,
+  "signals_sha256": "23b65a4e0f510349",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQbzdhWXpNcXFLekVXSnE4T0dkYzAteTFEN3BWUjVYMlpiUHdrcDBnLThvSXR1MEs0TV9McjVYd0xJTFR5RDdvV2k2RzRPZ0Q5cURxMmViNHFRUHlpbXZkSzBwbXhBV0hDX25uVTVYZkQ0UzRmTDE3NGVPc2toMjgyV0Fhb05HSmNBQmdocThRSnp6V0k5M0M1WnlEUHJJS0VFYlh3bkU4M3JiOFlXOXZpdmd0a1pXT1JWNUhTMg?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: узбекистан, узбек",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 14,
+  "signals_sha256": "ef05079c5811d23f",
+  "theme": "Politique intérieure",
+  "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5aNnh0RkhWaTZWRmhrdzdFUEU3OGUwU2NUdjEyXzNQMmNhYVdkdTNCM3VadHhfSXdYSUxBMXNpZ1hWQ2I1eXN0YWs1bW9aeTEyN1F0X2VBRGI?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "76c12316b850f027",
+  "theme": "Politique intérieure",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBBQVB4czVqUU9wbXBnaGNoMlljbU41R1VrVjlhUlFUeDRuSHV0OFdrYUs1bEtDbkk4WEExdmFCcG93TVZPd1lRc0tBR2s2ZWVrSHJ5Zno1UHFhaEE?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/maskeuge-dron-shabuyly-europanyn-reseige-qysymy-sogys-zhanalyqtary/33846408.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "b3ee8e6e07772de3",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBub2JuOWQxVVpQeVExbTZ6NW5ZaTAxRXVvUmJ0S01UbUotQS1YaVdRWEluYXdHYVlyYk5SVnFMX0h3UHZXeHRJcG5CT2hPYkl2M2hHWXVKSDdwV0NoR2REd1JR?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "ba7d9bf8a3ad6097",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFB1X05TM0g2S2Vscy10UzgwNUlibk05S2s1S3pWZWZsZEMxVkI3dmZSRjhRaGY4UmxBeURvaGNNYy0waGNYb2NCNnRHVE00YVJza25qeHlfZjlTYVpNVG5v?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001686/%DA%86%D8%B1%D8%A7-%D9%BE%D8%A7%D8%B3%D8%AE-%D9%85%D8%AD%D8%B3%D9%86%DB%8C-%D8%A7%DA%98%D9%87-%D8%A7%DB%8C-%D8%A8%D9%87-%D8%B3%D8%A4%D8%A7%D9%84-%D8%B2%DB%8C%D8%B1%DA%A9%D8%A7%D9%86%D9%87-%D8%B9%D8%B6%D9%88-%D8%AF%D9%88%D9%84%D8%AA-%D8%B1%D8%A6%DB%8C%D8%B3%DB%8C-%D8%AF%D8%B1%D8%A8%D8%A7%D8%B1%D9%87-%D8%B1%D8%B3%D9%88%D8%A7%DB%8C%DB%8C-%DA%86%D8%A7%DB%8C-%D8%AF%D8%A8%D8%B4-%D9%87%D9%88%D8%B4%D9%85%D9%86%D8%AF%D8%A7%D9%86%D9%87-%D8%A8%D9%88%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001575/%D8%A8%D8%A8%DB%8C%D9%86%DB%8C%D8%AF-%D8%AE%D9%84%D8%A7%D8%B5%D9%87-%D8%A8%D8%A7%D8%B2%DB%8C-%D9%84%DB%8C%D9%88%D8%B1%D9%BE%D9%88%D9%84-%D9%81%D9%88%D9%84%D8%A7%D9%85"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/z/331"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://ria.ru/20260913/tatarstan-2117378190.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.atlanticcouncil.org/programs/europe-center/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE02cm5xdmpWc0VJc01vcjZMMnJOWDdPQmNiS0VIeXk4OVpIckhkRTFwVE05MEpvX0VYVXZwOHVKQ1Z0THdCMXZaQXJSS09jckg5LUVuenEwWThjMzdDN21rR0RKNnhJYTRxSDRMYnB0V24tWVA2dkxOblZYbw?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFBzc0NlakZmVzVudTdtSDlmR0FkMlhUcDZtVlFWUkx3QTRqTUx5cTNjSGpXVk5aLXNYT3FtUnUxMlJyazRrRHhVLU5ydDRiYUlMX25BTlRWeERSbkkwb1hZ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/p/4512.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://www.chinadaily.com.cn/a/202609/13/WS6aa589a1e4b06d4aa055dbe8.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "197b687a39b34965",
+  "theme": "Géopolitique majeure",
+  "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1DU3RSc1JhdmZLbFpXbUItRk0tbTNfNVVKVWt0NDZhN0VETEZZUWZDeTlpODdtdFZjSldVVFJOS1VJajF2U3ZqTHVDaXoyVVpSZHl0Tlc2MGU5RWM?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "b3ee8e6e07772de3",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPclE3MjZZWTkzSXhxeXJIS2drcW9yMjRhVE9haHhoN0dYSkQtN2ItYVNGWkFVUjBBX3h0c3BDVFhHa3Q0S202bFJLbWV6ZjRqZEFVNFM4VWtfMkZjd0YwSU43Q0Vhbllib1BxN1VqbHQtdTVRTWMzZ3RMX3l5WVNRZ0R6LVhHc0lqTFZYbDVuOHVBZWxNb25NQXBXNmZLM2I0Z3lYNlRiX05fZVZxcEVza0NLczZObXVKMlE?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://ria.ru/20260913/mask-2117366257.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: uzbekistan",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "f9580b3ded2fde81",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNRTNoSkJhQlI2b3F6NF9hNWNVcUtuRHBGakdhNURRY21SU1NlSXk5WDZRUWxYZUMxUm96ODJUVml5U0duU2lVanNTQ2hyNmV4QzRhRnQ0N1duUENfSThDdGFBTWc2QzVhRGtNMGdKdUdSZFBnUXQydnlVQi1fbFRaYnNVRjlvai00LVVXa000XzBaZU9KLW1sYjZ3WEtsTFZ0RlpyQVpaVFBMMFNJd3pEd0t3?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTFBNTUt0a1lZSGZNVWhta3dWTU9TVGJYZUZibVVIX2llVVFlcGRPWnp4aVlaM2NURGt0NVVCaW5nQ29tZ0xv?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "b3ee8e6e07772de3",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOS2JDbEMyMTYxS0lUYmFQelFCbE43MHFvaG13QkdZQXFycWFRQ3A2N1pKRGNrd0s0TC1qaW1xS0w3VFZkQTVyV0doSkVDWENaS3RuTjV3NWVTbXgzWVdGaDlDR1BpRXV3bTFCSnhXb0MtTF9mNmJ5TDkxUkRqMVdMMjVPc1JyNWZtV1VkdlNFZ21pSEJyQ0dUT2RhcGFVMGpF?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "ba7d9bf8a3ad6097",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5xOGExR0FqZGdsWDM4TjNsYkg2YmpKT2xsVFBJUEQxUkVWWlJiMHJFdzhvQXJVaUdsdld6bHJJMUhpemdzM2pQQzRiaHZqWjU1TkU0dUNoeWUxQQ?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://ria.ru/20260913/karlson-2117353995.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azattyq.org/a/ozbekstanda-mirziyaev-qyzyn-bilikke-daiyndap-zhatyr-ma/33850823.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://iz.ru/2166206/ekspert-zaiavil-o-nekhvatke-lekarstv-u-okruzhennykh-boevikov-vsu-v-volchanskom-kotle-izi?main_click="
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNYzJzZGZSS0hEODRfdzdRTTdIVk5tQ1BrekU3WHBTUjlfNklRQnFmS3pRWUI2czdRS0M2aEU1NzNsLWZITDd4T1NoZUc5YWFRWU4xUEx6NkJPMTY2aXd6OFBYYkxsenZ3UE5oQ3dQX1BJTXNndHVYQ2JuMmVIS0pNVzJVaEFBdnluLUJQQUluT2NSRHlrV0pIY0RhTWlpNEFicVRWeTJxczlkeWc?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 5,
+  "signals_sha256": "b3ee8e6e07772de3",
+  "theme": "Faible priorité",
+  "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQSGdNUDdwXzRwbzFxeVEwREdiajFXcWF6WjRCR1dSb09HNnhFTndPZ2J1cjJWWVVPRXYtemJTM2ZpZnhoalRSd0s5cmxCeDdoMmFudF9sQzBraFByRjZ5RWFrSkZYX2VWYVF5Rlc0Q0R0MWFRUmdUbEltOEM0V3NjaW9YcTZkR1ozT2ZGYlhzZi1LRjVhQU9WTHNVOXM1UDUxWHA3c3NzekhsdmM?oc=5"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "Asie centrale: туркменистан, туркмен",
+   "plafond V9: aucun ancrage HR principal"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "fe21b0d91fc16792",
+  "theme": "Faible priorité",
+  "url": "https://turkmen.news/2026/08/12/nedostatochno-mramornaya-rossiyskaya-govyadina-prodavalas-v-turkmenistane-vsego-chetyre-mesyaca/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://tass.com/world/2186673"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.fararu.com/fa/news/1001546/%D8%A7%D8%B2-%D9%85%D8%B4-%D8%AD%D8%B3%D9%86-%D8%AA%D8%A7-%D8%AD%D8%A7%D8%AC-%DA%A9%D8%A7%D8%B8%D9%85-%D8%A8%D8%A7%D8%B2%DB%8C%DA%AF%D8%B1%D8%A7%D9%86%DB%8C-%DA%A9%D9%87-%D9%86%D9%82%D8%B4-%D9%87%D8%A7%DB%8C%D8%B4%D8%A7%D9%86-%D8%A7%D8%B2-%D8%B3%DB%8C%D9%86%D9%85%D8%A7-%D8%AC%D9%84%D9%88-%D8%B2%D8%AF%D9%86%D8%AF"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 12,
+  "signals_sha256": "0b70d82d8d687adb",
+  "theme": "Géopolitique majeure",
+  "url": "https://ria.ru/20260913/teatr-2117358093.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://vlast.kz/tz/70453-spisok-sredingera.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.azernews.az/region/263737.html"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "e7f5987c2fd74edb",
+  "theme": "Faible priorité",
+  "url": "https://www.atlanticcouncil.org/region/the-gulf/"
+ },
+ {
+  "level": "E",
+  "priority": "BRUIT",
+  "reasons": [
+   "porte régionale: aucun ancrage régional"
+  ],
+  "relevant": false,
+  "score": 0,
+  "signals_sha256": "be1603f0847c0b7c",
+  "theme": "Faible priorité",
+  "url": "https://news.cgtn.com/news/2026-09-13/Embodied-AI-data-goes-global-Cross-border-trade-platform-debuts-at-CIFTIS-1QoDnbOK0ik/p.html"
+ }
+]

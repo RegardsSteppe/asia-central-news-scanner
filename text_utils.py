@@ -288,3 +288,35 @@ def normalize_url(url: Any, base_url: str = "") -> str:
         parsed = parsed._replace(query=urlencode(kept_params))
 
     return parsed.geturl().strip()
+
+
+# ============================================================
+# ÂGE D'UN ARTICLE
+# ============================================================
+
+def article_age_days(date: Any, now: datetime | None = None) -> float | None:
+    """
+    Âge d'un article en jours (float), ou None si la date est absente ou
+    inexploitable.
+
+    Une date sans fuseau est supposée UTC plutôt que de faire échouer la
+    soustraction : les dates viennent de flux RSS et de pages HTML
+    hétérogènes, dont beaucoup omettent le fuseau.
+
+    Vivait en trois exemplaires (html_template.article_age_days,
+    synthesis._article_age_days, et l'import de categorisation.py qui
+    faisait dépendre la couche de description de la couche de
+    présentation) ; consolidé ici le 2026-09-13.
+    """
+    if not isinstance(date, datetime):
+        return None
+
+    if date.tzinfo is None:
+        date = date.replace(tzinfo=timezone.utc)
+
+    reference = now or datetime.now(timezone.utc)
+
+    if reference.tzinfo is None:
+        reference = reference.replace(tzinfo=timezone.utc)
+
+    return (reference - date).total_seconds() / 86400

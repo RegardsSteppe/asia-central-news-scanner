@@ -186,3 +186,88 @@ class EstPertinentPermissiveDefaultTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PortedIntelligenceTests(unittest.TestCase):
+    """
+    2026-09-13 : categorisation.py réimplémentait une détection plus
+    faible que scoring.py au lieu de partager la sienne. Ces tests
+    verrouillent ce qui a été porté via matching.py.
+    """
+
+    def _article(self, title, language="", body="", summary=""):
+        return {
+            "title": title,
+            "summary": summary,
+            "body": body,
+            "source": "Test",
+            "url": "https://example.com/news/1",
+            "language": language,
+            "date": None,
+        }
+
+    def test_farsi_journalist_repression_pattern_detects_actor(self):
+        # Les listes d'acteurs sont quasi muettes en persan ; les motifs
+        # "acteur + répression" de keywords.py, que scoring.py exploite
+        # depuis toujours, sont désormais lus ici aussi.
+        cat = categoriser(
+            self._article("خبرنگار بازداشت شد در تهران", language="fa")
+        )
+        self.assertIn("journaliste", cat["acteur"])
+
+    def test_farsi_pattern_establishes_actor_treatment_relation(self):
+        # Le motif exige acteur et répression à moins de 100 caractères
+        # l'un de l'autre : la relation est établie par construction.
+        cat = categoriser(
+            self._article("فعال حقوق بشر بازداشت شد", language="fa")
+        )
+        self.assertTrue(cat["relation_acteur_traitement"])
+        self.assertTrue(
+            cat["preuves"]["relation_acteur_traitement"]["via_motif_farsi"]
+        )
+
+    def test_farsi_patterns_not_run_on_non_farsi_articles(self):
+        # Les vérifications propres à une langue coûtent cher et n'ont
+        # aucun sens ailleurs : elles restent inertes hors persan.
+        cat = categoriser(
+            self._article("خبرنگار بازداشت شد در تهران", language="ru")
+        )
+        self.assertNotIn(
+            "(motif farsi acteur+répression)",
+            cat["preuves"]["acteur"].get("journaliste", []),
+        )
+
+    def test_stem_evidence_reports_the_actual_word_found(self):
+        # Auditer une catégorisation surprenante suppose de savoir QUEL
+        # mot a matché, pas seulement qu'une racine a matché.
+        cat = categoriser(
+            self._article("Произвольные аресты продолжаются", language="ru")
+        )
+        self.assertIn("detention", cat["traitement"])
+        self.assertIn("аресты", cat["preuves"]["traitement"]["detention"])
+
+    def test_untyped_russian_repression_is_flagged_for_audit(self):
+        # Une répression décrite en russe qu'aucun type ne capture est
+        # un trou de vocabulaire : il doit être visible, pas silencieux.
+        cat = categoriser(
+            self._article("Против него выдвинуты новые обвинения", language="ru")
+        )
+        self.assertEqual(cat["traitement"], ["aucun"])
+        self.assertIn("_non_typé", cat["preuves"]["traitement"])
+
+    def test_relation_evidence_uses_word_boundaries_not_substrings(self):
+        # L'ancienne version testait "terme in texte" : elle listait des
+        # preuves que la détection elle-même n'aurait jamais retenues.
+        cat = categoriser(
+            self._article(
+                "Journalist arrested after covering the protest in Almaty",
+            )
+        )
+        if cat["relation_acteur_traitement"]:
+            preuves = cat["preuves"]["relation_acteur_traitement"]
+            for terme in preuves["traitement_termes"]:
+                self.assertNotIn(
+                    terme,
+                    ("arrest",),
+                    "un terme sous-chaîne ne doit pas apparaître en preuve",
+                )
