@@ -264,6 +264,20 @@ def fetch_all_bodies(
                     "corps vide (page inattendue, redirection, ou URL manquante)"
                 )
                 failed += 1
+                # Diagnostic ajouté le 2026-09-13 : ce cas (pas
+                # d'exception, juste un corps vide) peut venir de deux
+                # garde-fous différents dans extract_body()
+                # (_page_matches_expected_title ou
+                # _body_matches_expected_title, article_ingestion.py)
+                # qui renvoient tous les deux "" de façon indiscernable
+                # — repéré sur un run réel (run #8) au taux d'échec
+                # anormalement élevé (~99% dès les 100 premiers
+                # articles), pour comprendre si un des deux garde-fous
+                # est devenu trop agressif.
+                logger.warning(
+                    "corps vide sur %s (titre attendu: %r)",
+                    row.get("url"), (row.get("title") or "")[:120],
+                )
 
             results.append(enriched)
             done += 1
