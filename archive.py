@@ -1,0 +1,352 @@
+"""
+archive.py — l'historique durable des articles.
+
+Jusqu'ici le scanner ne gardait aucune mémoire des articles : chaque run
+republiait "ce que les sources affichent en ce moment", et un article
+qui sortait de la page d'accueil de sa source disparaissait du site.
+Ce module conserve tout ce qui a été vu une fois.
+
+DEUX FICHIERS, parce qu'ils n'ont pas la même nature
+-----------------------------------------------------
+
+archive.jsonl        immuable, append-only. Une ligne = un article, les
+                     faits qui ne changent jamais (url, titre, résumé,
+                     source, langue, date de publication, date de
+                     première vue). Un run n'y AJOUTE que les nouveaux.
+
+archive_state.json   mutable, réécrit à chaque run, mais tenu petit :
+                     la date du dernier scan, et — uniquement pour les
+                     articles qui n'y figuraient PLUS — la date à
+                     laquelle une source les affichait pour la dernière
+                     fois.
+
+Les séparer n'est pas cosmétique. Si chaque ligne portait sa date de
+dernier scan, chaque run réécrirait les ~6800 lignes du fichier et git
+en stockerait une copie entière à chaque fois — précisément le problème
+que cette structure existe pour éviter. En append-only, git ne stocke
+que les lignes ajoutées.
+
+Et l'état ne liste que les exceptions pour la même raison. Un
+dictionnaire clé -> date couvrant tout le corpus pèse 1,1 Mo réécrits à
+chaque run (mesuré sur les 6764 articles du 2026-09-13). Or presque
+tous les articles sont revus à chaque run : la règle est donc "vu au
+dernier scan", et seuls les articles tombés des pages de leurs sources
+sont inscrits nommément. Leur date est alors figée pour toujours, donc
+git n'en stocke la ligne qu'une fois : le coût par run devient
+proportionnel aux articles qui viennent de disparaître, pas au corpus.
+
+CE QUI N'EST PAS STOCKÉ ICI
+---------------------------
+
+Le score, le niveau, le thème : recalculés à chaque run par scoring.py
+à partir des règles du jour. C'est l'intérêt de l'archive — enrichir un
+mot-clé profite rétroactivement à tout l'historique, sans rien
+re-télécharger.
+
+Le corps des articles, sauf pour les niveaux A-D (voir BODY_KEEP_LEVELS)
+: le garder pour tout le corpus ferait des dizaines de Mo. Les articles
+qui comptent gardent leur texte intégral, donc leur profondeur de
+scoring ; les autres sont rescorés sur titre + résumé, ce qu'ils ont
+déjà aujourd'hui.
+"""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Iterable, Iterator
+
+BASE_DIR = Path(__file__).resolve().parent
+
+ARCHIVE_FILE = BASE_DIR / "archive.jsonl"
+ARCHIVE_STATE_FILE = BASE_DIR / "archive_state.json"
+
+# Niveaux dont on conserve le corps complet dans l'archive. ~5 % du
+# corpus (340 articles sur 6764 au 2026-09-13), soit quelques Mo bornés.
+BODY_KEEP_LEVELS = frozenset({"A", "B", "C", "D"})
+
+# Longueur max du corps conservé, alignée sur BODY_CACHE_MAX_CHARS
+# (news_scanner.py) pour ne pas stocker deux troncatures différentes.
+BODY_MAX_CHARS = 8000
+
+# Champs immuables d'une entrée d'archive. Tout le reste (score, niveau,
+# thème, catégorisation) est recalculé à chaque run.
+ARCHIVE_FIELDS = (
+    "key",
+    "url",
+    "title",
+    "summary",
+    "source",
+    "source_label",
+    "language",
+    "date",
+    "premiere_vue",
+    "body",
+)
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _serialize_date(value: Any) -> Any:
+    if hasattr(value, "isoformat"):
+        return value.isoformat()
+    return value
+
+
+def entry_from_article(
+    article: dict[str, Any],
+    key: str,
+    premiere_vue: str | None = None,
+) -> dict[str, Any]:
+    """Entrée d'archive (faits immuables) à partir d'un article scoré."""
+    body = ""
+    if article.get("level") in BODY_KEEP_LEVELS:
+        body = (article.get("body") or "")[:BODY_MAX_CHARS]
+
+    return {
+        "key": key,
+        "url": article.get("url", ""),
+        "title": article.get("title", ""),
+        "summary": article.get("summary", ""),
+        "source": article.get("source", ""),
+        "source_label": article.get("source_label", ""),
+        "language": article.get("language", ""),
+        "date": _serialize_date(article.get("date")),
+        "premiere_vue": premiere_vue or _now_iso(),
+        "body": body,
+    }
+
+
+def article_from_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    """
+    Article rescorable à partir d'une entrée d'archive.
+
+    La date est laissée telle quelle (chaîne ISO) : news_scanner la
+    reparse via parse_date au moment de l'utiliser, comme pour un
+    article fraîchement récupéré.
+    """
+    return {
+        "url": entry.get("url", ""),
+        "title": entry.get("title", ""),
+        "summary": entry.get("summary", ""),
+        "source": entry.get("source", ""),
+        "source_label": entry.get("source_label", ""),
+        "language": entry.get("language", ""),
+        "date": entry.get("date"),
+        "body": entry.get("body", ""),
+    }
+
+
+# ============================================================
+# LECTURE / ÉCRITURE
+# ============================================================
+
+def load_archive(path: Path | None = None) -> dict[str, dict[str, Any]]:
+    """
+    Archive indexée par clé.
+
+    Une ligne illisible est ignorée plutôt que de faire échouer le run :
+    l'archive est append-only, donc une ligne corrompue (écriture
+    interrompue) ne doit jamais empêcher de lire les milliers d'autres.
+    """
+    path = path or ARCHIVE_FILE
+
+    if not path.exists():
+        return {}
+
+    entries: dict[str, dict[str, Any]] = {}
+    ignorees = 0
+
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except Exception:
+                ignorees += 1
+                continue
+            key = entry.get("key")
+            if isinstance(key, str) and key:
+                entries[key] = entry
+
+    if ignorees:
+        print(f"WARNING | ARCHIVE | {ignorees} ligne(s) illisible(s) ignorée(s)")
+
+    return entries
+
+
+def append_entries(
+    entries: Iterable[dict[str, Any]],
+    path: Path | None = None,
+) -> int:
+    """Ajoute des entrées à la fin du fichier. Retourne le nombre écrit."""
+    path = path or ARCHIVE_FILE
+    entries = list(entries)
+
+    if not entries:
+        return 0
+
+    with path.open("a", encoding="utf-8") as handle:
+        for entry in entries:
+            handle.write(json.dumps(entry, ensure_ascii=False, sort_keys=True))
+            handle.write("\n")
+
+    return len(entries)
+
+
+def rewrite_archive(
+    entries: Iterable[dict[str, Any]],
+    path: Path | None = None,
+) -> int:
+    """
+    Réécrit l'archive en entier.
+
+    Réservé aux opérations de maintenance (purge, migration de schéma) :
+    le fonctionnement normal n'utilise QUE append_entries, c'est ce qui
+    garde le coût git proportionnel aux nouveautés.
+    """
+    path = path or ARCHIVE_FILE
+    entries = list(entries)
+
+    with path.open("w", encoding="utf-8") as handle:
+        for entry in entries:
+            handle.write(json.dumps(entry, ensure_ascii=False, sort_keys=True))
+            handle.write("\n")
+
+    return len(entries)
+
+
+def empty_state() -> dict[str, Any]:
+    return {"dernier_scan": "", "vus_avant": {}}
+
+
+def load_state(path: Path | None = None) -> dict[str, Any]:
+    path = path or ARCHIVE_STATE_FILE
+
+    if not path.exists():
+        return empty_state()
+
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            state = json.load(handle)
+        if isinstance(state, dict):
+            state.setdefault("dernier_scan", "")
+            anciens = state.get("vus_avant")
+            state["vus_avant"] = anciens if isinstance(anciens, dict) else {}
+            return state
+    except Exception as exc:
+        print(
+            f"WARNING | ARCHIVE | état illisible, réinitialisé: "
+            f"{type(exc).__name__}: {exc}"
+        )
+
+    return empty_state()
+
+
+def derniere_vue(state: dict[str, Any], key: str) -> str:
+    """
+    Date à laquelle une source affichait cet article pour la dernière
+    fois.
+
+    Absent de `vus_avant` veut dire "vu au dernier scan" : c'est le cas
+    de la quasi-totalité du corpus, et c'est ce qui garde l'état petit.
+    """
+    return state.get("vus_avant", {}).get(key) or state.get("dernier_scan", "")
+
+
+def save_state(state: dict[str, Any], path: Path | None = None) -> None:
+    path = path or ARCHIVE_STATE_FILE
+
+    try:
+        with path.open("w", encoding="utf-8") as handle:
+            json.dump(state, handle, ensure_ascii=False, sort_keys=True, indent=1)
+    except Exception as exc:
+        print(
+            f"WARNING | ARCHIVE | sauvegarde de l'état échouée: "
+            f"{type(exc).__name__}: {exc}"
+        )
+
+
+# ============================================================
+# FUSION
+# ============================================================
+
+def merge_scanned(
+    archive: dict[str, dict[str, Any]],
+    state: dict[str, Any],
+    scanned: list[tuple[str, dict[str, Any]]],
+    scan_date: str | None = None,
+) -> list[dict[str, Any]]:
+    """
+    Intègre les articles d'un run dans l'archive.
+
+    `scanned` est une liste de (clé, article scoré). Retourne les
+    nouvelles entrées à ajouter au fichier — l'appelant décide quand
+    écrire. `state` est mis à jour sur place : date du dernier scan, et
+    date de dernière vue des articles effectivement revus dans une
+    source.
+
+    Un article déjà archivé n'est jamais réécrit : seule sa date de
+    dernière vue bouge, et elle vit dans l'état, pas dans l'archive.
+    """
+    scan_date = scan_date or _now_iso()
+    scan_precedent = state.get("dernier_scan", "")
+    vus_avant = state.setdefault("vus_avant", {})
+
+    nouvelles = []
+    vus_maintenant = set()
+
+    for key, article in scanned:
+        if not key:
+            continue
+
+        vus_maintenant.add(key)
+        # Réapparu dans une source : il redevient "vu au dernier scan",
+        # donc il sort de la liste des exceptions.
+        vus_avant.pop(key, None)
+
+        if key in archive:
+            continue
+
+        entry = entry_from_article(article, key, premiere_vue=scan_date)
+        archive[key] = entry
+        nouvelles.append(entry)
+
+    # Les articles absents de ce run qui n'étaient pas encore inscrits
+    # étaient, par définition, visibles au scan précédent : on fige leur
+    # date là, une fois pour toutes.
+    if scan_precedent:
+        for key in archive:
+            if key not in vus_maintenant and key not in vus_avant:
+                vus_avant[key] = scan_precedent
+
+    state["dernier_scan"] = scan_date
+
+    return nouvelles
+
+
+def iter_articles(
+    archive: dict[str, dict[str, Any]],
+    state: dict[str, Any],
+) -> Iterator[dict[str, Any]]:
+    """
+    Articles rescorables de toute l'archive, enrichis de leurs dates.
+
+    Chaque article porte `derniere_vue` (dernière fois qu'une source
+    l'affichait) et `dernier_scan` (ce run) — c'est ce qui permet de
+    distinguer un article toujours en ligne d'un article archivé.
+    """
+    dernier_scan = state.get("dernier_scan", "")
+
+    for key, entry in archive.items():
+        article = article_from_entry(entry)
+        article["archive_key"] = key
+        article["premiere_vue"] = entry.get("premiere_vue", "")
+        article["derniere_vue"] = derniere_vue(state, key)
+        article["dernier_scan"] = dernier_scan
+        yield article
