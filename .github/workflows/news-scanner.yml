@@ -68,32 +68,54 @@ jobs:
       # non-fast-forward.
       #
       # Retries by resetting onto the latest branch tip and re-applying our
-      # own freshly-generated memory.json on top, rather than rebasing the
-      # commit: memory.json is a cache (freshness timestamps, seen-article
-      # keys), so "our version replayed on latest main" is always the right
-      # resolution — a 3-way merge/rebase can hit a real conflict on this
-      # file (two concurrent runs touching the same JSON keys) and, under
-      # `bash -e`, a conflicting `git rebase` aborts the whole step instead
-      # of retrying. Confirmed live: two runs triggered ~4 min apart raced
-      # here and the rebase-based retry exited after attempt 1/5 instead of
-      # retrying, even though the site itself had already published fine.
-      - name: Persist scanner memory
+      # own freshly-generated files on top, rather than rebasing the commit:
+      # a 3-way merge/rebase can hit a real conflict (two concurrent runs
+      # touching the same JSON keys) and, under `bash -e`, a conflicting
+      # `git rebase` aborts the whole step instead of retrying. Confirmed
+      # live: two runs triggered ~4 min apart raced here and the
+      # rebase-based retry exited after attempt 1/5 instead of retrying,
+      # even though the site itself had already published fine.
+      #
+      # The three files do NOT resolve the same way:
+      #
+      #   memory.json, archive_state.json  caches/derived state. "Our
+      #     version replayed on the latest tip" is always right — anything
+      #     lost is recomputed on the next run.
+      #
+      #   archive.jsonl  append-only DATA. Overwriting it with our version
+      #     would silently drop the lines a concurrent run appended, and
+      #     nothing would ever recompute them. An append-only file resolves
+      #     to the UNION of both sides, never to a winner — hence the
+      #     explicit merge below.
+      - name: Persist scanner memory and archive
         run: |
-          if [ -z "$(git status --porcelain -- memory.json)" ]; then
-            echo "memory.json unchanged, nothing to persist"
+          TRACKED="memory.json archive.jsonl archive_state.json"
+
+          if [ -z "$(git status --porcelain -- $TRACKED)" ]; then
+            echo "nothing to persist"
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          cp memory.json /tmp/memory.json.new
+          mkdir -p /tmp/persist
+          for f in $TRACKED; do
+            [ -f "$f" ] && cp "$f" "/tmp/persist/$f"
+          done
 
           for attempt in 1 2 3 4 5; do
-            cp /tmp/memory.json.new memory.json
-            if [ -n "$(git status --porcelain -- memory.json)" ]; then
-              git add memory.json
-              git commit -m "Update scanner memory [skip ci]"
+            for f in memory.json archive_state.json; do
+              [ -f "/tmp/persist/$f" ] && cp "/tmp/persist/$f" "$f"
+            done
+
+            if [ -f /tmp/persist/archive.jsonl ]; then
+              python archive.py --merge-into archive.jsonl /tmp/persist/archive.jsonl
+            fi
+
+            if [ -n "$(git status --porcelain -- $TRACKED)" ]; then
+              git add $TRACKED
+              git commit -m "Update scanner memory and archive [skip ci]"
             fi
             if git push; then
               exit 0
@@ -104,5 +126,5 @@ jobs:
             sleep $((attempt * 3))
           done
 
-          echo "::error::Failed to push memory.json after 5 attempts"
+          echo "::error::Failed to push after 5 attempts"
           exit 1

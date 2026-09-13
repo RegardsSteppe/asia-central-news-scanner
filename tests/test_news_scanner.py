@@ -1,4 +1,5 @@
 import sys
+import tempfile
 import time
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -9,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from news_scanner import (
     CorpusCollapseError,
+    merge_with_archive,
     check_corpus_not_collapsed,
     build_audit,
     build_csv_rows,
@@ -25,6 +27,7 @@ from news_scanner import (
     update_body_cache,
 )
 from html_template import render_audit_row
+from scoring import classify_article
 
 
 class CanonicalArticleKeyTests(unittest.TestCase):
@@ -853,3 +856,105 @@ class CorpusCollapseGuardTests(unittest.TestCase):
     def test_ignores_corrupted_reference(self):
         for bogus in (None, 0, -5, "6706"):
             check_corpus_not_collapsed(10, {"last_corpus_size": bogus})
+
+
+class MergeWithArchiveTests(unittest.TestCase):
+    """
+    Le corpus publié devient l'historique complet, pas seulement ce que
+    les sources affichent aujourd'hui.
+    """
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        base = Path(self.dir.name)
+        self.patchers = [
+            patch("archive.ARCHIVE_FILE", base / "archive.jsonl"),
+            patch("archive.ARCHIVE_STATE_FILE", base / "state.json"),
+        ]
+        for p in self.patchers:
+            p.start()
+
+    def tearDown(self):
+        for p in self.patchers:
+            p.stop()
+        self.dir.cleanup()
+
+    def _article(self, url, title="Kazakhstan jails activist"):
+        return {
+            "url": url,
+            "title": title,
+            "summary": "Un tribunal d'Almaty a condamné un activiste.",
+            "source": "Human Rights Watch",
+            "source_label": "HRW",
+            "language": "en",
+            "date": None,
+            "body": "",
+        }
+
+    def test_first_run_publishes_exactly_what_was_scanned(self):
+        articles = [self._article("https://a.org/1"), self._article("https://a.org/2")]
+        for a in articles:
+            classify_article(a)
+
+        published = merge_with_archive(articles)
+        self.assertEqual(len(published), 2)
+
+    def test_article_gone_from_its_source_stays_published(self):
+        # Le cœur du sujet : avant, il disparaissait du site.
+        first = [self._article("https://a.org/1"), self._article("https://a.org/2")]
+        for a in first:
+            classify_article(a)
+        merge_with_archive(first)
+
+        second = [self._article("https://a.org/1")]
+        for a in second:
+            classify_article(a)
+        published = merge_with_archive(second)
+
+        urls = {a["url"] for a in published}
+        self.assertEqual(urls, {"https://a.org/1", "https://a.org/2"})
+
+    def test_archived_articles_are_rescored_with_current_rules(self):
+        first = [self._article("https://a.org/1")]
+        for a in first:
+            classify_article(a)
+        merge_with_archive(first)
+
+        published = merge_with_archive([])
+        self.assertEqual(len(published), 1)
+        # Rescoré : il ressort avec un score, pas avec un champ manquant.
+        self.assertIn("score", published[0])
+        self.assertIn("categorisation", published[0])
+
+    def test_freshly_scanned_articles_keep_their_enriched_body(self):
+        # L'archive ne garde le corps que des niveaux A-D : rescorer un
+        # article enrichi aujourd'hui lui ferait perdre sa profondeur.
+        fresh = self._article("https://a.org/1")
+        fresh["body"] = "Un corps téléchargé aujourd'hui. " * 40
+        classify_article(fresh)
+
+        published = merge_with_archive([fresh])
+        self.assertEqual(len(published), 1)
+        self.assertIn("téléchargé aujourd'hui", published[0]["body"])
+
+    def test_no_duplicates_when_the_same_article_is_rescanned(self):
+        articles = [self._article("https://a.org/1")]
+        for a in articles:
+            classify_article(a)
+
+        merge_with_archive(list(articles))
+        again = [self._article("https://a.org/1")]
+        for a in again:
+            classify_article(a)
+        published = merge_with_archive(again)
+
+        self.assertEqual(len(published), 1)
+
+    def test_published_articles_carry_the_last_scan_date(self):
+        articles = [self._article("https://a.org/1")]
+        for a in articles:
+            classify_article(a)
+        published = merge_with_archive(articles)
+
+        self.assertTrue(published[0]["dernier_scan"])
+        self.assertTrue(published[0]["derniere_vue"])

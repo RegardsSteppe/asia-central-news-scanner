@@ -262,3 +262,57 @@ class IterArticlesTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MergeFilesTests(unittest.TestCase):
+    """
+    Deux runs concurrents : celui qui pousse en second doit ajouter ses
+    lignes à celles de l'autre, jamais les écraser.
+    """
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.base = Path(self.dir.name) / "base.jsonl"
+        self.incoming = Path(self.dir.name) / "incoming.jsonl"
+
+    def tearDown(self):
+        self.dir.cleanup()
+
+    def test_union_of_both_files(self):
+        from archive import merge_files
+
+        append_entries([entry_from_article(article(), "a")], self.base)
+        append_entries([entry_from_article(article(), "b")], self.incoming)
+
+        ajoutees = merge_files(self.base, self.incoming)
+
+        self.assertEqual(ajoutees, 1)
+        self.assertEqual(set(load_archive(self.base)), {"a", "b"})
+
+    def test_entries_already_present_are_not_duplicated(self):
+        from archive import merge_files
+
+        append_entries([entry_from_article(article(), "a")], self.base)
+        append_entries([entry_from_article(article(), "a")], self.incoming)
+
+        self.assertEqual(merge_files(self.base, self.incoming), 0)
+        self.assertEqual(len(load_archive(self.base)), 1)
+
+    def test_concurrent_run_lines_survive(self):
+        from archive import merge_files
+
+        # L'autre run a poussé "concurrent" pendant que nous tournions.
+        append_entries([entry_from_article(article(), "concurrent")], self.base)
+        append_entries(
+            [entry_from_article(article(), k) for k in ("a", "b")],
+            self.incoming,
+        )
+
+        merge_files(self.base, self.incoming)
+        self.assertEqual(set(load_archive(self.base)), {"concurrent", "a", "b"})
+
+    def test_missing_incoming_file_is_harmless(self):
+        from archive import merge_files
+
+        append_entries([entry_from_article(article(), "a")], self.base)
+        self.assertEqual(merge_files(self.base, self.incoming), 0)

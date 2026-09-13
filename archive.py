@@ -225,6 +225,26 @@ def empty_state() -> dict[str, Any]:
     return {"dernier_scan": "", "vus_avant": {}}
 
 
+def merge_files(base_path: Path, incoming_path: Path) -> int:
+    """
+    Ajoute à `base_path` les entrées présentes dans `incoming_path` et
+    absentes de la base. Retourne le nombre d'entrées ajoutées.
+
+    Sert à résoudre une course entre deux runs : si un autre run a poussé
+    ses lignes pendant le nôtre, réécrire notre version par-dessus
+    perdrait les siennes. Un fichier append-only se résout en prenant
+    l'union, jamais en choisissant un gagnant.
+    """
+    base = load_archive(base_path)
+    incoming = load_archive(incoming_path)
+
+    manquantes = [
+        entry for key, entry in incoming.items() if key not in base
+    ]
+
+    return append_entries(manquantes, base_path)
+
+
 def load_state(path: Path | None = None) -> dict[str, Any]:
     path = path or ARCHIVE_STATE_FILE
 
@@ -350,3 +370,25 @@ def iter_articles(
         article["derniere_vue"] = derniere_vue(state, key)
         article["dernier_scan"] = dernier_scan
         yield article
+
+
+# ============================================================
+# CLI — utilisé par le workflow pour résoudre une course au push
+# ============================================================
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Maintenance de l'archive")
+    parser.add_argument(
+        "--merge-into",
+        nargs=2,
+        metavar=("BASE", "INCOMING"),
+        required=True,
+        help="Ajoute à BASE les entrées d'INCOMING qui lui manquent.",
+    )
+    args = parser.parse_args()
+
+    base, incoming = (Path(p) for p in args.merge_into)
+    ajoutees = merge_files(base, incoming)
+    print(f"ARCHIVE | {ajoutees} entrée(s) fusionnée(s) dans {base.name}")
