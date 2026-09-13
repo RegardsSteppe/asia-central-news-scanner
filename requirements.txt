@@ -3,13 +3,25 @@
 # et aucun run passé n'est reproductible. ~=X.Y.Z autorise les
 # correctifs (X.Y.*) mais pas les changements d'API.
 #
-# Versions de référence : celles du run vert du 2026-09-13.
+# ATTENTION : les versions ci-dessous doivent résoudre sous PYTHON 3.10,
+# la version utilisée par .github/workflows/news-scanner.yml — pas celle
+# de la machine où l'on développe. Vérifier avant de toucher à ce
+# fichier :
+#
+#   pip install --dry-run --python-version 3.10 --only-binary=:all: \
+#       --target /tmp/verif -r requirements.txt
+#
+# (stop-words a été épinglé une fois à 2025.11.4, la version présente
+# sur une machine en Python 3.11 : elle exige Python >= 3.11, et le run
+# #142 est mort à l'installation. La dernière version disponible en
+# 3.10 est 2018.7.23 — c'est-à-dire celle que la CI installait déjà.)
+# Installé à l'identique par la CI de test (.github/workflows/tests.yml)
+# et par le scan (news-scanner.yml) : c'est ce qui garantit que les
+# tests tournent sur les mêmes versions que la production, et qu'un
+# épinglage impossible fait rougir la pull request au lieu de casser le
+# scan après le merge. Les dépendances du modèle de langage vivent dans
+# requirements-llm.txt, inutiles aux tests.
 feedparser~=6.0.14
 requests~=2.33.1
 beautifulsoup4~=4.15.0
-stop-words~=2025.11.4
-
-# Synthèse quotidienne uniquement (synthesis.py). Le scanner tourne
-# sans : generate_synthesis() échoue proprement et le run continue.
-llama-cpp-python~=0.3.35
-huggingface_hub~=1.31.0
+stop-words~=2018.7.23
