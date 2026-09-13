@@ -289,9 +289,56 @@ def batch_score_articles(job_input: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def judge_articles(job_input: dict[str, Any]) -> dict[str, Any]:
+    """
+    mode="judge" : second avis d'un LLM sur chaque article.
+
+    Ce n'est PAS une vérité de référence, et le nom du champ le dit
+    (`verdicts`, pas `labels`). Le modèle a ses propres biais — généreux
+    sur tout ce qui ressemble à des droits humains, faible en géographie
+    — donc caler scoring.py dessus reviendrait à optimiser vers ses
+    erreurs. Il sert à repérer les DÉSACCORDS avec le scoring
+    déterministe, qui sont ensuite arbitrés à la main : voir
+    verite_terrain.py.
+
+    juge_llm est importé ici et pas en tête de fichier : l'image
+    minimale (Dockerfile) n'embarque aucun LLM, et les modes
+    score/batch doivent continuer d'y tourner. Le mode judge suppose
+    l'image Dockerfile.juge.
+    """
+    try:
+        import juge_llm
+    except ImportError as exc:
+        raise ValueError(
+            "mode 'judge' indisponible dans cette image : "
+            f"{exc}. Construire avec Dockerfile.juge."
+        ) from exc
+
+    raw_articles = _validate_articles(job_input.get("articles"))
+
+    logger.info("mode=judge | %s article(s) reçu(s)", len(raw_articles))
+
+    verdicts = juge_llm.juger_lot(raw_articles)
+    juges = [v for v in verdicts if "pertinent" in v]
+
+    logger.info(
+        "mode=judge | %s verdict(s) rendu(s), %s en erreur",
+        len(juges), len(verdicts) - len(juges),
+    )
+
+    return {
+        "mode": "judge",
+        "count": len(raw_articles),
+        "judged": len(juges),
+        "failed": len(verdicts) - len(juges),
+        "verdicts": verdicts,
+    }
+
+
 _MODES = {
     "score": score_articles,
     "batch": batch_score_articles,
+    "judge": judge_articles,
 }
 
 

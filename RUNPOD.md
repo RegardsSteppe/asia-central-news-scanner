@@ -20,11 +20,16 @@ already built (title, summary, body...) in the request.
 - `github_push.py` — pushes a job's results to GitHub (see
   "Persisting results to GitHub" below), via the REST Contents API.
 - `Dockerfile` — minimal image: `python:3.11-slim` + the `runpod`
-  package + `requests` + `scoring.py`/`keywords.py`/`github_push.py`.
-  No `feedparser`/`beautifulsoup4` (only needed by the full scanner,
-  never by this handler) and no `llama-cpp-python`/`huggingface_hub`
-  (no LLM runs in this handler — that's a later step, see the
-  project's broader plan).
+  package + `requests` + `scoring.py`/`keywords.py`/`matching.py`/
+  `github_push.py`. No `feedparser`/`beautifulsoup4` (only needed by
+  the full scanner, never by this handler) and no `llama-cpp-python`/
+  `huggingface_hub` — the LLM lives in a separate image so that every
+  deterministic scoring call doesn't pay for a model it never loads.
+- `Dockerfile.juge` — the same, plus `llama-cpp-python`, for the
+  `judge` mode. Deploy it on a GPU endpoint.
+- `juge_llm.py` — the LLM's second opinion on an article's relevance.
+- `verite_terrain.py` — crosses the deterministic scoring with that
+  second opinion, and turns the disagreements into a ground truth.
 - `requirements-runpod.txt` — `runpod` + `requests` (the latter only
   for `github_push.py`'s calls to the GitHub API, not for scraping).
   Kept separate from the main `requirements.txt` (used by the GitHub
@@ -187,6 +192,82 @@ the default target repo if you ever need to point elsewhere.
 A push failure (missing token, network error, GitHub API error) never
 fails the job — the scoring results are still returned; the push's own
 outcome (or error) is attached under `result["github_push"]`.
+
+## Building a ground truth (`mode: "judge"` + `verite_terrain.py`)
+
+The characterization test proves `scoring.py` doesn't *change*. It says
+nothing about whether it's *right* — which is the only question a paying
+customer asks: what share of relevant articles do you catch, and what
+share of what you surface actually is relevant?
+
+Answering needs labelled articles. Labelling 6,800 by hand is out of
+reach. This is what makes it tractable:
+
+```bash
+# 1. Full bodies for the whole corpus (one-off, see above)
+python fetch_all_bodies.py --input articles.csv --output articles_with_body.json
+
+# 2. Second opinion from the LLM, on a GPU endpoint built from
+#    Dockerfile.juge. Payload: {"input": {"mode": "judge",
+#    "articles": [...]}} — same article shape as the other modes.
+#    The response carries "verdicts", not "labels". The name matters.
+
+# 3. Cross it with the deterministic scoring
+python verite_terrain.py --verdicts verdicts.json
+```
+
+Step 3 prints the agreement rate and, more usefully, **what to fix** —
+derived from the disagreements alone, with no human labelling:
+
+- the sources where the scanner is blind (the judge keeps the article,
+  the scanner drops it),
+- the words over-represented in those titles, which are candidates to
+  add to `keywords.py`.
+
+That turns the article-by-article audits of past weeks into one
+inventory across the whole corpus.
+
+Add `--arbitrage` to also write `a_arbitrer.json`: every disagreement,
+worst first (a disagreement on a level-A article sits at the top of the
+site; one on an E is buried), plus a random sample of cases where both
+agree. Replace each `"pertinent": null` with `true` or `false`, save it
+as `verite_terrain.json`, and the run then also prints precision,
+recall and F1 — the real ones.
+
+### Agreement is not accuracy
+
+Without human labels there is no precision and no recall, only an
+agreement rate, and the code refuses that vocabulary on purpose
+(`accord_avec_juge`, cells named `retenus_par_le_juge_seul` rather than
+`faux_negatifs`). If the scanner and the judge miss the same thing — a
+whole vocabulary absent from both — agreement stays excellent while
+quality is bad. Agreement measures how alike two systems are, not
+whether either is right.
+
+### The LLM's verdict is not the truth
+
+It's an opinion with its own biases — generous about anything that looks
+like human rights, weak on geography, sensitive to the article's
+language. Tuning `scoring.py` to match it would optimise toward *its*
+errors and leave you with a scanner imitating a model instead of doing
+the job. Only a human arbitration counts as truth; the LLM only chooses
+**what** is worth arbitrating.
+
+### Why the sample of agreements matters
+
+Labelling only disagreements yields flattering, wrong numbers: the cases
+where *both* systems are wrong together — a whole missing vocabulary,
+the most dangerous gap — stay invisible. The random sample of agreed
+cases is the only way to estimate what happens across the rest of the
+corpus.
+
+### Expect many more "possible misses" than "possible noise"
+
+About 99% of the corpus is rejected, so even a small false-positive rate
+on the judge's side produces a large pile of "the scanner may have
+missed this". Triage with the `confiance` field the judge returns, and
+cap the list with `--echantillon` rather than trying to arbitrate
+everything in one sitting.
 
 ## Feeding it ~6,800 articles
 
