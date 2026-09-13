@@ -1,6 +1,15 @@
-feedparser
-requests
-beautifulsoup4
-stop-words
-llama-cpp-python
-huggingface_hub
+# Versions bornées (compatible-release, ~=) plutôt que libres : sans
+# borne, une release cassante en amont casse la production sans prévenir
+# et aucun run passé n'est reproductible. ~=X.Y.Z autorise les
+# correctifs (X.Y.*) mais pas les changements d'API.
+#
+# Versions de référence : celles du run vert du 2026-09-13.
+feedparser~=6.0.14
+requests~=2.33.1
+beautifulsoup4~=4.15.0
+stop-words~=2025.11.4
+
+# Synthèse quotidienne uniquement (synthesis.py). Le scanner tourne
+# sans : generate_synthesis() échoue proprement et le run continue.
+llama-cpp-python~=0.3.35
+huggingface_hub~=1.31.0

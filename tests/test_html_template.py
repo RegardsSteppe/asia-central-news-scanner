@@ -189,3 +189,52 @@ class ArticleAgeDisplayTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SafeUrlTests(unittest.TestCase):
+    """
+    Les URL affichées proviennent du HTML scrapé de sites tiers. Un
+    site compromis peut servir un href "javascript:..." que le scanner
+    republierait en lien cliquable sur le site public — l'échappement
+    HTML ne protège pas du schéma, seulement du texte.
+    """
+
+    def _card(self, url):
+        from html_template import render_article_card
+
+        return render_article_card(
+            {
+                "title": "Titre",
+                "summary": "resume",
+                "url": url,
+                "source": "Source",
+                "level": "A",
+                "score": 80,
+                "reasons": ["raison"],
+                "theme": "theme",
+                "date": None,
+            }
+        )
+
+    def _href(self, html_output):
+        found = re.search(r'href="([^"]*)"', html_output)
+        return found.group(1) if found else None
+
+    def test_keeps_legitimate_http_urls(self):
+        for url in (
+            "https://www.hrw.org/news/2026/09/12/kazakhstan",
+            "http://example.org/article",
+        ):
+            self.assertEqual(self._href(self._card(url)), url)
+
+    def test_drops_javascript_scheme(self):
+        self.assertEqual(self._href(self._card("javascript:alert(1)")), "")
+
+    def test_drops_data_scheme(self):
+        self.assertEqual(self._href(self._card("data:text/html;base64,SGk=")), "")
+
+    def test_scheme_check_is_case_insensitive(self):
+        self.assertEqual(self._href(self._card("JavaScript:alert(1)")), "")
+
+    def test_drops_scheme_hidden_behind_whitespace(self):
+        self.assertEqual(self._href(self._card("  javascript:alert(1)")), "")

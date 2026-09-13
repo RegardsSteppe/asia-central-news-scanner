@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import atexit
 import json
 import os
 import time
@@ -61,7 +62,7 @@ def _load_cache_meta() -> dict[str, dict[str, Any]]:
                 _CACHE_META = data
                 return _CACHE_META
     except Exception:
-        pass
+        logger.debug("Unable to load HTTP cache metadata", exc_info=True)
 
     _CACHE_META = {}
     return _CACHE_META
@@ -128,12 +129,41 @@ def cache_get(
         _MEMORY_CACHE[key] = (fetched_at, content)
         return content
 
+# Le cache complet était réécrit sur disque à CHAQUE insertion : avec
+# ~120 sources, c'est 120 sérialisations JSON d'un fichier qui grossit à
+# chaque fois (coût quadratique), pour un fichier gitignored qui ne
+# survit de toute façon pas au run GitHub Actions. On accumule en
+# mémoire et on écrit au plus toutes les FLUSH_INTERVAL secondes, plus
+# une écriture finale à la sortie du processus.
+_CACHE_FLUSH_INTERVAL_SECONDS = 30.0
+_last_flush = 0.0
+_cache_dirty = False
+
+
+def _flush_cache_meta(force: bool = False) -> None:
+    """Écrit le cache sur disque s'il a changé et que l'intervalle est passé."""
+    global _last_flush, _cache_dirty
+
+    if not _cache_dirty:
+        return
+
+    now = time.time()
+    if not force and now - _last_flush < _CACHE_FLUSH_INTERVAL_SECONDS:
+        return
+
+    _save_cache_meta()
+    _last_flush = now
+    _cache_dirty = False
+
+
 def cache_set(
     key: str,
     value: Any,
     etag: str = "",
     last_modified: str = "",
 ) -> None:
+    global _cache_dirty
+
     now = time.time()
     with _CACHE_LOCK:
         _MEMORY_CACHE[key] = (now, value)
@@ -143,7 +173,14 @@ def cache_set(
             "etag": etag,
             "last_modified": last_modified,
         }
-        _save_cache_meta()
+        _cache_dirty = True
+        _flush_cache_meta()
+
+
+@atexit.register
+def _flush_cache_meta_at_exit() -> None:
+    with _CACHE_LOCK:
+        _flush_cache_meta(force=True)
 
 
 # ============================================================

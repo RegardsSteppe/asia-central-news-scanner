@@ -4,6 +4,8 @@ import re
 from datetime import datetime, timezone
 from typing import Any
 
+from text_utils import article_age_days
+
 # Petit modèle instruct quantifié (GGUF), multilingue, choisi pour
 # tourner en CPU-only sur un runner GitHub Actions standard (pas de GPU)
 # en un temps raisonnable. Téléchargé et mis en cache par huggingface_hub
@@ -139,22 +141,6 @@ def _looks_like_refusal(text: str) -> bool:
     return any(pattern in lowered for pattern in _REFUSAL_PATTERNS)
 
 
-def _article_age_days(article: dict[str, Any], now: datetime) -> float | None:
-    """
-    Âge d'un article en jours, ou None si sa date est absente/invalide
-    (dans ce cas on ne l'exclut pas de la synthèse : mieux vaut couvrir
-    un article dont l'âge est inconnu que d'en écarter un qui serait en
-    fait récent).
-    """
-    date = article.get("date")
-
-    if not isinstance(date, datetime):
-        return None
-
-    if date.tzinfo is None:
-        date = date.replace(tzinfo=timezone.utc)
-
-    return (now - date).total_seconds() / 86400
 
 
 def generate_synthesis(
@@ -176,7 +162,7 @@ def generate_synthesis(
 
     recent = []
     for article in articles:
-        age_days = _article_age_days(article, now)
+        age_days = article_age_days(article.get("date"), now=now)
         if age_days is None or age_days <= max_age_days:
             recent.append(article)
 

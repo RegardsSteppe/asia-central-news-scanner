@@ -12,25 +12,34 @@ traitement subi...) sans jamais décider s'il est pertinent. Le choix
 éditorial vit à côté, dans regles_editoriales.py, appliqué sur le dict
 que categoriser() renvoie ici.
 
-Ne modifie ni scoring.py ni keywords.py (consigne explicite) : réutilise
-leurs listes de mots-clés et leurs fonctions de détection (find_terms,
-relation_present, _find_terms_with_russian_stems, normalize,
-detect_language...) telles quelles — aucune regex de détection n'est
-réécrite ici. looks_like_article_link() (article_ingestion.py) est
-réutilisée de la même façon pour le champ "type" : même logique de
-"ne pas dupliquer une détection déjà existante ailleurs dans le
-projet", pas seulement pour scoring.py/keywords.py. article_age_days()
-(html_template.py) est réutilisée pour "age_jours" pour la même raison.
+Aucune détection n'est réécrite ici : tout passe par matching.py, la
+couche partagée avec scoring.py (normalisation, recherche de termes,
+morphologie russe, motifs farsi, détection de langue). Le vocabulaire
+vient de keywords.py. Ce module ne fait que du câblage : il applique
+ces primitives aux listes qui l'intéressent et range le résultat dans
+un schéma descriptif.
+
+C'est délibéré : les deux couches consommatrices partagent la même
+intelligence de détection, donc une racine russe ajoutée ou une langue
+mieux gérée profite aux deux. Tant que categorisation.py réimplémentait
+sa propre détection, elle était systématiquement en retard sur
+scoring.py (cas réel du 2026-09-12 : un article HRW russe titré
+"пытки и произвольные аресты" ressortait traitement=aucun).
+
+looks_like_article_link() (article_ingestion.py) et article_age_days()
+(text_utils.py) sont réutilisées de la même façon pour "type" et
+"age_jours".
 
 Aucun champ score/niveau/pertinent/retenu en sortie.
 """
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from article_ingestion import looks_like_article_link
-from html_template import article_age_days
+from text_utils import article_age_days
 
 from keywords import (
     CENTRAL_ASIA_TERMS,
@@ -48,17 +57,20 @@ from keywords import (
     PRESS_REPRESSION_TERMS_V9,
     TRANSNATIONAL_REPRESSION_TERMS_V9,
     REGIONAL_SOURCE_HINTS_V9,
+    ACTIVIST_REPRESSION_FA_PATTERNS,
+    JOURNALIST_REPRESSION_FA_PATTERNS,
 )
 
-from scoring import (
-    normalize,
-    find_terms,
-    relation_present,
-    detect_language,
+from matching import (
+    compiled,
     contains_pattern,
-    _find_terms_with_russian_stems,
-    _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS,
-    _RUSSIAN_CAUCASUS_STEM_PATTERNS,
+    find_caucasus_terms,
+    find_central_asia_terms,
+    find_terms,
+    has_russian_repression_morphology,
+    normalize,
+    relation_present,
+    resolve_language,
 )
 
 
@@ -184,16 +196,10 @@ _register_geo_terms("afghanistan", ["afghanistan", "афганистан"])
 _register_geo_terms("russie", ["russia", "россия", "russie"])
 
 
-def _geo_terms_in(text: str, is_russian_source: bool) -> list[str]:
+def _geo_terms_in(text: str, language: str) -> list[str]:
     """Termes géo bruts détectés dans `text` (pas encore mappés à un pays)."""
-    central_asia = _find_terms_with_russian_stems(
-        text, CENTRAL_ASIA_TERMS,
-        _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS if is_russian_source else (),
-    )
-    caucasus = _find_terms_with_russian_stems(
-        text, CAUCASUS_TERMS,
-        _RUSSIAN_CAUCASUS_STEM_PATTERNS if is_russian_source else (),
-    )
+    central_asia = find_central_asia_terms(text, CENTRAL_ASIA_TERMS, language)
+    caucasus = find_caucasus_terms(text, CAUCASUS_TERMS, language)
     uyghur = find_terms(text, UYGHUR_TERMS)
     iran_afg_russia = find_terms(text, _IRAN_AFGHANISTAN_RUSSIA_TERMS)
     return list(dict.fromkeys(central_asia + caucasus + uyghur + iran_afg_russia))
@@ -411,11 +417,16 @@ TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
 # systématiquement muet sur du texte russe, même très explicite.
 #
 # Motifs \bRACINE\w*\b — même principe que
-# _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS/REPRESSION_MORPHOLOGY_PATTERNS_V9
-# (scoring.py) : capture la racine et tout suffixe fléchi, sans jamais
-# matcher à l'intérieur d'un autre mot (contrairement à une simple
-# recherche de sous-chaîne, qui matcherait par exemple "сми" au début
-# de "смирение").
+# RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS/REPRESSION_MORPHOLOGY_PATTERNS_V9
+# (matching.py/keywords.py) : capture la racine et tout suffixe fléchi,
+# sans jamais matcher à l'intérieur d'un autre mot (contrairement à une
+# simple recherche de sous-chaîne, qui matcherait par exemple "сми" au
+# début de "смирение").
+#
+# Ces motifs sont PLUS FINS que REPRESSION_MORPHOLOGY_PATTERNS_V9, qui
+# dit seulement "il y a de la répression quelque part" : ici il faut
+# savoir LAQUELLE (une détention n'est pas une condamnation). D'où une
+# table par type de traitement plutôt qu'une liste unique.
 _TRAITEMENT_STEM_PATTERNS: dict[str, list[str]] = {
     # "арест"/"задерж" : racines russes couvrant à la fois le nom et
     # le verbe/participe (арест/аресты/арестован/арестованный,
@@ -463,6 +474,19 @@ ADVOCACY_TERMS = [
     "заявление", "совместное заявление", "открытое письмо",
     "призываем",
 ]
+
+
+def _stem_match(text: str, pattern: str) -> str:
+    """
+    Mot réellement trouvé par un motif de racine, ou "" si aucun.
+
+    Renvoyer le mot ("аресты") plutôt qu'un libellé générique
+    ("(racine russe détectée)") : les preuves servent à auditer une
+    catégorisation surprenante, et "une racine a matché" ne permet pas
+    de dire laquelle ni de juger si c'est un faux positif.
+    """
+    found = compiled(pattern, re.I).search(text)
+    return found.group(0) if found else ""
 
 
 def _detect_type(article: dict[str, Any], body_text: str) -> tuple[str, str]:
@@ -521,18 +545,13 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
     # calculée localement, jamais écrite sur `article` (voir
     # docstring : categoriser() ne mute pas son entrée).
     # --------------------------------------------------------
-    declared_language = (article.get("language") or "").strip().lower()
-    if declared_language in ("", "multi"):
-        resolved_language = detect_language(full_text) or declared_language
-    else:
-        resolved_language = declared_language
-    is_russian_source = resolved_language == "ru"
+    resolved_language = resolve_language(article.get("language"), full_text)
 
     # --------------------------------------------------------
     # GEO / GEO_ROLE
     # --------------------------------------------------------
-    headline_geo_raw = _geo_terms_in(headline, is_russian_source)
-    body_geo_raw = _geo_terms_in(body, is_russian_source)
+    headline_geo_raw = _geo_terms_in(headline, resolved_language)
+    body_geo_raw = _geo_terms_in(body, resolved_language)
     all_geo_raw = list(dict.fromkeys(headline_geo_raw + body_geo_raw))
 
     geo = list(dict.fromkeys(
@@ -573,6 +592,27 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
             "(déduit de geo=xinjiang)"
         )
 
+    # Farsi : les listes d'acteurs ci-dessus sont quasi muettes en
+    # persan, alors que keywords.py contient déjà des motifs
+    # "acteur + répression à moins de 100 caractères" que scoring.py
+    # exploite depuis toujours et que ce module ignorait. Sans eux, un
+    # article de Fararu/IRNA sur un journaliste emprisonné ressortait
+    # acteur=aucun. Motifs lancés uniquement sur du texte persan (ils
+    # n'ont aucun sens ailleurs et coûtent cher).
+    farsi_relation_hit = False
+    if resolved_language == "fa":
+        for key, patterns in (
+            ("opposant", ACTIVIST_REPRESSION_FA_PATTERNS),
+            ("journaliste", JOURNALIST_REPRESSION_FA_PATTERNS),
+        ):
+            if contains_pattern(full_text, patterns):
+                farsi_relation_hit = True
+                if key not in acteur:
+                    acteur.append(key)
+                preuves_acteur.setdefault(key, []).append(
+                    "(motif farsi acteur+répression)"
+                )
+
     if not acteur:
         acteur = ["aucun"]
     preuves["acteur"] = preuves_acteur
@@ -589,9 +629,10 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
         # _TRAITEMENT_STEM_PATTERNS) : find_terms() ne peut jamais les
         # matcher (limite de mot exigée juste après le terme), donc
         # vérifiées séparément via des motifs \bRACINE\w*\b.
-        stem_patterns = _TRAITEMENT_STEM_PATTERNS.get(key)
-        if stem_patterns and contains_pattern(full_text, stem_patterns):
-            matched = list(matched) + ["(racine russe détectée)"]
+        for pattern in _TRAITEMENT_STEM_PATTERNS.get(key, ()):
+            found = _stem_match(full_text, pattern)
+            if found:
+                matched = list(matched) + [found]
 
         if matched:
             traitement.append(key)
@@ -599,6 +640,19 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
 
     if not traitement:
         traitement = ["aucun"]
+
+        # Filet de diagnostic : le texte décrit une répression en russe
+        # (morphologie partagée avec scoring.py) mais aucun type précis
+        # n'a matché. C'est exactement le trou de vocabulaire à combler
+        # — on le rend visible dans les preuves plutôt que de laisser un
+        # "aucun" muet, qui ne dit pas s'il n'y a rien à voir ou si la
+        # détection est passée à côté.
+        if resolved_language == "ru" and has_russian_repression_morphology(full_text):
+            preuves_traitement["_non_typé"] = [
+                "répression détectée en russe, mais aucun type ne correspond "
+                "— vocabulaire à enrichir"
+            ]
+
     preuves["traitement"] = preuves_traitement
 
     # --------------------------------------------------------
@@ -606,15 +660,29 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
     # --------------------------------------------------------
     acteur_terms_flat = [t for terms in ACTEUR_TYPE_TERMS.values() for t in terms]
     traitement_terms_flat = [t for terms in TRAITEMENT_TYPE_TERMS.values() for t in terms]
+
+    # Les motifs farsi exigent déjà acteur et répression à moins de 100
+    # caractères l'un de l'autre : c'est la relation, établie par
+    # construction.
     relation_acteur_traitement = bool(
-        acteur != ["aucun"]
-        and traitement != ["aucun"]
-        and relation_present(full_text, acteur_terms_flat, traitement_terms_flat)
+        farsi_relation_hit
+        or (
+            acteur != ["aucun"]
+            and traitement != ["aucun"]
+            and relation_present(full_text, acteur_terms_flat, traitement_terms_flat)
+        )
     )
+
+    # Les preuves passent par find_terms (limite de mot) et non par un
+    # test de sous-chaîne : "in full_text" listait des termes que la
+    # détection elle-même n'aurait jamais retenus (ex. "arrest" trouvé
+    # dans "arrested"), donnant des preuves qui ne correspondaient pas
+    # à ce qui a réellement déclenché la relation.
     preuves["relation_acteur_traitement"] = (
         {
-            "acteur_termes": [t for t in acteur_terms_flat if t in full_text],
-            "traitement_termes": [t for t in traitement_terms_flat if t in full_text],
+            "acteur_termes": find_terms(full_text, acteur_terms_flat),
+            "traitement_termes": find_terms(full_text, traitement_terms_flat),
+            "via_motif_farsi": farsi_relation_hit,
         }
         if relation_acteur_traitement
         else {}

@@ -410,8 +410,12 @@ def safe_load_memory() -> dict[str, Any]:
         if isinstance(data, dict):
             return data
 
-    except Exception:
-        pass
+    except Exception as exc:
+        # memory.json illisible = on repart d'une mémoire vide, ce qui
+        # est récupérable. Mais le signaler : sans ce message, une
+        # corruption se traduit juste par un scan anormalement lent et
+        # un corpus qui repart de zéro, sans cause visible.
+        print(f"WARNING | MEMORY | illisible, mémoire vide: {type(exc).__name__}: {exc}")
 
     return {}
 
@@ -432,8 +436,11 @@ def safe_save_memory(
                 indent=2,
             )
 
-    except Exception:
-        pass
+    except Exception as exc:
+        # Non fatal (le scan du jour est déjà publié), mais jamais
+        # silencieux : sans mémoire sauvegardée, le cache par source et
+        # la taille de corpus de référence sont perdus au run suivant.
+        print(f"WARNING | MEMORY | sauvegarde échouée: {type(exc).__name__}: {exc}")
 
 
 def show_memory() -> dict[str, Any]:
@@ -1433,6 +1440,64 @@ def export_html(
         raise
 
 
+class CorpusCollapseError(RuntimeError):
+    """Le corpus du jour s'est effondré par rapport au run précédent."""
+
+
+# Part minimale du corpus précédent en dessous de laquelle on refuse de
+# publier. Le site est intégralement régénéré à chaque run : un run qui
+# ne ramène qu'une fraction des articles écrase la version complète
+# publiée la veille, sans rien signaler. Arrivé pour de vrai le
+# 2026-09-13 (2086 articles publiés à la place de 6706, run "réussi",
+# vert dans GitHub Actions, découvert parce que l'utilisateur a compté
+# les articles sur le site).
+CORPUS_COLLAPSE_RATIO = max(
+    0.0,
+    min(1.0, float(os.getenv("SCANNER_CORPUS_COLLAPSE_RATIO", "0.5"))),
+)
+
+# Échappatoire quand la chute est légitime et assumée (panne durable
+# d'un gros fournisseur, coupe volontaire de sources...).
+ALLOW_CORPUS_DROP = os.getenv(
+    "SCANNER_ALLOW_CORPUS_DROP",
+    "0",
+).strip().lower() in {"1", "true", "yes"}
+
+
+def check_corpus_not_collapsed(
+    count: int,
+    memory: dict[str, Any],
+) -> None:
+    """
+    Refuse de publier un corpus effondré, AVANT toute écriture de
+    index.html/articles.csv.
+
+    Ne se déclenche jamais au premier run (aucune référence), ni quand
+    le corpus grandit. Contourné par SCANNER_ALLOW_CORPUS_DROP=1.
+    """
+    previous = memory.get("last_corpus_size")
+
+    if not isinstance(previous, int) or previous <= 0:
+        return
+
+    minimum = int(previous * CORPUS_COLLAPSE_RATIO)
+
+    if count >= minimum:
+        return
+
+    message = (
+        f"corpus effondré : {count} articles contre {previous} au run "
+        f"précédent (seuil : {minimum}). Rien n'a été publié — le site "
+        f"garde sa version complète."
+    )
+
+    if ALLOW_CORPUS_DROP:
+        print(f"WARNING | {message} | ignoré (SCANNER_ALLOW_CORPUS_DROP=1)")
+        return
+
+    raise CorpusCollapseError(message)
+
+
 def run_scan(
     force_refresh: bool = False,
 ) -> list[dict[str, Any]]:
@@ -1476,6 +1541,10 @@ def run_scan(
     print(
         f"DEDUP | {len(all_articles)} articles uniques"
     )
+
+    # Vérifié ici, avant tout travail coûteux et surtout avant la
+    # moindre écriture de index.html/articles.csv.
+    check_corpus_not_collapsed(len(all_articles), memory)
 
     # --------------------------------------------------------
     # Première passe : titre + résumé uniquement
@@ -1612,6 +1681,10 @@ def run_scan(
             },
         )
         print("MEMORY | seen_article_keys mis à jour")
+
+    # Enregistré seulement maintenant : une taille de référence ne vaut
+    # que si le corpus correspondant a bien été publié.
+    memory["last_corpus_size"] = len(all_articles)
 
     # Toujours persisté, y compris quand SKIP_PREVIOUSLY_SEEN est
     # désactivé : le cache par source (fraîcheur des sources) en dépend.

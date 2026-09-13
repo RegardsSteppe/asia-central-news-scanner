@@ -1,5 +1,18 @@
 import re
-from functools import lru_cache
+
+from matching import (
+    compiled,
+    contains_pattern,
+    detect_language,
+    find_caucasus_terms,
+    find_central_asia_terms,
+    find_terms,
+    has_russian_repression_morphology,
+    normalize,
+    phrase_present,
+    relation_present,
+    resolve_language,
+)
 
 from keywords import (
     CENTRAL_ASIA_TERMS,
@@ -235,20 +248,6 @@ STRONG_POLITICAL_CONTEXT_V9 = [
     "концентрация власти", "политическое преследование",
 ]
 
-REPRESSION_MORPHOLOGY_PATTERNS_V9 = [
-    r"\bзадерж\w*",
-    r"\bарест\w*",
-    r"\bосужден\w*",
-    r"\bосуждён\w*",
-    r"\bприговор\w*",
-    r"\bзаключ\w*",
-    r"\bпреследован\w*",
-    r"\bрепресс\w*",
-    r"\bпыт\w*",
-    r"\bцензур\w*",
-    r"\bзапрещ\w*",
-]
-
 BODY_CONFIRMATION_TERMS_V9 = [
     "according to", "rights group", "human rights group",
     "amnesty international", "human rights watch", "civil society",
@@ -284,104 +283,14 @@ JOURNALIST_TERMS_V7 = JOURNALIST_TERMS
 ACTIVIST_TERMS_V7 = ACTIVIST_TERMS
 
 
-def normalize(text):
-    if not text:
-        return ""
-    return re.sub(r"\s+", " ", str(text)).strip().lower()
-
-
-_CYRILLIC_CHARS_RE = re.compile(r"[а-яё]", re.I)
-_PERSIAN_CHARS_RE = re.compile(r"[؀-ۿ]")
-_LATIN_CHARS_RE = re.compile(r"[a-z]", re.I)
-
-
-def detect_language(text):
-    """
-    Cheap script-ratio language detection, used only as a fallback for
-    articles whose source doesn't declare a single language in
-    sources.py (missing, or "multi" — e.g. RFE/RL, which mixes several
-    language services in one feed list). Not a general-purpose language
-    identifier: it only distinguishes Russian/Farsi script from a Latin
-    default, which is exactly what the language-scoped regex checks
-    below need to decide whether to run.
-    """
-    if not text:
-        return ""
-    cyrillic = len(_CYRILLIC_CHARS_RE.findall(text))
-    persian = len(_PERSIAN_CHARS_RE.findall(text))
-    latin = len(_LATIN_CHARS_RE.findall(text))
-    total = cyrillic + persian + latin
-    if total < 20:
-        return ""
-    if cyrillic / total > 0.3:
-        return "ru"
-    if persian / total > 0.3:
-        return "fa"
-    return "en"
-
-
-@lru_cache(maxsize=None)
-def _compiled(pattern, flags=0):
-    """
-    classify_article() runs dozens of keyword-list lookups against every
-    article, each historically recompiling its regex from scratch — with
-    ~50 term lists of dozens of phrases each, that's ~1800+ regex
-    compilations per article. Terms/patterns are static (from keywords.py
-    or literals below), so the compiled pattern is cached and reused
-    across every article instead.
-    """
-    return re.compile(pattern, flags)
-
-
-def phrase_present(text, phrase):
-    if not text or not phrase:
-        return False
-    pattern = r"(?<!\w)" + re.escape(normalize(phrase)) + r"(?!\w)"
-    return bool(_compiled(pattern).search(text))
-
-
-@lru_cache(maxsize=None)
-def _terms_alternation(terms):
-    """
-    Combine a term list into one alternation regex plus a lookup from
-    normalized term text back to the original term string, so find_terms
-    can scan the text once instead of running a separate compile+search
-    per term (classify_article calls find_terms ~50 times per article,
-    against lists of dozens of terms each). Cached on the term tuple:
-    the static lists from keywords.py/scoring.py are reused across every
-    article, same as _compiled/_alternation_pattern.
-    """
-    entries = []
-    lookup = {}
-    for term in terms:
-        norm = normalize(term)
-        if not norm or norm in lookup:
-            continue
-        lookup[norm] = term
-        entries.append(norm)
-    if not entries:
-        return None, {}
-    entries.sort(key=len, reverse=True)
-    pattern_text = "|".join(r"(?<!\w)" + re.escape(norm) + r"(?!\w)" for norm in entries)
-    return _compiled(pattern_text), lookup
-
-
-def find_terms(text, terms):
-    if not text or not terms:
-        return []
-    pattern, lookup = _terms_alternation(tuple(terms))
-    if pattern is None:
-        return []
-    found = {lookup[match.group(0)] for match in pattern.finditer(text) if match.group(0) in lookup}
-    return [term for term in terms if term in found]
+# La détection de texte (normalisation, cache de regex, recherche de
+# termes, morphologie russe, détection de langue) vit désormais dans
+# matching.py, partagée avec categorisation.py — voir l'entête de ce
+# module. Ne restent ici que les maths de score.
 
 
 def capped_add(current, value, maximum):
     return min(current + value, maximum)
-
-
-def contains_pattern(text, patterns):
-    return any(_compiled(pattern, re.I | re.S).search(text) for pattern in patterns)
 
 
 def weighted_score(terms, weights, maximum):
@@ -390,135 +299,150 @@ def weighted_score(terms, weights, maximum):
         score += weights.get(normalize(term), 2)
     return min(score, maximum)
 
+# ============================================================
+# DÉCISIONS DÉRIVÉES DES SIGNAUX
+# ============================================================
+#
+# Niveau, priorité, thème et pertinence ne regardent QUE le score et le
+# dict de signaux produit par la détection. Les isoler de
+# classify_article() (864 lignes, 116 variables locales) rend testable
+# ce qui change le plus souvent — les règles éditoriales — sans toucher
+# à la détection, et rejoint la séparation déjà en place entre
+# categorisation.py (les faits) et regles_editoriales.py (les choix).
 
-@lru_cache(maxsize=None)
-def _alternation_pattern(terms):
+
+# Seuils de score. Un article doit franchir le seuil ET porter un
+# signal confirmé de la liste ci-dessous pour atteindre A : le score
+# seul suffisait autrefois, ce qui faisait monter en A des articles
+# très scorés sans aucune cible identifiée.
+LEVEL_A_MIN_SCORE = 75
+LEVEL_B_MIN_SCORE = 55
+LEVEL_C_MIN_SCORE = 35
+
+_LEVEL_A_CONFIRMATIONS = (
+    "confirmed_activist_pressure",
+    "confirmed_journalist_pressure",
+    "severe_detected",
+    "confirmed_repression",
+    "primary_forced_labor",
+    "primary_lgbt_pressure",
+    "primary_press",
+    "critical_hr_case",
+)
+
+
+def decide_level(score, signals):
     """
-    Combine a term list into one alternation regex instead of matching
-    each term separately. Terms are sorted longest-first so overlapping
-    alternatives (e.g. "activist" vs "activists") prefer the longer match.
-    Cached on the term tuple: the same static lists (ACTIVIST_TERMS,
-    TARGET_TERMS_V9, ...) are reused across every article.
+    Niveau A-E.
+
+    Hors région, un article portant tout de même un vrai signal droits
+    humains (ex. HRW sur un défenseur en Iran ou au Rwanda) tombe en D
+    plutôt que dans le bruit ; E regroupe tout le reste.
     """
-    escaped = sorted(
-        (re.escape(normalize(term)) for term in terms if term),
-        key=len,
-        reverse=True,
+    if not signals.get("regional_context"):
+        return "D" if signals.get("global_hr_signal") else "E"
+
+    if signals.get("non_news") or signals.get("noise"):
+        return "E"
+
+    if score >= LEVEL_A_MIN_SCORE and any(
+        signals.get(key) for key in _LEVEL_A_CONFIRMATIONS
+    ):
+        return "A"
+
+    if score >= LEVEL_B_MIN_SCORE:
+        return "B"
+
+    if score >= LEVEL_C_MIN_SCORE:
+        return "C"
+
+    return "E"
+
+
+_PRIORITY_THRESHOLDS = (
+    (90, "ABSOLUE"),
+    (75, "TRÈS HAUTE"),
+    (60, "HAUTE"),
+    (40, "MOYENNE"),
+    (20, "FAIBLE"),
+)
+
+
+def decide_priority(score):
+    """Libellé de priorité, fonction du seul score."""
+    for minimum, label in _PRIORITY_THRESHOLDS:
+        if score >= minimum:
+            return label
+
+    return "BRUIT"
+
+
+# Thèmes par ordre de priorité : le premier signal présent gagne. Une
+# table plutôt qu'une cascade de `elif` — l'ordre reste la règle, mais
+# il devient lisible d'un coup d'œil et modifiable sans toucher au code.
+_THEME_RULES = (
+    ("confirmed_activist_pressure", "Activistes / dissidents sous pression"),
+    ("confirmed_journalist_pressure", "Journalistes sous pression"),
+    ("primary_event_anchor", "Événement HR / répression régionale"),
+    ("primary_transnational", "Répression transnationale"),
+    ("primary_gender", "Droits des femmes / violences"),
+    ("confirmed_repression", "Répression / droits humains"),
+    ("has_specific_rights", "Droits spécifiques"),
+    ("primary_political_context", "État de droit / espace civique"),
+    ("primary_democracy", "État de droit / espace civique"),
+    ("domestic", "Politique intérieure"),
+    ("major_geo", "Géopolitique majeure"),
+    ("historical", "Histoire / culture / contexte"),
+    ("non_news", "Contenu institutionnel"),
+    ("routine_geo", "Économie / géopolitique ordinaire"),
+)
+
+
+def decide_theme(signals):
+    """Thème d'affichage : premier signal présent dans l'ordre de priorité."""
+    for key, theme in _THEME_RULES:
+        if signals.get(key):
+            return theme
+
+    return "Faible priorité"
+
+
+RELEVANCE_MIN_SCORE = 40
+
+_RELEVANCE_SIGNALS = (
+    "has_activist",
+    "has_journalist",
+    "has_repression",
+    "has_specific_rights",
+    "has_human_rights",
+    "major_geo",
+    "primary_event_anchor",
+    "primary_gender",
+    "primary_political_context",
+    "primary_democracy",
+)
+
+
+def decide_relevance(score, signals):
+    """
+    Article retenu pour la sélection du jour.
+
+    Une pression confirmée sur un activiste ou un journaliste passe
+    outre le seuil de score : c'est le cœur éditorial du scanner, il ne
+    doit jamais être écarté pour quelques points.
+    """
+    if signals.get("confirmed_activist_pressure") or signals.get(
+        "confirmed_journalist_pressure"
+    ):
+        return True
+
+    return bool(
+        signals.get("regional_context")
+        and score >= RELEVANCE_MIN_SCORE
+        and not signals.get("non_news")
+        and not signals.get("noise")
+        and any(signals.get(key) for key in _RELEVANCE_SIGNALS)
     )
-    if not escaped:
-        return None
-    return _compiled("|".join(escaped), re.I | re.S)
-
-
-def relation_present(text, targets, actions, window=140):
-    """
-    True if any target term and any action term co-occur within `window`
-    characters of each other, in either order.
-
-    Previously this compiled a dedicated regex per (target, action) pair
-    (thousands of pairs for the larger term lists) and searched the full
-    article text with each one. Instead, build one combined alternation
-    regex per side, collect match spans, and compare positions — this
-    turns O(targets x actions) regex compiles/searches into O(targets +
-    actions).
-    """
-    if not text:
-        return False
-    target_pattern = _alternation_pattern(tuple(targets))
-    if target_pattern is None:
-        return False
-    target_spans = [m.span() for m in target_pattern.finditer(text)]
-    if not target_spans:
-        return False
-    action_pattern = _alternation_pattern(tuple(actions))
-    if action_pattern is None:
-        return False
-    action_spans = [m.span() for m in action_pattern.finditer(text)]
-    if not action_spans:
-        return False
-    for target_start, target_end in target_spans:
-        for action_start, action_end in action_spans:
-            if target_end <= action_start <= target_end + window:
-                return True
-            if action_end <= target_start <= action_end + window:
-                return True
-    return False
-
-
-def has_russian_repression_morphology(text):
-    return contains_pattern(text, REPRESSION_MORPHOLOGY_PATTERNS_V9)
-
-
-# Le russe est une langue à déclinaisons : un pays/une ville n'apparaît
-# sous sa forme nominative exacte ("Узбекистан") que lorsqu'il est
-# sujet — la tournure la plus courante dans une dépêche ("в
-# Узбекистане", "власти Казахстана", "с Таджикистаном") le décline au
-# génitif/prépositionnel/instrumental, jamais couvert par le matching
-# de phrase exacte (find_terms/phrase_present). Repéré en audit réel
-# le 2026-09-11 : "Наманганская правозащитница" (adjectif de Namangan)
-# et "хлопковых полях Узбекистана" (génitif) ne franchissaient jamais
-# la porte géographique malgré un vrai cas de défenseure des droits
-# condamnée. Chaque paire (nom canonique, motif) complète — sans les
-# remplacer — les listes CENTRAL_ASIA_TERMS/CAUCASUS_TERMS existantes.
-_RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS = (
-    ("казахстан", r"\bказахстан\w*\b"),
-    ("казах", r"\bказах\w*\b"),
-    ("узбекистан", r"\bузбекистан\w*\b"),
-    ("узбек", r"\bузбек\w*\b"),
-    ("кыргызстан", r"\bкыргызстан\w*\b"),
-    # "кыргызский"/"кыргызские"/"кыргызской"... : l'adjectif russe
-    # moderne (orthographe post-1991, celle qu'utilise le Kirghizistan
-    # lui-même) ne partage pas le radical de "кыргызстан" (qui ne
-    # couvre que "кыргызстана", "кыргызстане"...) — sans ce motif, un
-    # article ne nommant JAMAIS le pays autrement que par cet adjectif
-    # (ex. "кыргызские власти", "les autorités kirghizes") ne franchit
-    # jamais la porte géographique. Repéré en audit réel le 2026-09-12
-    # sur un article Kloop concernant un activiste kirghize (Kloop
-    # Кенжебаев) resté à 0/E faute de reconnaître "кыргызские". Les 4
-    # autres pays d'Asie centrale (казах/узбек/таджик/туркмен) avaient
-    # déjà leur forme adjectivale nue ci-dessous ; seul le kirghize
-    # manquait la sienne (only "киргиз", l'orthographe soviétique
-    # antérieure, était couverte).
-    ("кыргыз", r"\bкыргыз\w*\b"),
-    ("киргизия", r"\bкиргизи\w*\b"),
-    ("киргиз", r"\bкиргиз\w*\b"),
-    ("таджикистан", r"\bтаджикистан\w*\b"),
-    ("таджик", r"\bтаджик\w*\b"),
-    ("туркменистан", r"\bтуркменистан\w*\b"),
-    ("туркмен", r"\bтуркмен\w*\b"),
-    ("наманган", r"\bнаманган\w*\b"),
-    ("ташкент", r"\bташкент\w*\b"),
-    ("алматы", r"\bалмат\w*\b"),
-    ("астана", r"\bастан\w*\b"),
-    ("бишкек", r"\bбишкек\w*\b"),
-    ("ашхабад", r"\bашхабад\w*\b"),
-    ("худжанд", r"\bхуджанд\w*\b"),
-)
-
-_RUSSIAN_CAUCASUS_STEM_PATTERNS = (
-    ("армения", r"\bармени\w*\b"),
-    ("азербайджан", r"\bазербайджан\w*\b"),
-    ("грузия", r"\bгрузи\w*\b"),
-    ("чечня", r"\bчечн\w*\b"),
-    ("чечня", r"\bчечен\w*\b"),
-    ("дагестан", r"\bдагестан\w*\b"),
-    ("осетия", r"\bосети\w*\b"),
-    ("ингушетия", r"\bингуш\w*\b"),
-    ("ереван", r"\bереван\w*\b"),
-)
-
-
-def _find_terms_with_russian_stems(text, terms, stem_patterns):
-    matches = list(find_terms(text, terms))
-
-    for name, pattern in stem_patterns:
-        if name in matches:
-            continue
-
-        if _compiled(pattern, re.I).search(text):
-            matches.append(name)
-
-    return matches
 
 
 def classify_article(article):
@@ -552,28 +476,16 @@ def classify_article(article):
     # 2026-09-11 après avoir remarqué le ralentissement des runs suite
     # à l'ajout des vérifications russes, puis élargi à toutes les
     # vérifications langue-spécifiques (pas seulement le russe).
-    declared_language = (article.get("language") or "").strip().lower()
-    if declared_language in ("", "multi"):
-        resolved_language = detect_language(full_text) or declared_language
-    else:
-        resolved_language = declared_language
+    resolved_language = resolve_language(article.get("language"), full_text)
     article["language"] = resolved_language
 
     is_russian_source = resolved_language == "ru"
     is_farsi_source = resolved_language == "fa"
-    ru_central_asia_stems = (
-        _RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS if is_russian_source else ()
-    )
-    ru_caucasus_stems = (
-        _RUSSIAN_CAUCASUS_STEM_PATTERNS if is_russian_source else ()
-    )
 
-    central_asia = _find_terms_with_russian_stems(
-        headline, CENTRAL_ASIA_TERMS, ru_central_asia_stems
+    central_asia = find_central_asia_terms(
+        headline, CENTRAL_ASIA_TERMS, resolved_language
     )
-    caucasus = _find_terms_with_russian_stems(
-        headline, CAUCASUS_TERMS, ru_caucasus_stems
-    )
+    caucasus = find_caucasus_terms(headline, CAUCASUS_TERMS, resolved_language)
     uyghur = find_terms(headline, UYGHUR_TERMS)
 
     # Uniquement des médias EXCLUSIVEMENT dédiés à la région : "Radio
@@ -594,12 +506,8 @@ def classify_article(article):
     central_asia_source = find_terms(source_context, central_asia_source_terms)
 
     body_geography = list(dict.fromkeys(
-        _find_terms_with_russian_stems(
-            body, CENTRAL_ASIA_TERMS, ru_central_asia_stems
-        )
-        + _find_terms_with_russian_stems(
-            body, CAUCASUS_TERMS, ru_caucasus_stems
-        )
+        find_central_asia_terms(body, CENTRAL_ASIA_TERMS, resolved_language)
+        + find_caucasus_terms(body, CAUCASUS_TERMS, resolved_language)
         + find_terms(body, UYGHUR_TERMS)
     ))
     body_geo_count = len(body_geography)
@@ -648,20 +556,20 @@ def classify_article(article):
     has_hr_defender = any(normalize(x) in full_text for x in HUMAN_RIGHTS_DEFENDER_TERMS)
     forced_labor_detected = any(normalize(x) in full_text for x in FORCED_LABOR_TERMS)
 
-    has_detention = bool(_compiled(
+    has_detention = bool(compiled(
         r"\b(detained|detention|arrested|arrest|задерж\w*|арест\w*)\b", re.I
     ).search(full_text))
-    has_imprisonment = bool(_compiled(
+    has_imprisonment = bool(compiled(
         r"\b(imprisoned|imprisonment|prison sentence|sentenced|осужден\w*|приговор\w*|заключ\w*)\b",
         re.I
     ).search(full_text))
-    has_censorship = bool(_compiled(r"(censorship|censored|цензур\w*)", re.I).search(full_text))
-    has_government_involvement = bool(_compiled(
+    has_censorship = bool(compiled(r"(censorship|censored|цензур\w*)", re.I).search(full_text))
+    has_government_involvement = bool(compiled(
         r"\b(government|authorities|state|government-backed|ilo|правительство|власти|государств\w*)\b",
         re.I
     ).search(full_text))
 
-    has_restriction = bool(_compiled(
+    has_restriction = bool(compiled(
         r"(restriction|restrictions|restricted access|ограничени\w*|запрет\w*)",
         re.I
     ).search(full_text))
@@ -736,7 +644,7 @@ def classify_article(article):
     )
 
     primary_lgbt_pressure = bool(
-        _compiled(r"\blgbt\w*|\bqueer\b", re.I).search(primary_hr_text)
+        compiled(r"\blgbt\w*|\bqueer\b", re.I).search(primary_hr_text)
         and (primary_repression or primary_specific_right or primary_press)
     )
 
@@ -831,7 +739,7 @@ def classify_article(article):
     confirmed_activist_pressure = regional_context and activist_relation
     confirmed_journalist_pressure = regional_context and journalist_relation
 
-    severe_morphology = bool(_compiled(
+    severe_morphology = bool(compiled(
         r"(?:пыточ\w*\s+услов\w*|\bшизо\b|\bкарцер\b|произволь\w*\s+задерж\w*)",
         re.I
     ).search(full_text))
@@ -841,7 +749,7 @@ def classify_article(article):
         or any(normalize(x) in full_text for x in SEVERE_REPRESSION_TERMS)
     )
 
-    prison_sentence_signal = bool(_compiled(
+    prison_sentence_signal = bool(compiled(
         r"(?:\b(?:8|9|10|11|12|13|14|15|16|17|18|19|20)\s*(?:лет|года|год|years?)\b.{0,80}"
         r"\b(?:тюрьм|заключ|лишен|лишени)|\b(?:приговорен|осужден|осуждён)\b.{0,80}"
         r"\b(?:лет|года|год)\b)",
@@ -943,7 +851,7 @@ def classify_article(article):
     elif routine_geo:
         geopolitical_score = 2
 
-    has_sco = bool(_compiled(
+    has_sco = bool(compiled(
         r"\b(sco|shanghai cooperation organization|shanghai cooperation organisation)\b",
         re.I
     ).search(full_text))
@@ -1189,8 +1097,15 @@ def classify_article(article):
     score = max(0, min(round(score), 100))
 
     # ========================================================
-    # NIVEAU
+    # SIGNAUX — sortie explicite de la phase de détection
     # ========================================================
+    #
+    # Construits ici, avant les décisions qui en découlent :
+    # niveau, thème, priorité et pertinence sont désormais des
+    # fonctions pures de (score, signals). Elles étaient quatre
+    # cascades de `if` au milieu de 116 variables locales, donc
+    # intestables isolément — alors que ce sont précisément les
+    # règles éditoriales, celles qui bougent le plus souvent.
 
     # Un article hors région (Asie centrale/Caucase/Ouïghours) qui
     # porte tout de même un vrai signal droits humains/activiste
@@ -1217,95 +1132,6 @@ def classify_article(article):
         or primary_academic_case or primary_lgbt_pressure
         or critical_hr_case
     )
-
-    if not regional_context:
-        level = "D" if global_hr_signal else "E"
-    elif non_news or noise:
-        level = "E"
-    elif score >= 75 and (
-        confirmed_activist_pressure
-        or confirmed_journalist_pressure
-        or severe_detected
-        or confirmed_repression
-        or primary_forced_labor
-        or primary_lgbt_pressure
-        or primary_press
-        or critical_hr_case
-    ):
-        level = "A"
-    elif score >= 55:
-        level = "B"
-    elif score >= 35:
-        level = "C"
-    else:
-        level = "E"
-
-    if score >= 90:
-        priority = "ABSOLUE"
-    elif score >= 75:
-        priority = "TRÈS HAUTE"
-    elif score >= 60:
-        priority = "HAUTE"
-    elif score >= 40:
-        priority = "MOYENNE"
-    elif score >= 20:
-        priority = "FAIBLE"
-    else:
-        priority = "BRUIT"
-
-    # ========================================================
-    # THÈME
-    # ========================================================
-
-    if confirmed_activist_pressure:
-        theme = "Activistes / dissidents sous pression"
-    elif confirmed_journalist_pressure:
-        theme = "Journalistes sous pression"
-    elif primary_event_anchor:
-        theme = "Événement HR / répression régionale"
-    elif primary_transnational:
-        theme = "Répression transnationale"
-    elif primary_gender:
-        theme = "Droits des femmes / violences"
-    elif confirmed_repression:
-        theme = "Répression / droits humains"
-    elif has_specific_rights:
-        theme = "Droits spécifiques"
-    elif primary_political_context or primary_democracy:
-        theme = "État de droit / espace civique"
-    elif domestic:
-        theme = "Politique intérieure"
-    elif major_geo:
-        theme = "Géopolitique majeure"
-    elif historical:
-        theme = "Histoire / culture / contexte"
-    elif non_news:
-        theme = "Contenu institutionnel"
-    elif routine_geo:
-        theme = "Économie / géopolitique ordinaire"
-    else:
-        theme = "Faible priorité"
-
-    relevant = bool(
-        regional_context
-        and score >= 40
-        and not non_news
-        and not noise
-        and (
-            has_activist or has_journalist or has_repression
-            or has_specific_rights or has_human_rights
-            or major_geo or primary_event_anchor
-            or primary_gender or primary_political_context
-            or primary_democracy
-        )
-    )
-
-    if confirmed_activist_pressure or confirmed_journalist_pressure:
-        relevant = True
-
-    # ========================================================
-    # AUDIT
-    # ========================================================
 
     signals = {
         "central_asia": central_asia,
@@ -1391,7 +1217,14 @@ def classify_article(article):
         "journalism_score": journalism_score,
         "geopolitical_score": geopolitical_score,
         "penalties": penalties,
+
+        "global_hr_signal": global_hr_signal,
     }
+
+    level = decide_level(score, signals)
+    priority = decide_priority(score)
+    theme = decide_theme(signals)
+    relevant = decide_relevance(score, signals)
 
     article["score"] = score
     article["level"] = level
