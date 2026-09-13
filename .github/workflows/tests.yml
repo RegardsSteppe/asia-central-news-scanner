@@ -22,11 +22,14 @@ jobs:
           python-version: "3.10"
           cache: "pip"
 
-      # Les dépendances du scan complet (llama-cpp-python notamment,
-      # long à compiler) ne servent pas à la suite de tests : les tests
-      # de synthesis.py mockent le modèle.
-      - name: Install test dependencies
-        run: pip install feedparser requests beautifulsoup4 stop-words
+      # Exactement les versions de la production (requirements.txt),
+      # sans les dépendances du modèle de langage (requirements-llm.txt)
+      # que les tests mockent. Installer les mêmes versions est ce qui
+      # fait qu'un épinglage impossible rougit ici, avant le merge :
+      # cette étape installait des versions libres, elle a donc laissé
+      # passer un pin exigeant Python 3.11 qui a cassé le run #142.
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Run tests
         run: python -m unittest discover -s tests -p "test_*.py" -v

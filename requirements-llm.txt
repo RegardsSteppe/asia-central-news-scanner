@@ -1,0 +1,13 @@
+# Dépendances de la synthèse quotidienne uniquement (synthesis.py).
+#
+# Séparées de requirements.txt pour que la CI de test installe
+# exactement les mêmes versions que la production sans tirer le modèle
+# de langage, inutile aux tests (ils le mockent).
+#
+# Le scanner tourne sans : generate_synthesis() échoue proprement et le
+# run continue.
+#
+# Mêmes contraintes que requirements.txt : doit résoudre sous Python
+# 3.10 (la version de .github/workflows/news-scanner.yml).
+llama-cpp-python~=0.3.35
+huggingface_hub~=1.31.0
