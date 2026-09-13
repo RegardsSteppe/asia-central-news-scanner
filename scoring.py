@@ -299,6 +299,152 @@ def weighted_score(terms, weights, maximum):
         score += weights.get(normalize(term), 2)
     return min(score, maximum)
 
+# ============================================================
+# DÉCISIONS DÉRIVÉES DES SIGNAUX
+# ============================================================
+#
+# Niveau, priorité, thème et pertinence ne regardent QUE le score et le
+# dict de signaux produit par la détection. Les isoler de
+# classify_article() (864 lignes, 116 variables locales) rend testable
+# ce qui change le plus souvent — les règles éditoriales — sans toucher
+# à la détection, et rejoint la séparation déjà en place entre
+# categorisation.py (les faits) et regles_editoriales.py (les choix).
+
+
+# Seuils de score. Un article doit franchir le seuil ET porter un
+# signal confirmé de la liste ci-dessous pour atteindre A : le score
+# seul suffisait autrefois, ce qui faisait monter en A des articles
+# très scorés sans aucune cible identifiée.
+LEVEL_A_MIN_SCORE = 75
+LEVEL_B_MIN_SCORE = 55
+LEVEL_C_MIN_SCORE = 35
+
+_LEVEL_A_CONFIRMATIONS = (
+    "confirmed_activist_pressure",
+    "confirmed_journalist_pressure",
+    "severe_detected",
+    "confirmed_repression",
+    "primary_forced_labor",
+    "primary_lgbt_pressure",
+    "primary_press",
+    "critical_hr_case",
+)
+
+
+def decide_level(score, signals):
+    """
+    Niveau A-E.
+
+    Hors région, un article portant tout de même un vrai signal droits
+    humains (ex. HRW sur un défenseur en Iran ou au Rwanda) tombe en D
+    plutôt que dans le bruit ; E regroupe tout le reste.
+    """
+    if not signals.get("regional_context"):
+        return "D" if signals.get("global_hr_signal") else "E"
+
+    if signals.get("non_news") or signals.get("noise"):
+        return "E"
+
+    if score >= LEVEL_A_MIN_SCORE and any(
+        signals.get(key) for key in _LEVEL_A_CONFIRMATIONS
+    ):
+        return "A"
+
+    if score >= LEVEL_B_MIN_SCORE:
+        return "B"
+
+    if score >= LEVEL_C_MIN_SCORE:
+        return "C"
+
+    return "E"
+
+
+_PRIORITY_THRESHOLDS = (
+    (90, "ABSOLUE"),
+    (75, "TRÈS HAUTE"),
+    (60, "HAUTE"),
+    (40, "MOYENNE"),
+    (20, "FAIBLE"),
+)
+
+
+def decide_priority(score):
+    """Libellé de priorité, fonction du seul score."""
+    for minimum, label in _PRIORITY_THRESHOLDS:
+        if score >= minimum:
+            return label
+
+    return "BRUIT"
+
+
+# Thèmes par ordre de priorité : le premier signal présent gagne. Une
+# table plutôt qu'une cascade de `elif` — l'ordre reste la règle, mais
+# il devient lisible d'un coup d'œil et modifiable sans toucher au code.
+_THEME_RULES = (
+    ("confirmed_activist_pressure", "Activistes / dissidents sous pression"),
+    ("confirmed_journalist_pressure", "Journalistes sous pression"),
+    ("primary_event_anchor", "Événement HR / répression régionale"),
+    ("primary_transnational", "Répression transnationale"),
+    ("primary_gender", "Droits des femmes / violences"),
+    ("confirmed_repression", "Répression / droits humains"),
+    ("has_specific_rights", "Droits spécifiques"),
+    ("primary_political_context", "État de droit / espace civique"),
+    ("primary_democracy", "État de droit / espace civique"),
+    ("domestic", "Politique intérieure"),
+    ("major_geo", "Géopolitique majeure"),
+    ("historical", "Histoire / culture / contexte"),
+    ("non_news", "Contenu institutionnel"),
+    ("routine_geo", "Économie / géopolitique ordinaire"),
+)
+
+
+def decide_theme(signals):
+    """Thème d'affichage : premier signal présent dans l'ordre de priorité."""
+    for key, theme in _THEME_RULES:
+        if signals.get(key):
+            return theme
+
+    return "Faible priorité"
+
+
+RELEVANCE_MIN_SCORE = 40
+
+_RELEVANCE_SIGNALS = (
+    "has_activist",
+    "has_journalist",
+    "has_repression",
+    "has_specific_rights",
+    "has_human_rights",
+    "major_geo",
+    "primary_event_anchor",
+    "primary_gender",
+    "primary_political_context",
+    "primary_democracy",
+)
+
+
+def decide_relevance(score, signals):
+    """
+    Article retenu pour la sélection du jour.
+
+    Une pression confirmée sur un activiste ou un journaliste passe
+    outre le seuil de score : c'est le cœur éditorial du scanner, il ne
+    doit jamais être écarté pour quelques points.
+    """
+    if signals.get("confirmed_activist_pressure") or signals.get(
+        "confirmed_journalist_pressure"
+    ):
+        return True
+
+    return bool(
+        signals.get("regional_context")
+        and score >= RELEVANCE_MIN_SCORE
+        and not signals.get("non_news")
+        and not signals.get("noise")
+        and any(signals.get(key) for key in _RELEVANCE_SIGNALS)
+    )
+
+
 def classify_article(article):
     title = normalize(article.get("title", ""))
     summary = normalize(article.get("summary", ""))
@@ -951,8 +1097,15 @@ def classify_article(article):
     score = max(0, min(round(score), 100))
 
     # ========================================================
-    # NIVEAU
+    # SIGNAUX — sortie explicite de la phase de détection
     # ========================================================
+    #
+    # Construits ici, avant les décisions qui en découlent :
+    # niveau, thème, priorité et pertinence sont désormais des
+    # fonctions pures de (score, signals). Elles étaient quatre
+    # cascades de `if` au milieu de 116 variables locales, donc
+    # intestables isolément — alors que ce sont précisément les
+    # règles éditoriales, celles qui bougent le plus souvent.
 
     # Un article hors région (Asie centrale/Caucase/Ouïghours) qui
     # porte tout de même un vrai signal droits humains/activiste
@@ -979,95 +1132,6 @@ def classify_article(article):
         or primary_academic_case or primary_lgbt_pressure
         or critical_hr_case
     )
-
-    if not regional_context:
-        level = "D" if global_hr_signal else "E"
-    elif non_news or noise:
-        level = "E"
-    elif score >= 75 and (
-        confirmed_activist_pressure
-        or confirmed_journalist_pressure
-        or severe_detected
-        or confirmed_repression
-        or primary_forced_labor
-        or primary_lgbt_pressure
-        or primary_press
-        or critical_hr_case
-    ):
-        level = "A"
-    elif score >= 55:
-        level = "B"
-    elif score >= 35:
-        level = "C"
-    else:
-        level = "E"
-
-    if score >= 90:
-        priority = "ABSOLUE"
-    elif score >= 75:
-        priority = "TRÈS HAUTE"
-    elif score >= 60:
-        priority = "HAUTE"
-    elif score >= 40:
-        priority = "MOYENNE"
-    elif score >= 20:
-        priority = "FAIBLE"
-    else:
-        priority = "BRUIT"
-
-    # ========================================================
-    # THÈME
-    # ========================================================
-
-    if confirmed_activist_pressure:
-        theme = "Activistes / dissidents sous pression"
-    elif confirmed_journalist_pressure:
-        theme = "Journalistes sous pression"
-    elif primary_event_anchor:
-        theme = "Événement HR / répression régionale"
-    elif primary_transnational:
-        theme = "Répression transnationale"
-    elif primary_gender:
-        theme = "Droits des femmes / violences"
-    elif confirmed_repression:
-        theme = "Répression / droits humains"
-    elif has_specific_rights:
-        theme = "Droits spécifiques"
-    elif primary_political_context or primary_democracy:
-        theme = "État de droit / espace civique"
-    elif domestic:
-        theme = "Politique intérieure"
-    elif major_geo:
-        theme = "Géopolitique majeure"
-    elif historical:
-        theme = "Histoire / culture / contexte"
-    elif non_news:
-        theme = "Contenu institutionnel"
-    elif routine_geo:
-        theme = "Économie / géopolitique ordinaire"
-    else:
-        theme = "Faible priorité"
-
-    relevant = bool(
-        regional_context
-        and score >= 40
-        and not non_news
-        and not noise
-        and (
-            has_activist or has_journalist or has_repression
-            or has_specific_rights or has_human_rights
-            or major_geo or primary_event_anchor
-            or primary_gender or primary_political_context
-            or primary_democracy
-        )
-    )
-
-    if confirmed_activist_pressure or confirmed_journalist_pressure:
-        relevant = True
-
-    # ========================================================
-    # AUDIT
-    # ========================================================
 
     signals = {
         "central_asia": central_asia,
@@ -1153,7 +1217,14 @@ def classify_article(article):
         "journalism_score": journalism_score,
         "geopolitical_score": geopolitical_score,
         "penalties": penalties,
+
+        "global_hr_signal": global_hr_signal,
     }
+
+    level = decide_level(score, signals)
+    priority = decide_priority(score)
+    theme = decide_theme(signals)
+    relevant = decide_relevance(score, signals)
 
     article["score"] = score
     article["level"] = level

@@ -4,7 +4,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scoring import classify_article, detect_language
+from scoring import (
+    classify_article,
+    decide_level,
+    decide_priority,
+    decide_relevance,
+    decide_theme,
+)
+from matching import detect_language
 
 
 class CityGeographyTests(unittest.TestCase):
@@ -801,3 +808,96 @@ class RussianRepressionMorphologyTests(unittest.TestCase):
         # Le russe écrit indifféremment е ou ё.
         self.assertTrue(self._has_morphology("осужденный активист"))
         self.assertTrue(self._has_morphology("осуждённый активист"))
+
+
+class DerivedDecisionTests(unittest.TestCase):
+    """
+    Niveau, priorité, thème et pertinence étaient quatre cascades de
+    `if` noyées au milieu des 116 variables locales de
+    classify_article(), donc impossibles à tester isolément — alors que
+    ce sont les règles qui bougent le plus souvent. Extraites en
+    fonctions pures de (score, signals) le 2026-09-13.
+    """
+
+    def test_level_falls_back_to_d_for_non_regional_human_rights_story(self):
+        # Un article HRW sur un défenseur des droits hors région n'est
+        # pas du bruit : D le distingue du sport et de l'économie.
+        self.assertEqual(
+            decide_level(80, {"regional_context": False, "global_hr_signal": True}),
+            "D",
+        )
+        self.assertEqual(
+            decide_level(80, {"regional_context": False, "global_hr_signal": False}),
+            "E",
+        )
+
+    def test_level_a_requires_a_confirmed_signal_not_just_a_high_score(self):
+        base = {"regional_context": True}
+        self.assertEqual(decide_level(95, base), "B")
+        self.assertEqual(
+            decide_level(95, {**base, "confirmed_activist_pressure": True}), "A"
+        )
+
+    def test_non_news_and_noise_always_fall_to_e(self):
+        for flag in ("non_news", "noise"):
+            self.assertEqual(
+                decide_level(
+                    99,
+                    {
+                        "regional_context": True,
+                        "confirmed_repression": True,
+                        flag: True,
+                    },
+                ),
+                "E",
+            )
+
+    def test_level_thresholds(self):
+        base = {"regional_context": True}
+        self.assertEqual(decide_level(55, base), "B")
+        self.assertEqual(decide_level(54, base), "C")
+        self.assertEqual(decide_level(35, base), "C")
+        self.assertEqual(decide_level(34, base), "E")
+
+    def test_priority_thresholds(self):
+        for score, expected in (
+            (100, "ABSOLUE"), (90, "ABSOLUE"), (89, "TRÈS HAUTE"),
+            (60, "HAUTE"), (40, "MOYENNE"), (20, "FAIBLE"), (19, "BRUIT"),
+            (0, "BRUIT"),
+        ):
+            self.assertEqual(decide_priority(score), expected, f"score={score}")
+
+    def test_theme_follows_declared_priority_order(self):
+        # Les deux signaux présents : le plus prioritaire gagne.
+        self.assertEqual(
+            decide_theme(
+                {"confirmed_activist_pressure": True, "domestic": True}
+            ),
+            "Activistes / dissidents sous pression",
+        )
+
+    def test_theme_defaults_when_nothing_matches(self):
+        self.assertEqual(decide_theme({}), "Faible priorité")
+
+    def test_confirmed_pressure_overrides_the_score_threshold(self):
+        # Cœur éditorial du scanner : jamais écarté pour quelques points.
+        self.assertTrue(
+            decide_relevance(0, {"confirmed_journalist_pressure": True})
+        )
+
+    def test_relevance_requires_regional_context_and_a_signal(self):
+        self.assertFalse(
+            decide_relevance(90, {"regional_context": False, "has_activist": True})
+        )
+        self.assertFalse(decide_relevance(90, {"regional_context": True}))
+        self.assertTrue(
+            decide_relevance(90, {"regional_context": True, "has_activist": True})
+        )
+
+    def test_relevance_rejects_noise_even_when_scored(self):
+        self.assertFalse(
+            decide_relevance(
+                90,
+                {"regional_context": True, "has_activist": True, "noise": True},
+            )
+        )
