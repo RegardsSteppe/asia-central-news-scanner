@@ -267,3 +267,122 @@ class JugeReponseTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SansEtiquetageHumainTests(unittest.TestCase):
+    """
+    Le cas par défaut : personne n'arbitre. Il faut alors des chiffres
+    honnêtes (un accord, pas une précision) et une sortie actionnable.
+    """
+
+    def test_agreement_is_never_called_precision(self):
+        from verite_terrain import accord_avec_juge
+
+        chiffres = accord_avec_juge(
+            comparer([article("a", True)], [verdict("a", True)])
+        )
+
+        for interdit in ("precision", "rappel", "f1", "vrais_positifs"):
+            self.assertNotIn(interdit, chiffres)
+        self.assertIn("taux_accord", chiffres)
+
+    def test_agreement_carries_its_own_warning(self):
+        from verite_terrain import accord_avec_juge
+
+        chiffres = accord_avec_juge(
+            comparer([article("a", True)], [verdict("a", True)])
+        )
+
+        self.assertIn("avertissement", chiffres)
+        self.assertIn("pas une mesure de justesse", chiffres["avertissement"])
+
+    def test_cells_are_named_by_who_retained_not_by_who_is_right(self):
+        from verite_terrain import accord_avec_juge
+
+        chiffres = accord_avec_juge(
+            comparer([article("a", False)], [verdict("a", True)])
+        )
+
+        self.assertEqual(chiffres["retenus_par_le_juge_seul"], 1)
+        self.assertEqual(chiffres["retenus_par_le_scanner_seul"], 0)
+
+
+class MotsSurRepresentesTests(unittest.TestCase):
+    def test_finds_a_word_specific_to_disagreements(self):
+        from verite_terrain import mots_sur_representes
+
+        candidats = mots_sur_representes(
+            ["militant torture prison"] * 4,
+            ["football match stadium"] * 40,
+        )
+
+        mots = {c["mot"] for c in candidats}
+        self.assertIn("torture", mots)
+        self.assertNotIn("football", mots)
+
+    def test_common_words_are_not_proposed(self):
+        # Les mots-outils apparaissent des deux côtés : leur rapport
+        # vaut ~1, donc pas besoin d'une liste de mots vides.
+        from verite_terrain import mots_sur_representes
+
+        candidats = mots_sur_representes(
+            ["dans le pays une arrestation"] * 5,
+            ["dans le pays une victoire"] * 50,
+        )
+
+        mots = {c["mot"] for c in candidats}
+        self.assertIn("arrestation", mots)
+        for outil in ("dans", "pays", "une"):
+            self.assertNotIn(outil, mots)
+
+    def test_rare_words_are_ignored_as_statistical_noise(self):
+        from verite_terrain import mots_sur_representes
+
+        candidats = mots_sur_representes(
+            ["exceptionnel"], ["autre chose"] * 50
+        )
+        self.assertEqual(candidats, [])
+
+    def test_empty_input_does_not_raise(self):
+        from verite_terrain import mots_sur_representes
+
+        self.assertEqual(mots_sur_representes([], []), [])
+
+
+class AnalyseDesaccordsTests(unittest.TestCase):
+    def test_groups_misses_by_source(self):
+        from verite_terrain import analyser_desaccords
+
+        articles = [
+            article("a", False, titre="Militant arrêté"),
+            article("b", False, titre="Militant condamné"),
+        ]
+        articles[0]["source"] = articles[1]["source"] = "HRW"
+        verdicts = [verdict("a", True), verdict("b", True)]
+
+        analyse = analyser_desaccords(comparer(articles, verdicts))
+
+        self.assertEqual(analyse["rates"]["total"], 2)
+        self.assertEqual(analyse["rates"]["par_source"][0]["source"], "HRW")
+        self.assertEqual(analyse["rates"]["par_source"][0]["cas"], 2)
+
+    def test_separates_misses_from_noise(self):
+        from verite_terrain import analyser_desaccords
+
+        articles = [article("rate", False), article("bruit", True)]
+        verdicts = [verdict("rate", True), verdict("bruit", False)]
+
+        analyse = analyser_desaccords(comparer(articles, verdicts))
+
+        self.assertEqual(analyse["rates"]["total"], 1)
+        self.assertEqual(analyse["bruit"]["total"], 1)
+
+    def test_no_disagreement_yields_empty_analysis(self):
+        from verite_terrain import analyser_desaccords
+
+        analyse = analyser_desaccords(
+            comparer([article("a", True)], [verdict("a", True)])
+        )
+
+        self.assertEqual(analyse["rates"]["total"], 0)
+        self.assertEqual(analyse["rates"]["mots_candidats"], [])

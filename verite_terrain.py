@@ -8,37 +8,51 @@ c'est la seule question qu'un client posera : quelle proportion des
 articles pertinents attrapez-vous, et quelle proportion de ce que vous
 remontez l'est vraiment ?
 
-Y répondre suppose un corpus étiqueté. Étiqueter 6800 articles à la
-main est hors de portée ; ce module rend l'exercice faisable :
+Y répondre vraiment suppose un corpus étiqueté à la main. Ce module
+sert les deux situations, et ne fait jamais passer l'une pour l'autre.
 
-  1. comparer(...)      croise le scoring déterministe et le second avis
-                        du LLM (juge_llm.py)
-  2. a_arbitrer(...)    en sort la liste de ce qu'un humain doit trancher
-  3. charger/mesurer    calcule précision et rappel sur les arbitrages
+SANS ÉTIQUETAGE HUMAIN (le cas par défaut aujourd'hui)
+-------------------------------------------------------
 
-CE QUI COMPTE COMME VÉRITÉ
----------------------------
+  comparer(...)            croise le scoring et le second avis du LLM
+  accord_avec_juge(...)    taux d'ACCORD — jamais appelé précision ni
+                           rappel, parce que ça n'en est pas
+  analyser_desaccords(...) ce qu'il y a à corriger : sources aveugles,
+                           et mots sur-représentés dans les titres que
+                           le juge retient et que le scanner rejette
 
-Uniquement un arbitrage humain. Le verdict du LLM ne compte jamais
-comme vérité : c'est un avis, biaisé à sa manière (généreux sur tout ce
-qui ressemble à des droits humains, faible en géographie). Il sert à
-choisir QUOI faire arbitrer, pas à décider.
+C'est déjà actionnable : chaque article retenu par le juge seul est un
+candidat "mot-clé manquant", et les remonter par source et par mot
+transforme l'audit article-par-article en un inventaire de tout le
+corpus d'un coup.
 
-POURQUOI ARBITRER AUSSI DES CAS D'ACCORD
------------------------------------------
+Mais il faut être net sur la limite : un accord élevé ne prouve rien.
+Si le scanner et le juge ratent la même chose — un pan de vocabulaire
+absent des deux côtés — l'accord reste excellent pendant que la qualité
+est mauvaise. L'accord mesure la ressemblance entre deux systèmes, pas
+leur justesse.
 
-N'étiqueter que les désaccords donnerait des chiffres flatteurs et
-faux : les cas où les deux systèmes se trompent ENSEMBLE — le trou le
-plus dangereux, un pan de vocabulaire qui manque des deux côtés —
-resteraient invisibles. a_arbitrer() ajoute donc un échantillon
-aléatoire de cas d'accord, seul moyen d'estimer sans biais ce qui se
-passe sur le reste du corpus.
+AVEC ÉTIQUETAGE HUMAIN (quand il y en aura)
+--------------------------------------------
+
+  a_arbitrer(...)          la liste courte à trancher : tous les
+                           désaccords, plus un échantillon de contrôle
+                           de cas d'accord (sans lui, les erreurs
+                           communes aux deux systèmes resteraient
+                           invisibles)
+  charger_verite/mesurer   précision, rappel et F1 — les vrais
+
+Le verdict du LLM ne compte jamais comme vérité : c'est un avis, biaisé
+à sa manière (généreux sur tout ce qui ressemble à des droits humains,
+faible en géographie). Caler scoring.py dessus reviendrait à optimiser
+vers ses erreurs.
 """
 
 from __future__ import annotations
 
 import json
 import random
+import re
 from pathlib import Path
 from typing import Any
 
@@ -177,6 +191,150 @@ def a_arbitrer(
         cas["motif_arbitrage"] = "échantillon de contrôle"
 
     return desaccords + echantillon
+
+
+# ============================================================
+# EXPLOITER LES DÉSACCORDS SANS ÉTIQUETAGE HUMAIN
+# ============================================================
+#
+# Tant que personne n'arbitre, il n'y a pas de vérité, donc pas de
+# précision ni de rappel — seulement un taux d'accord avec le juge (voir
+# accord_avec_juge, qui refuse délibérément ce vocabulaire).
+#
+# Les désaccords restent néanmoins exploitables tels quels : chaque
+# article que le juge retient et que le scanner rejette est un candidat
+# "mot-clé manquant". Les regrouper par source et par langue montre OÙ
+# le scanner est aveugle, et comparer le vocabulaire des titres en
+# désaccord à celui du reste du corpus fait remonter les mots qui
+# déclenchent le juge et pas le scanner. C'est la même démarche que les
+# audits article par article des semaines passées, mais menée sur tout
+# le corpus d'un coup.
+
+# Un mot doit apparaître au moins ce nombre de fois dans les désaccords
+# pour être proposé : en dessous, c'est du bruit statistique.
+MIN_OCCURRENCES_MOT = 3
+
+_MOT = re.compile(r"[^\W\d_][\w'-]{2,}", re.UNICODE)
+
+
+def accord_avec_juge(comparaison: dict[str, Any]) -> dict[str, Any]:
+    """
+    Décompte de l'accord entre le scanner et le juge.
+
+    Volontairement PAS appelé précision/rappel : sans arbitrage humain,
+    rien ici ne mesure la justesse. Deux systèmes qui se trompent
+    ensemble affichent un accord excellent.
+    """
+    chiffres = resume(comparaison)
+
+    return {
+        "articles_juges": chiffres["articles_juges"],
+        "taux_accord": chiffres["taux_accord"],
+        "retenus_par_les_deux": chiffres["accord_retenu"],
+        "rejetes_par_les_deux": chiffres["accord_rejete"],
+        "retenus_par_le_juge_seul": chiffres["faux_negatif_possible"],
+        "retenus_par_le_scanner_seul": chiffres["faux_positif_possible"],
+        "sans_verdict": chiffres["sans_verdict"],
+        "avertissement": (
+            "Accord avec un juge LLM, pas une mesure de justesse : "
+            "aucun étiquetage humain n'a été fait."
+        ),
+    }
+
+
+def _mots(textes: list[str]) -> dict[str, int]:
+    comptes: dict[str, int] = {}
+
+    for texte in textes:
+        for mot in _MOT.findall((texte or "").lower()):
+            comptes[mot] = comptes.get(mot, 0) + 1
+
+    return comptes
+
+
+def mots_sur_representes(
+    titres_desaccord: list[str],
+    titres_reference: list[str],
+    minimum: int = MIN_OCCURRENCES_MOT,
+) -> list[dict[str, Any]]:
+    """
+    Mots bien plus fréquents dans les titres en désaccord que dans le
+    reste du corpus — candidats à ajouter au vocabulaire.
+
+    On compare des fréquences relatives plutôt que des comptes bruts :
+    les mots-outils ("dans", "the", "в") apparaissent partout, donc leur
+    rapport vaut ~1 et ils tombent d'eux-mêmes. Pas besoin d'une liste
+    de mots vides, qui serait à maintenir en quatre langues.
+    """
+    dans_desaccord = _mots(titres_desaccord)
+    dans_reference = _mots(titres_reference)
+
+    total_desaccord = sum(dans_desaccord.values()) or 1
+    total_reference = sum(dans_reference.values()) or 1
+
+    candidats = []
+    for mot, compte in dans_desaccord.items():
+        if compte < minimum:
+            continue
+
+        frequence = compte / total_desaccord
+        frequence_ref = dans_reference.get(mot, 0) / total_reference
+        # +1 occurrence virtuelle : un mot absent de la référence aurait
+        # sinon un rapport infini, et sortirait en tête sur un hasard.
+        rapport = frequence / (frequence_ref or (1 / total_reference))
+
+        if rapport > 1.5:
+            candidats.append(
+                {"mot": mot, "occurrences": compte, "sur_representation": round(rapport, 1)}
+            )
+
+    candidats.sort(key=lambda c: (-c["sur_representation"], -c["occurrences"]))
+    return candidats
+
+
+def analyser_desaccords(
+    comparaison: dict[str, Any],
+    limite: int = 15,
+) -> dict[str, Any]:
+    """
+    Ce qu'il y a à corriger, déduit des seuls désaccords.
+
+    "rates" : le juge retient, le scanner rejette — des articles que la
+    veille manque probablement. C'est le côté qui coûte cher.
+    "bruit" : l'inverse, des articles que le scanner remonte pour rien.
+    """
+    rates = comparaison["faux_negatif_possible"]
+    bruit = comparaison["faux_positif_possible"]
+    accords = comparaison["accord_retenu"] + comparaison["accord_rejete"]
+
+    def par(champ: str, cas: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        comptes: dict[str, int] = {}
+        for un_cas in cas:
+            valeur = un_cas.get(champ) or "(inconnu)"
+            comptes[valeur] = comptes.get(valeur, 0) + 1
+        return [
+            {champ: valeur, "cas": compte}
+            for valeur, compte in sorted(
+                comptes.items(), key=lambda item: -item[1]
+            )[:limite]
+        ]
+
+    return {
+        "rates": {
+            "total": len(rates),
+            "par_source": par("source", rates),
+            "par_niveau": par("niveau", rates),
+            "mots_candidats": mots_sur_representes(
+                [c.get("titre", "") for c in rates],
+                [c.get("titre", "") for c in accords],
+            )[:limite],
+        },
+        "bruit": {
+            "total": len(bruit),
+            "par_source": par("source", bruit),
+            "par_niveau": par("niveau", bruit),
+        },
+    }
 
 
 # ============================================================
@@ -368,6 +526,15 @@ def main() -> None:
         help="Fichier d'arbitrage à produire.",
     )
     parser.add_argument(
+        "--arbitrage",
+        action="store_true",
+        help=(
+            "Écrit aussi le fichier d'arbitrage manuel. Sans lui, seuls "
+            "l'accord et l'analyse des désaccords sont produits — ce qui "
+            "ne demande aucune relecture humaine."
+        ),
+    )
+    parser.add_argument(
         "--echantillon",
         type=int,
         default=ECHANTILLON_ACCORDS,
@@ -390,35 +557,53 @@ def main() -> None:
         articles = _articles_depuis_archive()
 
     comparaison = comparer(articles, verdicts)
-    chiffres = resume(comparaison)
+    accord = accord_avec_juge(comparaison)
 
-    print(f"COMPARAISON | {chiffres['articles_juges']} articles jugés")
-    print(f"  accord                 : {chiffres['taux_accord'] * 100:.1f} %")
-    print(f"    retenus des deux     : {chiffres['accord_retenu']}")
-    print(f"    rejetés des deux     : {chiffres['accord_rejete']}")
-    print(f"  faux positifs possibles: {chiffres['faux_positif_possible']}")
-    print(f"  faux négatifs possibles: {chiffres['faux_negatif_possible']}")
-    if chiffres["sans_verdict"]:
-        print(f"  sans verdict           : {chiffres['sans_verdict']}")
+    print(f"ACCORD AVEC LE JUGE | {accord['articles_juges']} articles jugés")
+    print(f"  d'accord                   : {accord['taux_accord'] * 100:.1f} %")
+    print(f"    retenus par les deux     : {accord['retenus_par_les_deux']}")
+    print(f"    rejetés par les deux     : {accord['rejetes_par_les_deux']}")
+    print(f"  retenus par le juge seul   : {accord['retenus_par_le_juge_seul']}")
+    print(f"  retenus par le scanner seul: {accord['retenus_par_le_scanner_seul']}")
+    if accord["sans_verdict"]:
+        print(f"  sans verdict               : {accord['sans_verdict']}")
+    print(f"  /!\\ {accord['avertissement']}")
 
-    cas = a_arbitrer(comparaison, echantillon_accords=args.echantillon)
-    ecrits = ecrire_a_arbitrer(cas, args.sortie)
-    print(f"\nARBITRAGE | {ecrits} cas à trancher -> {args.sortie}")
+    analyse = analyser_desaccords(comparaison)
+
+    rates = analyse["rates"]
+    print(f"\nÀ CORRIGER | {rates['total']} articles retenus par le juge seul")
+    if rates["par_source"]:
+        print("  sources les plus concernées :")
+        for ligne in rates["par_source"][:8]:
+            print(f"    {ligne['cas']:5}  {ligne['source'][:50]}")
+    if rates["mots_candidats"]:
+        print("  mots sur-représentés dans ces titres (vocabulaire candidat) :")
+        for mot in rates["mots_candidats"][:12]:
+            print(
+                f"    x{mot['sur_representation']:<6} {mot['occurrences']:4} fois  "
+                f"{mot['mot']}"
+            )
+
+    bruit = analyse["bruit"]
+    if bruit["total"]:
+        print(f"\nBRUIT | {bruit['total']} articles retenus par le scanner seul")
+        for ligne in bruit["par_source"][:8]:
+            print(f"    {ligne['cas']:5}  {ligne['source'][:50]}")
+
+    if args.arbitrage:
+        cas = a_arbitrer(comparaison, echantillon_accords=args.echantillon)
+        ecrits = ecrire_a_arbitrer(cas, args.sortie)
+        print(f"\nARBITRAGE | {ecrits} cas à trancher -> {args.sortie}")
 
     verite = charger_verite()
     if verite:
         mesure = mesurer(articles, verite)
         print(
-            f"\nMESURE | sur {mesure['etiquetes']} articles étiquetés : "
+            f"\nMESURE | sur {mesure['etiquetes']} articles étiquetés à la main : "
             f"précision {mesure['precision'] * 100:.1f} % | "
             f"rappel {mesure['rappel'] * 100:.1f} % | "
             f"F1 {mesure['f1'] * 100:.1f} %"
-        )
-    else:
-        print(
-            f"\nMESURE | aucune étiquette dans {VERITE_FILE.name} — "
-            "arbitrez le fichier ci-dessus puis renommez-le, "
-            "ou fusionnez-le dedans."
         )
 
 

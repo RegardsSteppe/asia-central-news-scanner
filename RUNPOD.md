@@ -216,12 +216,33 @@ python fetch_all_bodies.py --input articles.csv --output articles_with_body.json
 python verite_terrain.py --verdicts verdicts.json
 ```
 
-Step 3 prints the contingency table and writes `a_arbitrer.json`: every
-disagreement, worst first (a disagreement on a level-A article sits at
-the top of the site; one on an E is buried), plus a random sample of
-cases where both agree. Replace each `"pertinent": null` with `true` or
-`false`, save it as `verite_terrain.json`, and the next run prints
-precision, recall and F1.
+Step 3 prints the agreement rate and, more usefully, **what to fix** —
+derived from the disagreements alone, with no human labelling:
+
+- the sources where the scanner is blind (the judge keeps the article,
+  the scanner drops it),
+- the words over-represented in those titles, which are candidates to
+  add to `keywords.py`.
+
+That turns the article-by-article audits of past weeks into one
+inventory across the whole corpus.
+
+Add `--arbitrage` to also write `a_arbitrer.json`: every disagreement,
+worst first (a disagreement on a level-A article sits at the top of the
+site; one on an E is buried), plus a random sample of cases where both
+agree. Replace each `"pertinent": null` with `true` or `false`, save it
+as `verite_terrain.json`, and the run then also prints precision,
+recall and F1 — the real ones.
+
+### Agreement is not accuracy
+
+Without human labels there is no precision and no recall, only an
+agreement rate, and the code refuses that vocabulary on purpose
+(`accord_avec_juge`, cells named `retenus_par_le_juge_seul` rather than
+`faux_negatifs`). If the scanner and the judge miss the same thing — a
+whole vocabulary absent from both — agreement stays excellent while
+quality is bad. Agreement measures how alike two systems are, not
+whether either is right.
 
 ### The LLM's verdict is not the truth
 
