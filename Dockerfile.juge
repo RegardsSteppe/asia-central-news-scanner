@@ -1,0 +1,29 @@
+# Image RunPod pour le mode "judge" de rp_handler.py — le second avis
+# LLM sur la pertinence d'un article (juge_llm.py).
+#
+# Séparée du Dockerfile principal à dessein. Celui-ci reste minimal
+# (scoring déterministe, quelques centaines de Mo, démarrage à froid
+# quasi instantané) ; celle-ci embarque llama-cpp-python et télécharge
+# un modèle GGUF au premier appel. Mélanger les deux ferait payer le
+# poids du LLM à chaque scoring déterministe, qui n'en a aucun besoin.
+#
+# À déployer sur un endpoint GPU : le juge tourne sur des milliers
+# d'articles, ce qui est impraticable en CPU seul.
+FROM python:3.11-slim
+
+# llama-cpp-python se compile : il lui faut un toolchain, absent de
+# l'image slim.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements-runpod.txt requirements-llm.txt ./
+RUN pip install --no-cache-dir -r requirements-runpod.txt -r requirements-llm.txt
+
+# Même fermeture d'imports que l'image minimale, plus le juge.
+# Vérifiée par tests/test_runpod_image.py.
+COPY scoring.py keywords.py matching.py github_push.py juge_llm.py rp_handler.py ./
+
+CMD ["python", "-u", "rp_handler.py"]

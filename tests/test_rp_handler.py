@@ -1,4 +1,5 @@
 import sys
+import types
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -6,6 +7,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from github_push import GitHubPushError
+import rp_handler
 from scoring import classify_article
 from rp_handler import (
     batch_score_articles,
@@ -291,3 +293,62 @@ class HandlerTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class JudgeModeTests(unittest.TestCase):
+    """
+    mode="judge" : second avis d'un LLM, jamais une vérité de référence
+    (voir juge_llm.py). Le modèle n'est pas chargé ici — on vérifie le
+    câblage du mode, pas le modèle.
+    """
+
+    def _faux_juge(self, verdicts):
+        module = types.ModuleType("juge_llm")
+        module.juger_lot = lambda articles: verdicts
+        return module
+
+    def _article(self, titre="Kazakhstan jails activist"):
+        return {"title": titre, "summary": "s", "url": "https://a.org/1"}
+
+    def test_judge_mode_is_dispatched(self):
+        verdicts = [{"cle": "https://a.org/1", "pertinent": True, "index": 0}]
+        with patch.dict(sys.modules, {"juge_llm": self._faux_juge(verdicts)}):
+            resultat = rp_handler.handler(
+                {"input": {"mode": "judge", "articles": [self._article()]}}
+            )
+
+        self.assertEqual(resultat["mode"], "judge")
+        self.assertEqual(resultat["judged"], 1)
+        self.assertEqual(resultat["verdicts"], verdicts)
+
+    def test_failed_verdicts_are_counted_separately(self):
+        # Un verdict illisible ne doit jamais compter comme "non
+        # pertinent" : ça fausserait la comparaison en aval.
+        verdicts = [
+            {"cle": "a", "pertinent": True, "index": 0},
+            {"cle": "b", "erreur": "modèle indisponible", "index": 1},
+        ]
+        with patch.dict(sys.modules, {"juge_llm": self._faux_juge(verdicts)}):
+            resultat = rp_handler.handler(
+                {"input": {"mode": "judge",
+                           "articles": [self._article(), self._article("Autre")]}}
+            )
+
+        self.assertEqual(resultat["judged"], 1)
+        self.assertEqual(resultat["failed"], 1)
+
+    def test_missing_llm_gives_an_actionable_error(self):
+        # C'est le cas de l'image minimale, qui n'embarque aucun LLM.
+        with patch.dict(sys.modules, {"juge_llm": None}):
+            resultat = rp_handler.handler(
+                {"input": {"mode": "judge", "articles": [self._article()]}}
+            )
+
+        self.assertIn("error", resultat)
+        self.assertIn("Dockerfile.juge", resultat["error"])
+
+    def test_judge_mode_validates_articles_like_the_other_modes(self):
+        with patch.dict(sys.modules, {"juge_llm": self._faux_juge([])}):
+            resultat = rp_handler.handler({"input": {"mode": "judge"}})
+
+        self.assertIn("error", resultat)

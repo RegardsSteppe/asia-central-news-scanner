@@ -14,6 +14,11 @@ WORKDIR /app
 COPY requirements-runpod.txt .
 RUN pip install --no-cache-dir -r requirements-runpod.txt
 
-COPY scoring.py keywords.py github_push.py rp_handler.py ./
+# Doit couvrir toute la fermeture transitive des imports de
+# rp_handler.py, sinon l'endpoint plante au démarrage. Vérifié par
+# tests/test_runpod_image.py : scoring.py a gagné une dépendance
+# (matching.py) lors d'un refactor et l'image est restée cassée sans
+# que rien ne le signale.
+COPY scoring.py keywords.py matching.py github_push.py rp_handler.py ./
 
 CMD ["python", "-u", "rp_handler.py"]
