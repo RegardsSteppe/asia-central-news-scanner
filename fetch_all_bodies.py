@@ -113,6 +113,36 @@ def load_rows(
     return rows
 
 
+# Les URLs news.google.com ne rendent jamais l'article : elles rendent
+# la page interstitielle de Google News. Mesuré le 2026-09-13 sur le
+# corpus réel — corps extrait de 11 caractères en médiane ("Google
+# News") contre 3790 pour les autres sources.
+#
+# Ce n'est pas un bug à corriger : ces sources (HRW dans ses trois
+# langues, ARTICLE 19, TASS, Regnum...) ne sont atteignables QUE par ce
+# contournement, parce qu'elles bloquent l'accès direct. Leur corps est
+# donc structurellement indisponible.
+#
+# Les télécharger quand même coûtait très cher : elles représentent un
+# tiers du corpus et sont concentrées en tête du CSV (44 % des 100
+# premières lignes, 75 % des 1400 premières), d'où les runs affichant
+# ~99 % d'échecs dès le premier checkpoint, et quatre runs tués par le
+# timeout de 4 h. On les marque au lieu de les tenter : le run va
+# beaucoup plus vite, et le résultat distingue "indisponible par
+# construction" d'un vrai échec réseau.
+BODY_UNAVAILABLE_GOOGLE_NEWS = (
+    "corps indisponible : source accessible uniquement via Google News"
+)
+
+
+def _skip_google_news_row(row: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(row)
+    enriched["body"] = ""
+    enriched["body_unavailable"] = BODY_UNAVAILABLE_GOOGLE_NEWS
+    enriched["language"] = SOURCE_LANGUAGE.get(row.get("source", ""), "")
+    return enriched
+
+
 def load_previous_results(path: str) -> dict[str, dict[str, Any]]:
     """
     Charge un articles_with_body.json d'un run précédent (typiquement
@@ -180,6 +210,7 @@ def fetch_all_bodies(
     google_news_delay: float = DEFAULT_GOOGLE_NEWS_DELAY,
     checkpoint_path: str | None = None,
     already_done: list[dict[str, Any]] | None = None,
+    skip_google_news: bool = True,
 ) -> list[dict[str, Any]]:
     """
     Récupère le corps complet de chaque ligne en parallèle. Ne lève
@@ -189,9 +220,13 @@ def fetch_all_bodies(
     toujours (les mêmes sources déjà bloquées dans le scan normal), ce
     n'est pas une raison de perdre le reste.
 
-    Les URLs news.google.com (contournement Google News, environ un
-    tiers du corpus) sont traitées par un pool de threads séparé et
-    dédié, borné à `google_news_concurrency` threads, avec
+    Les URLs news.google.com (environ un tiers du corpus) sont par
+    défaut marquées sans être téléchargées : elles ne rendent que la
+    page interstitielle de Google News, jamais l'article (voir
+    BODY_UNAVAILABLE_GOOGLE_NEWS). `skip_google_news=False` rétablit
+    la tentative, utile uniquement pour vérifier que ça n'a pas changé
+    côté Google. Quand elles sont tentées, elles passent par un pool de
+    threads séparé et dédié, borné à `google_news_concurrency` threads, avec
     `google_news_delay` secondes d'espacement entre deux requêtes d'un
     même thread — le reste du corpus garde la pleine concurrence de
     `workers` dans son propre pool, jamais bloqué par le débit du
@@ -231,6 +266,16 @@ def fetch_all_bodies(
 
     google_news_rows = [r for r in rows if _is_google_news_url(r.get("url") or "")]
     other_rows = [r for r in rows if not _is_google_news_url(r.get("url") or "")]
+
+    if skip_google_news and google_news_rows:
+        logger.info(
+            "%s article(s) Google News marqué(s) sans téléchargement "
+            "(corps structurellement indisponible, voir "
+            "BODY_UNAVAILABLE_GOOGLE_NEWS)",
+            len(google_news_rows),
+        )
+        results.extend(_skip_google_news_row(row) for row in google_news_rows)
+        google_news_rows = []
 
     with ThreadPoolExecutor(max_workers=max(1, workers)) as executor, ThreadPoolExecutor(
         max_workers=max(1, google_news_concurrency)
@@ -301,6 +346,17 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--output", default="articles_with_body.json")
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
     parser.add_argument(
+        "--tenter-google-news",
+        action="store_true",
+        help=(
+            "Tente quand même de télécharger les URLs news.google.com. "
+            "Elles ne rendent que la page interstitielle (corps médian "
+            "de 11 caractères sur le corpus réel), donc c'est inutile "
+            "en pratique — à n'utiliser que pour vérifier que ça n'a "
+            "pas changé côté Google."
+        ),
+    )
+    parser.add_argument(
         "--limit",
         type=int,
         default=None,
@@ -356,6 +412,7 @@ def main(argv: list[str] | None = None) -> None:
         google_news_delay=args.google_news_delay,
         checkpoint_path=args.output,
         already_done=list(previous_done.values()),
+        skip_google_news=not args.tenter_google_news,
     )
 
     combined = list(previous_done.values()) + results
