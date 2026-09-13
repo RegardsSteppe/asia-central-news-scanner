@@ -1,0 +1,32 @@
+# Les tests ne tournaient que dans news-scanner.yml, c'est-à-dire APRÈS
+# le merge sur main : une pull request ne pouvait pas être rouge, et une
+# régression n'était visible qu'une fois en production.
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      # Les dépendances du scan complet (llama-cpp-python notamment,
+      # long à compiler) ne servent pas à la suite de tests : les tests
+      # de synthesis.py mockent le modèle.
+      - name: Install test dependencies
+        run: pip install feedparser requests beautifulsoup4 stop-words
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v

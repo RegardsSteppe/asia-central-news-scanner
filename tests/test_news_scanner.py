@@ -8,6 +8,8 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from news_scanner import (
+    CorpusCollapseError,
+    check_corpus_not_collapsed,
     build_audit,
     build_csv_rows,
     build_title_vocabulary,
@@ -817,3 +819,37 @@ class CollectArticlesTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CorpusCollapseGuardTests(unittest.TestCase):
+    """
+    Le site est intégralement régénéré à chaque run : un run qui ne
+    ramène qu'une fraction des articles écrase silencieusement la
+    version complète. Arrivé le 2026-09-13 (2086 publiés au lieu de
+    6706, run vert).
+    """
+
+    def test_passes_when_corpus_is_stable(self):
+        check_corpus_not_collapsed(6700, {"last_corpus_size": 6706})
+
+    def test_passes_when_corpus_grows(self):
+        check_corpus_not_collapsed(9000, {"last_corpus_size": 6706})
+
+    def test_passes_on_first_ever_run(self):
+        check_corpus_not_collapsed(120, {})
+
+    def test_raises_on_the_real_2026_09_13_collapse(self):
+        with self.assertRaises(CorpusCollapseError) as caught:
+            check_corpus_not_collapsed(2086, {"last_corpus_size": 6706})
+
+        message = str(caught.exception)
+        self.assertIn("2086", message)
+        self.assertIn("6706", message)
+
+    def test_tolerates_a_moderate_drop(self):
+        # Une source majeure en panne ne doit pas bloquer la publication.
+        check_corpus_not_collapsed(4000, {"last_corpus_size": 6706})
+
+    def test_ignores_corrupted_reference(self):
+        for bogus in (None, 0, -5, "6706"):
+            check_corpus_not_collapsed(10, {"last_corpus_size": bogus})

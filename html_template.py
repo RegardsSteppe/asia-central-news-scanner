@@ -12,6 +12,24 @@ def esc(value):
     return html.escape(str(value))
 
 
+# Schémas autorisés dans un href. Les URL affichées viennent du HTML
+# scrapé de sites tiers : un site compromis (ou simplement malveillant)
+# peut servir un <a href="javascript:..."> que le scanner republierait
+# tel quel en lien cliquable sur le site public. L'échappement HTML ne
+# protège pas de ça — il rend le texte inoffensif, pas le schéma.
+_SAFE_URL_SCHEMES = ("http://", "https://")
+
+
+def safe_url(value):
+    """URL sûre pour un href, ou "" si le schéma n'est pas autorisé."""
+    url = str(value or "").strip()
+
+    if url.lower().startswith(_SAFE_URL_SCHEMES):
+        return esc(url)
+
+    return ""
+
+
 def format_date(date):
     """Format article date."""
 
@@ -341,7 +359,7 @@ def render_article_card(
         <h3>
 
             <a
-                href="{esc(url)}"
+                href="{safe_url(url)}"
                 target="_blank"
                 rel="noopener noreferrer"
             >
@@ -524,7 +542,7 @@ def render_audit_row(
         <td>
 
             <a
-                href="{esc(
+                href="{safe_url(
                     article.get(
                         "url",
                         "",
