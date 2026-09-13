@@ -17,6 +17,7 @@ try:
 except ImportError:  # pragma: no cover - library not installed
     get_stop_words = None
 
+import archive
 from sources import SOURCES, PROFILE_GROUPS
 from scoring import classify_article
 from categorisation import categoriser
@@ -1498,6 +1499,60 @@ def check_corpus_not_collapsed(
     raise CorpusCollapseError(message)
 
 
+def merge_with_archive(
+    scanned_articles: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """
+    Intègre le scan du jour dans l'archive et renvoie TOUT l'historique,
+    prêt à publier.
+
+    Les articles vus aujourd'hui gardent leur scoring frais (corps
+    téléchargé compris) ; ceux que plus aucune source n'affiche sont
+    rescorés depuis l'archive avec les règles du jour. Enrichir un
+    mot-clé profite donc rétroactivement à tout l'historique, sans rien
+    re-télécharger.
+
+    Le scoring frais n'est jamais remplacé par un rescore d'archive :
+    l'archive ne conserve le corps que des niveaux A-D, donc rescorer un
+    article enrichi aujourd'hui lui ferait perdre la profondeur qu'il
+    vient d'obtenir.
+    """
+    archive_entries = archive.load_archive()
+    state = archive.load_state()
+
+    scanned = [
+        (canonical_article_key(article), article)
+        for article in scanned_articles
+    ]
+    vus_maintenant = {key for key, _ in scanned if key}
+
+    nouvelles = archive.merge_scanned(archive_entries, state, scanned)
+    archive.append_entries(nouvelles)
+    archive.save_state(state)
+
+    scan_date = state.get("dernier_scan", "")
+    for article in scanned_articles:
+        article["derniere_vue"] = scan_date
+        article["dernier_scan"] = scan_date
+
+    historiques = []
+    for article in archive.iter_articles(archive_entries, state):
+        if article.get("archive_key") in vus_maintenant:
+            continue
+        article["date"] = parse_date(article.get("date"))
+        classify_article(article)
+        _apply_categorisation(article)
+        historiques.append(article)
+
+    print(
+        f"ARCHIVE | {len(archive_entries)} articles au total | "
+        f"{len(nouvelles)} nouveaux | "
+        f"{len(historiques)} rescorés depuis l'historique"
+    )
+
+    return scanned_articles + historiques
+
+
 def run_scan(
     force_refresh: bool = False,
 ) -> list[dict[str, Any]]:
@@ -1580,6 +1635,16 @@ def run_scan(
         all_articles,
         force_refresh=force_refresh,
         memory=memory,
+    )
+
+    # --------------------------------------------------------
+    # Archive : ajouter les nouveaux, ressortir l'historique
+    # --------------------------------------------------------
+
+    all_articles = timed_call(
+        "archive",
+        merge_with_archive,
+        all_articles,
     )
 
     # --------------------------------------------------------
