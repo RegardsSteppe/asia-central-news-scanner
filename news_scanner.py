@@ -55,7 +55,19 @@ MEMORY_FILE = BASE_DIR / "memory.json"
 OUTPUT_FILE = BASE_DIR / "index.html"
 CSV_OUTPUT_FILE = BASE_DIR / "articles.csv"
 
-ENRICH_LIMIT = 80
+# Budget d'articles enrichis (corps téléchargé) par run, en plus des
+# créneaux prioritaires par source.
+#
+# Était 80. Le corps est la seule source d'information descriptive
+# sérieuse (mesuré le 2026-09-14 : sans lui, 73% des articles qui
+# portent un "traitement" ressortent vides), et le job n'a pas de
+# timeout-minutes, donc 6 h par défaut sur GitHub Actions — le scan
+# quotidien en consomme une fraction. Le facteur limitant est le
+# réseau, pas le calcul : ENRICH_WORKERS téléchargements en parallèle.
+ENRICH_LIMIT = max(
+    0,
+    int(os.getenv("SCANNER_ENRICH_LIMIT", "600")),
+)
 
 # Sources sur ces profils sont le cœur éditorial du projet (droits
 # humains, liberté de la presse, investigation, médias internationaux
@@ -700,10 +712,36 @@ def enrich_articles(
     articles: list[dict[str, Any]],
     force_refresh: bool = False,
     memory: dict[str, Any] | None = None,
+    deja_avec_corps: set[str] | None = None,
 ) -> None:
+    """
+    Télécharge le corps complet d'une sélection d'articles.
+
+    `deja_avec_corps` contient les clés d'archive dont le corps est
+    déjà stocké. Sans ce filtre, la sélection par score reconduisait
+    d'un run à l'autre les mêmes têtes de classement : le budget était
+    dépensé à re-confirmer des articles déjà enrichis (servis par le
+    cache, donc gratuits mais inutiles) pendant que le reste du corpus
+    n'était jamais couvert. C'est pourquoi 167 articles sur 7795
+    avaient un corps. En écartant ce qui est déjà archivé, chaque run
+    défriche du terrain neuf et le corpus se remplit par vagues.
+    """
+    deja_avec_corps = deja_avec_corps or set()
+
+    candidats = [
+        article
+        for article in articles
+        if canonical_article_key(article) not in deja_avec_corps
+    ]
+
+    ignores = len(articles) - len(candidats)
+    if ignores:
+        print(
+            f"ENRICH | {ignores} articles ignorés (corps déjà archivé)"
+        )
 
     ranked = sorted(
-        articles,
+        candidats,
         key=lambda article: (
             article.get("score", 0),
             article_date_timestamp(article),
@@ -723,7 +761,7 @@ def enrich_articles(
     # partagé et écraser des sources sœurs plus modestes (Al Jazeera
     # par pays, HRF...). Chaque source garde donc ses propres créneaux.
     priority_by_source: dict[str, list[dict[str, Any]]] = {}
-    for article in ranked:
+    for article in ranked:  # déjà restreint aux candidats sans corps
         profile = source_by_name.get(article.get("source"), {}).get("profile")
         if profile not in PRIORITY_ENRICH_PROFILES:
             continue
@@ -1529,9 +1567,9 @@ def merge_with_archive(
     re-télécharger.
 
     Le scoring frais n'est jamais remplacé par un rescore d'archive :
-    l'archive ne conserve le corps que des niveaux A-D, donc rescorer un
-    article enrichi aujourd'hui lui ferait perdre la profondeur qu'il
-    vient d'obtenir.
+    un article enrichi aujourd'hui ne doit pas perdre la profondeur
+    qu'il vient d'obtenir si, pour une raison ou une autre, son entrée
+    d'archive porte un corps plus court.
     """
     archive_entries = archive.load_archive()
     state = archive.load_state()
@@ -1645,12 +1683,27 @@ def run_scan(
     # Deuxième passe : body sur les meilleurs
     # --------------------------------------------------------
 
+    # Les clés dont le corps est DÉJÀ dans l'archive : inutile de
+    # redépenser le budget réseau dessus (voir enrich_articles).
+    # Relu ici plutôt que passé depuis merge_with_archive, qui ne
+    # tourne qu'après l'enrichissement.
+    deja_avec_corps = {
+        cle
+        for cle, entree in archive.load_archive().items()
+        if entree.get("body")
+    }
+
+    print(
+        f"ENRICH | {len(deja_avec_corps)} articles ont déjà un corps archivé"
+    )
+
     timed_call(
         "enrichment",
         enrich_articles,
         all_articles,
         force_refresh=force_refresh,
         memory=memory,
+        deja_avec_corps=deja_avec_corps,
     )
 
     # --------------------------------------------------------

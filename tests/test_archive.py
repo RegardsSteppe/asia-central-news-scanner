@@ -49,10 +49,33 @@ class EntryShapeTests(unittest.TestCase):
             entry = entry_from_article(article(level=level), "cle")
             self.assertTrue(entry["body"], f"corps perdu pour le niveau {level}")
 
-    def test_body_dropped_for_level_e(self):
-        # 95 % du corpus : stocker leur corps ferait des dizaines de Mo.
+    def test_body_kept_for_level_e(self):
+        # Inversé le 2026-09-14. Le corps du niveau E était jeté alors
+        # qu'on venait de le télécharger, et c'est exactement là que
+        # les catégories sont vides : sans corps, 73% des articles qui
+        # portent un "traitement" le perdent.
         entry = entry_from_article(article(level="E"), "cle")
-        self.assertEqual(entry["body"], "")
+        self.assertTrue(entry["body"])
+
+    def test_body_levels_remain_configurable(self):
+        # Échappatoire si l'archive devient trop lourde : on doit
+        # pouvoir revenir au comportement d'avant sans toucher au code.
+        import importlib
+        import os
+        from unittest.mock import patch
+
+        import archive as archive_module
+
+        with patch.dict(os.environ, {"SCANNER_BODY_KEEP_LEVELS": "A,B"}):
+            recharge = importlib.reload(archive_module)
+            try:
+                self.assertEqual(recharge.BODY_KEEP_LEVELS, frozenset({"A", "B"}))
+                self.assertEqual(
+                    recharge.entry_from_article(article(level="E"), "cle")["body"],
+                    "",
+                )
+            finally:
+                importlib.reload(archive_module)
 
     def test_datetime_date_is_serialized(self):
         from datetime import datetime, timezone
