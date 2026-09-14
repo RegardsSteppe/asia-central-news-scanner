@@ -1265,3 +1265,71 @@ class VocabulaireRusseHRWTests(unittest.TestCase):
             find_terms("чеченские власти против несогласных", keywords.ACTIVIST_TERMS),
             ["несогласных"],
         )
+
+
+class PageDeRubriqueTests(unittest.TestCase):
+    """
+    Élargissement du 2026-09-14, en réponse au recensement des
+    articles sans catégories : 4368 des 9556 entrées archivées n'ont
+    aucune géographie, et une large part n'est pas constituée
+    d'articles mais de pages de navigation — éditions du Guardian,
+    "Donate Now" d'Amnesty, pages pays de CIVICUS, bandeau cookies.
+
+    L'égalité stricte entre le slug du titre et le dernier segment
+    d'URL en ratait 88, pour deux raisons mesurées : une décoration
+    accrochée au titre, ou un mot de liaison présent dans le slug
+    d'URL et jeté par slugify().
+    """
+
+    def test_les_pages_de_navigation_sont_reconnues(self):
+        from matching import looks_like_section_page
+
+        for url, titre in (
+            ("https://www.theguardian.com/preference/edition/us", "US edition"),
+            ("https://www.amnesty.org/en/donate/", "Donate Now"),
+            ("https://www.occrp.org/en/project/bad-practice", "Explore this project"),
+            ("https://monitor.civicus.org/country/macedonia/", "North Macedonia"),
+            ("https://eurasianet.org/region/the-baltics", "The Baltics"),
+        ):
+            with self.subTest(url=url):
+                self.assertTrue(looks_like_section_page(url, titre))
+
+    def test_une_url_datee_n_est_jamais_une_rubrique(self):
+        # Le garde-fou qui compte, et qui manquait. La règle du slug
+        # est fragile sur les titres courts : "Kazakhstan: Protesters
+        # Arbitrarily Arrested, Beaten" fait exactement
+        # SECTION_TITLE_MAX_WORDS mots, et l'URL d'origine chez HRW
+        # reprend le slug du titre. Sans l'exclusion des chemins
+        # datés, un vrai article — de la forme la plus typique du
+        # corpus — tomberait en niveau F.
+        from matching import looks_like_section_page
+
+        self.assertFalse(
+            looks_like_section_page(
+                "https://www.hrw.org/news/2026/09/12/"
+                "kazakhstan-protesters-arbitrarily-arrested-beaten",
+                "Kazakhstan: Protesters Arbitrarily Arrested, Beaten",
+            )
+        )
+
+    def test_l_inclusion_reste_bornee(self):
+        # Sans la borne, un slug court serait contenu dans n'importe
+        # quel segment : "us" se retrouve dans
+        # "kazakhstan-jails-us-citizen".
+        from matching import looks_like_section_page
+
+        self.assertFalse(
+            looks_like_section_page(
+                "https://example.org/world/kazakhstan-jails-us-citizen", "US"
+            )
+        )
+
+    def test_un_titre_long_reste_un_article(self):
+        from matching import looks_like_section_page
+
+        self.assertFalse(
+            looks_like_section_page(
+                "https://example.org/uzbekistan-cotton-wheat-farmers-exploited-abused",
+                "Uzbekistan: Cotton, Wheat Farmers Exploited, Abused",
+            )
+        )
