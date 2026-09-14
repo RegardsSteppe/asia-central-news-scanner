@@ -565,3 +565,51 @@ class BackfillDatesTests(unittest.TestCase):
         self.assertEqual(backfill_dates(arch, [("inconnue", {"date": "x"})]), 0)
         self.assertEqual(backfill_dates(arch, [("cle", {"date": None})]), 0)
         self.assertIsNone(arch["cle"]["date"])
+
+
+class MergeCarriesDatesTests(unittest.TestCase):
+    """
+    L'union doit transporter les dates comme les corps, sinon une
+    passe de récupération d'une heure les perd au premier conflit de
+    push — le run se remet sur la version distante et refusionne la
+    sienne.
+    """
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.base = Path(self.dir.name) / "base.jsonl"
+        self.incoming = Path(self.dir.name) / "incoming.jsonl"
+
+    def tearDown(self):
+        self.dir.cleanup()
+
+    def _ecrire(self, path, key, date):
+        from archive import entry_from_article
+
+        entry = entry_from_article(article(level="A"), key)
+        entry["date"] = date
+        append_entries([entry], path)
+
+    def test_date_is_recovered_for_a_key_present_on_both_sides(self):
+        from archive import merge_files
+
+        self._ecrire(self.base, "a", None)
+        self._ecrire(self.incoming, "a", "2026-09-10T08:00:00+00:00")
+
+        ajoutees, faits = merge_files(self.base, self.incoming)
+
+        self.assertEqual((ajoutees, faits), (0, 1))
+        self.assertEqual(
+            load_archive(self.base)["a"]["date"], "2026-09-10T08:00:00+00:00"
+        )
+
+    def test_a_known_date_is_never_overwritten(self):
+        from archive import merge_files
+
+        self._ecrire(self.base, "a", "2026-01-01T00:00:00+00:00")
+        self._ecrire(self.incoming, "a", "2026-09-10T08:00:00+00:00")
+
+        self.assertEqual(merge_files(self.base, self.incoming), (0, 0))
+        self.assertEqual(
+            load_archive(self.base)["a"]["date"], "2026-01-01T00:00:00+00:00"
+        )
