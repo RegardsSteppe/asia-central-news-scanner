@@ -1028,3 +1028,152 @@ class VocabulaireAnglesMortsTests(unittest.TestCase):
         # Formule standard des rapports HRW/Amnesty, qui manquait.
         cat = categoriser(self._article("Azerbaijan: Armenian POWs Abused in Custody"))
         self.assertIn("violence_physique", cat["traitement"])
+
+
+class ViolencePhysiqueTests(unittest.TestCase):
+    """
+    Audit du 2026-09-14 : violence_physique ne ressortait que 14 fois
+    sur 4000 articles. La classe n'avait AUCUN motif de racine russe,
+    alors que les autres traitements en ont depuis le 2026-09-12 —
+    "избиения", "избили", "избита" n'ont aucune chance de matcher une
+    liste de locutions anglaises qualifiées ("extrajudicial killing",
+    "death in custody").
+
+    Chaque racine a été vérifiée sur les 9235 articles archivés, et
+    "beaten" porte une exclusion mesurée plutôt qu'une supposition.
+    """
+
+    def _traitements(self, titre, corps=""):
+        resultat = categoriser(
+            {
+                "title": titre,
+                "summary": corps,
+                "body": corps,
+                "source": "Test",
+                "url": "https://example.org/a",
+            }
+        )
+        return [t for t in resultat["traitement"] if t != "aucun"]
+
+    def test_racines_russes_du_passage_a_tabac(self):
+        # 19 occurrences dans le corpus pour ces trois racines, 19
+        # justes. Aucune n'était détectée avant.
+        for titre in (
+            "Казахстан: Произвольные аресты и избиения протестующих",
+            "Их избили, а потом одного еще и посадили",
+            "Она была избита полицией, что привело к перелому ключицы",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn("violence_physique", self._traitements(titre))
+
+    def test_beaten_en_anglais(self):
+        self.assertIn(
+            "violence_physique",
+            self._traitements("Kazakhstan: Protesters Arbitrarily Arrested, Beaten"),
+        )
+
+    def test_idiome_touristique_exclu(self):
+        # Le garde-fou. Sur 8 occurrences de "beaten" dans le corpus,
+        # la seule fausse venait de cet idiome, sur un article RFE/RL
+        # vantant la région. Sans le (?! track| path), ce seul cas
+        # suffisait à disqualifier le terme entier.
+        self.assertNotIn(
+            "violence_physique",
+            self._traitements(
+                "Central Asia draws Western tourists",
+                "Travellers looking for a holiday off the beaten track will find much here.",
+            ),
+        )
+
+    def test_violences_policieres(self):
+        self.assertIn(
+            "violence_physique",
+            self._traitements("Armenia: Limited Justice for Police Violence"),
+        )
+
+    def test_poboi_ne_matche_pas_pobochny(self):
+        # Les terminaisons de "побои" sont énumérées plutôt que
+        # laissées à \\w* : "побочный" (collatéral) partage le préfixe
+        # et n'a rien à voir avec des coups.
+        self.assertNotIn(
+            "violence_physique",
+            self._traitements("Побочный эффект новой экономической политики"),
+        )
+
+
+class DisparitionSansFauxPositifTests(unittest.TestCase):
+    """
+    DISPARITION_TERMS contenait "disappeared" nu — exactement le terme
+    rejeté côté scoring le même jour, et pour la même raison. Sur les
+    9235 articles archivés, il ne déclenchait qu'UN titre, et c'était
+    la mer d'Aral.
+    """
+
+    def _traitements(self, titre, corps=""):
+        resultat = categoriser(
+            {
+                "title": titre,
+                "summary": corps,
+                "body": corps,
+                "source": "Test",
+                "url": "https://example.org/a",
+            }
+        )
+        return [t for t in resultat["traitement"] if t != "aucun"]
+
+    def test_une_mer_qui_seche_n_est_pas_une_disparition_forcee(self):
+        self.assertNotIn(
+            "disparition",
+            self._traitements(
+                "The Aral Sea has all but disappeared",
+                "But in small towns and villages, signs of life remain.",
+            ),
+        )
+
+    def test_la_forme_qualifiee_reste_detectee(self):
+        for titre in (
+            "Turkmenistan: Enforced Disappearance of Activist",
+            "Tadjikistan : disparition forcée d'un opposant",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn("disparition", self._traitements(titre))
+
+    def test_le_passif_marque_bien_une_disparition_forcee(self):
+        # L'audit des 23 articles que "disappeared" nu déclenchait a
+        # montré que le retirer sec coûtait 7 détections légitimes.
+        # Le passif en récupère deux sans rien rendre à l'ambiguïté :
+        # une mer, un lac ou un avantage aux échecs disparaissent,
+        # ils ne "sont pas disparus" par quelqu'un.
+        for titre, corps in (
+            ("Uyghur doctor detained",
+             "Dr. Gulshan Abbas was disappeared from her hometown of Urumqi."),
+            ("Uyghur Human Rights Project report",
+             "Political prisoners were tortured and disappeared miles from the venues."),
+            ("Kenya: escalating harassment of defenders",
+             "They were arbitrarily arrested, forcibly disappeared and later found."),
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn("disparition", self._traitements(titre, corps))
+
+    def test_le_passif_ne_franchit_pas_la_frontiere_de_proposition(self):
+        # Cas réel rencontré pendant l'audit : avec une fenêtre de
+        # trois mots entre l'auxiliaire et le participe, "son autorité
+        # was challenged had not disappeared" passait. La coordination
+        # est admise ("were tortured and disappeared"), rien de plus.
+        self.assertNotIn(
+            "disparition",
+            self._traitements(
+                "How new is the New Uzbekistan?",
+                "Its willingness to use coercion when its authority "
+                "was challenged had not disappeared.",
+            ),
+        )
+
+    def test_un_avantage_aux_echecs_ne_disparait_pas_de_force(self):
+        self.assertNotIn(
+            "disparition",
+            self._traitements(
+                "Sindarov finishes second in St. Louis",
+                "His advantage disappeared in a heavy-piece endgame.",
+            ),
+        )

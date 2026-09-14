@@ -623,7 +623,7 @@ TORTURE_TERMS = [
 # retiré d'ici pour la même raison que "пытк" ci-dessus (racine
 # incomplète) — couvert par _TRAITEMENT_STEM_PATTERNS.
 DISPARITION_TERMS = [
-    "forced disappearance", "enforced disappearance", "disappeared",
+    "forced disappearance", "enforced disappearance",
     "missing after detention",
     "насильственное исчезновение", "насильственно исчез",
     "ناپدید شدن اجباری",
@@ -634,6 +634,13 @@ DISPARITION_TERMS = [
 # Sous-ensemble de SPECIFIC_RIGHTS_TERMS + SEVERE_REPRESSION_TERMS
 # (keywords.py).
 VIOLENCE_PHYSIQUE_TERMS = [
+    # Ajoutés le 2026-09-14. La classe ne comptait que des locutions
+    # qualifiées ("extrajudicial killing", "death in custody") et
+    # ressortait 14 fois sur 4000 articles, alors que le corpus
+    # décrit des passages à tabac en clair. Audit : 2 titres sur 2
+    # justes pour "police violence"/"police brutality".
+    "police violence", "police brutality", "violences policières",
+    "полицейское насилие",
     # "ill-treatment" et "abused in custody" manquaient, alors que
     # c'est la formule standard des rapports HRW/Amnesty :
     # "Azerbaijan: Armenian POWs Abused in Custody" ressortait
@@ -833,7 +840,32 @@ _TRAITEMENT_STEM_PATTERNS: dict[str, list[str]] = {
     # couvre aussi приговорен/приговорили, verbe/participe).
     "condamnation": [r"\bосужден\w*\b", r"\bзаключен\w*\b", r"\bприговор\w*\b"],
     "torture_mauvais_traitement": [r"\bпытк\w*\b", r"\bистязани\w*\b"],
-    "disparition": [r"\bисчезнувш\w*\b"],
+    # "disappeared" NU a été retiré de DISPARITION_TERMS (il ne
+    # déclenchait que la mer d'Aral, un lac bolivien, des emplois, un
+    # avantage aux échecs...). Mais l'audit complet des 23 articles
+    # concernés a montré que le retirer sec coûtait 7 détections
+    # légitimes. Deux d'entre elles se récupèrent par la forme, sans
+    # rien rendre à l'ambiguïté :
+    #
+    #   - le passif. "was/were disappeared" ne se dit QUE d'une
+    #     disparition forcée : une mer, un lac ou un avantage
+    #     disparaissent, ils ne "sont pas disparus" par quelqu'un.
+    #     La coordination "were tortured and disappeared" est admise,
+    #     mais rien de plus large : avec une fenêtre de trois mots,
+    #     "son autorité was challenged had not disappeared" passait.
+    #   - "forcibly disappeared", absent de la liste alors que
+    #     "forced disappearance" y était — un article OMCT sur le
+    #     Kenya le porte.
+    #
+    # Les 5 pertes restantes sont des tournures actives à sujet humain
+    # ("people who have disappeared in Turkmenistan's prisons") : les
+    # distinguer d'un lac qui s'assèche demande le sujet de la phrase,
+    # pas du vocabulaire.
+    "disparition": [
+        r"\bисчезнувш\w*\b",
+        r"\bforcibly disappeared\b",
+        r"\b(?:was|were|been|being)\s+(?:\w+ed\s+and\s+)?disappeared\b",
+    ],
     # "преследован" et "притеснен" ne sont pas repris séparément :
     # déjà couverts par les préfixes plus courts "преследова"/
     # "притесн" ci-dessous (ex. "преследован" = "преследова" + "н").
@@ -849,6 +881,31 @@ _TRAITEMENT_STEM_PATTERNS: dict[str, list[str]] = {
     # suffit. "блокиров" couvre блокировка/блокировать/блокировке.
     "censure_blocage": [
         r"\bцензур\w*\b", r"\bзаблокир\w*\b", r"\bблокиров\w*\b",
+    ],
+    # violence_physique n'avait AUCUNE racine russe, d'où 14
+    # détections sur 4000 articles : "избиения", "избили", "избита"
+    # n'ont aucune chance de matcher une liste de locutions anglaises.
+    # Audit sur les 9235 articles archivés :
+    #
+    #   \bизбие\w*\b   9 occurrences, 9 justes
+    #   \bизбил\w*\b   9 occurrences, 9 justes
+    #   \bизбит\w*\b   1 occurrence,  1 juste
+    #   \bпобо(i|ev|...) 3 occurrences, 3 justes
+    #
+    # Les terminaisons de "побои" sont énumérées plutôt que laissées
+    # à \w* : "побочный" (collatéral) partage le préfixe et n'a rien
+    # à voir.
+    #
+    # "beaten" porte une exclusion explicite. Sur 8 occurrences, 7
+    # sont de vrais passages à tabac ; la huitième venait de "off the
+    # beaten track" — l'idiome touristique, présent dans le corpus
+    # sur un article RFE/RL vantant la région. Sans le
+    # (?! track| path), ce seul idiome suffisait à disqualifier le
+    # terme.
+    "violence_physique": [
+        r"\bизбие\w*\b", r"\bизбил\w*\b", r"\bизбит\w*\b",
+        r"\bпобо(?:и|ев|ям|ями|ях)\b",
+        r"\bbeaten\b(?! track| path)",
     ],
 }
 
