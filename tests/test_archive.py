@@ -507,3 +507,61 @@ class MergeCarriesBodiesTests(unittest.TestCase):
         relu = load_archive(self.base)
         self.assertEqual(set(relu), {"concurrent", "a"})
         self.assertEqual(relu["concurrent"]["body"], "texte concurrent")
+
+
+class BackfillDatesTests(unittest.TestCase):
+    """
+    Même angle mort que pour les corps : merge_scanned() n'écrit que
+    les nouveautés, donc une date extraite après coup ne rejoignait
+    jamais sa ligne. 5829 entrées sur 8824 sans date au 2026-09-14,
+    dont 3545 dont la page avait pourtant été téléchargée.
+    """
+
+    def _archive(self, date=None):
+        from archive import entry_from_article
+
+        entry = entry_from_article(article(level="A"), "cle")
+        entry["date"] = date
+        return {"cle": entry}
+
+    def test_fills_a_missing_date(self):
+        from archive import backfill_dates
+
+        arch = self._archive(date=None)
+        scanned = [("cle", {"date": "2026-09-10T08:00:00+00:00"})]
+
+        self.assertEqual(backfill_dates(arch, scanned), 1)
+        self.assertEqual(arch["cle"]["date"], "2026-09-10T08:00:00+00:00")
+
+    def test_never_overwrites_a_known_date(self):
+        # Une date déjà connue vient du flux RSS, plus fiable qu'une
+        # date devinée dans une page HTML.
+        from archive import backfill_dates
+
+        arch = self._archive(date="2026-01-01T00:00:00+00:00")
+        scanned = [("cle", {"date": "2026-09-10T08:00:00+00:00"})]
+
+        self.assertEqual(backfill_dates(arch, scanned), 0)
+        self.assertEqual(arch["cle"]["date"], "2026-01-01T00:00:00+00:00")
+
+    def test_serialises_a_datetime(self):
+        from datetime import datetime, timezone
+
+        from archive import backfill_dates
+
+        arch = self._archive(date=None)
+        moment = datetime(2026, 9, 10, 8, 0, tzinfo=timezone.utc)
+
+        backfill_dates(arch, [("cle", {"date": moment})])
+
+        self.assertEqual(arch["cle"]["date"], moment.isoformat())
+        json.dumps(arch["cle"])  # doit rester sérialisable
+
+    def test_ignores_absent_keys_and_empty_dates(self):
+        from archive import backfill_dates
+
+        arch = self._archive(date=None)
+
+        self.assertEqual(backfill_dates(arch, [("inconnue", {"date": "x"})]), 0)
+        self.assertEqual(backfill_dates(arch, [("cle", {"date": None})]), 0)
+        self.assertIsNone(arch["cle"]["date"])

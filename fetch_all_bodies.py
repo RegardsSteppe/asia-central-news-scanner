@@ -70,6 +70,7 @@ from pathlib import Path
 
 import archive
 from article_ingestion import extract_body
+from matching import looks_like_section_page
 from sources import SOURCES
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
@@ -327,6 +328,13 @@ def fetch_all_bodies(
             enriched["body"] = body
             enriched["language"] = SOURCE_LANGUAGE.get(row.get("source", ""), "")
 
+            # extract_body() rend la date de publication trouvée dans la
+            # page. Elle était décompressée puis jetée : la passe de
+            # remplissage a téléchargé des milliers de pages en
+            # abandonnant chaque fois la date qu'elle venait de lire.
+            if published_date is not None:
+                enriched["published_date"] = published_date
+
             if error is not None:
                 enriched["fetch_error"] = f"{type(error).__name__}: {error}"
                 failed += 1
@@ -383,6 +391,20 @@ def fetch_all_bodies(
 # exactement la même boucle de téléchargement.
 
 
+def _manque_quelque_chose(entry: dict[str, Any]) -> bool:
+    if not (entry.get("body") or ""):
+        return True
+
+    if entry.get("date"):
+        return False
+
+    # Une page de rubrique n'a pas de date de publication à trouver :
+    # la resélectionner à chaque run ne ferait que gâcher du budget.
+    return not looks_like_section_page(
+        entry.get("url") or "", entry.get("title") or ""
+    )
+
+
 def rows_from_archive(
     entries: dict[str, dict[str, Any]],
     limit: int | None = None,
@@ -391,10 +413,20 @@ def rows_from_archive(
     Entrées d'archive à télécharger, au format attendu par
     fetch_all_bodies() — celles qui n'ont pas encore de corps.
 
+    Une entrée est candidate si son corps OU sa date manque : la même
+    page porte les deux, et une date extraite ne coûte rien de plus
+    une fois la page téléchargée.
+
     C'est aussi ce qui rend la reprise gratuite : un run interrompu par
     le timeout a déjà écrit ses corps dans l'archive (voir le crochet
     de checkpoint), donc le run suivant ne les resélectionne pas. Pas
     de --resume-from à manipuler, pas d'artefact à retrouver.
+
+    Limite assumée : une page qui n'affiche réellement aucune date
+    restera candidate d'un run à l'autre. Marquer les tentatives
+    infructueuses demanderait un champ de plus dans l'archive pour un
+    outil lancé à la main quelques fois — le coût ne le justifie pas
+    aujourd'hui.
     """
     rows = [
         {
@@ -404,7 +436,7 @@ def rows_from_archive(
             "source": entry.get("source") or "",
         }
         for key, entry in entries.items()
-        if not (entry.get("body") or "") and (entry.get("url") or "")
+        if (entry.get("url") or "") and _manque_quelque_chose(entry)
     ]
 
     if limit is not None:
@@ -430,21 +462,29 @@ def apply_to_archive(
         # backfill_bodies filtre sur le niveau ; ces articles viennent
         # de l'archive et n'en portent pas, on déclare donc le niveau
         # le plus permissif présent dans la configuration.
-        (row.get("key") or "", {"level": _niveau_permissif(), "body": row.get("body") or ""})
+        (
+            row.get("key") or "",
+            {
+                "level": _niveau_permissif(),
+                "body": row.get("body") or "",
+                "date": row.get("published_date"),
+            },
+        )
         for row in results
-        if row.get("body")
+        if row.get("body") or row.get("published_date")
     ]
 
     if not scanned:
         return 0
 
     entries = archive.load_archive(archive_path)
-    mis_a_jour = archive.backfill_bodies(entries, scanned)
+    corps = archive.backfill_bodies(entries, scanned)
+    dates = archive.backfill_dates(entries, scanned)
 
-    if mis_a_jour:
+    if corps or dates:
         archive.rewrite_archive(entries.values(), archive_path)
 
-    return mis_a_jour
+    return corps + dates
 
 
 def _niveau_permissif() -> str:

@@ -1616,12 +1616,14 @@ def merge_with_archive(
     # coût git reste proportionnel aux nouveautés comme le reste du
     # temps.
     corps_ajoutes = archive.backfill_bodies(archive_entries, scanned)
+    dates_ajoutees = archive.backfill_dates(archive_entries, scanned)
 
-    if corps_ajoutes:
+    if corps_ajoutes or dates_ajoutees:
         archive.rewrite_archive(archive_entries.values())
 
     print(
-        f"ARCHIVE | {corps_ajoutes} corps ajoutés à des entrées existantes"
+        f"ARCHIVE | {corps_ajoutes} corps et {dates_ajoutees} dates "
+        f"ajoutés à des entrées existantes"
     )
 
     archive.save_state(state)

@@ -614,18 +614,18 @@ class ArchiveModeTests(unittest.TestCase):
         self.archive_module.ARCHIVE_FILE = self._vrai_chemin
         self.dir.cleanup()
 
-    def _entree(self, key, url, body=""):
+    def _entree(self, key, url, body="", date="2026-09-01T00:00:00+00:00"):
         from archive import append_entries
 
         entry = {
             "key": key, "url": url, "title": f"Titre {key}",
             "summary": "", "source": "RFE/RL", "source_label": "",
-            "language": "en", "date": None, "premiere_vue": "2026-09-14",
+            "language": "en", "date": date, "premiere_vue": "2026-09-14",
             "body": body,
         }
         append_entries([entry], self.path)
 
-    def test_only_entries_without_a_body_are_candidates(self):
+    def test_a_complete_entry_is_not_a_candidate(self):
         from fetch_all_bodies import rows_from_archive
         from archive import load_archive
 
@@ -635,6 +635,35 @@ class ArchiveModeTests(unittest.TestCase):
         rows = rows_from_archive(load_archive(self.path))
 
         self.assertEqual([r["key"] for r in rows], ["a"])
+
+    def test_a_missing_date_makes_an_entry_a_candidate(self):
+        # La page porte les deux : une fois téléchargée, la date ne
+        # coûte rien de plus. 3545 entrées avaient un corps et pas de
+        # date, parce que la date extraite était jetée.
+        from fetch_all_bodies import rows_from_archive
+        from archive import load_archive
+
+        self._entree("a", "https://ex.org/a", body="un corps", date=None)
+
+        self.assertEqual(
+            [r["key"] for r in rows_from_archive(load_archive(self.path))], ["a"]
+        )
+
+    def test_a_section_page_without_a_date_is_not_a_candidate(self):
+        # Une page de rubrique n'a pas de date à trouver : la
+        # resélectionner à chaque run gâcherait du budget.
+        from fetch_all_bodies import rows_from_archive
+        from archive import load_archive
+        from archive import append_entries
+
+        append_entries([{
+            "key": "s", "url": "https://cpj.org/africa/burkina-faso/",
+            "title": "Burkina Faso", "summary": "", "source": "CPJ",
+            "source_label": "", "language": "en", "date": None,
+            "premiere_vue": "2026-09-14", "body": "du texte",
+        }], self.path)
+
+        self.assertEqual(rows_from_archive(load_archive(self.path)), [])
 
     def test_entries_without_a_url_are_skipped(self):
         from fetch_all_bodies import rows_from_archive
@@ -690,6 +719,36 @@ class ArchiveModeTests(unittest.TestCase):
 
         restants = rows_from_archive(load_archive(self.path))
         self.assertEqual([r["key"] for r in restants], ["b"])
+
+    def test_an_extracted_date_is_written_to_the_archive(self):
+        from fetch_all_bodies import apply_to_archive
+        from archive import load_archive
+
+        self._entree("a", "https://ex.org/a", date=None)
+
+        apply_to_archive(
+            [{"key": "a", "body": "texte", "published_date": "2026-09-10"}],
+            self.path,
+        )
+
+        self.assertEqual(load_archive(self.path)["a"]["date"], "2026-09-10")
+
+    def test_a_known_date_is_never_overwritten(self):
+        # Une date déjà connue vient du flux RSS, plus fiable que ce
+        # qu'on devine dans une page HTML.
+        from fetch_all_bodies import apply_to_archive
+        from archive import load_archive
+
+        self._entree("a", "https://ex.org/a", date="2026-01-01T00:00:00+00:00")
+
+        apply_to_archive(
+            [{"key": "a", "body": "texte", "published_date": "2026-09-10"}],
+            self.path,
+        )
+
+        self.assertEqual(
+            load_archive(self.path)["a"]["date"], "2026-01-01T00:00:00+00:00"
+        )
 
     @patch("fetch_all_bodies.extract_body")
     def test_end_to_end_fills_the_archive(self, mock_extract):

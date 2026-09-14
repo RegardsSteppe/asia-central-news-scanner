@@ -455,6 +455,43 @@ def backfill_bodies(
     return mis_a_jour
 
 
+def backfill_dates(
+    archive: dict[str, dict[str, Any]],
+    scanned: list[tuple[str, dict[str, Any]]],
+) -> int:
+    """
+    Inscrit dans l'archive la date de publication découverte pour des
+    entrées qui n'en avaient pas. Modifie `archive` sur place, renvoie
+    le nombre d'entrées mises à jour.
+
+    Même angle mort que pour les corps : merge_scanned() n'écrit que
+    les nouveautés, donc une date extraite après coup — au moment où
+    l'article reçoit enfin son texte — ne rejoignait jamais sa ligne.
+    Audit du 2026-09-14 : 5829 entrées sur 8824 sans date, dont 3545
+    dont la page avait pourtant été téléchargée.
+
+    Ne remplit qu'une date ABSENTE. Une date déjà connue vient du flux
+    RSS, qui est plus fiable que ce qu'on devine dans une page HTML.
+    """
+    mis_a_jour = 0
+
+    for key, article in scanned:
+        if not key or key not in archive:
+            continue
+
+        if archive[key].get("date"):
+            continue
+
+        date = _serialize_date(article.get("date"))
+        if not date:
+            continue
+
+        archive[key]["date"] = date
+        mis_a_jour += 1
+
+    return mis_a_jour
+
+
 def iter_articles(
     archive: dict[str, dict[str, Any]],
     state: dict[str, Any],
