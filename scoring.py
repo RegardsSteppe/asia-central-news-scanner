@@ -54,6 +54,29 @@ from keywords import (
 # ============================================================
 
 REPRESSION_TERMS_V9 = [
+    # Ajoutés le 2026-09-14, même forme de trou que "crackdown" nu la
+    # veille, en français cette fois : la liste contenait "répression
+    # policière" et "répression politique" — les formes qualifiées —
+    # mais pas "répression" seul. Or les titres HRW en français
+    # écrivent "Ouzbékistan : Répression létale au Karakalpakstan" et
+    # "Géorgie : Répression de manifestations pro-UE", qui
+    # ressortaient sans ancrage HR principal, donc en E.
+    #
+    # Mesuré sur les 9556 articles : 7 titres, 7 justes ; 15 corps,
+    # 15 justes. Contrairement à "crackdown", le mot n'a pas d'usage
+    # anodin en français — pas de sens sportif, pas d'idiome.
+    "répression", "répressions", "répressif", "répressive",
+    "répressives", "lois répressives", "подавление", "подавления",
+    # Constructions sans ambiguïté possible, relevées sur des titres
+    # HRW que rien n'ancrait : "Turkmenistan Forcibly Hospitalizes
+    # Human Rights Defender", "Azerbaijan Rearrests Journalist
+    # Forcibly Returned from Georgia".
+    "forcibly hospitalizes", "forcibly hospitalized",
+    "forcibly hospitalised", "forcibly returned", "forcibly deported",
+    "forcibly evicted", "forcibly detained",
+    # "<rôle> targeted" : le rôle porte la spécificité, pas le verbe.
+    "human rights defenders targeted", "defenders targeted",
+    "journalists targeted", "activists targeted", "lawyers targeted",
     # Ajoutés le 2026-09-14. Diagnostic : des articles que la
     # catégorisation décrit parfaitement — "Kazakhstan: Crackdown on
     # Government Critics" ressort acteur=opposant,
@@ -205,6 +228,30 @@ DEMOCRACY_CIVIC_SPACE_TERMS_V9 = [
 ]
 
 TARGET_TERMS_V9 = [
+    # Ajoutés le 2026-09-14. Diagnostic : les titres HRW en français
+    # gagnaient bien un ancrage répressif (voir REPRESSION_TERMS_V9)
+    # mais restaient à 25 points, faute de CIBLE. "Azerbaïdjan :
+    # Répression virulente contre les détracteurs du gouvernement"
+    # n'avait personne à qui rattacher la répression.
+    #
+    # Audit des titres réellement déclenchés sur les 9556 articles :
+    #
+    #   protester / protesters   8 titres, 8 justes
+    #   détracteur(s)            1 titre,  1 juste
+    #   manifestant(s)           1 titre,  1 juste
+    #   opposant(s)              1 titre,  1 juste
+    #
+    # Ce sont des rôles pour lesquels on se fait arrêter, pas des
+    # catégories de population — la ligne tenue depuis le début.
+    #   opposant (singulier)     1 faux sur 2   REJETÉ
+    #
+    # Le singulier "opposant" est aussi le participe présent du verbe
+    # opposer : "une querelle de voisinage opposant un éleveur au
+    # maire" n'a rien d'un opposant politique. Le pluriel, lui, est
+    # sûr — un participe présent est invariable, donc "opposants" ne
+    # peut être que le nom.
+    "protester", "protesters", "détracteur", "détracteurs",
+    "manifestant", "manifestants", "opposants", "opposant politique",
     "activist", "activists", "human rights defender", "human rights defenders",
     "dissident", "dissidents", "journalist", "journalists", "reporter",
     "reporters", "lawyer", "lawyers", "blogger", "bloggers",
@@ -216,7 +263,7 @@ TARGET_TERMS_V9 = [
     "активистка", "активистки", "правозащитница", "правозащитницы",
     "журналистка", "журналистки", "диссидентка", "диссидентки",
     "корреспондент", "корреспондентка", "корреспондента",
-    "militant", "militants", "activiste", "activistes",
+     "activiste", "activistes",
     "défenseur des droits humains", "défenseurs des droits humains",
     "défenseur des droits de l'homme", "défenseurs des droits de l'homme",
     "journaliste", "journalistes", "avocat", "avocate", "avocats",
