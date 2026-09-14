@@ -61,7 +61,7 @@
   ],
   "relevant": true,
   "score": 84,
-  "signals_sha256": "d2b90317bfc0f207",
+  "signals_sha256": "a0257e7ff3843f07",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2025/6/4/kyrgyzstan-court-sentences-ex-leader-atambayev-to-11-years-in-absentia"
  },
@@ -93,7 +93,7 @@
   ],
   "relevant": true,
   "score": 100,
-  "signals_sha256": "7b4a4e1a30572289",
+  "signals_sha256": "f7b20dc4063c18fe",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://www.aljazeera.com/news/2024/2/5/did-an-arrested-uzbek-mafia-chieftain-organise-killings-of-dissidents"
  },
@@ -158,7 +158,7 @@
   "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQNHFiWi11TDRaUEN5Nk5NaTRVakJ0Nnk3aFlsbERTZFZBcFcwSzZQZlpjWHJtd01JSGVjc0l2UldLalpVZTFSTHE0UmlvdFhna0N1MU5XeGF6eWd6NjZzbWFjaEFpZ2dTSWFuQkE0LUxjVkVOcmY1dmlmWWpfSFo1bmhTWGVVdjNfQVlkeXJXeHlQZFQ1Qmd1VlZSUzhRTFU?oc=5"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: kyrgyzstan",
@@ -166,9 +166,9 @@
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": false,
-  "score": 35,
-  "signals_sha256": "ddda79a5950abf25",
-  "theme": "Répression / droits humains",
+  "score": 27,
+  "signals_sha256": "7556624f881db06d",
+  "theme": "Géopolitique majeure",
   "url": "https://www.aljazeera.com/news/2026/5/27/kyrgyzstan-russia-tensions"
  },
  {
@@ -262,7 +262,7 @@
   "url": "https://www.aljazeera.com/features/2024/10/25/remembering-shamshad-abdullaev-the-world-class-uzbek-poet-too-few-knew"
  },
  {
-  "level": "B",
+  "level": "C",
   "priority": "MOYENNE",
   "reasons": [
    "Asie centrale: kyrgyzstan",
@@ -270,8 +270,8 @@
    "signal HR confirmé par le corps"
   ],
   "relevant": true,
-  "score": 57,
-  "signals_sha256": "a3e2738efca643d9",
+  "score": 51,
+  "signals_sha256": "63e7db7f329d2161",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/features/2024/7/18/in-kyrgyzstan-an-unprecedented-crackdown-on-free-press-raises-alarm"
  },
@@ -340,8 +340,8 @@
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": true,
-  "score": 48,
-  "signals_sha256": "125a51f278c56606",
+  "score": 45,
+  "signals_sha256": "b6e5ba610b9fbc09",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2025/11/30/kyrgyzstan-votes-in-snap-parliamentary-election-with-no-opposition"
  },
@@ -401,17 +401,17 @@
   "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOcFg1aG8xZWE0UmZ2Q3FwWld4QXpjQUluTXlQWi1qUUtPVXJ4ZGI4SWlMM1ZRSG5mYlVROFpoeDVNM2I3TmtvbVFCLUxPNWpOLXFwVWtTTDdnNnhucFZxLTFOVHlTZXBXUDg0dTVlZVZFTm5wdVdCM1dadnNWckphQ3VDSHdwZWF1VTJ4X3RKaHowb29PVmkwQjBKeHJlVk00U05uTUx0aDY5V3VI?oc=5"
  },
  {
-  "level": "C",
-  "priority": "MOYENNE",
+  "level": "E",
+  "priority": "BRUIT",
   "reasons": [
    "Asie centrale: turkmenistan",
    "géographie confirmée dans le corps",
    "plafond V9: confirmation HR dans le body"
   ],
-  "relevant": true,
-  "score": 45,
-  "signals_sha256": "1b0958ee880acc3d",
-  "theme": "Répression / droits humains",
+  "relevant": false,
+  "score": 17,
+  "signals_sha256": "cd2104df31ea1e37",
+  "theme": "Politique intérieure",
   "url": "https://www.aljazeera.com/news/2022/3/12/turkmenistan-votes-presidents-son-expected-to-win"
  },
  {
@@ -457,17 +457,17 @@
   "url": "https://en.kabar.kg/news/central-asia-and-china-to-strengthen-security-cooperation/"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: kazakhstan",
    "géographie confirmée dans le corps",
-   "plafond V9: confirmation HR dans le body"
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 35,
-  "signals_sha256": "4655d55ea4483884",
-  "theme": "Répression / droits humains",
+  "score": 24,
+  "signals_sha256": "efd35105c8542415",
+  "theme": "Politique intérieure",
   "url": "https://www.aljazeera.com/news/2026/8/23/kazakhstan-parliamentary-elections-begin-whats-at-stake"
  },
  {
@@ -525,30 +525,29 @@
   "url": "https://www.aljazeera.com/news/2024/3/22/maximally-pragmatic-how-central-asia-navigates-russias-war-on-ukraine"
  },
  {
-  "level": "C",
-  "priority": "MOYENNE",
+  "level": "E",
+  "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: turkmenistan",
    "géographie confirmée dans le corps",
-   "plafond V9: confirmation HR dans le body"
+   "plafond V9: aucun ancrage HR principal"
   ],
-  "relevant": true,
-  "score": 45,
-  "signals_sha256": "3149778d991dd841",
-  "theme": "Répression / droits humains",
+  "relevant": false,
+  "score": 24,
+  "signals_sha256": "e722b4a4d8508d4f",
+  "theme": "Politique intérieure",
   "url": "https://www.aljazeera.com/news/2022/3/15/turkmenistan-leaders-son-wins-presidential-election"
  },
  {
-  "level": "C",
-  "priority": "FAIBLE",
+  "level": "E",
+  "priority": "BRUIT",
   "reasons": [
-   "répression grave confirmée",
-   "plafond V9: confirmation HR dans le body"
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 38,
-  "signals_sha256": "b56beb8ac5870a87",
-  "theme": "Répression / droits humains",
+  "score": 10,
+  "signals_sha256": "74bc8afa9d71c9d0",
+  "theme": "Droits spécifiques",
   "url": "https://www.aljazeera.com/news/2021/11/18/us-issues-religious-freedom-concern-list-removes-nigeria"
  },
  {
@@ -1709,7 +1708,7 @@
   ],
   "relevant": false,
   "score": 20,
-  "signals_sha256": "523ab3025d00d3ea",
+  "signals_sha256": "fdf7c3a8268f05e1",
   "theme": "Géopolitique majeure",
   "url": "https://www.aljazeera.com/news/2026/9/3/kyrgyzstan-hosts-pivotal-sco-summit-amid-global-geopolitical-shifts"
  },
@@ -2035,7 +2034,7 @@
   ],
   "relevant": false,
   "score": 15,
-  "signals_sha256": "686c84978f1c1542",
+  "signals_sha256": "f736d940991b2f95",
   "theme": "Faible priorité",
   "url": "https://www.aljazeera.com/news/2026/5/29/on-the-road-to-rogun-dam-tajikistans-greatest-dream"
  },
@@ -2127,7 +2126,7 @@
   ],
   "relevant": false,
   "score": 15,
-  "signals_sha256": "01e84d7300981094",
+  "signals_sha256": "75cc0d6c85434490",
   "theme": "Faible priorité",
   "url": "https://www.aljazeera.com/news/2025/12/25/five-killed-at-tajikistan-afghanistan-border-in-armed-clash"
  },
@@ -2139,7 +2138,7 @@
   ],
   "relevant": false,
   "score": 16,
-  "signals_sha256": "97b6fc6e5e51cc14",
+  "signals_sha256": "b30caf82db38fbe1",
   "theme": "Géopolitique majeure",
   "url": "https://www.aljazeera.com/news/2025/11/8/ukraines-fm-says-over-1400-africans-recruited-to-fight-for-russia-in-war"
  },
@@ -2153,7 +2152,7 @@
   ],
   "relevant": false,
   "score": 15,
-  "signals_sha256": "1e4ff6f1e2574612",
+  "signals_sha256": "fd78c9321d55ca72",
   "theme": "Faible priorité",
   "url": "https://www.aljazeera.com/news/2025/11/6/kazakhstan-which-already-recognises-israel-to-join-abraham-accords"
  },
@@ -2267,15 +2266,16 @@
  },
  {
   "level": "E",
-  "priority": "FAIBLE",
+  "priority": "BRUIT",
   "reasons": [
    "Asie centrale: kyrgyzstan",
    "géographie confirmée dans le corps",
+   "géopolitique / économie ordinaire",
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 31,
-  "signals_sha256": "6ec3fe0ce53f3524",
+  "score": 17,
+  "signals_sha256": "cb1954f9ed9c4ea2",
   "theme": "Géopolitique majeure",
   "url": "https://www.aljazeera.com/news/2023/10/12/russias-putin-makes-rare-visit-to-kyrgyzstan-despite-icc-arrest-warrant"
  },
@@ -2386,15 +2386,15 @@
  },
  {
   "level": "E",
-  "priority": "FAIBLE",
+  "priority": "BRUIT",
   "reasons": [
    "Asie centrale: turkmenistan",
    "géographie confirmée dans le corps",
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 24,
-  "signals_sha256": "5b7cdc40d25e8ef5",
+  "score": 17,
+  "signals_sha256": "5840f161ce3f5859",
   "theme": "Politique intérieure",
   "url": "https://www.aljazeera.com/news/2022/2/12/turkmenistan-to-hold-early-presidential-election-on-march-12"
  },

@@ -11,6 +11,7 @@ from text_utils import (
     normalize_url,
     parse_date,
     article_date_timestamp,
+    strip_related_blocks,
 )
 
 
@@ -121,3 +122,63 @@ class ArticleDateTimestampTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StripRelatedBlocksTests(unittest.TestCase):
+    """
+    Régression du 2026-09-14, trouvée par le harnais de
+    caractérisation : « Turkmenistan leader's son wins presidential
+    election » montait de E à C parce que son corps contenait
+    "Recommended Stories ... Turkmenistan's dissidents fear crackdown
+    in Turkish exile ... end of list" — le titre d'un AUTRE article.
+    Le scoring lisait un ancrage répressif qui n'appartenait pas à
+    l'article scoré.
+    """
+
+    def test_retire_le_bloc_recommande_delimite(self):
+        # Le cas réel, abrégé. Les bornes sont explicites, donc la
+        # coupe est chirurgicale et le texte se referme proprement.
+        corps = (
+            "Serdar Berdymukhamedov won the election on Tuesday. "
+            "Recommended Stories list of 1 item list 1 of 1 "
+            "Turkmenistan's dissidents fear crackdown in Turkish exile "
+            "end of list "
+            "His nearest rival was a little-known official."
+        )
+        propre = strip_related_blocks(corps)
+        self.assertNotIn("crackdown", propre)
+        self.assertIn("won the election on Tuesday", propre)
+        self.assertIn("His nearest rival", propre)
+
+    def test_tronque_un_marqueur_de_pied_de_page(self):
+        corps = "Le tribunal a condamné l'activiste. " * 20 + "Читайте также Активист осужден"
+        propre = strip_related_blocks(corps)
+        self.assertNotIn("Читайте также", propre)
+        self.assertIn("Le tribunal a condamné", propre)
+
+    def test_ne_tronque_pas_un_renvoi_en_plein_article(self):
+        # Le garde-fou qui compte. Sur Novastan, « Lire aussi » et ses
+        # équivalents arrivent au tiers de l'article, avec des
+        # milliers de caractères de corps réel derrière : tronquer là
+        # détruirait l'article. Seuls les marqueurs des derniers 20 %
+        # sont traités comme du pied de page.
+        suite = "Le déplacement de populations fut un instrument du pouvoir soviétique. " * 30
+        corps = "Un reportage sur la frontière. Related Articles Nettoyage ethnique " + suite
+        propre = strip_related_blocks(corps)
+        self.assertIn("Related Articles", propre)
+        self.assertIn("instrument du pouvoir soviétique", propre)
+
+    def test_est_idempotent(self):
+        # Condition de l'application en rattrapage sur l'archive :
+        # repasser sur un corps déjà nettoyé ne doit rien changer,
+        # sinon chaque run réécrirait l'archive entière.
+        corps = (
+            "Texte réel. Recommended Stories list of 2 items list 1 of 2 "
+            "Autre titre end of list Suite du texte réel."
+        )
+        une_fois = strip_related_blocks(corps)
+        self.assertEqual(strip_related_blocks(une_fois), une_fois)
+
+    def test_accepte_les_valeurs_vides(self):
+        self.assertEqual(strip_related_blocks(""), "")
+        self.assertEqual(strip_related_blocks(None), "")

@@ -29,6 +29,7 @@ from text_utils import (
     article_date_timestamp,
     clean_title,
     parse_date,
+    strip_related_blocks,
 )
 
 from http_utils import fetch_url
@@ -1618,12 +1619,18 @@ def merge_with_archive(
     corps_ajoutes = archive.backfill_bodies(archive_entries, scanned)
     dates_ajoutees = archive.backfill_dates(archive_entries, scanned)
 
-    if corps_ajoutes or dates_ajoutees:
+    # Rattrapage des corps archivés avant que l'extraction ne retire
+    # les blocs "articles recommandés" : ils ne seront jamais
+    # retéléchargés, donc sans cette passe ils resteraient pollués
+    # indéfiniment. Idempotent, donc nul dès le run suivant.
+    corps_nettoyes = archive.nettoyer_corps(archive_entries)
+
+    if corps_ajoutes or dates_ajoutees or corps_nettoyes:
         archive.rewrite_archive(archive_entries.values())
 
     print(
         f"ARCHIVE | {corps_ajoutes} corps et {dates_ajoutees} dates "
-        f"ajoutés à des entrées existantes"
+        f"ajoutés à des entrées existantes, {corps_nettoyes} corps nettoyés"
     )
 
     archive.save_state(state)
@@ -1731,8 +1738,12 @@ def run_scan(
     # scan avant notation (voir enrich_articles), et écartent ces
     # articles du budget réseau. Relu ici plutôt que passé depuis
     # merge_with_archive, qui ne tourne qu'après l'enrichissement.
+    # Nettoyés à la lecture, pas seulement au rattrapage de fin de
+    # run : celui-ci ne s'exécute qu'APRÈS le scoring, et sans ce
+    # passage le premier run servirait encore des corps pollués aux
+    # articles qu'il classe.
     corps_archives = {
-        cle: entree["body"]
+        cle: strip_related_blocks(entree["body"])
         for cle, entree in archive.load_archive().items()
         if entree.get("body")
     }

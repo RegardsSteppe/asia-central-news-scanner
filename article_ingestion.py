@@ -15,6 +15,7 @@ from text_utils import (
     clean_title,
     normalize_url,
     parse_date,
+    strip_related_blocks,
 )
 
 
@@ -697,6 +698,12 @@ def extract_body(
         text = soup.get_text(" ", strip=True)
 
     text = clean_text(text)
+
+    # Les blocs "articles recommandés" survivent au choix du
+    # conteneur : ils sont à l'intérieur du <article>/<main> retenu.
+    # Les laisser revient à scorer un article sur le titre d'un autre
+    # (voir strip_related_blocks).
+    text = strip_related_blocks(text)
 
     if expected_title and not _body_matches_expected_title(expected_title, text):
         # Le <title>/<h1> de la page correspondait bien (sinon on
