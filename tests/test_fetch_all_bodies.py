@@ -528,3 +528,65 @@ class ResumeAndCheckpointTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class GoogleNewsBodiesAreUnavailableTests(unittest.TestCase):
+    """
+    Les URLs news.google.com ne rendent que la page interstitielle,
+    jamais l'article : corps médian de 11 caractères sur le corpus réel
+    ("Google News") contre 3790 pour les autres sources (mesuré le
+    2026-09-13). Les tenter faisait perdre des heures et affichait
+    ~99 % d'échecs, puisqu'elles font un tiers du corpus et sont
+    concentrées en tête du CSV.
+    """
+
+    def _rows(self):
+        return [
+            {"url": "https://news.google.com/rss/articles/CBMiABC", "title": "T1",
+             "source": "Human Rights Watch"},
+            {"url": "https://www.hrw.org/news/2026/09/12/vrai", "title": "T2",
+             "source": "Human Rights Watch"},
+        ]
+
+    def test_google_news_rows_are_marked_without_being_fetched(self):
+        with patch("fetch_all_bodies.extract_body") as faux:
+            faux.return_value = ("corps réel", None)
+            resultats = fetch_all_bodies(self._rows(), workers=2)
+
+        urls_tentees = {appel.args[0] for appel in faux.call_args_list}
+        self.assertNotIn(
+            "https://news.google.com/rss/articles/CBMiABC", urls_tentees
+        )
+        self.assertIn("https://www.hrw.org/news/2026/09/12/vrai", urls_tentees)
+
+    def test_skipped_rows_say_unavailable_not_failed(self):
+        # La distinction compte : "indisponible par construction" n'est
+        # pas un échec réseau, et ne doit pas se lire comme tel.
+        with patch("fetch_all_bodies.extract_body", return_value=("corps", None)):
+            resultats = fetch_all_bodies(self._rows(), workers=2)
+
+        saute = next(r for r in resultats if "news.google.com" in r["url"])
+        self.assertIn("body_unavailable", saute)
+        self.assertNotIn("fetch_error", saute)
+        self.assertEqual(saute["body"], "")
+
+    def test_every_row_is_still_returned(self):
+        with patch("fetch_all_bodies.extract_body", return_value=("corps", None)):
+            resultats = fetch_all_bodies(self._rows(), workers=2)
+
+        self.assertEqual(len(resultats), 2)
+
+    def test_skipped_rows_carry_their_source_language(self):
+        with patch("fetch_all_bodies.extract_body", return_value=("corps", None)):
+            resultats = fetch_all_bodies(self._rows(), workers=2)
+
+        saute = next(r for r in resultats if "news.google.com" in r["url"])
+        self.assertIn("language", saute)
+
+    def test_opt_out_restores_the_attempt(self):
+        with patch("fetch_all_bodies.extract_body") as faux:
+            faux.return_value = ("corps", None)
+            fetch_all_bodies(self._rows(), workers=2, skip_google_news=False)
+
+        urls_tentees = {appel.args[0] for appel in faux.call_args_list}
+        self.assertIn("https://news.google.com/rss/articles/CBMiABC", urls_tentees)

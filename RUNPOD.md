@@ -61,10 +61,28 @@ python -m unittest discover -s tests -p "test_*.py"
 
 ## Build and push the image
 
+Two images, two purposes — don't mix them up:
+
 ```bash
-docker build -t <your-dockerhub-user>/asia-central-scoring:latest .
+# Deterministic scoring (score/batch modes). CPU endpoint. Fast cold start.
+docker build -f Dockerfile -t <your-dockerhub-user>/asia-central-scoring:latest .
 docker push <your-dockerhub-user>/asia-central-scoring:latest
+
+# LLM judge (judge mode). Needs a GPU to build: the Dockerfile compiles
+# llama-cpp-python with CUDA support (CMAKE_ARGS=-DGGML_CUDA=on), which
+# requires nvcc — building on a machine without an NVIDIA GPU/driver
+# either fails or silently produces a CPU-only binary. Build this one
+# on a GPU machine (a RunPod pod works), or in CI with a CUDA-enabled
+# runner.
+docker build -f Dockerfile.juge -t <your-dockerhub-user>/asia-central-judge:latest .
+docker push <your-dockerhub-user>/asia-central-judge:latest
 ```
+
+For the judge image specifically: deploy it on a **GPU** RunPod
+Serverless endpoint (not CPU). `juge_llm._load_model()` passes
+`n_gpu_layers=-1` to actually use it — without both the CUDA build
+*and* that parameter, the model runs on CPU regardless of the endpoint
+type, silently, no error, just slow across thousands of articles.
 
 ## Create the RunPod Serverless endpoint
 
@@ -204,17 +222,23 @@ Answering needs labelled articles. Labelling 6,800 by hand is out of
 reach. This is what makes it tractable:
 
 ```bash
-# 1. Full bodies for the whole corpus (one-off, see above)
-python fetch_all_bodies.py --input articles.csv --output articles_with_body.json
-
-# 2. Second opinion from the LLM, on a GPU endpoint built from
+# 1. Second opinion from the LLM, on a GPU endpoint built from
 #    Dockerfile.juge. Payload: {"input": {"mode": "judge",
-#    "articles": [...]}} — same article shape as the other modes.
+#    "articles": [...]}} — feed it articles.csv's rows as-is
+#    (title + summary, the same fields the daily scan itself sees for
+#    ~99% of the corpus — see "Two things worth knowing" below).
+#    juge_llm.construire_invite() only falls back to "body" when
+#    "summary" is empty, so no body-fetching step is required here.
 #    The response carries "verdicts", not "labels". The name matters.
 
-# 3. Cross it with the deterministic scoring
+# 2. Cross it with the deterministic scoring
 python verite_terrain.py --verdicts verdicts.json
 ```
+
+`fetch_all_bodies.py` (below) stays useful on its own — mainly to check
+whether reading past the headline would change the scanner's verdict on
+specific articles — but it is no longer a prerequisite for this
+comparison.
 
 Step 3 prints the agreement rate and, more usefully, **what to fix** —
 derived from the disagreements alone, with no human labelling:

@@ -7,23 +7,32 @@
 # un modèle GGUF au premier appel. Mélanger les deux ferait payer le
 # poids du LLM à chaque scoring déterministe, qui n'en a aucun besoin.
 #
-# À déployer sur un endpoint GPU : le juge tourne sur des milliers
-# d'articles, ce qui est impraticable en CPU seul.
-FROM python:3.11-slim
+# GPU RÉEL, pas seulement l'endpoint : les wheels pip par défaut de
+# llama-cpp-python sont CPU-only. Sans les deux choses ci-dessous, le
+# conteneur tournerait sur un endpoint GPU tout en calculant sur CPU —
+# silencieusement, sans erreur, juste très lent sur plusieurs milliers
+# d'articles :
+#   1. une image de base CUDA (nvcc + libs), pas python:3.11-slim
+#   2. CMAKE_ARGS=-DGGML_CUDA=on pour compiler llama-cpp-python avec le
+#      support CUDA (voir aussi n_gpu_layers=-1 dans juge_llm.py, sans
+#      quoi le binaire aurait le support GPU mais ne l'utiliserait pas)
+FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
-# llama-cpp-python se compile : il lui faut un toolchain, absent de
-# l'image slim.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential cmake \
+    && apt-get install -y --no-install-recommends \
+        python3 python3-pip python3-dev build-essential cmake git \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY requirements-runpod.txt requirements-llm.txt ./
-RUN pip install --no-cache-dir -r requirements-runpod.txt -r requirements-llm.txt
+
+ENV CMAKE_ARGS="-DGGML_CUDA=on"
+ENV FORCE_CMAKE=1
+RUN pip3 install --no-cache-dir -r requirements-runpod.txt -r requirements-llm.txt
 
 # Même fermeture d'imports que l'image minimale, plus le juge.
 # Vérifiée par tests/test_runpod_image.py.
 COPY scoring.py keywords.py matching.py github_push.py juge_llm.py rp_handler.py ./
 
-CMD ["python", "-u", "rp_handler.py"]
+CMD ["python3", "-u", "rp_handler.py"]
