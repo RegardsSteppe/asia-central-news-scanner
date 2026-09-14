@@ -449,6 +449,21 @@ HUMAN_RIGHTS_TERMS = [
 # ------------------------------------------------------------
 
 ACTIVIST_TERMS = [
+    # Ajoutés le 2026-09-14 depuis categorisation.py, pour que le
+    # SCORING en profite aussi et non la seule description. C'est la
+    # raison d'être de keywords.py : une liste, deux consommateurs.
+    # "Azerbaijan: Opposition Leader Arrested" ressortait acteur=aucun
+    # côté catégorisation ET sans cible côté scoring.
+    "opposition leader", "opposition figure", "opposition politician",
+    "government critic", "government critics", "exiled critic",
+    "exiled critics", "critic of the government",
+    "critic", "critics",
+    "protester", "protesters", "protestor", "protestors",
+    "chef de l'opposition", "opposant politique", "manifestant",
+    "manifestants", "critique du gouvernement",
+    "лидер оппозиции", "оппозиционер", "оппозиционера",
+    "протестующие", "протестующих", "критик", "критики", "критиков",
+
     "activist",
     "activists",
     "human rights activist",
@@ -755,6 +770,12 @@ LEGAL_CONTEXT_TERMS = [
 # ------------------------------------------------------------
 
 JOURNALIST_TERMS = [
+    # Le blogueur est la figure la plus réprimée en Ouzbékistan.
+    # TARGET_TERMS_V9 (scoring.py) le connaissait déjà ; cette liste
+    # non, donc la catégorisation le ratait.
+    "blogger", "bloggers", "blogueur", "blogueuse", "blogueurs",
+    "блогер", "блогеры", "блогера", "блогеров",
+
     "journalist",
     "journalists",
     "reporter",

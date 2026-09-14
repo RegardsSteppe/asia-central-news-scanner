@@ -926,3 +926,105 @@ class FenetreRelationTests(unittest.TestCase):
 
         self.assertFalse(serre["relation_acteur_traitement"])
         self.assertTrue(large["relation_acteur_traitement"])
+
+
+class VocabulaireAnglesMortsTests(unittest.TestCase):
+    """
+    Vocabulaire ajouté le 2026-09-14 après un audit des angles morts :
+    sur 971 articles publiés par des organisations dont les droits
+    humains sont le métier (HRW, Amnesty, RSF, CPJ, FIDH, OMCT,
+    CIVICUS), 803 ressortaient en E/F. 572 étaient hors zone, mais 231
+    étaient dans le périmètre — "Azerbaijan: Opposition Leader
+    Arrested" ressortait acteur=aucun.
+    """
+
+    def _article(self, titre, langue="en"):
+        return {
+            "title": titre, "summary": "", "body": "",
+            "source": "Human Rights Watch", "url": "https://ex.org/news/a",
+            "language": langue, "date": None,
+        }
+
+    def test_political_figures_are_actors(self):
+        for titre, attendu in (
+            ("Azerbaijan: Opposition Leader Arrested", "opposant"),
+            ("Azerbaijan Escalates Crackdown on Exiled Critics", "opposant"),
+            ("Dozens of protesters detained in Kazakhstan", "opposant"),
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn(attendu, categoriser(self._article(titre))["acteur"])
+
+    def test_bloggers_count_as_journalists(self):
+        # La figure la plus réprimée en Ouzbékistan, absente de
+        # JOURNALIST_TERMS.
+        cat = categoriser(
+            self._article("Uzbekistan: Free Blogger from Forced Psychiatric Detention")
+        )
+        self.assertIn("journaliste", cat["acteur"])
+
+    def test_being_detained_is_also_an_identity(self):
+        for titre in (
+            "Belarus: Release of over 200 other political prisoners",
+            "Detainee says China has secret jail in Dubai",
+            "Azerbaijan: Armenian POWs Abused in Custody",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn("detenu", categoriser(self._article(titre))["acteur"])
+
+    def test_professional_roles_are_actors(self):
+        for titre, attendu in (
+            ("Kazakhstan Authorities Arrest Professor Suspected of Espionage",
+             "universitaire"),
+            ("French artist imprisoned in Azerbaijan due to graffiti", "artiste"),
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn(attendu, categoriser(self._article(titre))["acteur"])
+
+    def test_demographics_are_not_actors(self):
+        # Même ligne que "imam" gardé et "muslim" écarté : un rôle
+        # qu'on peut arrêter pour ce qu'il fait, contre une catégorie
+        # de population. Ces titres déclenchaient les candidats
+        # "etudiant" et "enfant", rejetés pour cette raison.
+        for titre in (
+            "New KNU building for 3,000 students opened in Talas",
+            "Psychological support for parents raising children",
+        ):
+            with self.subTest(titre=titre):
+                acteurs = categoriser(self._article(titre))["acteur"]
+                self.assertNotIn("etudiant", acteurs)
+                self.assertNotIn("enfant", acteurs)
+
+    def test_surveillance_is_a_treatment(self):
+        # Mode de répression majeur et contemporain, totalement absent
+        # du schéma : 51 articles du corpus.
+        for titre in (
+            "Facial Recognition Deal in Kyrgyzstan Poses Risks to Rights",
+            "Surveillance and Spyware",
+            "Слежка за активистами в Казахстане",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn(
+                    "surveillance", categoriser(self._article(titre))["traitement"]
+                )
+
+    def test_punitive_psychiatry_is_a_treatment(self):
+        cat = categoriser(
+            self._article("Uzbekistan: End the Punitive Psychiatric Detention")
+        )
+        self.assertIn("internement_psychiatrique", cat["traitement"])
+
+    def test_travel_bans_and_forced_exile_are_treatments(self):
+        for titre, attendu in (
+            ("Tajikistan: Lift Travel Ban on Critically Ill Child",
+             "interdiction_voyager"),
+            ("Forced Exile of Indigenous Rights Activists", "exil_force"),
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn(
+                    attendu, categoriser(self._article(titre))["traitement"]
+                )
+
+    def test_ill_treatment_is_detected(self):
+        # Formule standard des rapports HRW/Amnesty, qui manquait.
+        cat = categoriser(self._article("Azerbaijan: Armenian POWs Abused in Custody"))
+        self.assertIn("violence_physique", cat["traitement"])
