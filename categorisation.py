@@ -817,3 +817,88 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
         "source_specialisee": source_specialisee,
         "preuves": preuves,
     }
+
+
+# ============================================================
+# AGRÉGATION POUR LE TABLEAU DE BORD
+# ============================================================
+
+# Valeur "rien détecté" de chaque axe. Elle est comptée à part et
+# jamais affichée comme une classe : "aucun" représente 92% de l'axe
+# acteur, donc le laisser dans le même graphique écraserait les onze
+# classes réelles contre l'axe et ne dirait qu'une chose, déjà dite par
+# le taux de couverture.
+_AXE_VALEUR_NULLE = {
+    "geo": None,            # liste vide
+    "acteur": "aucun",
+    "traitement": "aucun",
+    "type": "indetermine",
+}
+
+# (clé, libellé, multivalué) — l'ordre est celui de l'affichage.
+AXES_DESCRIPTIFS: tuple[tuple[str, str, bool], ...] = (
+    ("geo", "Géographie", True),
+    ("acteur", "Acteur visé", True),
+    ("traitement", "Traitement subi", True),
+    ("type", "Type d'article", False),
+)
+
+
+def _valeurs_axe(categorisation: dict[str, Any], axe: str, multivalue: bool) -> list[str]:
+    brut = categorisation.get(axe)
+
+    if not multivalue:
+        return [brut] if brut else []
+
+    return list(brut or [])
+
+
+def agreger_categorisations(categorisations: list[dict[str, Any]]) -> dict[str, Any]:
+    """
+    Compte les classes de chaque axe descriptif sur un corpus.
+
+    Renvoie, par axe : les classes triées par effectif décroissant, et
+    le nombre d'articles que l'axe décrit réellement (au moins une
+    classe non nulle).
+
+    Le taux de couverture est délibérément séparé des effectifs. Sans
+    lui, un tableau de bord montrerait "journaliste 164, minorité 139"
+    et donnerait l'impression d'un corpus abondamment décrit, alors que
+    92% des articles n'ont aucun acteur identifié. L'effectif dit ce
+    qu'on a trouvé, la couverture dit sur quelle part du corpus — les
+    deux sont nécessaires pour ne pas surinterpréter le premier.
+
+    Les axes multivalués (un article peut être à la fois Kazakhstan et
+    Russie) ne somment pas à 100% : c'est pourquoi on renvoie "total"
+    plutôt que de laisser l'affichage déduire un dénominateur.
+    """
+    total = len(categorisations)
+    axes = []
+
+    for axe, libelle, multivalue in AXES_DESCRIPTIFS:
+        valeur_nulle = _AXE_VALEUR_NULLE[axe]
+        compteur: dict[str, int] = {}
+        decrits = 0
+
+        for categorisation in categorisations:
+            valeurs = _valeurs_axe(categorisation, axe, multivalue)
+            reelles = [v for v in valeurs if v != valeur_nulle]
+
+            if reelles:
+                decrits += 1
+
+            for valeur in reelles:
+                compteur[valeur] = compteur.get(valeur, 0) + 1
+
+        classes = sorted(compteur.items(), key=lambda kv: (-kv[1], kv[0]))
+
+        axes.append({
+            "cle": axe,
+            "libelle": libelle,
+            "multivalue": multivalue,
+            "classes": [{"nom": nom, "effectif": n} for nom, n in classes],
+            "decrits": decrits,
+            "couverture": round(100 * decrits / total, 1) if total else 0.0,
+        })
+
+    return {"total": total, "axes": axes}

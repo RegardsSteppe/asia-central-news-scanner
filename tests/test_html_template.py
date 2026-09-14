@@ -238,3 +238,97 @@ class SafeUrlTests(unittest.TestCase):
 
     def test_drops_scheme_hidden_behind_whitespace(self):
         self.assertEqual(self._href(self._card("  javascript:alert(1)")), "")
+
+
+class CategorisationDashboardTests(unittest.TestCase):
+    """Tableau de bord des catégories descriptives (categorisation.py)."""
+
+    def _stats(self):
+        from categorisation import agreger_categorisations
+
+        cats = [
+            {
+                "geo": ["kazakhstan"], "acteur": ["journaliste"],
+                "traitement": ["detention"], "type": "evenement_date",
+            },
+            {
+                "geo": ["kazakhstan", "russie"], "acteur": ["aucun"],
+                "traitement": ["aucun"], "type": "indetermine",
+            },
+            {
+                "geo": [], "acteur": ["aucun"],
+                "traitement": ["aucun"], "type": "indetermine",
+            },
+        ]
+        return agreger_categorisations(cats)
+
+    def test_every_schema_class_has_a_readable_label(self):
+        # Sans ce garde-fou, une classe ajoutée au schéma s'affiche
+        # telle quelle ("minorite_ethnique") sur le site public.
+        from html_template import _LIBELLES_CLASSES
+        from categorisation import (
+            ACTEUR_TYPE_TERMS,
+            TRAITEMENT_TYPE_TERMS,
+            _GEO_TERM_COUNTRY,
+        )
+
+        classes = (
+            set(ACTEUR_TYPE_TERMS)
+            | set(TRAITEMENT_TYPE_TERMS)
+            | set(_GEO_TERM_COUNTRY.values())
+            | {"autre", "evenement_date", "rapport_analyse",
+               "plaidoyer_communique", "navigation", "indetermine"}
+        )
+
+        manquants = sorted(c for c in classes if c not in _LIBELLES_CLASSES)
+        self.assertEqual(manquants, [])
+
+    def test_coverage_counts_articles_not_classes(self):
+        # Un article "Kazakhstan + Russie" porte deux valeurs mais reste
+        # un seul article décrit : la couverture ne doit pas le compter
+        # deux fois et dépasser 100%.
+        stats = self._stats()
+        geo = next(a for a in stats["axes"] if a["cle"] == "geo")
+        self.assertEqual(geo["decrits"], 2)
+        self.assertAlmostEqual(geo["couverture"], 66.7, places=1)
+
+    def test_null_class_is_excluded_from_the_bars(self):
+        # "aucun" pèse plus que toutes les vraies classes réunies ;
+        # le laisser dans le graphique écraserait tout le reste.
+        stats = self._stats()
+        for cle in ("acteur", "traitement"):
+            axe = next(a for a in stats["axes"] if a["cle"] == cle)
+            self.assertNotIn("aucun", [c["nom"] for c in axe["classes"]])
+
+        type_axe = next(a for a in stats["axes"] if a["cle"] == "type")
+        self.assertNotIn("indetermine", [c["nom"] for c in type_axe["classes"]])
+
+    def test_renders_labels_values_and_no_raw_identifiers(self):
+        from html_template import render_categorisation_dashboard
+
+        html_output = render_categorisation_dashboard(self._stats())
+        self.assertIn("Kazakhstan", html_output)
+        self.assertIn("Journaliste", html_output)
+        self.assertNotIn("evenement_date", html_output)
+
+    def test_empty_stats_render_nothing(self):
+        from html_template import render_categorisation_dashboard
+
+        self.assertEqual(render_categorisation_dashboard(None), "")
+        self.assertEqual(
+            render_categorisation_dashboard({"total": 0, "axes": []}), ""
+        )
+
+    def test_bar_widths_are_relative_to_the_axis_maximum(self):
+        from html_template import render_categorisation_axe
+
+        axe = {
+            "libelle": "Test", "couverture": 50.0, "decrits": 5,
+            "classes": [
+                {"nom": "kazakhstan", "effectif": 100},
+                {"nom": "russie", "effectif": 25},
+            ],
+        }
+        html_output = render_categorisation_axe(axe, total=10)
+        self.assertIn("width: 100.0%", html_output)
+        self.assertIn("width: 25.0%", html_output)

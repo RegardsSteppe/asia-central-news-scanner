@@ -20,7 +20,7 @@ except ImportError:  # pragma: no cover - library not installed
 import archive
 from sources import SOURCES, PROFILE_GROUPS
 from scoring import classify_article
-from categorisation import categoriser
+from categorisation import agreger_categorisations, categoriser
 from regles_editoriales import est_pertinent
 from html_template import create_web_page
 from synthesis import generate_synthesis
@@ -1400,6 +1400,21 @@ def export_html(
         "HTML | génération de index.html"
     )
 
+    # Agrégé sur l'AUDIT et non sur les articles retenus : le tableau
+    # de bord des catégories décrit tout ce qui a été scanné, alors que
+    # "articles" ne contient que les niveaux A/B/C. Le mesurer sur les
+    # seuls retenus gonflerait chaque taux de couverture, puisqu'un
+    # article est justement retenu parce qu'on a su le décrire.
+    categorisations = [
+        entry["categorisation"]
+        for entry in audit
+        if entry.get("categorisation")
+    ]
+
+    cat_stats = (
+        agreger_categorisations(categorisations) if categorisations else None
+    )
+
     try:
         html_output = create_web_page(
             articles=articles,
@@ -1407,6 +1422,7 @@ def export_html(
             stats=stats,
             title_words=vocabulary,
             synthesis=synthesis,
+            cat_stats=cat_stats,
         )
 
         if not isinstance(
