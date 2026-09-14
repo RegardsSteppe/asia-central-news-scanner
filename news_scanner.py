@@ -973,24 +973,10 @@ def build_stats(
 def build_audit(
     articles: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """
-    Lignes pour la table d'audit du site (A/B/C ont déjà leurs propres
-    sections de cartes — voir render_level_section) : niveau D
-    uniquement. E (bruit pur, ~95% du corpus à chaque run) en était
-    exclu dans l'intention depuis le début ("rester lisible malgré la
-    masse de niveau D", voir html_template.py) mais pas dans le code :
-    build_audit(all_articles) recevait tout, E compris, ce qui gonflait
-    index.html à plusieurs mégaoctets pour zéro valeur de lecture. E
-    reste disponible dans articles.csv pour un futur audit ponctuel.
-    Décidé avec l'utilisateur le 2026-09-11.
-    """
 
     audit = []
 
     for article in articles:
-        if article.get("level", "E") != "D":
-            continue
-
         source = article.get(
             "source",
             "",

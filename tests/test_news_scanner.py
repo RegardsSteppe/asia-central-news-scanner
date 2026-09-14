@@ -134,7 +134,6 @@ class BuildAuditTests(unittest.TestCase):
                 "title": "Some article",
                 "source": "Test Source",
                 "url": "https://example.com/article",
-                "level": "D",
                 "categorisation": {
                     "geo": ["kazakhstan"],
                     "acteur": ["defenseur"],
@@ -164,18 +163,14 @@ class BuildAuditTests(unittest.TestCase):
         # complet via build_audit() révèle le problème.
         import re
 
-        # Article de niveau D : la table d'audit est réservée à ce
-        # niveau (A/B/C ont leurs cartes, E et F en sont exclus), donc
-        # un article régional à fort score ne la traverse plus et ne
-        # testerait plus rien.
         articles = [
             {
-                "title": "Rights Defender Jailed In Rwanda After Months In Detention",
-                "summary": "A court sentenced a human rights defender to prison.",
+                "title": "Kazakhstan Jails Activist for Ten Years",
+                "summary": "A court sentenced a human rights activist to prison.",
                 "body": "",
                 "source": "Human Rights Watch",
                 "source_label": "HRW",
-                "url": "https://www.hrw.org/news/rwanda-defender-jailed",
+                "url": "https://www.hrw.org/news/example",
                 "language": "en",
                 "date": None,
             }
@@ -196,9 +191,9 @@ class BuildAuditTests(unittest.TestCase):
         # niveau D par catégorie de source (voir PROFILE_GROUPS dans
         # sources.py) plutôt que de tout lister à plat.
         articles = [
-            {"title": "A", "source": "Human Rights Watch", "level": "D"},
-            {"title": "B", "source": "RAND Corporation", "level": "D"},
-            {"title": "C", "source": "Unknown Source", "level": "D"},
+            {"title": "A", "source": "Human Rights Watch"},
+            {"title": "B", "source": "RAND Corporation"},
+            {"title": "C", "source": "Unknown Source"},
         ]
 
         audit = build_audit(articles)
@@ -209,40 +204,6 @@ class BuildAuditTests(unittest.TestCase):
             "Sécurité & géopolitique (think tanks)",
         )
         self.assertEqual(audit[2]["category"], "Autres")
-
-    def test_excludes_level_e_noise(self):
-        # Décidé avec l'utilisateur le 2026-09-11 : la table d'audit
-        # du site n'a jamais été conçue pour contenir le niveau E
-        # (bruit pur, ~95% du corpus à chaque run — voir le commentaire
-        # "rester lisible malgré la masse de niveau D" dans
-        # html_template.py) mais build_audit(all_articles) recevait
-        # tout, E compris, ce qui gonflait index.html à plusieurs Mo.
-        articles = [
-            {"title": "Noise", "source": "Test Source", "level": "E"},
-            {"title": "Also noise, no level set", "source": "Test Source"},
-            {"title": "Kept", "source": "Test Source", "level": "D"},
-        ]
-
-        audit = build_audit(articles)
-
-        self.assertEqual(len(audit), 1)
-        self.assertEqual(audit[0]["title"], "Kept")
-
-    def test_excludes_levels_a_b_c_already_shown_as_cards(self):
-        # A/B/C ont déjà leurs propres sections de cartes
-        # (render_level_section) : pas besoin de les dupliquer dans la
-        # table d'audit, qui est réservée au niveau D.
-        articles = [
-            {"title": "Card A", "source": "Test Source", "level": "A"},
-            {"title": "Card B", "source": "Test Source", "level": "B"},
-            {"title": "Card C", "source": "Test Source", "level": "C"},
-            {"title": "Audit row", "source": "Test Source", "level": "D"},
-        ]
-
-        audit = build_audit(articles)
-
-        self.assertEqual(len(audit), 1)
-        self.assertEqual(audit[0]["title"], "Audit row")
 
 
 class FinalSortKeyTests(unittest.TestCase):
