@@ -232,9 +232,13 @@ def rewrite_archive(
     """
     Réécrit l'archive en entier.
 
-    Réservé aux opérations de maintenance (purge, migration de schéma) :
-    le fonctionnement normal n'utilise QUE append_entries, c'est ce qui
-    garde le coût git proportionnel aux nouveautés.
+    Le fonctionnement normal privilégie append_entries, qui garde le
+    coût git proportionnel aux nouveautés. La réécriture complète sert
+    aux opérations de maintenance (purge, migration de schéma) et au
+    remplissage des corps (voir backfill_bodies), qui modifie par
+    nature des lignes existantes. L'appelant ne doit la déclencher que
+    si quelque chose a effectivement changé : un run qui n'ajoute aucun
+    corps doit rester en append-only.
     """
     path = path or ARCHIVE_FILE
     entries = list(entries)
@@ -374,6 +378,50 @@ def merge_scanned(
     state["dernier_scan"] = scan_date
 
     return nouvelles
+
+
+def backfill_bodies(
+    archive: dict[str, dict[str, Any]],
+    scanned: list[tuple[str, dict[str, Any]]],
+) -> int:
+    """
+    Recopie dans l'archive le corps des articles qu'on vient de
+    télécharger. Modifie `archive` sur place, renvoie le nombre
+    d'entrées mises à jour.
+
+    Nécessaire parce que merge_scanned() n'écrit QUE les nouveautés :
+    un article déjà archivé qui reçoit enfin son corps ne verrait
+    jamais sa ligne changer. Constaté sur le run du 2026-09-14, qui a
+    téléchargé 914 corps et n'en a conservé que 18 — les seuls qui
+    appartenaient à des articles encore inconnus de l'archive. Sans
+    cette étape, l'enrichissement retélécharge indéfiniment un texte
+    qu'il jette aussitôt.
+
+    Ne touche qu'aux entrées dont le corps est ABSENT ou plus court :
+    un corps déjà stocké ne doit pas être remplacé par une extraction
+    partielle (page servie derrière un mur, redirection...), sinon le
+    contenu se dégraderait d'un run à l'autre.
+    """
+    mis_a_jour = 0
+
+    for key, article in scanned:
+        if not key or key not in archive:
+            continue
+
+        if article.get("level") not in BODY_KEEP_LEVELS:
+            continue
+
+        nouveau = (article.get("body") or "")[:BODY_MAX_CHARS]
+        if not nouveau:
+            continue
+
+        if len(nouveau) <= len(archive[key].get("body") or ""):
+            continue
+
+        archive[key]["body"] = nouveau
+        mis_a_jour += 1
+
+    return mis_a_jour
 
 
 def iter_articles(

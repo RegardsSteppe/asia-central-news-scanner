@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from archive import (
     ARCHIVE_FIELDS,
+    backfill_bodies,
     BODY_KEEP_LEVELS,
     append_entries,
     derniere_vue,
@@ -66,16 +67,19 @@ class EntryShapeTests(unittest.TestCase):
 
         import archive as archive_module
 
-        with patch.dict(os.environ, {"SCANNER_BODY_KEEP_LEVELS": "A,B"}):
-            recharge = importlib.reload(archive_module)
-            try:
+        # Le rechargement de restauration doit avoir lieu HORS du
+        # patch : à l'intérieur, il relit la variable encore patchée et
+        # laisse le module pollué pour tous les tests suivants.
+        try:
+            with patch.dict(os.environ, {"SCANNER_BODY_KEEP_LEVELS": "A,B"}):
+                recharge = importlib.reload(archive_module)
                 self.assertEqual(recharge.BODY_KEEP_LEVELS, frozenset({"A", "B"}))
                 self.assertEqual(
                     recharge.entry_from_article(article(level="E"), "cle")["body"],
                     "",
                 )
-            finally:
-                importlib.reload(archive_module)
+        finally:
+            importlib.reload(archive_module)
 
     def test_datetime_date_is_serialized(self):
         from datetime import datetime, timezone
@@ -339,3 +343,91 @@ class MergeFilesTests(unittest.TestCase):
 
         append_entries([entry_from_article(article(), "a")], self.base)
         self.assertEqual(merge_files(self.base, self.incoming), 0)
+
+
+class BackfillBodiesTests(unittest.TestCase):
+    """
+    merge_scanned() n'écrit que les nouveautés : sans backfill, un
+    article déjà archivé qui reçoit enfin son corps ne verrait jamais
+    sa ligne changer. Run du 2026-09-14 : 914 corps téléchargés, 18
+    conservés, le reste retéléchargé à chaque run pour rien.
+    """
+
+    def _archive(self, body=""):
+        entry = entry_from_article(article(level="A"), "cle")
+        entry["body"] = body
+        return {"cle": entry}
+
+    def test_fills_a_missing_body_on_an_existing_entry(self):
+        arch = self._archive(body="")
+        scanned = [("cle", article(level="A", body="texte complet"))]
+
+        self.assertEqual(backfill_bodies(arch, scanned), 1)
+        self.assertEqual(arch["cle"]["body"], "texte complet")
+
+    def test_never_replaces_a_body_with_a_shorter_one(self):
+        # Une extraction partielle (mur payant, redirection) ne doit
+        # pas dégrader un texte déjà complet.
+        arch = self._archive(body="un texte complet et long")
+        scanned = [("cle", article(level="A", body="court"))]
+
+        self.assertEqual(backfill_bodies(arch, scanned), 0)
+        self.assertEqual(arch["cle"]["body"], "un texte complet et long")
+
+    def test_ignores_articles_absent_from_the_archive(self):
+        arch = self._archive(body="")
+        scanned = [("inconnue", article(level="A", body="texte"))]
+
+        self.assertEqual(backfill_bodies(arch, scanned), 0)
+        self.assertEqual(arch["cle"]["body"], "")
+
+    def test_respects_the_configured_levels(self):
+        import importlib
+        import os
+        from unittest.mock import patch
+
+        import archive as archive_module
+
+        # Restauration hors du patch — voir la note dans
+        # test_body_levels_remain_configurable.
+        try:
+            with patch.dict(os.environ, {"SCANNER_BODY_KEEP_LEVELS": "A"}):
+                recharge = importlib.reload(archive_module)
+                entry = recharge.entry_from_article(article(level="A"), "cle")
+                entry["body"] = ""
+                arch = {"cle": entry}
+                scanned = [("cle", article(level="E", body="texte"))]
+                self.assertEqual(recharge.backfill_bodies(arch, scanned), 0)
+        finally:
+            importlib.reload(archive_module)
+
+    def test_empty_body_is_not_counted_as_an_update(self):
+        arch = self._archive(body="")
+        scanned = [("cle", article(level="A", body=""))]
+
+        self.assertEqual(backfill_bodies(arch, scanned), 0)
+
+
+class ModuleStateIsRestoredTests(unittest.TestCase):
+    """
+    Les tests qui rechargent archive.py avec une variable
+    d'environnement patchée doivent rendre le module intact.
+
+    Sans ce garde-fou, la fuite ne se voit qu'à l'ordre d'exécution :
+    elle est passée sous pytest en local et n'a cassé qu'en CI, sous
+    "python -m unittest discover".
+    """
+
+    def test_body_keep_levels_are_back_to_the_default(self):
+        import archive as archive_module
+
+        self.assertEqual(
+            archive_module.BODY_KEEP_LEVELS,
+            frozenset({"A", "B", "C", "D", "E"}),
+        )
+
+    def test_an_entry_still_keeps_a_level_e_body(self):
+        import archive as archive_module
+
+        entry = archive_module.entry_from_article(article(level="E"), "cle")
+        self.assertTrue(entry["body"])
