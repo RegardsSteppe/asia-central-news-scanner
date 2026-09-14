@@ -11,6 +11,7 @@ from article_ingestion import (
     build_article,
     extract_body,
     extract_published_date,
+    is_google_news_url,
     looks_like_article_link,
     parse_rss,
 )
@@ -649,3 +650,47 @@ class ParseRssTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class GoogleNewsUrlTests(unittest.TestCase):
+    """
+    Un lien de redirection Google News a un chemin opaque commençant
+    par "/rss" — présent dans _NON_ARTICLE_PATH_PATTERNS et testé avant
+    la liste d'articles, donc "/rss/articles/<hash>" était rejeté par
+    son "/rss" alors même qu'il contient "/articles/".
+    """
+
+    URL = "https://news.google.com/rss/articles/CBMikwFBVV95cUxNSzNqODlVV2Zw"
+
+    def test_recognises_google_news_redirect(self):
+        self.assertTrue(is_google_news_url(self.URL))
+
+    def test_other_hosts_are_not_google_news(self):
+        for url in (
+            "https://www.rferl.org/a/kazakh/123.html",
+            "https://example.com/rss/articles/abc",
+            "",
+        ):
+            with self.subTest(url=url):
+                self.assertFalse(is_google_news_url(url))
+
+    def test_google_news_link_is_accepted_as_an_article(self):
+        self.assertTrue(
+            looks_like_article_link(
+                self.URL, "Kazakh Journalist Detained After Covering Protest"
+            )
+        )
+
+    def test_google_news_link_is_still_judged_on_its_title(self):
+        # La dispense ne porte que sur le CHEMIN : un titre générique
+        # ("Countries") doit continuer d'être rejeté, sinon les pages
+        # de navigation que le flux Google News indexe aussi
+        # rentreraient toutes.
+        self.assertFalse(looks_like_article_link(self.URL, "Countries"))
+
+    def test_rss_path_on_another_host_is_still_rejected(self):
+        self.assertFalse(
+            looks_like_article_link(
+                "https://example.com/rss", "A perfectly reasonable headline here"
+            )
+        )

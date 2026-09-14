@@ -103,16 +103,30 @@ TRAITEMENTS_RETENUS: frozenset[str] | None = None
 # Types d'article exclus.
 # Options possibles (voir categorisation.py: type) — un sous-ensemble
 # de {"evenement_date", "rapport_analyse", "plaidoyer_communique",
-# "page_institutionnelle", "navigation"} :
-#   - Exclure uniquement "navigation" (pages qui ne sont structurellement
-#     pas des articles)
-#   - + "page_institutionnelle" (pages génériques sans événement précis)
-#   - + "plaidoyer_communique" (si on veut de l'actualité, pas des
-#     communiqués de plaidoyer)
-#   - Garder "rapport_analyse" (souvent la source la plus détaillée) ou
-#     l'exclure aussi (si on veut uniquement de l'actualité datée)
-# TODO: décider et remplacer None par un frozenset, ex.
-#   TYPES_EXCLUS = frozenset({"navigation"})
+# "indetermine", "navigation"}.
+#
+# Répartition mesurée le 2026-09-14 sur les 7795 articles publiés :
+#   evenement_date        35,1%
+#   indetermine           64,5%   (ni date ni corps récupérable)
+#   rapport_analyse        0,2%
+#   plaidoyer_communique   0,1%
+#   navigation             0,0%   (filtré dès l'ingestion)
+#
+#   - "navigation" ne coûte rien à exclure, mais ne rapporte rien non
+#     plus : looks_like_article_link() écarte déjà ces liens à
+#     l'ingestion, donc aucun n'atteint cette couche.
+#   - "indetermine" NE DOIT PAS être exclu à la légère : ce n'est pas
+#     un jugement ("page sans intérêt") mais un aveu ("on n'a ni date
+#     ni corps"). L'exclure jetterait les deux tiers du corpus sur la
+#     base de ce qu'on n'a pas réussi à récupérer — notamment tous les
+#     liens Google News, dont le corps n'est structurellement jamais
+#     accessible (voir fetch_all_bodies.py).
+#   - "plaidoyer_communique" est un vrai choix éditorial (actualité
+#     plutôt que communiqués), mais porte sur 11 articles.
+#   - "rapport_analyse" est souvent la source la plus détaillée.
+#
+# Autrement dit : ce filtre n'a aujourd'hui aucun réglage utile. Le
+# champ "type" sert à décrire, pas à trier.
 TYPES_EXCLUS: frozenset[str] | None = None
 
 # Âge maximum accepté (en jours).
