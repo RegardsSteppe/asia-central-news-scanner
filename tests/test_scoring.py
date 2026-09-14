@@ -1362,3 +1362,33 @@ class HautKarabakhGeographieTests(unittest.TestCase):
         }
         classify_article(article)
         self.assertTrue(article["signals"]["regional_context"])
+
+
+class GeographieAllemandeScoringTests(unittest.TestCase):
+    """
+    Même trou côté scoring que côté categorisation.py (voir
+    GeographieAllemandeTests) : CENTRAL_ASIA_TERMS/CAUCASUS_TERMS sont
+    partagées entre les deux modules, donc regional_context restait
+    False sur les titres allemands qui ne nomment le pays que dans sa
+    forme allemande.
+    """
+
+    def test_regional_context_bascule_sur_forme_allemande(self):
+        article = {
+            "title": "Kasachstan: Anti-Kriegs-Priester in psychiatrische Klinik eingewiesen",
+            "summary": "",
+            "source": "Novastan — allemand",
+            "url": "https://novastan.org/de/test",
+        }
+        classify_article(article)
+        self.assertTrue(article["signals"]["regional_context"])
+
+    def test_zentralasien_nu_bascule_regional_context(self):
+        article = {
+            "title": "Zentralasien & Europa: eine neue Partnerschaft",
+            "summary": "",
+            "source": "Novastan — allemand",
+            "url": "https://novastan.org/de/test",
+        }
+        classify_article(article)
+        self.assertTrue(article["signals"]["regional_context"])
