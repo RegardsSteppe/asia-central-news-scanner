@@ -1097,3 +1097,91 @@ class AncrageRepressionNuTests(unittest.TestCase):
     def test_la_forme_qualifiee_de_disparition_entre_bien(self):
         article = self._ancrage("Turkmenistan: Activist Forcibly Disappeared")
         self.assertTrue(article["signals"]["primary_hr_anchor"])
+
+
+class VocabulaireFrancaisHRWTests(unittest.TestCase):
+    """
+    Régression du 2026-09-14. Sur 251 articles HRW en zone de veille
+    sans corps — hrw.org renvoie 403 aux runners GitHub Actions, donc
+    ces articles sont notés sur leur seul titre — 221 restaient en
+    niveau E. Deux trous distincts, tous deux en français :
+
+    REPRESSION_TERMS_V9 contenait "répression policière" et
+    "répression politique", les formes qualifiées, mais pas
+    "répression" seul — exactement la forme du trou "crackdown" nu
+    corrigé le même jour en anglais.
+
+    ACTIVIST_TERMS ne comptait que 4 entrées françaises, toutes des
+    variantes de "défenseur des droits humains". Or c'est has_activist
+    qui fait monter target_score, pas TARGET_TERMS_V9 : les titres
+    gagnaient un ancrage sans jamais trouver de cible.
+    """
+
+    def _article(self, titre, source="Human Rights Watch"):
+        article = {
+            "title": titre,
+            "summary": "",
+            "source": source,
+            "url": "https://www.hrw.org/news/test",
+        }
+        classify_article(article)
+        return article
+
+    def test_repression_nue_ancre_en_francais(self):
+        # 7 titres du corpus, 7 justes ; 15 corps, 15 justes.
+        # Contrairement à "crackdown", le mot n'a pas d'usage anodin
+        # en français — ni sens sportif, ni idiome.
+        for titre in (
+            "Ouzbékistan : Répression létale au Karakalpakstan",
+            "Géorgie : Répression de manifestations pro-UE",
+            "Tanzanie : Répression meurtrière suite aux élections contestées",
+        ):
+            with self.subTest(titre=titre):
+                self.assertTrue(
+                    self._article(titre)["signals"]["primary_hr_anchor"]
+                )
+
+    def test_ancrage_plus_cible_francais_fait_monter_le_score(self):
+        from scoring import LEVEL_B_MIN_SCORE
+
+        article = self._article(
+            "Azerbaïdjan : Répression virulente contre les détracteurs du gouvernement"
+        )
+        self.assertGreaterEqual(article["score"], LEVEL_B_MIN_SCORE)
+
+    def test_forcibly_suivi_d_un_verbe(self):
+        # "Turkmenistan Forcibly Hospitalizes Human Rights Defender"
+        # n'avait aucun ancrage : l'adverbe porte toute la contrainte.
+        for titre in (
+            "Turkmenistan Forcibly Hospitalizes Human Rights Defender",
+            "Azerbaijan Rearrests Journalist Forcibly Returned from Georgia",
+        ):
+            with self.subTest(titre=titre):
+                self.assertTrue(
+                    self._article(titre)["signals"]["primary_hr_anchor"]
+                )
+
+    def test_le_participe_present_opposant_reste_dehors(self):
+        # Le garde-fou. Le singulier "opposant" est aussi le participe
+        # présent du verbe opposer : sur les corps du corpus, 1 des 2
+        # occurrences était "une querelle de voisinage opposant un
+        # éleveur porcin au maire". Seul le pluriel entre, un
+        # participe présent étant invariable.
+        article = self._article(
+            "Une querelle de voisinage opposant un éleveur porcin au maire du village",
+            source="Reporters Without Borders",
+        )
+        self.assertFalse(article["signals"].get("confirmed_activist_pressure"))
+
+    def test_militant_le_faux_ami_est_retire(self):
+        # "militant" était dans TARGET_TERMS_V9 et s'y comportait en
+        # faux ami : sur les 7 articles dont c'était le SEUL
+        # terme-cible, les 7 étaient le sens anglais d'insurgé armé
+        # (Houthis, CENTCOM, route pétrolière saoudienne, pertes
+        # ukrainiennes). Le retrait ne coûte aucune détection
+        # légitime — vérifié avant, leçon de "disappeared".
+        from scoring import TARGET_TERMS_V9
+
+        minuscules = [terme.lower() for terme in TARGET_TERMS_V9]
+        self.assertNotIn("militant", minuscules)
+        self.assertNotIn("militants", minuscules)

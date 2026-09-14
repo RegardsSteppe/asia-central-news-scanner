@@ -146,15 +146,14 @@
  },
  {
   "level": "E",
-  "priority": "BRUIT",
+  "priority": "FAIBLE",
   "reasons": [
-   "Caucase: azerbaijan, georgia",
-   "plafond V9: aucun ancrage HR principal"
+   "Caucase: azerbaijan, georgia"
   ],
   "relevant": false,
-  "score": 19,
-  "signals_sha256": "5fad0dafa61da45c",
-  "theme": "Faible priorité",
+  "score": 30,
+  "signals_sha256": "80da191263ea277d",
+  "theme": "Répression / droits humains",
   "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQNHFiWi11TDRaUEN5Nk5NaTRVakJ0Nnk3aFlsbERTZFZBcFcwSzZQZlpjWHJtd01JSGVjc0l2UldLalpVZTFSTHE0UmlvdFhna0N1MU5XeGF6eWd6NjZzbWFjaEFpZ2dTSWFuQkE0LUxjVkVOcmY1dmlmWWpfSFo1bmhTWGVVdjNfQVlkeXJXeHlQZFQ1Qmd1VlZSUzhRTFU?oc=5"
  },
  {
@@ -180,11 +179,12 @@
    "activiste / défenseur des droits ciblé",
    "activiste/HRD + action répressive",
    "journaliste + action répressive",
+   "répression grave confirmée",
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": true,
   "score": 54,
-  "signals_sha256": "53accbc0df2256a5",
+  "signals_sha256": "bcb69b09952db36e",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://www.amnesty.org/ru/projects/azerbaijan-freedom-of-expression/"
  },
@@ -845,8 +845,8 @@
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
-  "score": 16,
-  "signals_sha256": "b4d9e0b61181d69a",
+  "score": 18,
+  "signals_sha256": "f323a4122691a8c3",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/fr/latest/news/2026/09/russia-detention-of-charity-leader-lida-moniava-for-anti-war-social-media-posts-a-brazen-attack-on-freedom-of-expression/"
  },
@@ -969,7 +969,7 @@
   ],
   "relevant": false,
   "score": 9,
-  "signals_sha256": "45d8145d628d0cff",
+  "signals_sha256": "1a79d5f1f4a6cfc2",
   "theme": "Faible priorité",
   "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNal9Lc3lMNk1CQWRtUWZNVTQ1SUNBbGVsZG96SHJ4cDBudnh3UDhFbE9CNlAzMndzV0RNUlVCby0zeS1QMzNoaFJJVG0zSW9qdlJVenpad2VBN2xYYnBqMkgwN3NWNjlhV1lxTjJqSUNKVGlDWUVpa3JRb3IxOXUyTnZyYi1PUmNTOFV1VGRTWXZNYTdLcE5NT3ZjSmFyTENHb1Qxb0NkaUh2V2FBb0VRdHlGTW1kZFI5?oc=5"
  },
@@ -1138,7 +1138,7 @@
   ],
   "relevant": false,
   "score": 17,
-  "signals_sha256": "a39c186adc8e9464",
+  "signals_sha256": "333882ad6fb6dc05",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/fr/donate/"
  },
@@ -2045,8 +2045,8 @@
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
-  "score": 5,
-  "signals_sha256": "f6409502308f8553",
+  "score": 8,
+  "signals_sha256": "24f8abb23e1140df",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/ru/projects/israels-occupation-of-palestinian-territory/"
  },
@@ -4635,15 +4635,14 @@
  },
  {
   "level": "E",
-  "priority": "BRUIT",
+  "priority": "FAIBLE",
   "reasons": [
-   "Caucase: géorgie",
-   "plafond V9: aucun ancrage HR principal"
+   "Caucase: géorgie"
   ],
   "relevant": false,
-  "score": 12,
-  "signals_sha256": "018b6e0d071b17b8",
-  "theme": "Faible priorité",
+  "score": 23,
+  "signals_sha256": "183c641d3f8092ae",
+  "theme": "Répression / droits humains",
   "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPaFFfc1pqczFORWNJRXhxX1NES05MRGdQcTI4My1kZWIyVi1fTkpzcWZRMVVDZmp5dUt1ellWZW52RDVVdHYzQXZzaVVYS2trOHZvWVZHWl9kUkdsaDlkd0s4YlNSWDVzaTllN0o2Rms0Y0VIWVhRSUxsS2NYdzFYcEFKclZqMmJVNUgwRi10ZGNWbTZkbG1uSGNZMUNyeDE3VjJ4Wm1YOUFuTjZRUzg5aw?oc=5"
  },
  {

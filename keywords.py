@@ -449,6 +449,21 @@ HUMAN_RIGHTS_TERMS = [
 # ------------------------------------------------------------
 
 ACTIVIST_TERMS = [
+    # Ajoutés le 2026-09-14 : la liste ne comptait que 4 entrées
+    # françaises, toutes des variantes de "défenseur des droits
+    # humains". Or c'est has_activist (+10) et
+    # confirmed_activist_pressure (+20) qui font monter target_score
+    # dans scoring.py, pas TARGET_TERMS_V9 — les titres HRW en
+    # français gagnaient donc un ancrage répressif sans jamais
+    # trouver de cible, et restaient à 25 points.
+    #
+    # Audit sur les 9556 articles archivés. Même rejet du singulier
+    # "opposant", qui est aussi le participe présent du verbe opposer
+    # ("une querelle de voisinage opposant un éleveur au maire") :
+    # 1 faux sur 2 dans les corps. Le pluriel est sûr, un participe
+    # présent étant invariable.
+    "détracteur", "détracteurs", "manifestant", "manifestants",
+    "opposants", "opposant politique", "opposants politiques",
     # Ajoutés le 2026-09-14 depuis categorisation.py, pour que le
     # SCORING en profite aussi et non la seule description. C'est la
     # raison d'être de keywords.py : une liste, deux consommateurs.
