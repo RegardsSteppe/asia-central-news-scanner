@@ -907,6 +907,25 @@ _TRAITEMENT_STEM_PATTERNS: dict[str, list[str]] = {
         r"\bпобо(?:и|ев|ям|ями|ях)\b",
         r"\bbeaten\b(?! track| path)",
     ],
+    # Même diagnostic que violence_physique, sur une classe où le
+    # vocabulaire était pourtant DÉJÀ juste :
+    # INTERDICTION_VOYAGER_TERMS contient "запрет на выезд" et
+    # "невыездной", mais le corpus écrit "запретА на выезд" (génitif)
+    # et "невыезднЫМИ"/"невыезднЫХ" (instrumental, génitif pluriel).
+    # find_terms() exige une limite de mot juste après le terme :
+    # aucune de ces formes fléchies ne pouvait matcher.
+    #
+    # Mesuré : 8 articles avant, 12 après, et les 4 gagnés sont justes
+    # — deux "подписка о невыезде" (mesure judiciaire interdisant de
+    # quitter le territoire, dont celle de la journaliste Makhabat
+    # Tazhibek kyzy), une inscription "в списки невыездных на пять
+    # ans", et le ministre turkmène rendant d'anciens militaires
+    # "невыездными".
+    "interdiction_voyager": [
+        r"\bневыезд\w*\b",
+        r"\bзапрет\w*\s+на\s+выезд\w*\b",
+        r"\bзапрети\w*\s+выезд\w*\b",
+    ],
 }
 
 

@@ -1177,3 +1177,61 @@ class DisparitionSansFauxPositifTests(unittest.TestCase):
                 "His advantage disappeared in a heavy-piece endgame.",
             ),
         )
+
+
+class InterdictionVoyagerMorphologieTests(unittest.TestCase):
+    """
+    Même diagnostic que violence_physique, sur une classe dont le
+    vocabulaire était pourtant DÉJÀ juste.
+
+    INTERDICTION_VOYAGER_TERMS contient "запрет на выезд" et
+    "невыездной". Mais le corpus écrit "запретА на выезд" (génitif) et
+    "невыезднЫМИ" / "невыезднЫХ" (instrumental, génitif pluriel), et
+    find_terms() exige une limite de mot juste après le terme : aucune
+    de ces formes fléchies ne pouvait matcher. 8 articles détectés
+    avant, 12 après, les 4 gagnés justes.
+    """
+
+    def _traitements(self, titre, corps=""):
+        resultat = categoriser(
+            {
+                "title": titre,
+                "summary": corps,
+                "body": corps,
+                "source": "Test",
+                "url": "https://example.org/a",
+            }
+        )
+        return [t for t in resultat["traitement"] if t != "aucun"]
+
+    def test_formes_flechies_de_nevyezdnoy(self):
+        # Cas réels du corpus : le ministre turkmène rendant d'anciens
+        # militaires "невыездными", et l'inscription "в списки
+        # невыездных на пять лет".
+        for titre in (
+            "Министр обороны Туркменистана сделал бывших военных невыездными",
+            "Его внесли в списки невыездных на пять лет",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn("interdiction_voyager", self._traitements(titre))
+
+    def test_genitif_de_zapret_na_vyezd(self):
+        self.assertIn(
+            "interdiction_voyager",
+            self._traitements(
+                "Из-за запрета на выезд гражданин Туркменистана "
+                "ни разу не видел своего сына"
+            ),
+        )
+
+    def test_podpiska_o_nevyezde(self):
+        # Mesure judiciaire interdisant de quitter le territoire —
+        # celle de la journaliste Makhabat Tazhibek kyzy dans le
+        # corpus.
+        self.assertIn(
+            "interdiction_voyager",
+            self._traitements(
+                "Суд принял решение",
+                "Она была освобождена из-под стражи под подписку о невыезде.",
+            ),
+        )
