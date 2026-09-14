@@ -198,13 +198,55 @@ _register_geo_terms("afghanistan", ["afghanistan", "афганистан"])
 _register_geo_terms("russie", ["russia", "россия", "russie"])
 
 
+# Voisins de la zone de veille. Même statut que Iran/Afghanistan/
+# Russie ci-dessus : purement descriptifs, ils n'entrent PAS dans la
+# porte régionale de scoring.py (qui a sa propre géographie) et ne
+# peuvent donc pas gonfler un score.
+#
+# Repéré sur un cas réel le 2026-09-14 : "Украина: Пытки, исчезновения
+# в ходе конфликта на востоке страны" (HRW russe) ressortait
+# geo=aucune alors que le pays est le premier mot du titre. Audit :
+# 706 articles sur 8824 nomment dans leur titre un pays absent du
+# registre — Chine 277, Ukraine 174 en tête.
+_PAYS_VOISINS_TERMS = [
+    "ukraine", "украина", "украины", "украине", "украину",
+    "china", "китай", "китая", "chine",
+    "belarus", "беларусь", "белоруссия", "biélorussie",
+    "turkey", "турция", "turquie",
+    "moldova", "молдова", "молдавия", "moldavie",
+]
+_register_geo_terms("ukraine", ["ukraine", "украина", "украины", "украине", "украину"])
+_register_geo_terms("chine", ["china", "китай", "китая", "chine"])
+_register_geo_terms("bielorussie", ["belarus", "беларусь", "белоруссия", "biélorussie"])
+_register_geo_terms("turquie", ["turkey", "турция", "turquie"])
+_register_geo_terms("moldavie", ["moldova", "молдова", "молдавия", "moldavie"])
+
+# Pays hors zone, volontairement NON enregistrés vers une valeur
+# propre : détectés, ils tombent sur "autre" (le défaut des termes non
+# mappés). C'est la réponse honnête — on sait situer l'article, et on
+# sait qu'il est hors périmètre — au lieu d'un "aucune" qui laisse
+# croire qu'aucune géographie n'a été trouvée. Leur donner une valeur
+# nommée gonflerait le schéma sans servir la veille.
+_PAYS_HORS_ZONE_TERMS = [
+    "united states", "сша", "états-unis",
+    "india", "индия", "inde",
+    "israel", "израиль", "israël",
+    "pakistan", "пакистан",
+    "syria", "сирия", "syrie",
+]
+
+
 def _geo_terms_in(text: str, language: str) -> list[str]:
     """Termes géo bruts détectés dans `text` (pas encore mappés à un pays)."""
     central_asia = find_central_asia_terms(text, CENTRAL_ASIA_TERMS, language)
     caucasus = find_caucasus_terms(text, CAUCASUS_TERMS, language)
     uyghur = find_terms(text, UYGHUR_TERMS)
     iran_afg_russia = find_terms(text, _IRAN_AFGHANISTAN_RUSSIA_TERMS)
-    return list(dict.fromkeys(central_asia + caucasus + uyghur + iran_afg_russia))
+    voisins = find_terms(text, _PAYS_VOISINS_TERMS)
+    hors_zone = find_terms(text, _PAYS_HORS_ZONE_TERMS)
+    return list(dict.fromkeys(
+        central_asia + caucasus + uyghur + iran_afg_russia + voisins + hors_zone
+    ))
 
 
 # ============================================================

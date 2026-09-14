@@ -149,6 +149,7 @@ class GeoRegistryConsistencyTests(unittest.TestCase):
             "kazakhstan", "ouzbekistan", "kirghizistan", "tadjikistan",
             "turkmenistan", "azerbaidjan", "armenie", "georgie",
             "caucase_nord", "xinjiang", "iran", "afghanistan", "russie",
+            "ukraine", "chine", "bielorussie", "turquie", "moldavie",
         }
         self.assertTrue(set(_GEO_TERM_COUNTRY.values()) <= allowed)
 
@@ -457,3 +458,68 @@ class PageThematiqueTests(unittest.TestCase):
             )
         )
         self.assertNotEqual(cat["type"], "page_thematique")
+
+
+class PaysVoisinsGeoTests(unittest.TestCase):
+    """
+    Un pays nommé dans le titre ne doit pas ressortir geo=aucune.
+
+    Cas réel du 2026-09-14 : "Украина: Пытки, исчезновения в ходе
+    конфликта на востоке страны" (HRW russe) ressortait sans
+    géographie alors que le pays est le premier mot. Audit : 706
+    articles sur 8824 nommaient un pays absent du registre.
+    """
+
+    def _article(self, titre, **overrides):
+        article = {
+            "title": titre, "summary": "", "body": "",
+            "source": "Human Rights Watch", "url": "https://ex.org/news/a",
+            "language": "ru", "date": None,
+        }
+        article.update(overrides)
+        return article
+
+    def test_the_reported_article_now_has_a_geography(self):
+        cat = categoriser(
+            self._article(
+                "Украина: Пытки, исчезновения в ходе конфликта на востоке страны"
+            )
+        )
+        self.assertEqual(cat["geo"], ["ukraine"])
+        self.assertIn("украина", cat["preuves"]["geo"])
+
+    def test_neighbouring_countries_get_their_own_value(self):
+        for titre, attendu in (
+            ("Китай усиливает контроль", "chine"),
+            ("Беларусь: новые аресты", "bielorussie"),
+            ("Turkey jails opposition journalists", "turquie"),
+            ("Moldova tightens media rules", "moldavie"),
+        ):
+            with self.subTest(titre=titre):
+                cat = categoriser(self._article(titre))
+                self.assertIn(attendu, cat["geo"])
+
+    def test_out_of_zone_countries_fall_back_to_autre(self):
+        # Détectés mais non nommés : "autre" dit qu'on a su situer
+        # l'article ET qu'il est hors périmètre, là où "aucune"
+        # laissait croire qu'aucune géographie n'avait été trouvée.
+        for titre in (
+            "India passes new press law",
+            "Israel restricts foreign media access",
+            "Pakistan detains rights defenders",
+        ):
+            with self.subTest(titre=titre):
+                cat = categoriser(self._article(titre))
+                self.assertEqual(cat["geo"], ["autre"])
+
+    def test_neighbours_never_reach_the_scoring_gate(self):
+        # La garantie qui compte : ces pays sont DESCRIPTIFS. S'ils
+        # entraient dans la porte régionale de scoring.py, un article
+        # ukrainien ou chinois serait traité comme régional et son
+        # score gonflerait.
+        from scoring import classify_article
+
+        article = self._article("Украина: Пытки, исчезновения в ходе конфликта")
+        classify_article(article)
+
+        self.assertFalse(article["signals"]["regional_context"])
