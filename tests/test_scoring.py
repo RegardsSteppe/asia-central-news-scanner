@@ -1035,3 +1035,65 @@ class FrontieresDeMotsTests(unittest.TestCase):
         for texte in ("задержана активистка", "задержаны трое", "преследования"):
             with self.subTest(texte=texte):
                 self.assertIsNotNone(motif.search(texte))
+
+class AncrageRepressionNuTests(unittest.TestCase):
+    """
+    Régression du 2026-09-14. La catégorisation décrivait déjà
+    parfaitement ces articles — "Kazakhstan: Crackdown on Government
+    Critics" ressortait acteur=opposant,
+    traitement=pression_administrative — mais le score restait bloqué à
+    34, soit LEVEL_C_MIN_SCORE - 1 : sans ancrage répressif dans le
+    titre+chapô, classify_article() plafonne (branche
+    `elif regional_context and not primary_hr_anchor`).
+    REPRESSION_TERMS_V9 contenait "political crackdown" mais pas
+    "crackdown" nu, ni aucune des formules standard des rapports
+    HRW/Amnesty sur les mauvais traitements en détention.
+
+    Les termes ont été retenus sur audit des titres réellement
+    déclenchés dans le corpus ; deux candidats ont été REJETÉS pour
+    généricité, et les tests de rejet ci-dessous les tiennent dehors.
+    """
+
+    def _ancrage(self, titre):
+        article = {
+            "title": titre,
+            "summary": "",
+            "source": "Human Rights Watch",
+            "url": "https://www.hrw.org/news/test",
+        }
+        classify_article(article)
+        return article
+
+    def test_crackdown_nu_ancre_la_repression(self):
+        # 18 titres du corpus contiennent "crackdown", les 18 sont des
+        # contextes de répression réels ("unprecedented crackdown on
+        # free press", "dissidents fear crackdown in Turkish exile").
+        from scoring import LEVEL_C_MIN_SCORE
+
+        article = self._ancrage("Kazakhstan: Crackdown on Government Critics")
+        self.assertTrue(article["signals"]["primary_hr_anchor"])
+        self.assertGreaterEqual(article["score"], LEVEL_C_MIN_SCORE)
+
+    def test_mauvais_traitements_en_detention_ancrent_la_repression(self):
+        # Formule standard des rapports : 3 titres du corpus, 3 justes.
+        for titre in (
+            "Azerbaijan: Armenian POWs Abused in Custody",
+            "Uzbekistan: Ill-Treatment of Detainees Documented",
+        ):
+            with self.subTest(titre=titre):
+                self.assertTrue(self._ancrage(titre)["signals"]["primary_hr_anchor"])
+
+    def test_disparu_nu_reste_dehors(self):
+        # Candidats mesurés puis rejetés : sur 5 titres déclenchés par
+        # "disappeared" / "missing after" nus, 3 étaient faux. Ce test
+        # est le garde-fou qui empêche de les réintroduire.
+        for titre in (
+            "The Aral Sea has all but disappeared",
+            "More than 30 missing after ferry sinks off Bali",
+        ):
+            with self.subTest(titre=titre):
+                self.assertFalse(self._ancrage(titre)["signals"]["primary_hr_anchor"])
+
+    def test_la_forme_qualifiee_de_disparition_entre_bien(self):
+        article = self._ancrage("Turkmenistan: Activist Forcibly Disappeared")
+        self.assertTrue(article["signals"]["primary_hr_anchor"])

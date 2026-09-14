@@ -54,6 +54,28 @@ from keywords import (
 # ============================================================
 
 REPRESSION_TERMS_V9 = [
+    # Ajoutés le 2026-09-14. Diagnostic : des articles que la
+    # catégorisation décrit parfaitement — "Kazakhstan: Crackdown on
+    # Government Critics" ressort acteur=opposant,
+    # traitement=pression_administrative — restaient plafonnés à 34
+    # (LEVEL_C_MIN_SCORE - 1) faute d'ancrage HR principal. La liste
+    # contenait "political crackdown" mais pas "crackdown" nu.
+    #
+    # Mesuré avant ajout : 18 titres du corpus contiennent "crackdown",
+    # les 18 sont des contextes de répression ("opposition faces
+    # crackdown", "unprecedented crackdown on free press",
+    # "dissidents fear crackdown in Turkish exile").
+    "crackdown", "crackdowns", "разгон", "répression policière",
+    # Formule standard des rapports HRW/Amnesty, absente : 3 titres,
+    # 3 justes ("POWs Abused in Custody", "Farmers Exploited, Abused").
+    "abused in custody", "abuse in custody", "ill-treatment",
+    "ill treatment", "mistreated", "mistreatment",
+    "жестокое обращение", "maltraité", "mauvais traitements",
+    # "disappeared" et "missing after" NUS ont été mesurés puis
+    # REJETÉS : 3 des 5 titres étaient faux — "The Aral Sea has all
+    # but disappeared", "130 missing after ferry sinks". Seules les
+    # formes qualifiées entrent.
+    "forcibly disappeared", "enforced disappearance", "porté disparu",
     "torture", "tortured", "tortures", "torture allegations",
     "political prisoner", "political prisoners", "political repression",
     "political crackdown", "persecution", "persecuted", "persecutes",
