@@ -14,7 +14,7 @@
   ],
   "relevant": true,
   "score": 100,
-  "signals_sha256": "8387f1f2619b5047",
+  "signals_sha256": "a3bedf720acb7582",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://www.amnesty.org/en/latest/news/2026/09/azerbaijan-lengthy-sentences-for-anar-mammadli-and-other-independent-voices-point-to-the-shocking-scale-of-the-crackdown-on-dissent/"
  },
@@ -61,7 +61,7 @@
   ],
   "relevant": true,
   "score": 84,
-  "signals_sha256": "406e92f63de31e77",
+  "signals_sha256": "d2b90317bfc0f207",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2025/6/4/kyrgyzstan-court-sentences-ex-leader-atambayev-to-11-years-in-absentia"
  },
@@ -93,23 +93,24 @@
   ],
   "relevant": true,
   "score": 100,
-  "signals_sha256": "7ac880320feb7602",
+  "signals_sha256": "7b4a4e1a30572289",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://www.aljazeera.com/news/2024/2/5/did-an-arrested-uzbek-mafia-chieftain-organise-killings-of-dissidents"
  },
  {
-  "level": "C",
-  "priority": "MOYENNE",
+  "level": "A",
+  "priority": "ABSOLUE",
   "reasons": [
    "Asie centrale: turkmenistan",
    "géographie confirmée dans le corps",
    "activiste / défenseur des droits ciblé",
    "activiste/HRD + action répressive",
-   "plafond V9: confirmation HR dans le body"
+   "signal HR confirmé par le corps",
+   "CAS HR CRITIQUE"
   ],
   "relevant": true,
-  "score": 54,
-  "signals_sha256": "c6466cdeb6cf592a",
+  "score": 100,
+  "signals_sha256": "cea8804f91fdce44",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://www.aljazeera.com/news/2021/11/12/turkmenistans-dissidents-fear-crackdown-in-turkish-exile"
  },
@@ -211,7 +212,7 @@
   ],
   "relevant": true,
   "score": 54,
-  "signals_sha256": "f381d00f075b1bd4",
+  "signals_sha256": "3ae00685e3d40e63",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2025/10/8/tajik-war-prisoner-captured-by-ukraine-fears-being-swapped"
  },
@@ -261,16 +262,16 @@
   "url": "https://www.aljazeera.com/features/2024/10/25/remembering-shamshad-abdullaev-the-world-class-uzbek-poet-too-few-knew"
  },
  {
-  "level": "E",
-  "priority": "FAIBLE",
+  "level": "B",
+  "priority": "MOYENNE",
   "reasons": [
    "Asie centrale: kyrgyzstan",
    "géographie confirmée dans le corps",
-   "plafond V9: aucun ancrage HR principal"
+   "signal HR confirmé par le corps"
   ],
-  "relevant": false,
-  "score": 34,
-  "signals_sha256": "52e524a3693f502b",
+  "relevant": true,
+  "score": 57,
+  "signals_sha256": "a3e2738efca643d9",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/features/2024/7/18/in-kyrgyzstan-an-unprecedented-crackdown-on-free-press-raises-alarm"
  },
@@ -340,7 +341,7 @@
   ],
   "relevant": true,
   "score": 48,
-  "signals_sha256": "fce51a8c5fcf7759",
+  "signals_sha256": "125a51f278c56606",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2025/11/30/kyrgyzstan-votes-in-snap-parliamentary-election-with-no-opposition"
  },
@@ -409,7 +410,7 @@
   ],
   "relevant": true,
   "score": 45,
-  "signals_sha256": "ee2010e1e5847665",
+  "signals_sha256": "1b0958ee880acc3d",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2022/3/12/turkmenistan-votes-presidents-son-expected-to-win"
  },
@@ -524,16 +525,16 @@
   "url": "https://www.aljazeera.com/news/2024/3/22/maximally-pragmatic-how-central-asia-navigates-russias-war-on-ukraine"
  },
  {
-  "level": "E",
-  "priority": "FAIBLE",
+  "level": "C",
+  "priority": "MOYENNE",
   "reasons": [
    "Asie centrale: turkmenistan",
    "géographie confirmée dans le corps",
-   "plafond V9: aucun ancrage HR principal"
+   "plafond V9: confirmation HR dans le body"
   ],
-  "relevant": false,
-  "score": 34,
-  "signals_sha256": "f634b8f4dfac7afa",
+  "relevant": true,
+  "score": 45,
+  "signals_sha256": "3149778d991dd841",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2022/3/15/turkmenistan-leaders-son-wins-presidential-election"
  },
@@ -834,7 +835,7 @@
   ],
   "relevant": false,
   "score": 20,
-  "signals_sha256": "520f8557e48e67ad",
+  "signals_sha256": "a21f2c3aca69dd61",
   "theme": "Droits spécifiques",
   "url": "https://www.amnesty.org/fr/latest/news/2026/09/eu-return-hub-plans-in-rwanda-and-uganda-risk-becoming-cruel-black-holes-for-human-rights/"
  },
@@ -1869,7 +1870,7 @@
   "url": "https://www.aljazeera.com/news/2026/8/24/kazakhstans-newly-formed-pro-government-party-wins-parliamentary-election"
  },
  {
-  "level": "E",
+  "level": "C",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: kazakhstan",
@@ -1877,9 +1878,9 @@
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": false,
-  "score": 26,
-  "signals_sha256": "cee5fb813c5a015c",
-  "theme": "Politique intérieure",
+  "score": 39,
+  "signals_sha256": "a985406d50f6299b",
+  "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2026/8/23/kazakhstan-holds-parliamentary-election-expected-to-cement-presidents-grip"
  },
  {
