@@ -1,8 +1,20 @@
 """
-Standalone, one-off full-body fetcher for the RunPod LLM-vs-deterministic
-benchmark.
+Téléchargeur de corps d'articles en masse, à lancer à la demande.
 
-Reads articles.csv (news_scanner.py's export_csv output: title, summary,
+DEUX MODES, une seule boucle de téléchargement.
+
+--archive (remplissage de l'archive)
+    Prend les entrées d'archive.jsonl qui n'ont pas encore de corps,
+    télécharge, et écrit le résultat dans l'archive. Le scan quotidien
+    fait la même chose mais par tranches d'environ 300 corps par run :
+    saturer la part récupérable du corpus lui demande une quinzaine de
+    jours, là où ce mode le fait en une passe avec le budget de 4 h du
+    job dédié. La reprise est gratuite — les corps sont écrits en cours
+    de route, donc un run tué par le timeout garde ce qu'il a récupéré
+    et le suivant ne resélectionne pas ces entrées.
+
+mode d'origine (export JSON pour le benchmark RunPod)
+    Reads articles.csv (news_scanner.py's export_csv output: title, summary,
 url, source, score, level... for every article from a run) and fetches
 each article's full body via extract_body() (reused as-is from
 article_ingestion.py — the exact same extraction logic the daily scan
@@ -28,6 +40,11 @@ minimal requirements-runpod.txt: this script is not part of the RunPod
 image, it's what produces the JSON you'd feed to it.
 
 Usage:
+    # Remplir l'archive (mode principal aujourd'hui) :
+    python fetch_all_bodies.py --archive
+    python fetch_all_bodies.py --archive --limit 50   # essai rapide
+
+    # Export JSON pour le benchmark RunPod :
     python fetch_all_bodies.py --input articles.csv --output articles_with_body.json
     python fetch_all_bodies.py --input articles.csv --output sample.json --limit 50  # test run
 
@@ -46,9 +63,12 @@ import logging
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import urlparse
 
+from pathlib import Path
+
+import archive
 from article_ingestion import extract_body
 from sources import SOURCES
 
@@ -211,6 +231,7 @@ def fetch_all_bodies(
     checkpoint_path: str | None = None,
     already_done: list[dict[str, Any]] | None = None,
     skip_google_news: bool = True,
+    checkpoint_hook: Callable[[list[dict[str, Any]]], None] | None = None,
 ) -> list[dict[str, Any]]:
     """
     Récupère le corps complet de chaque ligne en parallèle. Ne lève
@@ -252,6 +273,14 @@ def fetch_all_bodies(
     started = time.perf_counter()
 
     def _write_checkpoint() -> None:
+        # Le mode archive écrit dans archive.jsonl et non dans un JSON
+        # d'export : le crochet remplace l'écriture, il ne s'y ajoute
+        # pas. Le reste de la boucle (cadence, reprise, comptage) est
+        # commun aux deux modes et n'est pas dupliqué.
+        if checkpoint_hook is not None:
+            checkpoint_hook(already_done + results)
+            return
+
         if not checkpoint_path:
             return
         tmp_path = f"{checkpoint_path}.tmp"
@@ -340,6 +369,134 @@ def fetch_all_bodies(
     return results
 
 
+# ============================================================
+# MODE ARCHIVE — remplir archive.jsonl au lieu d'un export JSON
+# ============================================================
+#
+# Le scan quotidien enrichit ~600 articles par run et n'en conserve
+# qu'une partie : au rythme constaté le 2026-09-14, saturer la part
+# récupérable du corpus demande une quinzaine de runs. Ce mode fait le
+# même travail en une passe, avec le budget de 4 h du job dédié.
+#
+# Il écrit directement dans l'archive, contrairement au mode d'origine
+# qui produit un artefact pour le benchmark RunPod. Les deux partagent
+# exactement la même boucle de téléchargement.
+
+
+def rows_from_archive(
+    entries: dict[str, dict[str, Any]],
+    limit: int | None = None,
+) -> list[dict[str, Any]]:
+    """
+    Entrées d'archive à télécharger, au format attendu par
+    fetch_all_bodies() — celles qui n'ont pas encore de corps.
+
+    C'est aussi ce qui rend la reprise gratuite : un run interrompu par
+    le timeout a déjà écrit ses corps dans l'archive (voir le crochet
+    de checkpoint), donc le run suivant ne les resélectionne pas. Pas
+    de --resume-from à manipuler, pas d'artefact à retrouver.
+    """
+    rows = [
+        {
+            "key": key,
+            "url": entry.get("url") or "",
+            "title": entry.get("title") or "",
+            "source": entry.get("source") or "",
+        }
+        for key, entry in entries.items()
+        if not (entry.get("body") or "") and (entry.get("url") or "")
+    ]
+
+    if limit is not None:
+        rows = rows[:limit]
+
+    return rows
+
+
+def apply_to_archive(
+    results: list[dict[str, Any]],
+    archive_path: Path | None = None,
+) -> int:
+    """
+    Écrit les corps récupérés dans l'archive. Renvoie le nombre
+    d'entrées mises à jour.
+
+    Passe par archive.backfill_bodies pour hériter de ses garanties
+    plutôt que d'écrire les lignes à la main : jamais de corps
+    remplacé par un plus court, troncature à BODY_MAX_CHARS, niveaux
+    respectés.
+    """
+    scanned = [
+        # backfill_bodies filtre sur le niveau ; ces articles viennent
+        # de l'archive et n'en portent pas, on déclare donc le niveau
+        # le plus permissif présent dans la configuration.
+        (row.get("key") or "", {"level": _niveau_permissif(), "body": row.get("body") or ""})
+        for row in results
+        if row.get("body")
+    ]
+
+    if not scanned:
+        return 0
+
+    entries = archive.load_archive(archive_path)
+    mis_a_jour = archive.backfill_bodies(entries, scanned)
+
+    if mis_a_jour:
+        archive.rewrite_archive(entries.values(), archive_path)
+
+    return mis_a_jour
+
+
+def _niveau_permissif() -> str:
+    """Un niveau que BODY_KEEP_LEVELS accepte, quel que soit son réglage."""
+    for niveau in ("E", "D", "C", "B", "A"):
+        if niveau in archive.BODY_KEEP_LEVELS:
+            return niveau
+    return ""
+
+
+def run_archive_mode(args: argparse.Namespace) -> None:
+    entries = archive.load_archive()
+    rows = rows_from_archive(entries, limit=args.limit)
+
+    logger.info(
+        "%s entrée(s) dans l'archive | %s sans corps à traiter",
+        len(entries), len(rows),
+    )
+
+    if not rows:
+        logger.info("terminé | rien à télécharger")
+        return
+
+    def _checkpoint(cumul: list[dict[str, Any]]) -> None:
+        # Écrire en cours de route, pas seulement à la fin : quatre runs
+        # consécutifs ont été perdus au timeout en 2026-09 faute de
+        # checkpoint. Ici le checkpoint EST le résultat final, donc un
+        # run tué à 90 % garde ses 90 %.
+        mis_a_jour = apply_to_archive(cumul)
+        if mis_a_jour:
+            logger.info("checkpoint | %s corps écrits dans l'archive", mis_a_jour)
+
+    results = fetch_all_bodies(
+        rows,
+        workers=args.workers,
+        google_news_concurrency=args.google_news_concurrency,
+        google_news_delay=args.google_news_delay,
+        skip_google_news=not args.tenter_google_news,
+        checkpoint_hook=_checkpoint,
+    )
+
+    apply_to_archive(results)
+
+    final = archive.load_archive()
+    avec_corps = sum(1 for e in final.values() if e.get("body"))
+
+    logger.info(
+        "terminé | %s/%s entrées de l'archive ont un corps",
+        avec_corps, len(final),
+    )
+
+
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", default="articles.csv")
@@ -354,6 +511,16 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "de 11 caractères sur le corpus réel), donc c'est inutile "
             "en pratique — à n'utiliser que pour vérifier que ça n'a "
             "pas changé côté Google."
+        ),
+    )
+    parser.add_argument(
+        "--archive",
+        action="store_true",
+        help=(
+            "Remplit archive.jsonl au lieu de produire un export JSON : "
+            "télécharge le corps des entrées qui n'en ont pas encore et "
+            "l'écrit dans l'archive. Reprise automatique — un run "
+            "interrompu a déjà écrit ce qu'il avait récupéré."
         ),
     )
     parser.add_argument(
@@ -389,6 +556,10 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = _parse_args(argv)
+
+    if args.archive:
+        run_archive_mode(args)
+        return
 
     rows = load_rows(args.input, limit=args.limit)
     logger.info("%s article(s) chargé(s) depuis %s", len(rows), args.input)

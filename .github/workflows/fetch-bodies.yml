@@ -1,11 +1,22 @@
-name: Fetch Full Article Bodies (RunPod benchmark)
+name: Fetch Full Article Bodies
 
-# Outil ponctuel, déclenché à la main : télécharge le corps complet de
-# CHAQUE article du dernier articles.csv publié (~6800, contre les
-# ~600 enrichis par le scan quotidien) pour nourrir le benchmark
-# RunPod LLM-vs-déterministe (voir RUNPOD.md). Ne modifie rien dans le
-# repo — le résultat est uniquement déposé comme artefact du run,
-# jamais commité (fichier volumineux, à usage ponctuel).
+# Remplit archive.jsonl en une passe, à la demande.
+#
+# Le scan quotidien télécharge déjà le corps des articles qui n'en ont
+# pas (voir enrich_articles + archive.backfill_bodies), mais par
+# tranches d'environ 300 par run : au rythme mesuré le 2026-09-14,
+# saturer la part récupérable du corpus lui demande une quinzaine de
+# jours. Ce workflow fait le même travail d'un coup, avec un budget de
+# 4 h, et commite le résultat.
+#
+# Il ne remplace pas le scan quotidien et ne publie pas le site : il ne
+# touche qu'à archive.jsonl. Le scan suivant republie à partir de là,
+# avec des catégories mieux remplies.
+#
+# La reprise ne dépend plus d'un artefact à retrouver : les corps sont
+# écrits dans l'archive en cours de route, donc un run tué par le
+# timeout garde ce qu'il a récupéré et le run suivant ne resélectionne
+# pas ces entrées.
 
 on:
   workflow_dispatch:
@@ -14,27 +25,30 @@ on:
         description: "Téléchargements en parallèle"
         required: false
         default: "30"
-      resume:
+      limit:
         description: >-
-          Reprendre depuis le dernier artefact articles-with-body
-          (false pour repartir de zéro sur TOUT le corpus, ex. après un
-          correctif de extract_body() qui doit ré-extraire ce qui a
-          déjà été récupéré avec l'ancienne logique)
+          Ne traiter que les N premières entrées sans corps (vide = tout).
+          Utile pour un essai avant de lancer les 4 h.
         required: false
-        default: "true"
+        default: ""
 
 permissions:
-  contents: read
-  actions: read  # pour retrouver l'artefact du run précédent (reprise, voir plus bas)
+  contents: write
+
+# Deux remplissages simultanés se disputeraient le même fichier sans
+# rien gagner : le second ne verrait que ce que le premier n'a pas
+# encore écrit.
+concurrency:
+  group: fetch-bodies
+  cancel-in-progress: false
 
 jobs:
   fetch-bodies:
     runs-on: ubuntu-latest
-    # 180 min a été atteint deux fois de suite (voir fetch_all_bodies.py:
-    # le vrai correctif du 2026-09-12 sépare le pool Google News du pool
-    # principal, qui ne devrait plus être affamé) — marge de sécurité en
-    # plus au cas où d'autres sources lentes/à répétition ralentissent
-    # le pool principal.
+    # 180 min a été atteint deux fois de suite avant que le pool Google
+    # News ne soit séparé du pool principal (voir fetch_all_bodies.py).
+    # Ces URLs ne sont désormais plus téléchargées du tout — un tiers du
+    # corpus en moins — mais la marge est conservée.
     timeout-minutes: 240
 
     steps:
@@ -48,64 +62,17 @@ jobs:
           cache: "pip"
 
       - name: Install dependencies
-        run: pip install feedparser requests beautifulsoup4
+        run: pip install -r requirements.txt
 
-      - name: Download latest articles.csv (published site)
-        run: >-
-          curl -sSf -o articles.csv
-          "https://raw.githubusercontent.com/${{ github.repository }}/gh-pages/articles.csv"
-
-      - name: Look up previous run's results (for --resume-from)
-        # 4 runs consécutifs (2026-09-11/12) ont chacun perdu 100% de
-        # leur progression au timeout : un corpus de ~6800 articles
-        # prend plusieurs heures, et rien n'était jamais écrit sur
-        # disque avant la toute fin. fetch_all_bodies.py checkpointe
-        # désormais en cours de route (voir son "Upload result as
-        # artifact" ci-dessous, qui tourne même si ce job est annulé) —
-        # ce step retrouve le dernier artefact "articles-with-body"
-        # produit par CE workflow (même partiel) pour ne jamais
-        # re-télécharger ce qui a déjà réussi.
-        id: previous_artifact
-        if: ${{ github.event.inputs.resume != 'false' }}
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -e
-          curl -sS -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts?name=articles-with-body&per_page=20" \
-            -o artifacts.json
-
-          DOWNLOAD_URL=$(python3 -c "
-          import json
-
-          with open('artifacts.json', encoding='utf-8') as handle:
-              data = json.load(handle)
-
-          artifacts = [a for a in data.get('artifacts', []) if not a.get('expired')]
-          artifacts.sort(key=lambda a: a['created_at'], reverse=True)
-          print(artifacts[0]['archive_download_url'] if artifacts else '')
-          ")
-
-          if [ -n "$DOWNLOAD_URL" ]; then
-            curl -sSL -H "Authorization: Bearer $GH_TOKEN" -o previous_artifact.zip "$DOWNLOAD_URL"
-            mkdir -p previous_result
-            unzip -o previous_artifact.zip -d previous_result
-            echo "found=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "found=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Fetch full bodies for every article
+      - name: Fill the archive with full article bodies
         # Run #3 (2026-09-12) : le pool séparé Google News a bien
         # marché (taux d'échec 81% -> 24%), mais le débit ralentissait
         # quand même avec le temps (39 -> 7.7 articles/min sur 4h) :
         # certaines sources (chathamhouse.org, stimson.org, ng.ru...)
         # traînent ou expirent, et chaque échec de ce type peut coûter
         # jusqu'à ~93s (30s de timeout x jusqu'à 3 tentatives +
-        # backoff, voir http_utils.py) à un thread du pool. Ce script
-        # étant un one-off (jamais le scan quotidien), on réduit ce
+        # backoff, voir http_utils.py) à un thread du pool. Ce workflow
+        # étant ponctuel (jamais le scan quotidien), on réduit ce
         # budget ici seulement via les variables d'env déjà prévues par
         # http_utils.py, sans toucher son comportement par défaut.
         env:
@@ -115,20 +82,50 @@ jobs:
           SCANNER_HTTP_RETRY_BACKOFF_BASE: "1"
         run: >-
           python fetch_all_bodies.py
-          --input articles.csv
-          --output articles_with_body.json
+          --archive
           --workers "${{ github.event.inputs.workers }}"
-          ${{ steps.previous_artifact.outputs.found == 'true' && '--resume-from previous_result/articles_with_body.json' || '' }}
+          ${{ github.event.inputs.limit != '' && format('--limit {0}', github.event.inputs.limit) || '' }}
 
-      - name: Upload result as artifact
-        # if: always() : ce step doit tourner même si le précédent a
-        # été annulé par le timeout du job, pour uploader le dernier
-        # checkpoint écrit sur disque (voir fetch_all_bodies.py) au
-        # lieu de perdre toute la progression du run.
+      - name: Commit the bodies
+        # if: always() : ce step doit tourner même si le précédent a été
+        # annulé par le timeout du job. Sans lui, un run coupé à 90%
+        # perdrait ses 90% — exactement ce qui est arrivé quatre fois de
+        # suite en 2026-09, quand le résultat n'existait que dans un
+        # fichier jamais commité.
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: articles-with-body
-          path: articles_with_body.json
-          retention-days: 30
-          if-no-files-found: ignore
+        run: |
+          if [ -z "$(git status --porcelain -- archive.jsonl)" ]; then
+            echo "nothing to persist"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p /tmp/persist
+          cp archive.jsonl /tmp/persist/archive.jsonl
+
+          # Le scan quotidien peut avoir poussé pendant ces heures. On
+          # ne réécrit jamais sa version par-dessus la nôtre : on prend
+          # l'union, qui porte aussi sur les corps (archive.merge_files)
+          # — sinon un conflit de push coûterait tout le téléchargement.
+          for attempt in 1 2 3 4 5; do
+            python archive.py --merge-into archive.jsonl /tmp/persist/archive.jsonl
+
+            if [ -n "$(git status --porcelain -- archive.jsonl)" ]; then
+              git add archive.jsonl
+              git commit -m "Fill article bodies in the archive [skip ci]"
+            fi
+
+            if git push; then
+              exit 0
+            fi
+
+            echo "Push rejected (attempt $attempt/5), resetting onto latest ${GITHUB_REF_NAME}..."
+            git fetch origin "${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            sleep $((attempt * 3))
+          done
+
+          echo "::error::Failed to push after 5 attempts"
+          exit 1

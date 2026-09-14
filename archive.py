@@ -255,24 +255,55 @@ def empty_state() -> dict[str, Any]:
     return {"dernier_scan": "", "vus_avant": {}}
 
 
-def merge_files(base_path: Path, incoming_path: Path) -> int:
+def merge_files(base_path: Path, incoming_path: Path) -> tuple[int, int]:
     """
-    Ajoute à `base_path` les entrées présentes dans `incoming_path` et
-    absentes de la base. Retourne le nombre d'entrées ajoutées.
+    Fusionne `incoming_path` dans `base_path`. Retourne
+    (entrées ajoutées, corps récupérés).
 
     Sert à résoudre une course entre deux runs : si un autre run a poussé
     ses lignes pendant le nôtre, réécrire notre version par-dessus
     perdrait les siennes. Un fichier append-only se résout en prenant
     l'union, jamais en choisissant un gagnant.
+
+    L'union porte sur DEUX choses depuis le 2026-09-14, et pas
+    seulement sur les clés manquantes. Un corps qui arrive pour une clé
+    déjà connue des deux côtés est lui aussi du contenu neuf : ne
+    reprendre que les entrées absentes le jetait silencieusement. Le
+    cas se produit dès qu'un run perd la course au push, se remet sur
+    la version distante et refusionne la sienne — ses corps fraîchement
+    téléchargés portent justement sur des clés déjà archivées. Sans ça,
+    un run de remplissage de corps (fetch_all_bodies.py --archive) perd
+    des heures de téléchargement pour un simple conflit de push.
+
+    Comme backfill_bodies, un corps n'est jamais remplacé par un plus
+    court : la fusion ne peut qu'enrichir.
     """
     base = load_archive(base_path)
     incoming = load_archive(incoming_path)
 
-    manquantes = [
-        entry for key, entry in incoming.items() if key not in base
-    ]
+    manquantes = []
+    corps_recuperes = 0
 
-    return append_entries(manquantes, base_path)
+    for key, entry in incoming.items():
+        if key not in base:
+            manquantes.append(entry)
+            continue
+
+        nouveau = entry.get("body") or ""
+        if nouveau and len(nouveau) > len(base[key].get("body") or ""):
+            base[key]["body"] = nouveau
+            corps_recuperes += 1
+
+    if corps_recuperes:
+        # Une ligne existante change : il faut réécrire, l'ajout en fin
+        # de fichier ne peut pas modifier une ligne déjà écrite. Les
+        # entrées manquantes sont intégrées au même passage.
+        for entry in manquantes:
+            base[entry["key"]] = entry
+        rewrite_archive(base.values(), base_path)
+        return len(manquantes), corps_recuperes
+
+    return append_entries(manquantes, base_path), 0
 
 
 def load_state(path: Path | None = None) -> dict[str, Any]:
@@ -459,10 +490,16 @@ if __name__ == "__main__":
         nargs=2,
         metavar=("BASE", "INCOMING"),
         required=True,
-        help="Ajoute à BASE les entrées d'INCOMING qui lui manquent.",
+        help=(
+            "Fusionne INCOMING dans BASE : entrées manquantes, et corps "
+            "d'articles que BASE n'a pas encore."
+        ),
     )
     args = parser.parse_args()
 
     base, incoming = (Path(p) for p in args.merge_into)
-    ajoutees = merge_files(base, incoming)
-    print(f"ARCHIVE | {ajoutees} entrée(s) fusionnée(s) dans {base.name}")
+    ajoutees, corps = merge_files(base, incoming)
+    print(
+        f"ARCHIVE | {ajoutees} entrée(s) et {corps} corps "
+        f"fusionné(s) dans {base.name}"
+    )

@@ -590,3 +590,157 @@ class GoogleNewsBodiesAreUnavailableTests(unittest.TestCase):
 
         urls_tentees = {appel.args[0] for appel in faux.call_args_list}
         self.assertIn("https://news.google.com/rss/articles/CBMiABC", urls_tentees)
+
+
+class ArchiveModeTests(unittest.TestCase):
+    """
+    --archive : remplir archive.jsonl au lieu de produire un artefact.
+
+    Le scan quotidien remplit ~300 corps par run, soit une quinzaine de
+    jours pour saturer la part récupérable du corpus. Ce mode fait la
+    même chose en une passe.
+    """
+
+    def setUp(self):
+        import archive as archive_module
+
+        self.archive_module = archive_module
+        self.dir = tempfile.TemporaryDirectory()
+        self.path = Path(self.dir.name) / "archive.jsonl"
+        self._vrai_chemin = archive_module.ARCHIVE_FILE
+        archive_module.ARCHIVE_FILE = self.path
+
+    def tearDown(self):
+        self.archive_module.ARCHIVE_FILE = self._vrai_chemin
+        self.dir.cleanup()
+
+    def _entree(self, key, url, body=""):
+        from archive import append_entries
+
+        entry = {
+            "key": key, "url": url, "title": f"Titre {key}",
+            "summary": "", "source": "RFE/RL", "source_label": "",
+            "language": "en", "date": None, "premiere_vue": "2026-09-14",
+            "body": body,
+        }
+        append_entries([entry], self.path)
+
+    def test_only_entries_without_a_body_are_candidates(self):
+        from fetch_all_bodies import rows_from_archive
+        from archive import load_archive
+
+        self._entree("a", "https://ex.org/a", body="")
+        self._entree("b", "https://ex.org/b", body="deja un corps")
+
+        rows = rows_from_archive(load_archive(self.path))
+
+        self.assertEqual([r["key"] for r in rows], ["a"])
+
+    def test_entries_without_a_url_are_skipped(self):
+        from fetch_all_bodies import rows_from_archive
+        from archive import load_archive
+
+        self._entree("a", "")
+
+        self.assertEqual(rows_from_archive(load_archive(self.path)), [])
+
+    def test_results_are_written_back_into_the_archive(self):
+        from fetch_all_bodies import apply_to_archive
+        from archive import load_archive
+
+        self._entree("a", "https://ex.org/a")
+
+        n = apply_to_archive([{"key": "a", "body": "le texte complet"}], self.path)
+
+        self.assertEqual(n, 1)
+        self.assertEqual(load_archive(self.path)["a"]["body"], "le texte complet")
+
+    def test_empty_bodies_change_nothing(self):
+        # Les URLs Google News reviennent avec un corps vide : elles ne
+        # doivent pas déclencher une réécriture de l'archive.
+        from fetch_all_bodies import apply_to_archive
+
+        self._entree("a", "https://news.google.com/rss/articles/xyz")
+
+        self.assertEqual(apply_to_archive([{"key": "a", "body": ""}], self.path), 0)
+
+    def test_a_shorter_body_never_overwrites_a_stored_one(self):
+        from fetch_all_bodies import apply_to_archive
+        from archive import load_archive
+
+        self._entree("a", "https://ex.org/a", body="un texte complet et long")
+
+        self.assertEqual(
+            apply_to_archive([{"key": "a", "body": "court"}], self.path), 0
+        )
+        self.assertEqual(
+            load_archive(self.path)["a"]["body"], "un texte complet et long"
+        )
+
+    def test_resuming_needs_no_artifact(self):
+        # Un run interrompu a déjà écrit ses corps : le run suivant ne
+        # resélectionne pas ces entrées, sans --resume-from.
+        from fetch_all_bodies import apply_to_archive, rows_from_archive
+        from archive import load_archive
+
+        self._entree("a", "https://ex.org/a")
+        self._entree("b", "https://ex.org/b")
+
+        apply_to_archive([{"key": "a", "body": "texte de a"}], self.path)
+
+        restants = rows_from_archive(load_archive(self.path))
+        self.assertEqual([r["key"] for r in restants], ["b"])
+
+    @patch("fetch_all_bodies.extract_body")
+    def test_end_to_end_fills_the_archive(self, mock_extract):
+        mock_extract.return_value = ("corps téléchargé", None)
+
+        from fetch_all_bodies import main
+        from archive import load_archive
+
+        self._entree("a", "https://ex.org/a")
+        self._entree("b", "https://ex.org/b", body="deja la")
+
+        main(["--archive", "--workers", "1"])
+
+        relu = load_archive(self.path)
+        self.assertEqual(relu["a"]["body"], "corps téléchargé")
+        self.assertEqual(relu["b"]["body"], "deja la")
+
+    @patch("fetch_all_bodies.extract_body")
+    def test_checkpoint_writes_before_the_run_ends(self, mock_extract):
+        # Quatre runs consécutifs ont été perdus au timeout en 2026-09 :
+        # le checkpoint doit atteindre l'archive en cours de route.
+        from fetch_all_bodies import run_archive_mode
+        from archive import load_archive
+        import argparse
+
+        # Nombre de corps déjà dans l'archive au moment où chaque
+        # téléchargement démarre : si le checkpoint fonctionne, ce
+        # compteur devient non nul AVANT la fin du run.
+        corps_deja_ecrits = []
+
+        def _extraction(*a, **k):
+            corps_deja_ecrits.append(
+                sum(1 for e in load_archive(self.path).values() if e.get("body"))
+            )
+            return ("corps", None)
+
+        mock_extract.side_effect = _extraction
+
+        for i in range(150):
+            self._entree(f"k{i}", f"https://ex.org/{i}")
+
+        run_archive_mode(argparse.Namespace(
+            workers=1, google_news_concurrency=1, google_news_delay=0,
+            tenter_google_news=False, limit=None,
+        ))
+
+        self.assertTrue(
+            max(corps_deja_ecrits) > 0,
+            "aucun corps n'a atteint l'archive avant la fin du run : "
+            "un timeout perdrait tout",
+        )
+
+        relu = load_archive(self.path)
+        self.assertEqual(sum(1 for e in relu.values() if e.get("body")), 150)

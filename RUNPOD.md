@@ -379,17 +379,26 @@ atomically (temp file + `os.replace`, never a truncated/corrupt JSON).
 `--resume-from <previous_articles_with_body.json>` reads that file (or
 any previous run's output, complete or partial) and skips every URL
 that already has a real body and no `fetch_error` — only what's
-missing or previously failed gets re-fetched. The workflow wires this
-up automatically: its "Upload result as artifact" step now runs with
-`if: always()` (so a cancelled/timed-out run still uploads its last
-checkpoint), and a new step looks up the most recent
-`articles-with-body` artifact from a prior run of this same workflow
-and passes it as `--resume-from` if one exists — so re-triggering the
-workflow after a timeout resumes instead of starting over. Pass
-`resume: false` to the workflow's `workflow_dispatch` inputs to force a
-full fresh re-fetch instead (e.g. right after an `extract_body()` fix —
-see below — since a previous body being non-empty doesn't mean it was
-extracted correctly, just that some checkpoint had a body for that URL).
+missing or previously failed gets re-fetched. This applies to the JSON
+export mode described above, which you run locally for the benchmark.
+
+**The `fetch-bodies` workflow no longer produces that artifact.** Since
+2026-09-14 it runs `fetch_all_bodies.py --archive`, which fills
+`archive.jsonl` in place and commits it, because that is what actually
+makes the scanner better: the archive is what every run rescores and
+recategorises from, so a body written there benefits the published site
+for good, while an artifact only ever fed a one-off benchmark.
+
+Resuming is simpler in that mode and needs no artifact lookup at all.
+The candidates are "archive entries with no body", and bodies are
+written to the archive as the run progresses, so a run killed by the
+4-hour timeout keeps what it got (its commit step runs with
+`if: always()`) and the next run simply doesn't select those entries
+again. There is no `resume` input to pass. To force a re-fetch of
+something already stored — e.g. right after an `extract_body()` fix,
+since a non-empty body is not proof it was extracted correctly — clear
+those bodies first; `--archive` will never overwrite a stored body with
+a shorter one (see `archive.backfill_bodies`).
 
 **Bad extraction, not just failed extraction**: checking a sample of
 the ~415 bodies already cached in `memory.json` (2026-09-12) found
