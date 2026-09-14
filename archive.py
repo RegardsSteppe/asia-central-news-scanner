@@ -63,6 +63,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
+from article_ingestion import strip_diplomat_byline
 from text_utils import strip_boilerplate, strip_related_blocks
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -492,6 +493,34 @@ def nettoyer_corps(archive: dict[str, dict[str, Any]]) -> int:
         propre = strip_boilerplate(strip_related_blocks(corps), entry.get("source"))
         if propre != corps:
             entry["body"] = propre
+            nettoyes += 1
+
+    return nettoyes
+
+
+def nettoyer_titres(archive: dict[str, dict[str, Any]]) -> int:
+    """
+    Applique strip_diplomat_byline() aux titres DÉJÀ archivés.
+    Modifie `archive` sur place, renvoie le nombre d'entrées nettoyées.
+
+    Contrairement aux corps (voir nettoyer_corps), les titres ne sont
+    JAMAIS retéléchargés : merge_scanned() n'écrit un article déjà
+    archivé sous aucun prétexte, titre compris. Sans ce rattrapage,
+    les 12 titres de The Diplomat déjà pollués par une signature et un
+    chapô collés (voir extract_links_from_html) le resteraient pour
+    toujours, même une fois le bug corrigé à la source. Idempotente,
+    comme nettoyer_corps.
+    """
+    nettoyes = 0
+
+    for entry in archive.values():
+        titre = entry.get("title") or ""
+        if not titre:
+            continue
+
+        propre = strip_diplomat_byline(titre, entry.get("source"))
+        if propre != titre:
+            entry["title"] = propre
             nettoyes += 1
 
     return nettoyes

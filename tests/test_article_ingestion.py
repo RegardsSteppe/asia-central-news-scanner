@@ -14,6 +14,7 @@ from article_ingestion import (
     is_google_news_url,
     looks_like_article_link,
     parse_rss,
+    strip_diplomat_byline,
 )
 
 
@@ -694,3 +695,61 @@ class GoogleNewsUrlTests(unittest.TestCase):
                 "https://example.com/rss", "A perfectly reasonable headline here"
             )
         )
+
+
+class StripDiplomatBylineTests(unittest.TestCase):
+    """
+    Régression du 2026-09-14. Sur la page de liste de thediplomat.com,
+    chaque carte d'article est un unique <a> qui enveloppe le titre, la
+    signature et le chapô — sans séparateur. extract_links_from_html()
+    prend tout le texte du lien (get_text(" ", strip=True)), donc les
+    trois se retrouvaient collés : "SCO Summit Produces Surprising
+    Winners By Wesley Alexander Hill The organization's smaller
+    members can use...". Constaté sur 12 des 24 articles archivés de
+    la source — la moitié.
+
+    Mesuré sur les 9837 titres de l'archive : le motif ne se déclenche
+    QUE sur The Diplomat, jamais ailleurs — d'où le scope par nom de
+    source plutôt qu'une règle générale.
+    """
+
+    def test_retire_signature_et_chapo(self):
+        titre = (
+            "SCO Summit Produces Surprising Winners By Wesley Alexander "
+            "Hill The organization's smaller members can use a "
+            "China-India-Russia-dominated forum without becoming "
+            "subordinate to any single major power."
+        )
+        self.assertEqual(
+            strip_diplomat_byline(titre, "The Diplomat"),
+            "SCO Summit Produces Surprising Winners",
+        )
+
+    def test_gere_les_signatures_a_plusieurs_auteurs(self):
+        titre = (
+            "What Kazakhstan's New Unicameral Parliament Means for Its "
+            "Foreign Policy By Bimal Adhikari and Aruzhan Kaimoldina "
+            "Although the shift to a one-chamber system marks a turn."
+        )
+        self.assertEqual(
+            strip_diplomat_byline(titre, "The Diplomat"),
+            "What Kazakhstan's New Unicameral Parliament Means for Its "
+            "Foreign Policy",
+        )
+
+    def test_ne_touche_pas_un_titre_propre(self):
+        titre = "Rogun Dam Nears Completion"
+        self.assertEqual(strip_diplomat_byline(titre, "The Diplomat"), titre)
+
+    def test_scope_a_la_seule_source_the_diplomat(self):
+        # Le garde-fou qui compte : un titre à la même forme ("By
+        # <Nom> <Nom> <texte>") sur une AUTRE source n'est jamais
+        # touché — rencontré réellement sur ADC Memorial ("By Kharkiv
+        # Human Rights Protection Group").
+        titre = "By Kharkiv Human Rights Protection Group"
+        self.assertEqual(
+            strip_diplomat_byline(titre, "ADC Memorial"), titre
+        )
+
+    def test_accepte_une_source_absente(self):
+        self.assertEqual(strip_diplomat_byline("Un titre", None), "Un titre")

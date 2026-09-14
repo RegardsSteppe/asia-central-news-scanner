@@ -1626,12 +1626,19 @@ def merge_with_archive(
     # indéfiniment. Idempotent, donc nul dès le run suivant.
     corps_nettoyes = archive.nettoyer_corps(archive_entries)
 
-    if corps_ajoutes or dates_ajoutees or corps_nettoyes:
+    # Même raisonnement pour les titres : un titre archivé n'est
+    # jamais réécrit par un scan ultérieur (voir merge_scanned), donc
+    # les 12 titres The Diplomat déjà pollués par une signature/chapô
+    # collés resteraient faux pour toujours sans ce rattrapage.
+    titres_nettoyes = archive.nettoyer_titres(archive_entries)
+
+    if corps_ajoutes or dates_ajoutees or corps_nettoyes or titres_nettoyes:
         archive.rewrite_archive(archive_entries.values())
 
     print(
         f"ARCHIVE | {corps_ajoutes} corps et {dates_ajoutees} dates "
-        f"ajoutés à des entrées existantes, {corps_nettoyes} corps nettoyés"
+        f"ajoutés à des entrées existantes, {corps_nettoyes} corps et "
+        f"{titres_nettoyes} titres nettoyés"
     )
 
     archive.save_state(state)
