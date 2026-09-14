@@ -274,6 +274,58 @@ def _sans_inclusions(termes: list[str]) -> list[str]:
     ]
 
 
+# ============================================================
+# OÙ un signal a-t-il été trouvé ? (rôle)
+# ============================================================
+#
+# Un même mot ne vaut pas la même chose selon l'endroit où il
+# apparaît. "journaliste" dans le titre désigne le sujet de
+# l'article ; "journaliste" à la 4000e lettre du corps peut n'être
+# qu'une signature ou une incise.
+#
+# La géographie faisait déjà cette distinction (geo_role) parce
+# qu'elle est cherchée DEUX FOIS, dans le titre puis dans le corps.
+# Les acteurs et les traitements, eux, étaient cherchés UNE seule
+# fois sur la concaténation des deux — et à cet instant précis
+# l'information de position est perdue, définitivement.
+#
+# Mesuré le 2026-09-14 : 1424 des 1870 articles portant un acteur
+# (76%) ne le tiennent que du corps. "Armenia Courts Central Asia As
+# TRIPP Corridor" ressortait "femme", "Putin Looks To Restore
+# Russia's Standing" ressortait "journaliste".
+#
+# Ces fonctions ne changent AUCUNE valeur : elles ajoutent seulement
+# de quoi savoir d'où vient chacune.
+
+ROLE_SUJET = "sujet_principal"
+ROLE_MENTION = "mention_secondaire"
+ROLE_ABSENT = "absent"
+
+
+def _role_depuis_zones(termes_tete: list[str], termes_corps: list[str]) -> str:
+    """Rôle d'un axe selon la zone où ses termes ont été trouvés."""
+    if termes_tete:
+        return ROLE_SUJET
+    if termes_corps:
+        return ROLE_MENTION
+    return ROLE_ABSENT
+
+
+def _role_global(roles: dict[str, str]) -> str:
+    """
+    Rôle de l'axe entier : le plus fort de ses classes.
+
+    Un article dont un acteur est dans le titre et un autre dans le
+    corps a bien un acteur pour sujet — c'est le rôle par classe
+    (preuves) qui dit lequel.
+    """
+    if ROLE_SUJET in roles.values():
+        return ROLE_SUJET
+    if ROLE_MENTION in roles.values():
+        return ROLE_MENTION
+    return ROLE_ABSENT
+
+
 def _geo_terms_in(text: str, language: str) -> list[str]:
     """Termes géo bruts détectés dans `text` (pas encore mappés à un pays)."""
     central_asia = find_central_asia_terms(text, CENTRAL_ASIA_TERMS, language)
@@ -819,11 +871,22 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
     # --------------------------------------------------------
     acteur: list[str] = []
     preuves_acteur: dict[str, list[str]] = {}
+    acteur_roles: dict[str, str] = {}
+    acteur_zones: dict[str, dict[str, list[str]]] = {}
+
     for key, terms in ACTEUR_TYPE_TERMS.items():
-        matched = find_terms(full_text, terms)
+        # Deux recherches au lieu d'une : c'est tout le correctif.
+        # Chercher dans headline + corps fusionnés donnait le même
+        # résultat, mais sans jamais pouvoir dire d'où il venait.
+        dans_tete = find_terms(headline, terms)
+        dans_corps = find_terms(body, terms)
+        matched = list(dict.fromkeys(dans_tete + dans_corps))
+
         if matched:
             acteur.append(key)
             preuves_acteur[key] = matched
+            acteur_roles[key] = _role_depuis_zones(dans_tete, dans_corps)
+            acteur_zones[key] = {"titre_ou_chapo": dans_tete, "corps": dans_corps}
 
     # Un article Ouïghour/Xinjiang concerne par construction une
     # minorité ethnique, même si aucun terme MINORITE_ETHNIQUE_TERMS
@@ -834,6 +897,25 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
         preuves_acteur.setdefault("minorite_ethnique", []).append(
             "(déduit de geo=xinjiang)"
         )
+        # Déduit du Xinjiang : il hérite du rôle du XINJIANG, pas de
+        # celui de l'axe géo entier.
+        #
+        # La nuance a mordu à l'écriture de ce correctif. "The Horrors
+        # Of Aktas Mental Hospital: Inside Kazakhstan's Secretive
+        # Asylum" a geo_role=sujet_principal parce que le Kazakhstan
+        # est dans le titre ; le Xinjiang, lui, n'apparaît que dans le
+        # corps. Faire hériter geo_role donnait à la minorité ethnique
+        # le statut de sujet alors qu'aucun terme la concernant n'est
+        # dans le titre — et remontait tout l'axe acteur avec elle.
+        xinjiang_dans_tete = "xinjiang" in {
+            _GEO_TERM_COUNTRY.get(terme, "autre") for terme in headline_geo_raw
+        }
+        acteur_roles["minorite_ethnique"] = (
+            ROLE_SUJET if xinjiang_dans_tete else ROLE_MENTION
+        )
+        acteur_zones["minorite_ethnique"] = {
+            "titre_ou_chapo": [], "corps": [], "hérité": ["geo=xinjiang"],
+        }
 
     # Farsi : les listes d'acteurs ci-dessus sont quasi muettes en
     # persan, alors que keywords.py contient déjà des motifs
@@ -848,38 +930,69 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
             ("opposant", ACTIVIST_REPRESSION_FA_PATTERNS),
             ("journaliste", JOURNALIST_REPRESSION_FA_PATTERNS),
         ):
-            if contains_pattern(full_text, patterns):
+            dans_tete = contains_pattern(headline, patterns)
+            dans_corps = contains_pattern(body, patterns)
+
+            if dans_tete or dans_corps:
                 farsi_relation_hit = True
                 if key not in acteur:
                     acteur.append(key)
                 preuves_acteur.setdefault(key, []).append(
                     "(motif farsi acteur+répression)"
                 )
+                # Un motif farsi déjà présent ne doit pas être
+                # rétrogradé par cette seconde source : on garde le
+                # rôle le plus fort des deux.
+                nouveau = _role_depuis_zones(
+                    ["motif"] if dans_tete else [],
+                    ["motif"] if dans_corps else [],
+                )
+                acteur_roles[key] = _role_global(
+                    {"a": acteur_roles.get(key, ROLE_ABSENT), "b": nouveau}
+                )
 
     if not acteur:
         acteur = ["aucun"]
+
+    acteur_role = _role_global(acteur_roles)
+
     preuves["acteur"] = preuves_acteur
+    preuves["acteur_role"] = acteur_zones
 
     # --------------------------------------------------------
     # TRAITEMENT
     # --------------------------------------------------------
     traitement: list[str] = []
     preuves_traitement: dict[str, list[str]] = {}
+    traitement_roles: dict[str, str] = {}
+    traitement_zones: dict[str, dict[str, list[str]]] = {}
+
     for key, terms in TRAITEMENT_TYPE_TERMS.items():
-        matched = find_terms(full_text, terms)
+        dans_tete = find_terms(headline, terms)
+        dans_corps = find_terms(body, terms)
 
         # Racines russes délibérément incomplètes (voir
         # _TRAITEMENT_STEM_PATTERNS) : find_terms() ne peut jamais les
         # matcher (limite de mot exigée juste après le terme), donc
-        # vérifiées séparément via des motifs \bRACINE\w*\b.
+        # vérifiées séparément via des motifs \bRACINE\w*\b — et,
+        # comme le reste, zone par zone.
         for pattern in _TRAITEMENT_STEM_PATTERNS.get(key, ()):
-            found = _stem_match(full_text, pattern)
-            if found:
-                matched = list(matched) + [found]
+            trouve_tete = _stem_match(headline, pattern)
+            if trouve_tete:
+                dans_tete = list(dans_tete) + [trouve_tete]
+            trouve_corps = _stem_match(body, pattern)
+            if trouve_corps:
+                dans_corps = list(dans_corps) + [trouve_corps]
+
+        matched = list(dict.fromkeys(list(dans_tete) + list(dans_corps)))
 
         if matched:
             traitement.append(key)
             preuves_traitement[key] = matched
+            traitement_roles[key] = _role_depuis_zones(dans_tete, dans_corps)
+            traitement_zones[key] = {
+                "titre_ou_chapo": list(dans_tete), "corps": list(dans_corps),
+            }
 
     if not traitement:
         traitement = ["aucun"]
@@ -896,7 +1009,10 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
                 "— vocabulaire à enrichir"
             ]
 
+    traitement_role = _role_global(traitement_roles)
+
     preuves["traitement"] = preuves_traitement
+    preuves["traitement_role"] = traitement_zones
 
     # --------------------------------------------------------
     # RELATION ACTEUR / TRAITEMENT
@@ -956,7 +1072,9 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
         "geo": geo,
         "geo_role": geo_role,
         "acteur": acteur,
+        "acteur_role": acteur_role,
         "traitement": traitement,
+        "traitement_role": traitement_role,
         "relation_acteur_traitement": relation_acteur_traitement,
         "type": type_article,
         "age_jours": age_jours,

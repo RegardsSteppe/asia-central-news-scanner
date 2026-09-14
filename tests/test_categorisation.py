@@ -40,7 +40,8 @@ class CategoriserOutputShapeTests(unittest.TestCase):
         self.assertEqual(
             set(result.keys()),
             {
-                "geo", "geo_role", "acteur", "traitement",
+                "geo", "geo_role", "acteur", "acteur_role",
+                "traitement", "traitement_role",
                 "relation_acteur_traitement", "type", "age_jours",
                 "source_specialisee", "preuves",
             },
@@ -693,3 +694,162 @@ class FormesFrancaisesTests(unittest.TestCase):
             self._article("Chine : Répression d'une minorité ethnique au Xinjiang")
         )["acteur"])
         self.assertIn("xinjiang", cat["geo"])
+
+
+class RoleActeurEtTraitementTests(unittest.TestCase):
+    """
+    acteur_role / traitement_role : d'OÙ vient le signal.
+
+    Un même mot ne vaut pas la même chose selon l'endroit où il
+    apparaît. "journaliste" dans le titre désigne le sujet ;
+    "journaliste" à la 4000e lettre du corps peut n'être qu'une
+    signature. La géographie faisait déjà cette distinction parce
+    qu'elle est cherchée deux fois ; les acteurs, cherchés une seule
+    fois sur le texte fusionné, perdaient l'information à la détection.
+
+    Mesuré le 2026-09-14 : 1424 des 1870 articles portant un acteur
+    (76%) ne le tiennent que du corps.
+    """
+
+    def _article(self, titre, corps="", langue="en"):
+        return {
+            "title": titre, "summary": "", "body": corps,
+            "source": "Test", "url": "https://ex.org/news/a",
+            "language": langue, "date": None,
+        }
+
+    def test_an_actor_in_the_title_is_the_subject(self):
+        cat = categoriser(self._article("Journalist jailed in Almaty, Kazakhstan"))
+        self.assertEqual(cat["acteur_role"], "sujet_principal")
+
+    def test_an_actor_only_in_the_body_is_a_mention(self):
+        cat = categoriser(
+            self._article(
+                "Pickleball in China: how a tiny ball drives an industry",
+                corps="The editor spoke to residents, men and women alike.",
+            )
+        )
+        self.assertIn("journaliste", cat["acteur"])
+        self.assertEqual(cat["acteur_role"], "mention_secondaire")
+
+    def test_no_actor_means_absent(self):
+        cat = categoriser(self._article("Weather forecast for tomorrow"))
+        self.assertEqual(cat["acteur_role"], "absent")
+
+    def test_treatment_role_works_the_same_way(self):
+        titre = categoriser(self._article("Activist sentenced to ten years"))
+        corps = categoriser(
+            self._article("Pickleball tournament", corps="He was sentenced in 2019.")
+        )
+        self.assertEqual(titre["traitement_role"], "sujet_principal")
+        self.assertEqual(corps["traitement_role"], "mention_secondaire")
+
+    def test_the_strongest_role_wins_for_the_axis(self):
+        # Un acteur dans le titre et un autre dans le corps : l'article
+        # a bien un acteur pour sujet. C'est le détail par classe, dans
+        # les preuves, qui dit lequel.
+        cat = categoriser(
+            self._article("Journalist detained", corps="Local residents watched.")
+        )
+        self.assertEqual(cat["acteur_role"], "sujet_principal")
+        self.assertEqual(
+            cat["preuves"]["acteur_role"]["citoyen_ordinaire"]["titre_ou_chapo"], []
+        )
+
+    def test_the_values_themselves_are_unchanged(self):
+        # La promesse du correctif : purement additif. Vérifié sur le
+        # corpus réel (203170 comparaisons, zéro divergence), et gardé
+        # ici sur un cas représentatif.
+        cat = categoriser(
+            self._article(
+                "Journalist detained in Almaty",
+                corps="Human rights defenders and women protested.",
+            )
+        )
+        for attendu in ("journaliste", "defenseur", "femme"):
+            self.assertIn(attendu, cat["acteur"])
+
+    def test_evidence_records_both_zones(self):
+        cat = categoriser(
+            self._article("Journalist detained", corps="Another journalist spoke.")
+        )
+        zones = cat["preuves"]["acteur_role"]["journaliste"]
+        self.assertTrue(zones["titre_ou_chapo"])
+        self.assertTrue(zones["corps"])
+
+
+class ReglesRoleMinimumTests(unittest.TestCase):
+    """Le réglage est exposé mais non décidé : il reste à None."""
+
+    def test_the_constants_stay_undecided(self):
+        import regles_editoriales as regles
+
+        self.assertIsNone(regles.ACTEUR_ROLE_MINIMUM)
+        self.assertIsNone(regles.TRAITEMENT_ROLE_MINIMUM)
+
+    def test_a_mention_is_rejected_once_the_rule_is_set(self):
+        from unittest.mock import patch
+
+        import regles_editoriales as regles
+
+        categorisation = {
+            "geo": ["kazakhstan"], "geo_role": "sujet_principal",
+            "acteur": ["journaliste"], "acteur_role": "mention_secondaire",
+            "traitement": ["aucun"], "traitement_role": "absent",
+            "type": "evenement_date", "age_jours": 1,
+            "relation_acteur_traitement": False,
+        }
+
+        with patch.object(regles, "ACTEUR_ROLE_MINIMUM", "sujet_principal"):
+            pertinent, raison = regles.est_pertinent(categorisation)
+
+        self.assertFalse(pertinent)
+        self.assertIn("acteur_role", raison)
+
+
+class RoleHeriteDuXinjiangTests(unittest.TestCase):
+    """
+    La minorité ethnique déduite de geo=xinjiang hérite du rôle du
+    XINJIANG, pas de celui de l'axe géo entier.
+
+    Bug attrapé à l'écriture du correctif, sur un cas réel : "The
+    Horrors Of Aktas Mental Hospital: Inside Kazakhstan's Secretive
+    Asylum" a geo_role=sujet_principal (le Kazakhstan est dans le
+    titre) alors que le Xinjiang n'apparaît que dans le corps. Faire
+    hériter geo_role donnait à la minorité le statut de sujet sans
+    qu'aucun terme la concernant soit dans le titre — et remontait
+    tout l'axe acteur avec elle.
+    """
+
+    def _article(self, titre, corps=""):
+        return {
+            "title": titre, "summary": "", "body": corps,
+            "source": "Test", "url": "https://ex.org/news/a",
+            "language": "en", "date": None,
+        }
+
+    def test_xinjiang_in_the_body_only_is_a_mention(self):
+        cat = categoriser(
+            self._article(
+                "Inside Kazakhstan's Secretive Asylum",
+                corps="Reports from Xinjiang describe similar conditions.",
+            )
+        )
+        self.assertIn("minorite_ethnique", cat["acteur"])
+        self.assertEqual(cat["acteur_role"], "mention_secondaire")
+
+    def test_xinjiang_in_the_title_is_the_subject(self):
+        cat = categoriser(self._article("Uyghur activists detained in Xinjiang"))
+        self.assertIn("minorite_ethnique", cat["acteur"])
+        self.assertEqual(cat["acteur_role"], "sujet_principal")
+
+    def test_another_country_in_the_title_does_not_promote_it(self):
+        # Le coeur du bug : un pays en titre ne doit pas hisser une
+        # minorité déduite d'un pays cité seulement dans le corps.
+        cat = categoriser(
+            self._article(
+                "Kazakhstan opens new hospital",
+                corps="Xinjiang was mentioned once in passing.",
+            )
+        )
+        self.assertEqual(cat["acteur_role"], "mention_secondaire")
