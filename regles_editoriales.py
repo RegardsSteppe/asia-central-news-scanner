@@ -70,6 +70,36 @@ PERIMETRE_GEO: frozenset[str] | None = None
 # TODO: décider et remplacer None, ex. GEO_ROLE_MINIMUM = "mention_secondaire"
 GEO_ROLE_MINIMUM: str | None = None
 
+# acteur_role / traitement_role minimum accepté.
+#
+# Même mécanique que GEO_ROLE_MINIMUM, mais c'est ici que se joue le
+# problème le plus coûteux du schéma. Mesuré le 2026-09-14 : sur les
+# 1870 articles portant un acteur, 1424 (76%) ne le tiennent QUE du
+# corps. "Armenia Courts Central Asia As TRIPP Corridor" ressort
+# "femme", "Pickleball in China" ressort journaliste + femme +
+# citoyen — des mots incidents dans 8000 caractères.
+#
+# Options :
+#   - "sujet_principal" : l'acteur doit être nommé dans le titre ou le
+#     chapô. Le plus net, mais il écarte aussi de vrais sujets — "The
+#     Horrors Of Aktas Mental Hospital" est un cas réel de droits
+#     humains dont les acteurs ne sont nommés que dans le corps.
+#   - "mention_secondaire" : comportement actuel, tout est accepté.
+#   - Piste intermédiaire, à écrire à la main si elle vous convient :
+#     accepter "mention_secondaire" UNIQUEMENT quand
+#     relation_acteur_traitement est vrai (l'acteur et ce qu'il subit
+#     sont proches dans le texte). C'est le compromis qui garde Aktas
+#     et écarte Pickleball.
+#
+#     La proximité exigée se règle par categorisation.FENETRE_RELATION
+#     (140 caractères par défaut). Ce n'est pas une règle éditoriale
+#     mais la définition du champ lui-même, d'où son emplacement ; la
+#     courbe qui justifie la valeur est documentée au-dessus de
+#     matching.FENETRE_RELATION_DEFAUT.
+# TODO: décider et remplacer None, ex. ACTEUR_ROLE_MINIMUM = "sujet_principal"
+ACTEUR_ROLE_MINIMUM: str | None = None
+TRAITEMENT_ROLE_MINIMUM: str | None = None
+
 # Acteurs retenus.
 # Options possibles (voir categorisation.py: acteur) — un sous-ensemble
 # de {"defenseur", "journaliste", "opposant", "avocat", "croyant",
@@ -195,6 +225,21 @@ def est_pertinent(categorisation: dict[str, Any]) -> tuple[bool, str]:
         rank = {"absent": 0, "mention_secondaire": 1, "sujet_principal": 2}
         if rank.get(geo_role, 0) < rank.get(GEO_ROLE_MINIMUM, 0):
             return False, f"geo_role '{geo_role}' sous le minimum requis"
+
+    acteur_role = categorisation.get("acteur_role", "absent")
+    traitement_role = categorisation.get("traitement_role", "absent")
+
+    _RANG_ROLE = {"absent": 0, "mention_secondaire": 1, "sujet_principal": 2}
+
+    if ACTEUR_ROLE_MINIMUM is not None:
+        if _RANG_ROLE.get(acteur_role, 0) < _RANG_ROLE.get(ACTEUR_ROLE_MINIMUM, 0):
+            return False, f"acteur_role '{acteur_role}' sous le minimum requis"
+
+    if TRAITEMENT_ROLE_MINIMUM is not None:
+        if _RANG_ROLE.get(traitement_role, 0) < _RANG_ROLE.get(
+            TRAITEMENT_ROLE_MINIMUM, 0
+        ):
+            return False, f"traitement_role '{traitement_role}' sous le minimum requis"
 
     if ACTEURS_RETENUS is not None:
         if not (set(acteur) & ACTEURS_RETENUS):

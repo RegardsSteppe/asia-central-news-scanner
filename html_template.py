@@ -295,6 +295,20 @@ def _categorisation_summary(article):
     traitement = lisible(cat.get("traitement") or ["aucun"])
     type_article = _libelle_classe(cat["type"]) if cat.get("type") else ""
 
+    # Le rôle est annoté entre parenthèses : "acteur: Journaliste
+    # (mention)" dit d'un coup d'oeil que le terme vient du corps et
+    # non du titre — la différence entre un article SUR un journaliste
+    # et un article qui en cite un au passage.
+    def annoter(valeurs, role):
+        if valeurs == "aucun" or not role or role == "sujet_principal":
+            return valeurs
+        if role == "mention_secondaire":
+            return f"{valeurs} (mention)"
+        return valeurs
+
+    acteur = annoter(acteur, cat.get("acteur_role"))
+    traitement = annoter(traitement, cat.get("traitement_role"))
+
     return f"geo: {geo} · acteur: {acteur} · traitement: {traitement} · type: {type_article}"
 
 

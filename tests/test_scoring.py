@@ -967,3 +967,71 @@ class NiveauFPagesDeRubriqueTests(unittest.TestCase):
         classify_article(page)
         self.assertIn("score", page)
         self.assertTrue(page["signals"]["section_page"])
+
+
+class PlafondsSousLesSeuilsTests(unittest.TestCase):
+    """
+    Un plafond posé exactement sur un seuil de niveau ne retient rien :
+    le test étant ">=", l'article plafonné atteint pile le niveau qu'on
+    voulait lui refuser. Mesuré le 2026-09-14 avant correction : 85 des
+    102 articles de niveau B étaient à exactement 55/100 avec la raison
+    "plafond V9: confirmation HR dans le body".
+    """
+
+    def test_caps_sit_below_the_thresholds_they_guard(self):
+        from scoring import LEVEL_B_MIN_SCORE, LEVEL_C_MIN_SCORE
+        import inspect
+        import scoring
+
+        source = inspect.getsource(scoring.classify_article)
+
+        self.assertNotIn("min(score, 55)", source)
+        self.assertNotIn("min(score, 35)", source)
+        self.assertIn("min(score, LEVEL_B_MIN_SCORE - 1)", source)
+        self.assertIn("min(score, LEVEL_C_MIN_SCORE - 1)", source)
+        self.assertLess(LEVEL_B_MIN_SCORE - 1, LEVEL_B_MIN_SCORE)
+        self.assertLess(LEVEL_C_MIN_SCORE - 1, LEVEL_C_MIN_SCORE)
+
+    def test_a_capped_article_never_reaches_the_guarded_level(self):
+        from scoring import decide_level, LEVEL_B_MIN_SCORE, LEVEL_C_MIN_SCORE
+
+        signals = {"regional_context": True}
+        self.assertNotEqual(decide_level(LEVEL_B_MIN_SCORE - 1, signals), "B")
+        self.assertNotEqual(decide_level(LEVEL_C_MIN_SCORE - 1, signals), "C")
+
+
+class FrontieresDeMotsTests(unittest.TestCase):
+    """
+    _alternation_pattern ne bornait pas ses alternatives : "forced"
+    matchait dans "reinforced", "ngo" dans "Congo". Comme elle alimente
+    relation_present() et donc target_repression_relation, une
+    occurrence interne suffisait à déclarer une relation cible/action
+    sur un article sans rapport — et ce signal déclenche le plafond.
+    """
+
+    def test_a_term_never_matches_inside_another_word(self):
+        from matching import _alternation_pattern
+
+        motif = _alternation_pattern(("forced", "ngo", "convicted"))
+        for texte in ("reinforced concrete", "the congo river", "unconvicted"):
+            with self.subTest(texte=texte):
+                self.assertIsNone(motif.search(texte))
+
+    def test_whole_words_still_match(self):
+        from matching import _alternation_pattern
+
+        motif = _alternation_pattern(("forced", "ngo", "convicted"))
+        for texte in ("forced labour", "an ngo worker", "convicted today"):
+            with self.subTest(texte=texte):
+                self.assertIsNotNone(motif.search(texte))
+
+    def test_truncated_cyrillic_stems_still_match_their_inflections(self):
+        # La raison de la règle asymétrique : ces radicaux sont
+        # volontairement tronqués. Un (?!\w) en fin les rendrait muets
+        # sur toute forme fléchie, c'est-à-dire sur le texte réel.
+        from matching import _alternation_pattern
+
+        motif = _alternation_pattern(("задержан", "преследова"))
+        for texte in ("задержана активистка", "задержаны трое", "преследования"):
+            with self.subTest(texte=texte):
+                self.assertIsNotNone(motif.search(texte))

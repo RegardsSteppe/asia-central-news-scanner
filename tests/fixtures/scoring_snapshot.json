@@ -97,7 +97,7 @@
   "url": "https://www.aljazeera.com/news/2024/2/5/did-an-arrested-uzbek-mafia-chieftain-organise-killings-of-dissidents"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: turkmenistan",
@@ -105,7 +105,7 @@
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 35,
+  "score": 34,
   "signals_sha256": "b549fcf5df6615ee",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2021/11/12/turkmenistans-dissidents-fear-crackdown-in-turkish-exile"
@@ -141,18 +141,16 @@
   "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1zbUdzTEVGOGNnQWFkVmFWLTQ2NGlLbmlwV1ZvazZtbFJJRjdPdmMzZk1nVE9kWGo0V09tXzV5V2FERVN2Y0NmdnlienhnR05JMEU2NHZ3d1M?oc=5"
  },
  {
-  "level": "B",
-  "priority": "MOYENNE",
+  "level": "E",
+  "priority": "BRUIT",
   "reasons": [
    "Caucase: azerbaijan, georgia",
-   "journaliste / média ciblé",
-   "journaliste + action répressive",
-   "plafond V9: confirmation HR dans le body"
+   "plafond V9: aucun ancrage HR principal"
   ],
-  "relevant": true,
-  "score": 55,
-  "signals_sha256": "a2932ab3cbd45a85",
-  "theme": "Journalistes sous pression",
+  "relevant": false,
+  "score": 19,
+  "signals_sha256": "5fad0dafa61da45c",
+  "theme": "Faible priorité",
   "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQNHFiWi11TDRaUEN5Nk5NaTRVakJ0Nnk3aFlsbERTZFZBcFcwSzZQZlpjWHJtd01JSGVjc0l2UldLalpVZTFSTHE0UmlvdFhna0N1MU5XeGF6eWd6NjZzbWFjaEFpZ2dTSWFuQkE0LUxjVkVOcmY1dmlmWWpfSFo1bmhTWGVVdjNfQVlkeXJXeHlQZFQ1Qmd1VlZSUzhRTFU?oc=5"
  },
  {
@@ -170,7 +168,7 @@
   "url": "https://www.aljazeera.com/news/2026/5/27/kyrgyzstan-russia-tensions"
  },
  {
-  "level": "B",
+  "level": "C",
   "priority": "MOYENNE",
   "reasons": [
    "Caucase: азербайджан",
@@ -181,7 +179,7 @@
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": true,
-  "score": 55,
+  "score": 54,
   "signals_sha256": "5b8f95d7d5c604ed",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://www.amnesty.org/ru/projects/azerbaijan-freedom-of-expression/"
@@ -200,7 +198,7 @@
   "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOb09JY0lKcGt6ay0tT0RyUTVWVEliWi1kcHp4V3REeVBsUWVXRU80U1d1UGx5dU5NaGRiZFQwd01ZN19TcUZMNmlRUTdsTW80YTMtb0o3Wk9KdXR2OEhBSV9sLVZtLUtUcWtJWVpaMEp3NWN0UWNNd1JOYVBDaUNlc1FFY1VHX3JnbUZrTjJTVWhBMkF2ekFETFAwZE5BaHZOQ1ZQOGlvZUhEVHpu?oc=5"
  },
  {
-  "level": "B",
+  "level": "C",
   "priority": "MOYENNE",
   "reasons": [
    "Asie centrale: tajik",
@@ -209,8 +207,8 @@
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": true,
-  "score": 55,
-  "signals_sha256": "4b9e1e1d028403d7",
+  "score": 54,
+  "signals_sha256": "f381d00f075b1bd4",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2025/10/8/tajik-war-prisoner-captured-by-ukraine-fears-being-swapped"
  },
@@ -229,7 +227,7 @@
   "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQLS14LUIxNFNIOXF2aFY1dEN5MV9KSHhCamVzeERZUDJxd2ZURGtnMEpFcEJnSDA1MVQxejhYUjFHYnVHTDBIR3Nhd29iSFRPeTlUTFNtUUtnSzFMZ1NwZmgtVWVOUVRuT2FBY0tKV05VdFZIZ3ZBS1ROZlhQNzNNdTAxVWM4Y2cwVEQ4WmQtWFRDMno3OUpCVnNHRGxCVkgw?oc=5"
  },
  {
-  "level": "B",
+  "level": "C",
   "priority": "MOYENNE",
   "reasons": [
    "Asie centrale: tajikistan",
@@ -240,7 +238,7 @@
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": true,
-  "score": 55,
+  "score": 54,
   "signals_sha256": "9216f450057a7a4e",
   "theme": "Journalistes sous pression",
   "url": "https://www.aljazeera.com/opinions/2024/12/15/the-world-bank-should-reconsider-its-mega-dam-project-in-tajikistan"
@@ -260,7 +258,7 @@
   "url": "https://www.aljazeera.com/features/2024/10/25/remembering-shamshad-abdullaev-the-world-class-uzbek-poet-too-few-knew"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: kyrgyzstan",
@@ -268,7 +266,7 @@
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 35,
+  "score": 34,
   "signals_sha256": "52e524a3693f502b",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/features/2024/7/18/in-kyrgyzstan-an-unprecedented-crackdown-on-free-press-raises-alarm"
@@ -288,7 +286,7 @@
   "url": "https://www.aljazeera.com/news/2023/8/30/kyrgyzstan-brings-back-95-isil-wives-children-from-syrian-internment-camps"
  },
  {
-  "level": "B",
+  "level": "C",
   "priority": "MOYENNE",
   "reasons": [
    "Asie centrale: таджикистан, таджик",
@@ -297,7 +295,7 @@
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": true,
-  "score": 55,
+  "score": 54,
   "signals_sha256": "704dfdf3c12a5f49",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1Ba1ZoeUR1WWtRVUgwNm9GWEl4SHltbHROU0UwNHV4d0dzLTMxa1cxekU5VGUwdHFIbFFFUGJVSE1RZFJKd2k2TldWRG9CM0twYnJBbWdsM3NlelJ0dzgtV0c1SEUxMHRHeGhURkNsYWVYMEtEZF9rVk1pRWluT2M?oc=5"
@@ -408,7 +406,7 @@
   ],
   "relevant": true,
   "score": 45,
-  "signals_sha256": "4071a02f8d7cc1d3",
+  "signals_sha256": "ee2010e1e5847665",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2022/3/12/turkmenistan-votes-presidents-son-expected-to-win"
  },
@@ -441,7 +439,7 @@
   "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5ja0ViajJ2d0d5b2pReWpQem5pR0VzOG1mY1lLVFJtNEtWLVFJZDE0QXVqVGl6TmpraXN5Z0kxQ2dJVTF6V2ZtVnpGaFVNanJPRE9MWUFwWWw?oc=5"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: central asia",
@@ -449,7 +447,7 @@
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 35,
+  "score": 34,
   "signals_sha256": "c2db4315b81271d1",
   "theme": "Répression / droits humains",
   "url": "https://en.kabar.kg/news/central-asia-and-china-to-strengthen-security-cooperation/"
@@ -469,14 +467,14 @@
   "url": "https://www.aljazeera.com/news/2026/8/23/kazakhstan-parliamentary-elections-begin-whats-at-stake"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Ouïghours: uyghur",
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 35,
+  "score": 34,
   "signals_sha256": "34eead70cb67d1f8",
   "theme": "Répression / droits humains",
   "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQZjMzckJtSVkyaHJKOEFsZkM1SWJtOGVGbHMwS3ROaHhhOUJXNjZIOWVJSGVDeXJJbmZoeS1jak9oLTFUajVYbExMMVE4a3haNzU3UnI3M2VGTWFCdzZIaGNHVHc2OHJXbzFEUS0zOW1FV2NnRFFzTWhLZmhwNy1TOFFETG1Uam5FVjNKWWU0TjRMS3NzVkRGckxJNUc0OHdLbTZBZEkxdmNRaFhqcGx6dzVJeFJJTmprcVpUVFp4eFhFYjRLUFZxSFhzUFZ4SE0?oc=5"
@@ -495,7 +493,7 @@
   "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPSkJRZEFJOUpNMnZnYnppOWxLSWZGXzZ2dHFmblc0NDBteUNCa3p0Z0pLQU1LLTB2ckhxWUxQdldrNlVmMFdQR3NPcHFsT2xlMmVRenRMa29WTXFMUWljcG9pd3R3dnlKX3dSTzNXMzNJSm5hYUZjbHpQcnY4VUpyUVgxYlE5M0ZsMnhxbGtELWg4ZEh4UkFZSg?oc=5"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: central asia",
@@ -503,7 +501,7 @@
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 35,
+  "score": 34,
   "signals_sha256": "8d44cd0ce08e40c7",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2025/11/6/why-is-trump-hosting-c-asia-leaders-can-he-compete-with-russia-china"
@@ -523,7 +521,7 @@
   "url": "https://www.aljazeera.com/news/2024/3/22/maximally-pragmatic-how-central-asia-navigates-russias-war-on-ukraine"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: turkmenistan",
@@ -531,7 +529,7 @@
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 35,
+  "score": 34,
   "signals_sha256": "f634b8f4dfac7afa",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2022/3/15/turkmenistan-leaders-son-wins-presidential-election"
@@ -573,7 +571,7 @@
   ],
   "relevant": false,
   "score": 27,
-  "signals_sha256": "43fcbe60b770c611",
+  "signals_sha256": "5e04e782c8b8ca57",
   "theme": "Géopolitique majeure",
   "url": "https://www.aljazeera.com/news/2021/8/6/central-asia-taliban-afghanistan"
  },
@@ -618,7 +616,7 @@
   "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE4yMkFncENkbnUxODV3YnJ5R25sRUpBR0draVJoa3RvOTVqZE1IME5jbkZvay14b3g2M25KdFJ0UVFpTEZBRXBCcmd1RGhKMG15empTTmMzam4?oc=5"
  },
  {
-  "level": "C",
+  "level": "E",
   "priority": "FAIBLE",
   "reasons": [
    "Asie centrale: central asia",
@@ -626,7 +624,7 @@
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 35,
+  "score": 34,
   "signals_sha256": "21463b9382892d4f",
   "theme": "Répression / droits humains",
   "url": "https://www.cacianalyst.org/publications/feature-articles/item/13948-the-wakhan-corridor’s-increasing-role-in-central-asia-afghanistan-china-interaction.html"
@@ -820,7 +818,7 @@
   ],
   "relevant": false,
   "score": 5,
-  "signals_sha256": "e550683f89eeeeaf",
+  "signals_sha256": "94c117dabde2b2ee",
   "theme": "Faible priorité",
   "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOODhWWm9GcjF0OTE2QzgzT3ltYnR5Tmx5cGZMOFdkeU5MektnWF8zUTBvckZFb1hlelA5TFozOHdvR0JPYVg3UmxwS2NhREE0X1FmbHBDVnlhOG5jcnhndllDeFF2RWxCMFJaNGRvdlJJSjVaclNSbm9uZWlLc0xScU5EVk91bEVlakMwR2MzRmZrZU04bjZENl9Qb05XaFhHcDcwX29Zd1VqUTNFOU5FUUhsUVU?oc=5"
  },
@@ -943,7 +941,7 @@
   ],
   "relevant": false,
   "score": 19,
-  "signals_sha256": "db3df7c922da3799",
+  "signals_sha256": "1a70f4b290e2d2b4",
   "theme": "Géopolitique majeure",
   "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOUmdDbGQteHphb3dpd3l3X09KaU5zOXpNcDgxSWptSTRJUzdiN2dpcXRqU2Jab3hhaHF2Ykc2ZDV1YlJBTDM4RmdGTTZ4YmVLM1pwRWtPcWd2SW9yOWpVR3lLck5yaGJGa2t1YkdRRmVHbDBSaTd6WHpna0R0dU9kSUluVEtJa1VIMWlpc2lReFhHU2JmOG5mcHh2Z3Y?oc=5"
  },
@@ -1848,7 +1846,7 @@
   ],
   "relevant": false,
   "score": 27,
-  "signals_sha256": "e1a7d6200a184d1b",
+  "signals_sha256": "b6837a1a1c0c94eb",
   "theme": "Géopolitique majeure",
   "url": "https://www.aljazeera.com/news/2026/8/24/ukraines-offensive-against-russia-causes-petrol-panic-across-central-asia"
  },
@@ -2124,7 +2122,7 @@
   ],
   "relevant": false,
   "score": 15,
-  "signals_sha256": "b5f1bf2163f6f962",
+  "signals_sha256": "01e84d7300981094",
   "theme": "Faible priorité",
   "url": "https://www.aljazeera.com/news/2025/12/25/five-killed-at-tajikistan-afghanistan-border-in-armed-clash"
  },
@@ -2162,7 +2160,7 @@
   ],
   "relevant": false,
   "score": 31,
-  "signals_sha256": "13a0c9de1a211d6d",
+  "signals_sha256": "43e5c1d710a0b90a",
   "theme": "Répression / droits humains",
   "url": "https://www.aljazeera.com/news/2025/8/30/sco-summit-in-china-whos-attending-whats-at-stake-amid-trump-tariffs"
  },
