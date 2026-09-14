@@ -63,6 +63,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
+from text_utils import strip_related_blocks
+
 BASE_DIR = Path(__file__).resolve().parent
 
 ARCHIVE_FILE = BASE_DIR / "archive.jsonl"
@@ -461,6 +463,38 @@ def backfill_bodies(
         mis_a_jour += 1
 
     return mis_a_jour
+
+
+def nettoyer_corps(archive: dict[str, dict[str, Any]]) -> int:
+    """
+    Applique strip_related_blocks() aux corps DÉJÀ archivés. Modifie
+    `archive` sur place, renvoie le nombre d'entrées nettoyées.
+
+    backfill_bodies() ne peut pas s'en charger : il refuse par
+    construction tout corps plus court que celui qu'il remplace — une
+    règle qui protège contre les extractions partielles, et qu'un
+    nettoyage, par définition raccourcissant, prendrait de plein
+    fouet.
+
+    Le rattrapage est nécessaire parce que l'archive contient déjà
+    plusieurs milliers de corps téléchargés avant le nettoyage, et que
+    rien ne les retéléchargera : un corps présent n'est jamais
+    réenrichi. La fonction étant idempotente, les runs suivants
+    renvoient 0 et l'archive reste en append-only.
+    """
+    nettoyes = 0
+
+    for entry in archive.values():
+        corps = entry.get("body") or ""
+        if not corps:
+            continue
+
+        propre = strip_related_blocks(corps)
+        if propre != corps:
+            entry["body"] = propre
+            nettoyes += 1
+
+    return nettoyes
 
 
 def backfill_dates(

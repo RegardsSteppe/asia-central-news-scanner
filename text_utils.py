@@ -138,6 +138,70 @@ def clean_text(text: Any) -> str:
     return text.strip()
 
 
+# Bloc « articles recommandés » à délimiteurs explicites. Al Jazeera
+# aplatit ses listes en texte : "Recommended Stories list of 3 items
+# list 1 of 3 <titre> ... end of list". Les bornes étant nettes, on
+# retire exactement la portion concernée où qu'elle se trouve.
+_BLOC_RECOMMANDE = re.compile(
+    r"Recommended Stories\s+list of \d+ items?.*?end of list",
+    re.IGNORECASE | re.DOTALL,
+)
+
+# Marqueurs de pied de page qui introduisent des titres d'AUTRES
+# articles. Contrairement au bloc ci-dessus ils n'ont pas de fin
+# explicite, donc on ne peut que tronquer — et tronquer n'est sûr que
+# si le marqueur est déjà en fin de texte (voir _SEUIL_QUEUE).
+_MARQUEURS_QUEUE = re.compile(
+    r"(?:Читайте также"
+    r"|Related (?:Stories|Articles|Coverage|News)"
+    r"|Most (?:Read|Popular)"
+    r"|You may also like"
+    r"|Follow us on)",
+    re.IGNORECASE,
+)
+
+# Un marqueur situé dans les derniers 20 % du texte est un pied de
+# page ; plus haut, c'est un renvoi inséré au fil de l'article et le
+# vrai contenu continue après lui. La distinction n'est pas
+# cosmétique : sur Novastan, « Lire aussi sur Novastan : ... » apparaît
+# au tiers de l'article, avec 4 000 à 6 000 caractères de corps réel
+# derrière — tronquer là détruirait l'article. Ces renvois en ligne
+# sont donc laissés en place, faute de borne de fin fiable.
+_SEUIL_QUEUE = 0.80
+
+
+def strip_related_blocks(text: Any) -> str:
+    """
+    Retire du corps d'un article les blocs qui citent D'AUTRES
+    articles.
+
+    Repéré le 2026-09-14 par le harnais de caractérisation :
+    « Turkmenistan leader's son wins presidential election » montait de
+    E à C parce que son corps contenait "Recommended Stories ...
+    Turkmenistan's dissidents fear crackdown in Turkish exile ...",
+    c'est-à-dire le titre d'un autre article. Le scoring lisait un
+    ancrage répressif qui n'appartenait pas à l'article scoré. Sur
+    9 235 articles archivés, environ un millier de corps portent un
+    bloc de ce genre.
+
+    La fonction est idempotente : la repasser sur un texte déjà
+    nettoyé ne change rien, ce qui permet de l'appliquer aussi bien à
+    l'extraction qu'en rattrapage sur l'archive existante.
+    """
+    if not text:
+        return ""
+
+    text = str(text)
+
+    text = _BLOC_RECOMMANDE.sub(" ", text)
+
+    marqueur = _MARQUEURS_QUEUE.search(text)
+    if marqueur and marqueur.start() >= _SEUIL_QUEUE * len(text):
+        text = text[: marqueur.start()]
+
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def clean_title(text: Any) -> str:
     text = clean_text(text)
 

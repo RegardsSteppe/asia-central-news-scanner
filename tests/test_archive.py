@@ -17,6 +17,7 @@ from archive import (
     load_archive,
     load_state,
     merge_scanned,
+    nettoyer_corps,
     rewrite_archive,
     save_state,
 )
@@ -613,3 +614,53 @@ class MergeCarriesDatesTests(unittest.TestCase):
         self.assertEqual(
             load_archive(self.base)["a"]["date"], "2026-01-01T00:00:00+00:00"
         )
+
+
+class NettoyerCorpsTests(unittest.TestCase):
+    """
+    Le rattrapage des corps déjà archivés. backfill_bodies() ne peut
+    pas s'en charger : il refuse tout corps plus court que celui qu'il
+    remplace — règle qui protège des extractions partielles, et qu'un
+    nettoyage, raccourcissant par nature, prendrait de plein fouet.
+    """
+
+    def test_nettoie_un_corps_deja_archive(self):
+        entrees = {
+            "k1": {
+                "body": (
+                    "Le fils du président gagne. "
+                    "Recommended Stories list of 1 item list 1 of 1 "
+                    "Dissidents fear crackdown end of list "
+                    "Son rival était un obscur fonctionnaire."
+                )
+            }
+        }
+        self.assertEqual(nettoyer_corps(entrees), 1)
+        self.assertNotIn("crackdown", entrees["k1"]["body"])
+        self.assertIn("Son rival", entrees["k1"]["body"])
+
+    def test_ne_touche_pas_a_un_corps_propre(self):
+        entrees = {"k1": {"body": "Un article parfaitement propre."}}
+        self.assertEqual(nettoyer_corps(entrees), 0)
+
+    def test_second_passage_ne_reecrit_rien(self):
+        # C'est cette propriété qui autorise l'appel à chaque run : dès
+        # le second, il renvoie 0 et l'archive reste en append-only.
+        entrees = {
+            "k1": {
+                "body": (
+                    "Texte réel. Recommended Stories list of 2 items "
+                    "list 1 of 2 Autre titre end of list Suite."
+                )
+            }
+        }
+        nettoyer_corps(entrees)
+        self.assertEqual(nettoyer_corps(entrees), 0)
+
+    def test_backfill_bodies_ne_pourrait_pas_le_faire(self):
+        # Documente pourquoi cette fonction existe séparément : le
+        # corps nettoyé étant plus court, backfill_bodies le rejette.
+        entrees = {"k1": {"body": "A" * 500}}
+        scanned = [("k1", {"level": "A", "body": "A" * 100})]
+        self.assertEqual(backfill_bodies(entrees, scanned), 0)
+        self.assertEqual(len(entrees["k1"]["body"]), 500)
