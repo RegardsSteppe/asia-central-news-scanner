@@ -222,6 +222,7 @@ _LIBELLES_CLASSES = {
     "asie_centrale": "Asie centrale (région)",
     "caucase": "Caucase (région)",
     "ossetie": "Ossétie",
+    "haut_karabakh": "Haut-Karabakh",
     "defenseur": "Défenseur des droits",
     "journaliste": "Journaliste",
     "opposant": "Opposant / activiste",

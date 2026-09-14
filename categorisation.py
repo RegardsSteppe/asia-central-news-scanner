@@ -253,6 +253,17 @@ _register_geo_terms("caucase", [
 # Géorgie. Le terme ne tranche pas, l'étiquette non plus.
 _register_geo_terms("ossetie", ["осетия"])
 
+# Même raisonnement pour le Haut-Karabakh (2026-09-14) : disputé entre
+# l'Arménie et l'Azerbaïdjan, il n'est fondu dans aucun des deux. Sur
+# les 9556 articles archivés, 10 ne portaient QUE ce terme comme
+# géographie — sans cette étiquette, ils ressortaient sans aucune
+# géographie détectée.
+_register_geo_terms("haut_karabakh", [
+    "karabakh", "nagorno-karabakh", "nagorno karabakh", "haut-karabakh",
+    "haut karabakh", "artsakh", "карабах", "нагорный карабах", "арцах",
+    "нагорно-карабахский",
+])
+
 _PAYS_MONDE_LISTE = list(PAYS_MONDE_TERMES)
 
 

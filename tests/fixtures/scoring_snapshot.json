@@ -2942,11 +2942,12 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "Caucase: nagorno-karabakh",
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "score": 12,
+  "signals_sha256": "e78719ce7e8c0d00",
   "theme": "Faible priorité",
   "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNSGJwTnM2dmpHSHpVVlN6MUN6Z3h6Q2JnZ3k5U0xfRFNjNmtKTlJJRHpwVVEzN0ZFYzRuX0NwQ2hERjN0U0hOUDVrbDdEN2RTMFBORTg1V2xxeHVWbll3UElPZ1BtSWx1T25PWndrX0VILU1SRHJjcHhKa0JrdDhzcEZ1QS1aNFBjSzFmZ0F3d3g5TTBUWmg1ZG1WLU9ab0lHbE1tYTcxSzBfTGpwbU9WQnJwbw?oc=5"
  },
@@ -3366,11 +3367,12 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "Caucase: karabakh",
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "score": 12,
+  "signals_sha256": "c5625c702b6febe9",
   "theme": "Faible priorité",
   "url": "https://www.azernews.az/nation/263709.html"
  },
@@ -4970,11 +4972,12 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "Caucase: karabakh",
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "score": 12,
+  "signals_sha256": "c5625c702b6febe9",
   "theme": "Faible priorité",
   "url": "https://www.azernews.az/nation/263732.html"
  },

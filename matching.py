@@ -329,6 +329,10 @@ RUSSIAN_CAUCASUS_STEM_PATTERNS = (
     ("осетия", r"\bосети\w*\b"),
     ("ингушетия", r"\bингуш\w*\b"),
     ("ереван", r"\bереван\w*\b"),
+    # "карабах" (2026-09-14) : couvre Карабах/Карабаха/Карабахе/
+    # Карабахом et l'adjectif "нагорно-карабахский" sans les énumérer
+    # un par un — même principe que les autres racines de cette liste.
+    ("карабах", r"\bкарабах\w*\b"),
 )
 
 
