@@ -65,7 +65,7 @@ ECHANTILLON_ACCORDS = 200
 # Un désaccord sur un article classé A est plus grave qu'un désaccord
 # sur un E : le premier est en haut du site, le second est noyé. Sert à
 # trier ce qu'on fait arbitrer en premier.
-_GRAVITE_NIVEAU = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}
+_GRAVITE_NIVEAU = {"A": 6, "B": 5, "C": 4, "D": 3, "E": 2, "F": 1}
 
 
 def _cle(article: dict[str, Any]) -> str:

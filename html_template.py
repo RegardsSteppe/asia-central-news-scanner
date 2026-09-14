@@ -238,6 +238,7 @@ _LIBELLES_CLASSES = {
     "rapport_analyse": "Rapport / analyse",
     "plaidoyer_communique": "Plaidoyer / communiqué",
     "navigation": "Page de navigation",
+    "page_thematique": "Page thématique / pays",
     "aucun": "aucun",
 }
 
@@ -771,6 +772,11 @@ def render_dashboard(
         {render_stat(
             stats["level_e"],
             "⬜ Niveau E — bruit"
+        )}
+
+        {render_stat(
+            stats.get("level_f", 0),
+            "🗂️ Niveau F — pages de rubrique"
         )}
 
         {render_stat(

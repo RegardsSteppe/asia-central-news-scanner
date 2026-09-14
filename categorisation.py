@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import re
 from typing import Any
+from urllib.parse import urlparse
 
 from article_ingestion import looks_like_article_link
 from text_utils import article_age_days
@@ -69,6 +70,7 @@ from matching import (
     find_terms,
     has_russian_repression_morphology,
     normalize,
+    looks_like_section_page,
     relation_present,
     resolve_language,
 )
@@ -590,6 +592,14 @@ def _detect_type(article: dict[str, Any], body_text: str) -> tuple[str, str]:
 
     if not looks_like_article_link(url, title):
         return "navigation", "looks_like_article_link()=False"
+
+    # Testé AVANT la date et la longueur du corps, sinon une page pays
+    # bien remplie ressort "rapport_analyse" et une page portant une
+    # date de dernière modification ressort "evenement_date" : 80 des
+    # 441 étaient dans ce cas, étiquetées comme du contenu alors
+    # qu'elles n'en sont pas.
+    if looks_like_section_page(url, title):
+        return "page_thematique", "titre identique au segment d'URL"
 
     if article.get("date"):
         return "evenement_date", "date d'article présente"

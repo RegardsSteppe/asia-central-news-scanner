@@ -103,7 +103,7 @@ TRAITEMENTS_RETENUS: frozenset[str] | None = None
 # Types d'article exclus.
 # Options possibles (voir categorisation.py: type) — un sous-ensemble
 # de {"evenement_date", "rapport_analyse", "plaidoyer_communique",
-# "indetermine", "navigation"}.
+# "page_thematique", "indetermine", "navigation"}.
 #
 # Répartition mesurée le 2026-09-14 sur les 7795 articles publiés :
 #   evenement_date        35,1%
@@ -121,12 +121,19 @@ TRAITEMENTS_RETENUS: frozenset[str] | None = None
 #     base de ce qu'on n'a pas réussi à récupérer — notamment tous les
 #     liens Google News, dont le corps n'est structurellement jamais
 #     accessible (voir fetch_all_bodies.py).
+#   - "page_thematique" est LE filtre qui a un sens aujourd'hui : ce
+#     sont des pages de rubrique (pays, région, thème) et du mobilier
+#     de site, jamais des articles — "Burkina Faso" chez CPJ, "Central
+#     Asia" chez Eurasianet, "Cookie Statement" chez Amnesty. Les
+#     exclure retire 442 non-articles sans rien perdre :
+#       TYPES_EXCLUS = frozenset({"page_thematique", "navigation"})
 #   - "plaidoyer_communique" est un vrai choix éditorial (actualité
-#     plutôt que communiqués), mais porte sur 11 articles.
+#     plutôt que communiqués), mais porte sur 45 articles.
 #   - "rapport_analyse" est souvent la source la plus détaillée.
 #
-# Autrement dit : ce filtre n'a aujourd'hui aucun réglage utile. Le
-# champ "type" sert à décrire, pas à trier.
+# Le champ "type" sert d'abord à décrire ; "page_thematique" est la
+# seule valeur qui se prête aussi à un tri, parce qu'elle désigne des
+# pages qui ne sont pas du journalisme du tout.
 TYPES_EXCLUS: frozenset[str] | None = None
 
 # Âge maximum accepté (en jours).

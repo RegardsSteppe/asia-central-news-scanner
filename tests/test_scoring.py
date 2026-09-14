@@ -243,8 +243,12 @@ class NonRegionalActivistLevelTests(unittest.TestCase):
     """
 
     def test_non_regional_activist_story_reaches_level_d(self):
+        # Titre et URL réalistes : la version d'origine ("Iran" sous
+        # /iran) avait exactement la forme d'une page pays et ressort
+        # désormais en F. Un vrai article porte un titre-phrase et un
+        # slug qui n'est pas son titre entier.
         article = {
-            "title": "Iran",
+            "title": "Iranian Rights Defender Jailed After Months In Detention",
             "summary": "",
             "body": (
                 "An Iranian human rights defender was arrested and "
@@ -253,7 +257,7 @@ class NonRegionalActivistLevelTests(unittest.TestCase):
                 "on activists and journalists."
             ),
             "source": "Human Rights Watch",
-            "url": "https://example.com/iran",
+            "url": "https://example.com/news/iranian-rights-defender-jailed",
         }
 
         classify_article(article)
@@ -901,3 +905,65 @@ class DerivedDecisionTests(unittest.TestCase):
                 {"regional_context": True, "has_activist": True, "noise": True},
             )
         )
+
+
+class NiveauFPagesDeRubriqueTests(unittest.TestCase):
+    """
+    F : pages de rubrique (pays, région, thème) et mobilier de site.
+
+    Les mettre en E revenait à dire "article sans intérêt" d'une page
+    qui n'est pas un article. Et comme certaines sont longues et bien
+    remplies, elles remontaient : audit du 2026-09-14 sur les 8174
+    entrées archivées, 3 des 442 étaient classées C et 86 en D — dont
+    "Vacancy: Project Evaluator" à 39/100.
+    """
+
+    def _article(self, url, title, **overrides):
+        article = {
+            "title": title, "summary": "", "body": "",
+            "source": "Test", "url": url, "language": "en",
+        }
+        article.update(overrides)
+        return article
+
+    def test_section_page_is_level_f(self):
+        for url, titre in (
+            ("https://cpj.org/africa/burkina-faso/", "Burkina Faso"),
+            ("https://eurasianet.org/region/central-asia", "Central Asia"),
+            ("https://www.amnesty.org/en/media-centre/", "Media Centre"),
+            ("https://timesca.com/author/askar-alimzhanov", "Askar Alimzhanov"),
+        ):
+            with self.subTest(url=url):
+                article = self._article(url, titre)
+                classify_article(article)
+                self.assertEqual(article["level"], "F")
+
+    def test_f_wins_over_regional_geography(self):
+        # Une page pays mentionne évidemment son pays : les tests de
+        # géographie la valideraient à tort, d'où la décision en tête.
+        article = self._article(
+            "https://cpj.org/asia/kazakhstan/", "Kazakhstan",
+            body="Kazakhstan Almaty Astana journalists detained arrested" * 40,
+        )
+        classify_article(article)
+        self.assertEqual(article["level"], "F")
+
+    def test_a_real_article_keeps_its_level(self):
+        article = self._article(
+            "https://example.com/news/kazakh-journalist-jailed-ten-years",
+            "Kazakh Journalist Jailed For Ten Years Over Protest Coverage",
+            body=(
+                "A journalist was arrested in Almaty, Kazakhstan, and "
+                "sentenced to ten years after covering a protest."
+            ),
+        )
+        classify_article(article)
+        self.assertNotEqual(article["level"], "F")
+
+    def test_the_score_itself_is_untouched(self):
+        # F décrit la NATURE de la page, pas sa qualité : le score
+        # reste celui que le texte mérite, pour rester auditable.
+        page = self._article("https://cpj.org/africa/sierra-leone/", "Sierra Leone")
+        classify_article(page)
+        self.assertIn("score", page)
+        self.assertTrue(page["signals"]["section_page"])

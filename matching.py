@@ -26,6 +26,7 @@ pertinence. Il répond seulement à "ce texte contient-il ce vocabulaire".
 
 import re
 from functools import lru_cache
+from urllib.parse import urlparse
 
 from keywords import REPRESSION_MORPHOLOGY_PATTERNS_V9
 
@@ -323,3 +324,53 @@ def find_caucasus_terms(text, terms, language):
         terms,
         RUSSIAN_CAUCASUS_STEM_PATTERNS if language == "ru" else (),
     )
+
+
+# ============================================================
+# FORME D'UN LIEN — page de rubrique vs article
+# ============================================================
+#
+# Une page de rubrique porte pour titre exactement ce que son URL
+# nomme : "Burkina Faso" sous cpj.org/africa/burkina-faso/, "Central
+# Asia" sous eurasianet.org/region/central-asia. Un vrai article a un
+# slug tronqué ou daté ("north-koreas-nicaragua-court" pour "North
+# Korea's Nicaragua Courtship"), donc l'égalité EXACTE entre le
+# dernier segment et le titre slugifié les sépare proprement, sans
+# liste de verbes et sans rien de spécifique à une langue.
+#
+# Ici plutôt que dans article_ingestion.py (où vivent les autres
+# heuristiques de lien) parce que scoring.py en a besoin et ne peut
+# importer que matching/keywords : l'image RunPod minimale ne copie
+# pas article_ingestion, qui tire bs4 et feedparser.
+#
+# Audit du 2026-09-14 : 442 entrées sur 8174, une douzaine de sources,
+# zéro faux positif.
+
+_SLUG_NON_ALNUM = re.compile(r"[^a-z0-9]+")
+
+# Au-delà, un titre n'est plus un nom de rubrique mais une phrase.
+SECTION_TITLE_MAX_WORDS = 5
+
+
+def slugify(title):
+    return _SLUG_NON_ALNUM.sub("-", (title or "").lower()).strip("-")
+
+
+def looks_like_section_page(url, title):
+    """Page de rubrique (pays, région, thème) plutôt qu'article."""
+    titre = (title or "").strip()
+
+    if not titre or len(titre.split()) > SECTION_TITLE_MAX_WORDS:
+        return False
+
+    try:
+        chemin = urlparse(url or "").path.rstrip("/")
+    except ValueError:
+        return False
+
+    segments = [segment for segment in chemin.split("/") if segment]
+
+    if not segments:
+        return False
+
+    return segments[-1] == slugify(titre)
