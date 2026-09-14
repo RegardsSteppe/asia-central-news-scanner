@@ -73,6 +73,7 @@ from matching import (
     normalize,
     looks_like_section_page,
     relation_present,
+    FENETRE_RELATION_DEFAUT,
     resolve_language,
 )
 
@@ -272,6 +273,19 @@ def _sans_inclusions(termes: list[str]) -> list[str]:
             for autre in termes
         )
     ]
+
+
+# Fenêtre utilisée pour relation_acteur_traitement.
+#
+# Le réglage vit ici et non dans regles_editoriales.py : il ne décide
+# pas quoi RETENIR, il décide ce que le champ relation_acteur_traitement
+# AFFIRME. C'est une description qui change, pas une règle éditoriale.
+#
+# La courbe mesurée et ses limites sont documentées au-dessus de
+# FENETRE_RELATION_DEFAUT (matching.py). En résumé : 80 rend le champ
+# plus strict (3,2% du corpus), 140 est le coude naturel (3,7%), 300
+# l'élargit peu (4,2%) et au-delà on collecte surtout du hasard.
+FENETRE_RELATION = FENETRE_RELATION_DEFAUT
 
 
 # ============================================================
@@ -1028,7 +1042,12 @@ def categoriser(article: dict[str, Any]) -> dict[str, Any]:
         or (
             acteur != ["aucun"]
             and traitement != ["aucun"]
-            and relation_present(full_text, acteur_terms_flat, traitement_terms_flat)
+            and relation_present(
+                full_text,
+                acteur_terms_flat,
+                traitement_terms_flat,
+                window=FENETRE_RELATION,
+            )
         )
     )
 

@@ -853,3 +853,76 @@ class RoleHeriteDuXinjiangTests(unittest.TestCase):
             )
         )
         self.assertEqual(cat["acteur_role"], "mention_secondaire")
+
+
+class FenetreRelationTests(unittest.TestCase):
+    """
+    La fenêtre de relation est un réglage nommé, plus un nombre magique
+    enfoui dans une signature de fonction.
+
+    Elle est restée trois mois sans justification (commit "improve").
+    Mesurée le 2026-09-14 : la courbe a un coude à 140 et la
+    distribution des écarts est bimodale (q1=12, médiane=97, q3=652),
+    donc 140 sépare bien "même phrase" de "paragraphes différents".
+    """
+
+    def _article(self, titre, corps=""):
+        return {
+            "title": titre, "summary": "", "body": corps,
+            "source": "Test", "url": "https://ex.org/news/a",
+            "language": "en", "date": None,
+        }
+
+    def test_the_window_is_a_named_constant(self):
+        import categorisation
+        import matching
+
+        self.assertEqual(
+            categorisation.FENETRE_RELATION, matching.FENETRE_RELATION_DEFAUT
+        )
+        self.assertEqual(matching.FENETRE_RELATION_DEFAUT, 140)
+
+    def test_close_terms_make_a_relation(self):
+        cat = categoriser(
+            self._article("Journalist detained in Almaty, Kazakhstan")
+        )
+        self.assertTrue(cat["relation_acteur_traitement"])
+
+    def test_distant_terms_do_not(self):
+        # Acteur et traitement présents, mais séparés par bien plus que
+        # la fenêtre : c'est exactement le cas "paragraphes différents"
+        # que le troisième quartile (652 caractères) décrit.
+        cat = categoriser(
+            self._article(
+                "Kazakhstan opens new hospital",
+                corps=(
+                    "A journalist attended the opening. "
+                    + "Filler about the building and its architecture. " * 12
+                    + "In an unrelated case, a man was sentenced last year."
+                ),
+            )
+        )
+        self.assertIn("journaliste", cat["acteur"])
+        self.assertIn("condamnation", cat["traitement"])
+        self.assertFalse(cat["relation_acteur_traitement"])
+
+    def test_the_window_is_actually_honoured(self):
+        # Le réglage doit piloter la détection, pas seulement exister.
+        from unittest.mock import patch
+
+        import categorisation
+
+        article = self._article(
+            "Kazakhstan news",
+            corps=(
+                "A journalist spoke. " + "x" * 300 + " He was sentenced."
+            ),
+        )
+
+        with patch.object(categorisation, "FENETRE_RELATION", 10):
+            serre = categorisation.categoriser(article)
+        with patch.object(categorisation, "FENETRE_RELATION", 5000):
+            large = categorisation.categoriser(article)
+
+        self.assertFalse(serre["relation_acteur_traitement"])
+        self.assertTrue(large["relation_acteur_traitement"])

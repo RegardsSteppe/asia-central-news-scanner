@@ -88,8 +88,14 @@ GEO_ROLE_MINIMUM: str | None = None
 #   - Piste intermédiaire, à écrire à la main si elle vous convient :
 #     accepter "mention_secondaire" UNIQUEMENT quand
 #     relation_acteur_traitement est vrai (l'acteur et ce qu'il subit
-#     sont à moins de 140 caractères l'un de l'autre). C'est le
-#     compromis qui garde Aktas et écarte Pickleball.
+#     sont proches dans le texte). C'est le compromis qui garde Aktas
+#     et écarte Pickleball.
+#
+#     La proximité exigée se règle par categorisation.FENETRE_RELATION
+#     (140 caractères par défaut). Ce n'est pas une règle éditoriale
+#     mais la définition du champ lui-même, d'où son emplacement ; la
+#     courbe qui justifie la valeur est documentée au-dessus de
+#     matching.FENETRE_RELATION_DEFAUT.
 # TODO: décider et remplacer None, ex. ACTEUR_ROLE_MINIMUM = "sujet_principal"
 ACTEUR_ROLE_MINIMUM: str | None = None
 TRAITEMENT_ROLE_MINIMUM: str | None = None

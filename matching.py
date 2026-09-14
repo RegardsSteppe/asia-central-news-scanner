@@ -185,7 +185,39 @@ def _alternation_pattern(terms):
     return compiled("|".join(escaped), re.I | re.S)
 
 
-def relation_present(text, targets, actions, window=140):
+# Écart maximal, en caractères, entre la fin d'un terme et le début de
+# l'autre pour qu'on parle de "relation".
+#
+# Cette valeur est restée trois mois sans justification, introduite par
+# un commit intitulé "improve". Mesurée le 2026-09-14 sur les 9235
+# articles archivés, elle se défend — mais il fallait le vérifier.
+#
+# Nombre d'articles où un acteur et un traitement sont en relation,
+# selon la fenêtre :
+#
+#      0 car    57   0.6%      300 car   389   4.2%
+#     40 car   258   2.8%      600 car   457   4.9%
+#     80 car   299   3.2%     1200 car   526   5.7%
+#    140 car   344   3.7%    illimitée   622   6.7%
+#
+# La courbe a un coude : de 0 à 140 on gagne 287 articles, de 140 à 300
+# seulement 45, puis elle repart lentement et linéairement. Cette
+# dernière pente n'est plus de la proximité, c'est de la co-occurrence
+# fortuite dans des corps de 12000 caractères.
+#
+# La distribution des écarts explique pourquoi : elle est bimodale.
+# Premier quartile 12 caractères ("le journaliste arrêté"), médiane 97,
+# mais troisième quartile 652 — des paragraphes différents, souvent des
+# sujets différents. 140 tombe entre les deux modes.
+#
+# Ce que la fenêtre ne sait pas faire : distinguer "le journaliste a été
+# arrêté" de "le journaliste a raconté l'arrestation du trafiquant".
+# Les deux ont leurs termes à quelques caractères. C'est de la
+# proximité, pas de la syntaxe.
+FENETRE_RELATION_DEFAUT = 140
+
+
+def relation_present(text, targets, actions, window=FENETRE_RELATION_DEFAUT):
     """
     True if any target term and any action term co-occur within `window`
     characters of each other, in either order.
@@ -213,6 +245,18 @@ def relation_present(text, targets, actions, window=140):
         return False
     for target_start, target_end in target_spans:
         for action_start, action_end in action_spans:
+            # Empans qui se chevauchent : c'est la relation la plus
+            # forte qui soit, et elle était rejetée. Certaines listes
+            # partagent des locutions entières — "journalist detained"
+            # est à la fois un terme d'acteur et un terme de traitement
+            # — donc les deux côtés matchent exactement le même texte.
+            # Les deux tests ci-dessous exigent l'un APRÈS l'autre, ce
+            # qu'un empan ne peut pas être vis-à-vis de lui-même : un
+            # titre aussi explicite que "Journalist detained in Almaty"
+            # ressortait relation=False, pendant que deux mots
+            # quelconques à 100 caractères l'un de l'autre passaient.
+            if target_start < action_end and action_start < target_end:
+                return True
             if target_end <= action_start <= target_end + window:
                 return True
             if action_end <= target_start <= action_end + window:
