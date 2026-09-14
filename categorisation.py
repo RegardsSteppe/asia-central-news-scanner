@@ -264,6 +264,12 @@ _register_geo_terms("haut_karabakh", [
     "нагорно-карабахский",
 ])
 
+# Même raisonnement, même découverte le même jour : un rapport HRW sur
+# les Géorgiens de souche rentrant dans le district de Gali n'avait
+# aucune géographie détectée. L'Abkhazie est disputée entre la
+# Géorgie et la Russie, comme l'Ossétie du Sud ci-dessus.
+_register_geo_terms("abkhazie", ["abkhazia", "abkhazie", "абхазия"])
+
 _PAYS_MONDE_LISTE = list(PAYS_MONDE_TERMES)
 
 
