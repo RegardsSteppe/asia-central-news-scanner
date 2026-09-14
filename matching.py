@@ -425,11 +425,76 @@ def slugify(title):
     return _SLUG_NON_ALNUM.sub("-", (title or "").lower()).strip("-")
 
 
-def looks_like_section_page(url, title):
-    """Page de rubrique (pays, région, thème) plutôt qu'article."""
-    titre = (title or "").strip()
+# Décorations que les sites accrochent à leur <title> et qui empêchent
+# le slug de correspondre au segment d'URL : " - OHCHR Treaty Body
+# Database", "Read More ›", "Tous les rapports »".
+_TITRE_DECORATION = re.compile(r"\s*[-–—|]\s*[^-–—|]{1,40}$")
+_TITRE_FLECHE = re.compile(r"[\s\u203a\u00bb>›»]+$")
 
-    if not titre or len(titre.split()) > SECTION_TITLE_MAX_WORDS:
+# Segments d'URL qui désignent un index plutôt qu'une publication.
+# Liste explicite et relue, tirée du recensement des URL du corpus :
+# c'est ce qui remplace une comparaison approximative entre le slug du
+# titre et le segment, approche essayée puis abandonnée faute de
+# pouvoir séparer "US edition" sur /preference/edition/us d'un vrai
+# titre court sur une URL courte — les deux ont exactement la même
+# forme, et seul le contexte du chemin les distingue.
+_SEGMENTS_INDEX = frozenset({
+    "about", "about-us", "archive", "archives", "author", "authors",
+    "cat", "categories", "category", "contact", "countries", "country",
+    "donate", "index", "newsletter", "people", "podcast", "podcasts",
+    "ppl", "preference", "preferences", "profile", "program",
+    "programme", "programmes", "programs", "project", "projects",
+    "publications", "region", "regions", "rubric", "section",
+    "sections", "series", "staff", "subscribe", "tag", "tags", "team",
+    "theme", "themes", "topic", "topics", "ueber-uns", "what-we-do",
+    "where-we-work",
+})
+
+# Une URL qui date son contenu désigne une publication, jamais un
+# index : aucune page de rubrique ne s'appelle /2026/09/12/. Le garde-
+# fou vaut d'être explicite, parce que la règle du slug est fragile
+# sur les titres courts — "Kazakhstan: Protesters Arbitrarily
+# Arrested, Beaten" fait exactement 5 mots, et son URL d'origine chez
+# HRW reprend le slug du titre. Sans cette exclusion, un vrai article
+# de la forme la plus typique du corpus tomberait en niveau F.
+#
+# Vérifié sur les 9556 articles archivés : aucune des pages de
+# rubrique réellement détectées ne porte de date dans son chemin, donc
+# l'exclusion ne coûte aucune détection légitime.
+_CHEMIN_DATE = re.compile(r"/(?:19|20)\d{2}/\d{1,2}(?:/|$)")
+
+
+def looks_like_section_page(url, title):
+    """
+    Page de rubrique (pays, région, thème) plutôt qu'article.
+
+    La règle de base est que le dernier segment de l'URL soit le slug
+    du titre : eurasianet.org/region/the-baltics intitulé "The
+    Baltics". Elle est protégée par SECTION_TITLE_MAX_WORDS, qui écarte
+    les vrais articles — leurs titres sont longs, et leurs URL portent
+    en général une date.
+
+    Élargie le 2026-09-14 sur mesure : 88 pages échappaient à l'égalité
+    stricte, toutes pour l'une de deux raisons.
+
+    Le titre porte une décoration que le slug d'URL n'a pas ("Read
+    More ›", "- OHCHR Treaty Body Database") : on réessaie donc avec
+    le titre décapé.
+
+    Le chemin passe par un segment d'index (_SEGMENTS_INDEX) :
+    /preference/edition/us, /country/macedonia, /project/bad-practice.
+    Une comparaison approximative entre slug et segment a d'abord été
+    essayée puis abandonnée — "US edition" sur /preference/edition/us
+    et un vrai titre court sur une URL courte ont la même forme, et
+    aucun réglage ne les séparait sans perdre de vrais cas.
+
+    Parmi les 88, on trouve les éditions du Guardian, "Donate Now"
+    d'Amnesty, "Nous rejoindre" et "Tous les rapports" de RSF, les
+    pages pays de CIVICUS et de l'OMCT, le bandeau cookies d'Amnesty.
+    """
+    titre = _TITRE_FLECHE.sub("", (title or "").strip())
+
+    if not titre:
         return False
 
     try:
@@ -437,9 +502,33 @@ def looks_like_section_page(url, title):
     except ValueError:
         return False
 
+    if _CHEMIN_DATE.search(chemin):
+        return False
+
     segments = [segment for segment in chemin.split("/") if segment]
 
     if not segments:
         return False
 
-    return segments[-1] == slugify(titre)
+    dernier = segments[-1]
+
+    variantes = [titre]
+    decape = _TITRE_DECORATION.sub("", titre).strip()
+    if decape and decape != titre:
+        variantes.append(decape)
+
+    court = any(
+        len(variante.split()) <= SECTION_TITLE_MAX_WORDS
+        for variante in variantes
+    )
+
+    if not court:
+        return False
+
+    for variante in variantes:
+        if len(variante.split()) > SECTION_TITLE_MAX_WORDS:
+            continue
+        if slugify(variante) == dernier:
+            return True
+
+    return any(segment.lower() in _SEGMENTS_INDEX for segment in segments)

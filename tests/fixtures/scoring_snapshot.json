@@ -171,7 +171,7 @@
   "url": "https://www.aljazeera.com/news/2026/5/27/kyrgyzstan-russia-tensions"
  },
  {
-  "level": "C",
+  "level": "F",
   "priority": "MOYENNE",
   "reasons": [
    "Caucase: азербайджан",
@@ -184,7 +184,7 @@
   ],
   "relevant": true,
   "score": 54,
-  "signals_sha256": "bcb69b09952db36e",
+  "signals_sha256": "b0a55e70ed96a409",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://www.amnesty.org/ru/projects/azerbaijan-freedom-of-expression/"
  },
@@ -986,14 +986,14 @@
   "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPZXpHQ2l1eXl6Tm02REtvV2UxOVdOdHVxbmN2LUpzWmtseGxrQ0pDem9heElpM3U3ZzhVeXZpNmZjcy16aVJHYi1tWWRpQUxvMWE3d2xtU0FpWHZUUUpRazlNcGR4SkVOdWNzYlR0aFBvYnhJSnJiNlJJZEs4RXJKTVpxbw?oc=5"
  },
  {
-  "level": "D",
+  "level": "F",
   "priority": "BRUIT",
   "reasons": [
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
   "score": 18,
-  "signals_sha256": "f60df7a585e894f4",
+  "signals_sha256": "507b3709c059e9f0",
   "theme": "Politique intérieure",
   "url": "https://www.amnesty.org/ru/projects/anti-war-protest-in-russia/"
  },
@@ -1047,14 +1047,14 @@
   "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1jOWxoZGg0N25FWVhIOWh6X0lGLWJuVVpGWHRPZ3RaYmlMRENNVEttOEVtNWY0YXotQ3BuNzJvVmVpUndWY0toZ0JnVmlScC15cTlsX1BOYUdCeHRqa1RuMVU0T1RJeUU?oc=5"
  },
  {
-  "level": "E",
+  "level": "F",
   "priority": "BRUIT",
   "reasons": [
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
   "score": 2,
-  "signals_sha256": "04a3406174231038",
+  "signals_sha256": "6b97c8917a5086a0",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/ru/projects/russias-aggression-in-ukraine/"
  },
@@ -1131,14 +1131,14 @@
   "url": "https://www.amnesty.org/fr/permissions/"
  },
  {
-  "level": "D",
+  "level": "F",
   "priority": "BRUIT",
   "reasons": [
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
   "score": 17,
-  "signals_sha256": "333882ad6fb6dc05",
+  "signals_sha256": "db253eeeb9cdddfb",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/fr/donate/"
  },
@@ -1179,14 +1179,14 @@
   "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE96Y2ZCUmRocl9MRjludzdYYkxiX1lvWkYyQW9jSjd6eVI2ZFdqb2d5Mk9RbTUtd0gwSHhfUWhOaHlFSEQtX2ExaGxjbmduV18xcmJFUnduQUw?oc=5"
  },
  {
-  "level": "D",
+  "level": "F",
   "priority": "FAIBLE",
   "reasons": [
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
   "score": 20,
-  "signals_sha256": "b84c0bc88b71ceef",
+  "signals_sha256": "4400ef98446d9ece",
   "theme": "Droits spécifiques",
   "url": "https://www.amnesty.org/en/donate/"
  },
@@ -2039,14 +2039,14 @@
   "url": "https://www.aljazeera.com/news/2026/5/29/on-the-road-to-rogun-dam-tajikistans-greatest-dream"
  },
  {
-  "level": "E",
+  "level": "F",
   "priority": "BRUIT",
   "reasons": [
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
   "score": 12,
-  "signals_sha256": "216582ea494a4b4a",
+  "signals_sha256": "39f266e699966b22",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/ru/projects/israels-occupation-of-palestinian-territory/"
  },
@@ -2451,14 +2451,14 @@
   "url": "https://www.amnesty.org/fr/cookie-statement/"
  },
  {
-  "level": "E",
+  "level": "F",
   "priority": "BRUIT",
   "reasons": [
    "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
   "score": 7,
-  "signals_sha256": "ffb0c56467844b77",
+  "signals_sha256": "7872755c14cfb8d5",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/fr/countries/"
  },
@@ -3876,14 +3876,14 @@
   "url": "https://iz.ru/2166136/v-vengrii-proshla-aktciia-protiv-antirossiiskoi-politiki-vlastei"
  },
  {
-  "level": "E",
+  "level": "F",
   "priority": "BRUIT",
   "reasons": [
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
   "score": 12,
-  "signals_sha256": "9534b3a3ae7cfb96",
+  "signals_sha256": "709df7ec766c0842",
   "theme": "Géopolitique majeure",
   "url": "https://www.atlanticcouncil.org/region/united-states-canada/"
  },
@@ -5424,14 +5424,14 @@
   "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE85dUxSQ1BXbXNIYzZHSzFCT25QWE5VSW14bFN5cE5rUmlvSUF6Unp6ZXdhczN5OVNPU2lzM1IwTW1QLUc0?oc=5"
  },
  {
-  "level": "E",
+  "level": "F",
   "priority": "BRUIT",
   "reasons": [
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
   "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "signals_sha256": "ad84022873a751b7",
   "theme": "Faible priorité",
   "url": "https://www.cacianalyst.org/publications/analytical-articles.html"
  },
