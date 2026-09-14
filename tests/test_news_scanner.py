@@ -962,11 +962,14 @@ class MergeWithArchiveTests(unittest.TestCase):
 
 class EnrichmentTargetsNewGroundTests(unittest.TestCase):
     """
-    Le budget d'enrichissement doit aller aux articles SANS corps.
+    Un corps déjà archivé doit être RENDU à l'article (qui est alors
+    noté et catégorisé avec) et écarter cet article du budget réseau.
 
-    Sans ce filtre, la sélection par score reconduisait les mêmes têtes
-    de classement d'un run à l'autre : 167 articles sur 7795 avaient un
-    corps, et le reste n'était jamais couvert.
+    Les deux moitiés comptent : sans la première, un article encore
+    affiché par sa source repart sur titre + résumé alors que son texte
+    est dans l'archive, et merge_with_archive garde ce scoring appauvri
+    parce qu'il est "frais". Sans la seconde, le budget se redépense
+    sur les mêmes têtes de classement d'un run à l'autre.
     """
 
     def _articles(self):
@@ -982,26 +985,61 @@ class EnrichmentTargetsNewGroundTests(unittest.TestCase):
         ]
 
     @patch("news_scanner.extract_body")
-    def test_skips_articles_whose_body_is_already_archived(self, mock_extract):
+    def test_archived_body_is_given_back_and_costs_no_download(self, mock_extract):
         mock_extract.return_value = ("full body text", None)
 
         articles = self._articles()
-        deja = {canonical_article_key(articles[0])}
+        archives = {canonical_article_key(articles[0]): "le corps archivé"}
 
         with patch("news_scanner.SOURCES", new=[
             {"name": "Generic Source", "profile": "regional_media"},
         ]), patch("news_scanner.ENRICH_LIMIT", 1), patch(
             "news_scanner.ENRICH_PER_SOURCE_LIMIT", 0
         ):
-            enrich_articles(articles, deja_avec_corps=deja)
+            enrich_articles(articles, corps_archives=archives)
 
-        # Le mieux classé est écarté : son corps est déjà archivé.
-        self.assertNotIn("body", articles[0])
+        # Le mieux classé récupère son corps sans téléchargement.
+        self.assertEqual(articles[0]["body"], "le corps archivé")
         # Le budget est allé au suivant, qui n'en avait pas.
         self.assertEqual(articles[1]["body"], "full body text")
 
     @patch("news_scanner.extract_body")
-    def test_without_the_set_the_ranking_is_unchanged(self, mock_extract):
+    def test_an_article_served_from_the_archive_is_rescored_with_its_body(
+        self, mock_extract
+    ):
+        # Le cœur du correctif : sans le rescoring, l'article garderait
+        # la note calculée sur titre + résumé, et merge_with_archive la
+        # conserverait parce qu'elle est "fraîche".
+        mock_extract.return_value = ("", None)
+
+        article = {
+            "source": "Generic Source", "score": 0,
+            "url": "https://example.com/a", "title": "A" * 10,
+            "summary": "", "language": "en", "date": None,
+        }
+        corps = (
+            "Un militant des droits humains a été arrêté à Almaty, "
+            "au Kazakhstan, puis condamné."
+        )
+
+        with patch("news_scanner.SOURCES", new=[
+            {"name": "Generic Source", "profile": "regional_media"},
+        ]):
+            enrich_articles(
+                [article],
+                corps_archives={canonical_article_key(article): corps},
+            )
+
+        self.assertEqual(article["body"], corps)
+        self.assertIn("categorisation", article)
+        self.assertIn("level", article)
+        self.assertIn(
+            "kazakhstan", article["categorisation"]["geo"],
+            "l'article doit être catégorisé avec son corps archivé",
+        )
+
+    @patch("news_scanner.extract_body")
+    def test_without_archived_bodies_the_ranking_is_unchanged(self, mock_extract):
         mock_extract.return_value = ("full body text", None)
 
         articles = self._articles()

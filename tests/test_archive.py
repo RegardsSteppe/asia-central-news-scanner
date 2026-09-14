@@ -311,9 +311,10 @@ class MergeFilesTests(unittest.TestCase):
         append_entries([entry_from_article(article(), "a")], self.base)
         append_entries([entry_from_article(article(), "b")], self.incoming)
 
-        ajoutees = merge_files(self.base, self.incoming)
+        ajoutees, corps = merge_files(self.base, self.incoming)
 
         self.assertEqual(ajoutees, 1)
+        self.assertEqual(corps, 0)
         self.assertEqual(set(load_archive(self.base)), {"a", "b"})
 
     def test_entries_already_present_are_not_duplicated(self):
@@ -322,7 +323,7 @@ class MergeFilesTests(unittest.TestCase):
         append_entries([entry_from_article(article(), "a")], self.base)
         append_entries([entry_from_article(article(), "a")], self.incoming)
 
-        self.assertEqual(merge_files(self.base, self.incoming), 0)
+        self.assertEqual(merge_files(self.base, self.incoming), (0, 0))
         self.assertEqual(len(load_archive(self.base)), 1)
 
     def test_concurrent_run_lines_survive(self):
@@ -342,7 +343,7 @@ class MergeFilesTests(unittest.TestCase):
         from archive import merge_files
 
         append_entries([entry_from_article(article(), "a")], self.base)
-        self.assertEqual(merge_files(self.base, self.incoming), 0)
+        self.assertEqual(merge_files(self.base, self.incoming), (0, 0))
 
 
 class BackfillBodiesTests(unittest.TestCase):
@@ -431,3 +432,78 @@ class ModuleStateIsRestoredTests(unittest.TestCase):
 
         entry = archive_module.entry_from_article(article(level="E"), "cle")
         self.assertTrue(entry["body"])
+
+
+class MergeCarriesBodiesTests(unittest.TestCase):
+    """
+    L'union doit porter sur les corps, pas seulement sur les clés.
+
+    Le cas se produit dès qu'un run perd la course au push : il se
+    remet sur la version distante puis refusionne la sienne, et ses
+    corps fraîchement téléchargés portent justement sur des clés déjà
+    archivées des deux côtés.
+    """
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.base = Path(self.dir.name) / "base.jsonl"
+        self.incoming = Path(self.dir.name) / "incoming.jsonl"
+
+    def tearDown(self):
+        self.dir.cleanup()
+
+    def _ecrire(self, path, key, body):
+        entry = entry_from_article(article(level="A"), key)
+        entry["body"] = body
+        append_entries([entry], path)
+
+    def test_body_is_recovered_for_a_key_present_on_both_sides(self):
+        from archive import merge_files
+
+        self._ecrire(self.base, "a", "")
+        self._ecrire(self.incoming, "a", "le texte complet")
+
+        ajoutees, corps = merge_files(self.base, self.incoming)
+
+        self.assertEqual((ajoutees, corps), (0, 1))
+        self.assertEqual(load_archive(self.base)["a"]["body"], "le texte complet")
+
+    def test_a_shorter_body_never_wins(self):
+        from archive import merge_files
+
+        self._ecrire(self.base, "a", "un texte complet et long")
+        self._ecrire(self.incoming, "a", "court")
+
+        self.assertEqual(merge_files(self.base, self.incoming), (0, 0))
+        self.assertEqual(
+            load_archive(self.base)["a"]["body"], "un texte complet et long"
+        )
+
+    def test_missing_entries_and_bodies_merge_in_one_pass(self):
+        from archive import merge_files
+
+        self._ecrire(self.base, "a", "")
+        self._ecrire(self.incoming, "a", "texte de a")
+        self._ecrire(self.incoming, "b", "texte de b")
+
+        ajoutees, corps = merge_files(self.base, self.incoming)
+
+        self.assertEqual((ajoutees, corps), (1, 1))
+        relu = load_archive(self.base)
+        self.assertEqual(set(relu), {"a", "b"})
+        self.assertEqual(relu["a"]["body"], "texte de a")
+        self.assertEqual(relu["b"]["body"], "texte de b")
+
+    def test_concurrent_lines_survive_a_body_merge(self):
+        from archive import merge_files
+
+        # La réécriture déclenchée par les corps ne doit rien perdre.
+        self._ecrire(self.base, "concurrent", "texte concurrent")
+        self._ecrire(self.base, "a", "")
+        self._ecrire(self.incoming, "a", "texte de a")
+
+        merge_files(self.base, self.incoming)
+
+        relu = load_archive(self.base)
+        self.assertEqual(set(relu), {"concurrent", "a"})
+        self.assertEqual(relu["concurrent"]["body"], "texte concurrent")

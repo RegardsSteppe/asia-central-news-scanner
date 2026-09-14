@@ -712,32 +712,51 @@ def enrich_articles(
     articles: list[dict[str, Any]],
     force_refresh: bool = False,
     memory: dict[str, Any] | None = None,
-    deja_avec_corps: set[str] | None = None,
+    corps_archives: dict[str, str] | None = None,
 ) -> None:
     """
-    Télécharge le corps complet d'une sélection d'articles.
+    Donne son corps complet à un maximum d'articles : depuis l'archive
+    quand il y est déjà, par téléchargement sinon.
 
-    `deja_avec_corps` contient les clés d'archive dont le corps est
-    déjà stocké. Sans ce filtre, la sélection par score reconduisait
-    d'un run à l'autre les mêmes têtes de classement : le budget était
-    dépensé à re-confirmer des articles déjà enrichis (servis par le
-    cache, donc gratuits mais inutiles) pendant que le reste du corpus
-    n'était jamais couvert. C'est pourquoi 167 articles sur 7795
-    avaient un corps. En écartant ce qui est déjà archivé, chaque run
-    défriche du terrain neuf et le corpus se remplit par vagues.
+    `corps_archives` associe une clé d'archive au corps qui y est
+    stocké. Il sert deux fois, et les deux comptent.
+
+    D'abord il REND ce corps à l'article, qui est alors rescoré et
+    recatégorisé avec. Sans ça, un article encore affiché par sa source
+    repartait sur titre + résumé alors que son texte dormait dans
+    l'archive : merge_with_archive garde le scoring frais des articles
+    vus aujourd'hui, donc ce scoring appauvri écrasait ce que
+    l'archive savait. Le défaut restait invisible tant que l'archive
+    n'avait que 167 corps ; il aurait dégradé presque tout le site dès
+    le premier remplissage en masse (fetch_all_bodies.py --archive).
+
+    Ensuite il les ÉCARTE du budget de téléchargement. La sélection par
+    score reconduisait sinon les mêmes têtes de classement d'un run à
+    l'autre — servies par le cache, donc gratuites mais inutiles —
+    pendant que le reste du corpus n'était jamais couvert. C'est
+    pourquoi 167 articles sur 7795 avaient un corps.
     """
-    deja_avec_corps = deja_avec_corps or set()
+    corps_archives = corps_archives or {}
 
-    candidats = [
-        article
-        for article in articles
-        if canonical_article_key(article) not in deja_avec_corps
-    ]
+    candidats = []
+    servis_par_archive = 0
 
-    ignores = len(articles) - len(candidats)
-    if ignores:
+    for article in articles:
+        corps = corps_archives.get(canonical_article_key(article))
+
+        if not corps:
+            candidats.append(article)
+            continue
+
+        article["body"] = corps
+        classify_article(article)
+        _apply_categorisation(article)
+        servis_par_archive += 1
+
+    if servis_par_archive:
         print(
-            f"ENRICH | {ignores} articles ignorés (corps déjà archivé)"
+            f"ENRICH | {servis_par_archive} articles notés et catégorisés "
+            f"avec leur corps archivé (aucun téléchargement)"
         )
 
     ranked = sorted(
@@ -1702,18 +1721,18 @@ def run_scan(
     # Deuxième passe : body sur les meilleurs
     # --------------------------------------------------------
 
-    # Les clés dont le corps est DÉJÀ dans l'archive : inutile de
-    # redépenser le budget réseau dessus (voir enrich_articles).
-    # Relu ici plutôt que passé depuis merge_with_archive, qui ne
-    # tourne qu'après l'enrichissement.
-    deja_avec_corps = {
-        cle
+    # Les corps DÉJÀ dans l'archive. Ils sont rendus aux articles du
+    # scan avant notation (voir enrich_articles), et écartent ces
+    # articles du budget réseau. Relu ici plutôt que passé depuis
+    # merge_with_archive, qui ne tourne qu'après l'enrichissement.
+    corps_archives = {
+        cle: entree["body"]
         for cle, entree in archive.load_archive().items()
         if entree.get("body")
     }
 
     print(
-        f"ENRICH | {len(deja_avec_corps)} articles ont déjà un corps archivé"
+        f"ENRICH | {len(corps_archives)} corps disponibles dans l'archive"
     )
 
     timed_call(
@@ -1722,7 +1741,7 @@ def run_scan(
         all_articles,
         force_refresh=force_refresh,
         memory=memory,
-        deja_avec_corps=deja_avec_corps,
+        corps_archives=corps_archives,
     )
 
     # --------------------------------------------------------
