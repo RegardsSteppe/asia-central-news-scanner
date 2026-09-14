@@ -8,6 +8,8 @@ from email.utils import parsedate_to_datetime
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urljoin, urlparse
 
+from boilerplate import BOILERPLATE_PAR_SOURCE
+
 
 # ============================================================
 # MOJIBAKE / NORMALISATION
@@ -200,6 +202,37 @@ def strip_related_blocks(text: Any) -> str:
         text = text[: marqueur.start()]
 
     return re.sub(r"\s+", " ", text).strip()
+
+
+def strip_boilerplate(text: Any, source: Any = "") -> str:
+    """
+    Retire le pied de page que `source` recopie sous tous ses articles.
+
+    Complément de strip_related_blocks(), qui travaille par marqueur
+    ("Читайте также", "Recommended Stories"). Un marqueur par site ne
+    passe pas à l'échelle : Asia-Plus termine par un fil "Recent News"
+    sans aucun marqueur, 24.kg par un bloc "Popular". La table de
+    boilerplate.py, elle, est dérivée mécaniquement du corpus — un
+    texte identique d'un article à l'autre d'une même source ne peut
+    pas être le contenu de cet article-là.
+
+    Voir tools/detecter_boilerplate.py pour la façon dont la table est
+    produite et pour les deux garde-fous qui l'empêchent de confondre
+    un pied de page avec un article republié.
+
+    Idempotente, comme strip_related_blocks() : le rattrapage sur
+    l'archive existante en dépend.
+    """
+    if not text:
+        return ""
+
+    text = str(text)
+    suffixe = BOILERPLATE_PAR_SOURCE.get(str(source or ""))
+
+    if suffixe and text.endswith(suffixe):
+        text = text[: -len(suffixe)]
+
+    return text.strip()
 
 
 def clean_title(text: Any) -> str:

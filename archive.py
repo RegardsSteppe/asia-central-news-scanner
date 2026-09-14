@@ -63,7 +63,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
-from text_utils import strip_related_blocks
+from text_utils import strip_boilerplate, strip_related_blocks
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -489,7 +489,7 @@ def nettoyer_corps(archive: dict[str, dict[str, Any]]) -> int:
         if not corps:
             continue
 
-        propre = strip_related_blocks(corps)
+        propre = strip_boilerplate(strip_related_blocks(corps), entry.get("source"))
         if propre != corps:
             entry["body"] = propre
             nettoyes += 1

@@ -15,6 +15,7 @@ from text_utils import (
     clean_title,
     normalize_url,
     parse_date,
+    strip_boilerplate,
     strip_related_blocks,
 )
 
@@ -704,6 +705,13 @@ def extract_body(
     # Les laisser revient à scorer un article sur le titre d'un autre
     # (voir strip_related_blocks).
     text = strip_related_blocks(text)
+
+    # Puis le pied de page propre à cette source. strip_related_blocks
+    # travaille par marqueur et ne couvre donc que les sites qui en
+    # ont un ; la table de boilerplate.py est dérivée du corpus et
+    # attrape les autres (le fil "Recent News" d'Asia-Plus, le bloc
+    # "Popular" de 24.kg), sans un mot de vocabulaire.
+    text = strip_boilerplate(text, (source or {}).get("name", ""))
 
     if expected_title and not _body_matches_expected_title(expected_title, text):
         # Le <title>/<h1> de la page correspondait bien (sinon on

@@ -29,6 +29,7 @@ from text_utils import (
     article_date_timestamp,
     clean_title,
     parse_date,
+    strip_boilerplate,
     strip_related_blocks,
 )
 
@@ -1743,7 +1744,9 @@ def run_scan(
     # passage le premier run servirait encore des corps pollués aux
     # articles qu'il classe.
     corps_archives = {
-        cle: strip_related_blocks(entree["body"])
+        cle: strip_boilerplate(
+            strip_related_blocks(entree["body"]), entree.get("source")
+        )
         for cle, entree in archive.load_archive().items()
         if entree.get("body")
     }
