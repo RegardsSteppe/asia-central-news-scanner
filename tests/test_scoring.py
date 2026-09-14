@@ -1392,3 +1392,35 @@ class GeographieAllemandeScoringTests(unittest.TestCase):
         }
         classify_article(article)
         self.assertTrue(article["signals"]["regional_context"])
+
+
+class GeographieNativeCyrilliqueScoringTests(unittest.TestCase):
+    """
+    Même trou côté scoring que côté categorisation.py (voir
+    GeographieNativeCyrilliqueTests) : CENTRAL_ASIA_TERMS/
+    CAUCASUS_TERMS sont partagées entre les deux modules, donc
+    regional_context restait False sur les titres kazakh/tadjik/
+    ouzbek qui ne nomment le pays que dans son écriture native.
+    """
+
+    def test_regional_context_bascule_sur_tadjikistan_en_tadjik(self):
+        article = {
+            "title": "Нақшаи нави ислоҳот дар зиндонҳои Тоҷикистон",
+            "summary": "",
+            "source": "Radio Ozodi",
+            "url": "https://example.org/test",
+        }
+        classify_article(article)
+        self.assertTrue(article["signals"]["regional_context"])
+
+    def test_fonctionne_sans_filtre_de_langue(self):
+        # Même si le champ language est resté "ru" par erreur.
+        article = {
+            "title": "Ўзбекистонда қоидабузар ҳайдовчилар жазоланди",
+            "summary": "",
+            "source": "Qalampir.uz",
+            "language": "ru",
+            "url": "https://example.org/test",
+        }
+        classify_article(article)
+        self.assertTrue(article["signals"]["regional_context"])

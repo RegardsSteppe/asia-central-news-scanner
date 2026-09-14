@@ -112,6 +112,12 @@ _register_geo_terms("kazakhstan", [
     # différemment de l'anglais, contrairement à "Turkmenistan" plus
     # bas dans ce fichier — voir CENTRAL_ASIA_TERMS pour la mesure.
     "kasachstan", "kasachstans", "kasachische", "kasachischen",
+    # Kazakh/tadjik/ouzbek natifs (2026-09-14) : renvoyés par
+    # NATIVE_SCRIPT_CENTRAL_ASIA_STEM_PATTERNS (matching.py). Trois
+    # orthographes différentes pour le même pays selon la langue qui
+    # l'écrit — "Қазақстан" (kazakh), "Қазоқистон" (tadjik),
+    # "Қозоғистон" (ouzbek).
+    "қазақстан", "қазоқистон", "қозоғистон",
 ])
 
 _register_geo_terms("ouzbekistan", [
@@ -123,6 +129,7 @@ _register_geo_terms("ouzbekistan", [
     "ouzbékistan", "ouzbek", "samarcande", "boukhara", "tachkent",
     "usbekistan", "usbekistans", "usbekisch", "usbekische", "usbekischen",
     "taschkent",
+    "өзбекстан", "ӯзбекистон", "ўзбекистон", "хоразм",
 ])
 
 _register_geo_terms("kirghizistan", [
@@ -138,6 +145,7 @@ _register_geo_terms("kirghizistan", [
     "kirghizistan", "kirghizstan", "kirghize", "bichkek",
     "kirgistan", "kirgistans", "kirgisisch", "kirgisische", "kirgisischen",
     "bischkek",
+    "қырғызстан", "қирғизистон",
 ])
 
 _register_geo_terms("tadjikistan", [
@@ -147,6 +155,7 @@ _register_geo_terms("tadjikistan", [
     "tadjikistan", "tadjik", "douchanbé",
     "tadschikistan", "tadschikistans", "tadschikische", "tadschikischen",
     "duschanbe",
+    "тоҷикистон", "тожикистон",
     # Haut-Badakhchan (2026-09-14) : territoire tadjik, non disputé —
     # rattaché directement au pays, comme une grande ville, pas comme
     # le Haut-Karabakh/l'Abkhazie. Voir CENTRAL_ASIA_TERMS.
@@ -162,6 +171,7 @@ _register_geo_terms("turkmenistan", [
     # "Turkmenistan" s'écrit à l'identique en allemand ; seule la
     # capitale change.
     "aschgabat",
+    "туркманистон",
 ])
 
 _register_geo_terms("azerbaidjan", [
@@ -198,6 +208,7 @@ _register_geo_terms("caucase_nord", [
     "tchétchénie", "daguestan", "ossétie du nord", "ingouchie",
     "makhatchkala",
     "grosny", "machatschkala",
+    "дағыстан",
 ])
 
 # Xinjiang/Ouïghours : traité comme un pays/une région à part entière

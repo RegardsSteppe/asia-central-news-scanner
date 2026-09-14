@@ -637,11 +637,11 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
   "score": 0,
-  "signals_sha256": "4dfe409a8c4cc277",
+  "signals_sha256": "5dfe8ab9bb87fb26",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/z/7641"
  },
@@ -1341,26 +1341,26 @@
   "url": "https://vlast.kz/english/70524-rights-watchdogs-condemn-sentencing-of-kazakhstani-journalist.html"
  },
  {
-  "level": "D",
+  "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
   "score": 7,
-  "signals_sha256": "9a077800f5012e90",
+  "signals_sha256": "ecc51038b6bde5be",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/p/7009.html"
  },
  {
-  "level": "D",
+  "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
   "score": 10,
-  "signals_sha256": "9f5ec0c44b292bdc",
+  "signals_sha256": "7867c4bcd02054f6",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/p/7262.html"
  },
@@ -1500,11 +1500,11 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
   "score": 0,
-  "signals_sha256": "c9ec80be92eede1f",
+  "signals_sha256": "7bceb88f1de398e6",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/a/toqaev-aqsh-prezidentinin-ontustik-zhane-ortalyq-aziya-boiynsha-arnaiy-okilimen-kezdesti/33853237.html"
  },
@@ -1528,7 +1528,7 @@
   ],
   "relevant": false,
   "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "signals_sha256": "be1a76e93b5db967",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/a/33853067.html"
  },
@@ -2640,11 +2640,11 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
   "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "signals_sha256": "648a697a92463bd7",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/p/8433.html"
  },
@@ -2652,11 +2652,11 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
   "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "signals_sha256": "fdb596645591d0f9",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/p/8764.html"
  },
@@ -2676,11 +2676,13 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "Asie centrale: қазақстан",
+   "géographie confirmée dans le corps",
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "score": 15,
+  "signals_sha256": "9553a9e0dbd3829c",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/a/qazaqstan-qorganys-onerkasibi-zauytyn-auktsionga-shygardy/33852846.html"
  },
@@ -4590,11 +4592,12 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "Asie centrale: ўзбекистон",
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "score": 12,
+  "signals_sha256": "47e49a9eb05d8286",
   "theme": "Faible priorité",
   "url": "https://uznews.uz/en/news/103371"
  },
@@ -5857,11 +5860,12 @@
   "level": "E",
   "priority": "BRUIT",
   "reasons": [
-   "porte régionale: aucun ancrage régional"
+   "Asie centrale: өзбекстан",
+   "plafond V9: aucun ancrage HR principal"
   ],
   "relevant": false,
-  "score": 0,
-  "signals_sha256": "4a8cc78e74974e0f",
+  "score": 12,
+  "signals_sha256": "20e87924431b6303",
   "theme": "Faible priorité",
   "url": "https://www.azattyq.org/a/ozbekstanda-mirziyaev-qyzyn-bilikke-daiyndap-zhatyr-ma/33850823.html"
  },

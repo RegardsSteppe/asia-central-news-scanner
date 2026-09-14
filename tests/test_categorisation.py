@@ -1392,3 +1392,102 @@ class GeographieAllemandeTests(unittest.TestCase):
         self.assertIn("tadjikistan", resultat["geo"])
         self.assertNotIn("haut_karabakh", resultat["geo"])
         self.assertNotIn("abkhazie", resultat["geo"])
+
+
+class GeographieNativeCyrilliqueTests(unittest.TestCase):
+    """
+    Trouvé en élargissant la méthode allemande à Radio Azattyq
+    (kazakh), Radio Ozodi (tadjik) et Qalampir.uz (ouzbek) : ces trois
+    services publient en écriture cyrillique NATIVE, agglutinante —
+    "Қазақстанда" (au Kazakhstan), "Қазақстандағы" (qui est au
+    Kazakhstan) — sans la moindre forme dans le vocabulaire.
+
+    Audité sur le corpus : 197 occurrences cumulées, dont 46 pour le
+    seul "Тоҷикистон" (Tadjikistan en tadjik) et 45 pour "Ўзбекистон"
+    (Ouzbékistan en ouzbek).
+
+    Constaté en creusant : le champ `language` archivé pour ces trois
+    sources vaut souvent "ru" plutôt que "kk"/"tg"/"uz" — vestige d'un
+    scan antérieur à leur déclaration dans sources.py. Les motifs sont
+    donc appliqués SANS filtre de langue (voir
+    NATIVE_SCRIPT_CENTRAL_ASIA_STEM_PATTERNS dans matching.py) : les
+    lettres utilisées (Қ, Ә, Ғ, Ң, Ө, Ұ, Ү, Ҳ, Ҷ, Ӣ, Ӯ, Ў) sont absentes
+    du russe standard, donc aucun risque de faux positif même sans ce
+    filtre.
+    """
+
+    def test_trois_orthographes_du_kazakhstan(self):
+        # Le même pays, écrit différemment selon qui l'écrit.
+        for titre, source in (
+            ("Интихоботи порлумонӣ дар Қазоқистон", "Radio Ozodi"),
+            ("Жанубий Кореяда Қозоғистон делегацияси", "Qalampir.uz"),
+        ):
+            with self.subTest(titre=titre):
+                resultat = categoriser(
+                    {"title": titre, "summary": "", "source": source,
+                     "url": "https://example.org/test"}
+                )
+                self.assertIn("kazakhstan", resultat["geo"])
+
+    def test_tadjikistan_en_tadjik(self):
+        resultat = categoriser(
+            {"title": "Нақшаи нави ислоҳот дар зиндонҳои Тоҷикистон",
+             "summary": "", "source": "Radio Ozodi",
+             "url": "https://example.org/test"}
+        )
+        self.assertIn("tadjikistan", resultat["geo"])
+
+    def test_ouzbekistan_en_ouzbek_et_kazakh(self):
+        for titre, source in (
+            ("Ўзбекистонда қоидабузар ҳайдовчилар жазоланди", "Qalampir.uz"),
+            ("Өзбекстанда Мирзияев қызын билікке дайындап жатыр ма?", "Radio Azattyq"),
+        ):
+            with self.subTest(titre=titre):
+                resultat = categoriser(
+                    {"title": titre, "summary": "", "source": source,
+                     "url": "https://example.org/test"}
+                )
+                self.assertIn("ouzbekistan", resultat["geo"])
+
+    def test_dagestan_en_kazakh(self):
+        resultat = categoriser(
+            {"title": "Дағыстанға шабуыл, БҰҰ-ның айыптауы",
+             "summary": "", "source": "Radio Azattyq",
+             "url": "https://example.org/test"}
+        )
+        self.assertIn("caucase_nord", resultat["geo"])
+
+    def test_khorezm_rattache_a_l_ouzbekistan_pas_d_etiquette_separee(self):
+        # Non disputée, comme le Haut-Badakhchan allemand : rattachée
+        # directement au pays, pas de label propre.
+        resultat = categoriser(
+            {"title": "Хоразмда коммунал хўжалиги мансабдори порахўрликда айбланди",
+             "summary": "", "source": "Qalampir.uz",
+             "url": "https://example.org/test"}
+        )
+        self.assertIn("ouzbekistan", resultat["geo"])
+
+    def test_fonctionne_meme_avec_une_langue_declaree_russe_par_erreur(self):
+        # Le cas réel qui a motivé l'absence de filtre par langue :
+        # le champ `language` archivé pour ces sources vaut souvent
+        # "ru" par erreur (vestige d'un scan antérieur à leur
+        # déclaration dans sources.py).
+        resultat = categoriser(
+            {"title": "Қазақстан мұнай алпауыттарынан 160 миллиард "
+                      "долларды неге даулап отыр",
+             "summary": "", "source": "Radio Azattyq", "language": "ru",
+             "url": "https://example.org/test"}
+        )
+        self.assertIn("kazakhstan", resultat["geo"])
+
+    def test_ne_derange_pas_la_morphologie_russe_standard(self):
+        # Un article véritablement en russe, avec l'orthographe russe
+        # standard du pays, doit continuer à fonctionner sans
+        # changement.
+        resultat = categoriser(
+            {"title": "Россия начала переговоры с Казахстаном",
+             "summary": "", "source": "Test",
+             "url": "https://example.org/test"}
+        )
+        self.assertIn("kazakhstan", resultat["geo"])
+        self.assertIn("russie", resultat["geo"])

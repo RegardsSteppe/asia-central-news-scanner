@@ -338,6 +338,51 @@ RUSSIAN_CAUCASUS_STEM_PATTERNS = (
     ("абхазия", r"\bабхаз\w*\b"),
 )
 
+# Kazakh/tadjik/ouzbek en écriture cyrillique native (2026-09-14).
+#
+# Trouvé en cherchant les articles sans géographie sur Radio Azattyq
+# (kazakh), Radio Ozodi (tadjik) et Qalampir.uz (ouzbek) : ces trois
+# services publient en écriture cyrillique nationale, agglutinante —
+# "Қазақстанда" (au Kazakhstan), "Қазақстандағы" (qui est au
+# Kazakhstan), "Қазақстанның" (du Kazakhstan) — et aucune des trois
+# langues n'avait le moindre terme dans le vocabulaire. Audité sur le
+# corpus : 197 occurrences cumulées sur ces treize racines, dont 46
+# pour le seul "Тоҷикистон" (Tadjikistan en tadjik).
+#
+# Appliquées SANS filtre de langue, contrairement aux racines russes
+# ci-dessus. Deux raisons : d'abord, ces alphabets utilisent des
+# lettres absentes du russe standard (Қ, Ә, Ғ, Ң, Ө, Ұ, Ү, Ҳ, Ҷ, Ӣ, Ӯ,
+# Ў) — une racine comme "Тоҷикистон" ne peut donc jamais matcher du
+# texte russe par accident, quel que soit le filtre. Ensuite, et
+# c'est ce qui a été constaté sur le corpus : le champ `language`
+# archivé pour ces trois sources vaut souvent "ru" plutôt que
+# "kk"/"tg"/"uz", vestige d'un scan antérieur à leur déclaration dans
+# sources.py — un filtre par langue déclarée aurait donc raté la
+# majorité des articles déjà archivés.
+NATIVE_SCRIPT_CENTRAL_ASIA_STEM_PATTERNS = (
+    ("қазақстан", r"\bқазақстан\w*\b"),
+    ("өзбекстан", r"\bөзбекстан\w*\b"),
+    ("қырғызстан", r"\bқырғызстан\w*\b"),
+    ("тоҷикистон", r"\bтоҷикистон\w*\b"),
+    ("ӯзбекистон", r"\bӯзбекистон\w*\b"),
+    ("қазоқистон", r"\bқазоқистон\w*\b"),
+    ("қирғизистон", r"\bқирғизистон\w*\b"),
+    ("туркманистон", r"\bтуркманистон\w*\b"),
+    ("ўзбекистон", r"\bўзбекистон\w*\b"),
+    ("қозоғистон", r"\bқозоғистон\w*\b"),
+    ("тожикистон", r"\bтожикистон\w*\b"),
+    # Хоразм (Khorezm/Xorazm) : région ouzbèke, non disputée — voir
+    # "Берг-Бадахшан" côté allemand, même traitement, rattachée
+    # directement au pays plutôt que dotée d'une étiquette séparée.
+    ("хоразм", r"\bхоразм\w*\b"),
+)
+
+NATIVE_SCRIPT_CAUCASUS_STEM_PATTERNS = (
+    # "дағыстан" (kazakh, pour Dagestan) : même raisonnement que
+    # NATIVE_SCRIPT_CENTRAL_ASIA_STEM_PATTERNS ci-dessus.
+    ("дағыстан", r"\bдағыстан\w*\b"),
+)
+
 
 def find_terms_with_stems(text, terms, stem_patterns):
     """
@@ -385,21 +430,28 @@ def resolve_language(declared_language, text):
 
 
 def find_central_asia_terms(text, terms, language):
-    """Termes d'Asie centrale présents, morphologie russe incluse si besoin."""
-    return find_terms_with_stems(
-        text,
-        terms,
-        RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS if language == "ru" else (),
-    )
+    """
+    Termes d'Asie centrale présents, morphologie russe incluse si
+    besoin, et morphologie kazakh/tadjik/ouzbek native TOUJOURS
+    incluse (voir NATIVE_SCRIPT_CENTRAL_ASIA_STEM_PATTERNS pour
+    pourquoi elle n'a pas besoin d'être filtrée par langue).
+    """
+    stems = NATIVE_SCRIPT_CENTRAL_ASIA_STEM_PATTERNS
+    if language == "ru":
+        stems = stems + RUSSIAN_CENTRAL_ASIA_STEM_PATTERNS
+    return find_terms_with_stems(text, terms, stems)
 
 
 def find_caucasus_terms(text, terms, language):
-    """Termes du Caucase présents, morphologie russe incluse si besoin."""
-    return find_terms_with_stems(
-        text,
-        terms,
-        RUSSIAN_CAUCASUS_STEM_PATTERNS if language == "ru" else (),
-    )
+    """
+    Termes du Caucase présents, morphologie russe incluse si besoin,
+    et morphologie kazakh native toujours incluse (voir
+    NATIVE_SCRIPT_CAUCASUS_STEM_PATTERNS).
+    """
+    stems = NATIVE_SCRIPT_CAUCASUS_STEM_PATTERNS
+    if language == "ru":
+        stems = stems + RUSSIAN_CAUCASUS_STEM_PATTERNS
+    return find_terms_with_stems(text, terms, stems)
 
 
 # ============================================================
