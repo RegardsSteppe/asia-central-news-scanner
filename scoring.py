@@ -199,6 +199,18 @@ TARGET_TERMS_V9 = [
     "défenseur des droits de l'homme", "défenseurs des droits de l'homme",
     "journaliste", "journalistes", "avocat", "avocate", "avocats",
     "blogueur", "blogueuse", "blogueurs", "société civile", "ong",
+    # Ajoutés le 2026-09-14, en miroir des acteurs ouverts dans
+    # categorisation.py : une cible que le scoring ne connaît pas ne
+    # peut pas entrer en relation avec une action répressive, donc
+    # l'article reste sans ancrage quoi qu'il décrive.
+    "political prisoner", "political prisoners", "detainee", "detainees",
+    "prisoner of conscience", "prisoners of conscience",
+    "professor", "academic", "academics", "scholar",
+    "writer", "writers", "poet", "artist", "artists", "filmmaker",
+    "prisonnier politique", "prisonniers politiques", "détenu",
+    "universitaire", "professeur", "écrivain", "poète", "artiste",
+    "политзаключенный", "политзаключенные", "ученый", "профессор",
+    "писатель", "поэт", "художник",
 ]
 
 EXPLICIT_HR_ACTION_TERMS_V9 = [
@@ -221,6 +233,17 @@ EXPLICIT_HR_ACTION_TERMS_V9 = [
     "condamné", "condamne", "torturé", "torture", "persécuté", "persécute",
     "harcelé", "harcèle", "menacé", "menace", "censuré", "censure",
     "bloqué", "bloque", "interdit", "expulsé", "expulse",
+    # Modes de répression ouverts le 2026-09-14 côté catégorisation
+    # (surveillance, psychiatrie punitive, interdiction de sortie,
+    # exil contraint). Sans eux ici, un article décrivant une
+    # surveillance de masse ou un internement forcé n'avait aucune
+    # action répressive reconnue, donc aucune relation cible/action.
+    "surveilled", "wiretapped", "spied on", "under surveillance",
+    "exiled", "driven into exile", "barred from leaving",
+    "forcibly committed", "forcibly injected",
+    "surveillé", "mis sur écoute", "exilé", "interné",
+    "под наблюдением", "прослушивал", "выслан", "изгнан",
+    "принудительно госпитализирован",
 ]
 
 STRONG_PRIMARY_RIGHTS_V9 = [

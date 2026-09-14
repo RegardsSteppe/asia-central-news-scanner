@@ -519,33 +519,6 @@ MINORITE_SEXUELLE_TERMS = [
 # Soudan, c'est normal — mais 231 étaient bien dans le périmètre.
 # "Azerbaijan: Opposition Leader Arrested" ressortait acteur=aucun.
 
-# Figures politiques réprimées qu'ACTIVIST_TERMS ne nommait pas.
-OPPOSANT_COMPLEMENT_TERMS = [
-    "opposition leader", "opposition figure", "opposition politician",
-    # "critic"/"critics" nus ont d'abord été écartés par prudence
-    # (critique de cinéma, critique d'une politique), puis mesurés :
-    # 6 déclenchements dans tout le corpus, 6 vrais cas de répression
-    # ("Crackdown on Exiled Critics", "Crackdown on Government
-    # Critics", "targeting of critics"). La prudence était infondée.
-    "critic", "critics",
-    "government critic", "government critics",
-    "exiled critic", "exiled critics", "critic of the government",
-    "critique", "critiques du pouvoir", "критик", "критики", "критиков",
-    "protester", "protesters", "protestor", "protestors",
-    "chef de l'opposition", "opposant politique", "manifestant",
-    "manifestants", "critique du gouvernement",
-    "лидер оппозиции", "оппозиционер", "оппозиционера",
-    "протестующие", "протестующих",
-]
-
-# Le blogueur est la figure la plus réprimée en Ouzbékistan, et
-# JOURNALIST_TERMS l'ignorait : "Uzbekistan: Free Blogger from Forced
-# Psychiatric Detention" ressortait acteur=aucun.
-JOURNALISTE_COMPLEMENT_TERMS = [
-    "blogger", "bloggers", "blogueur", "blogueuse", "blogueurs",
-    "блогер", "блогеры", "блогера", "блогеров",
-]
-
 # Être détenu est une identité dans ce corpus ("political prisoners",
 # "detainee"), pas seulement un traitement subi.
 DETENU_TERMS = [
@@ -579,8 +552,8 @@ ARTISTE_TERMS = [
 
 ACTEUR_TYPE_TERMS: dict[str, list[str]] = {
     "defenseur": HUMAN_RIGHTS_DEFENDER_TERMS,
-    "journaliste": [*JOURNALIST_TERMS, *JOURNALISTE_COMPLEMENT_TERMS],
-    "opposant": [*ACTIVIST_TERMS, *OPPOSANT_COMPLEMENT_TERMS],
+    "journaliste": JOURNALIST_TERMS,
+    "opposant": ACTIVIST_TERMS,
     "avocat": AVOCAT_TERMS,
     "croyant": CROYANT_TERMS,
     "minorite_ethnique": MINORITE_ETHNIQUE_TERMS,
@@ -763,9 +736,17 @@ SURVEILLANCE_TERMS = [
 INTERNEMENT_PSYCHIATRIQUE_TERMS = [
     "forced psychiatric", "psychiatric detention", "punitive psychiatry",
     "forcibly committed", "compulsory psychiatric",
-    "internement psychiatrique", "psychiatrie punitive",
+    # Élargi après mesure : la liste étroite ratait "Tied To Beds,
+    # Forcibly Injected: Secret Videos Allege Abuse At Kazakh
+    # psychiatric hospital". Le mot "psychiatric" n'apparaît que dans
+    # 3 titres de tout le corpus, et les 3 sont des cas d'abus — le
+    # risque de capter de la santé publique ordinaire est nul ici.
+    "psychiatric hospital", "psychiatric ward", "psychiatric clinic",
+    "hôpital psychiatrique", "internement psychiatrique",
+    "psychiatrie punitive",
     "карательная психиатрия", "принудительное психиатрическое",
-    "принудительной госпитализации",
+    "принудительной госпитализации", "психиатрическую больницу",
+    "психбольниц", "психушк",
 ]
 
 # Interdiction de sortie du territoire : sanction discrète et très
@@ -783,8 +764,16 @@ INTERDICTION_VOYAGER_TERMS = [
 EXIL_FORCE_TERMS = [
     "forced into exile", "forced exile", "fled into exile",
     "driven into exile", "living in exile",
+    # Élargi après mesure : exiger "forced" ratait la majorité des cas
+    # réels — "Turkmenistan's dissidents fear crackdown in Turkish
+    # exile", "les médias russes en exil", "Exiled Critics". Dans ce
+    # corpus, "exil" n'est jamais employé au sens figuré : il désigne
+    # toujours quelqu'un qui a dû partir.
+    "exile", "exiled", "in exile",
+    "exil", "en exil", "exilé", "exilés", "exilée",
     "exil forcé", "contraint à l'exil", "réfugié politique",
     "вынужденная эмиграция", "вынужденной эмиграции", "в изгнании",
+    "в эмиграции", "эмигрировал",
 ]
 
 TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
