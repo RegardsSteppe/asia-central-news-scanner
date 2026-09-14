@@ -1137,3 +1137,43 @@ class DisparitionSansFauxPositifTests(unittest.TestCase):
         ):
             with self.subTest(titre=titre):
                 self.assertIn("disparition", self._traitements(titre))
+
+    def test_le_passif_marque_bien_une_disparition_forcee(self):
+        # L'audit des 23 articles que "disappeared" nu déclenchait a
+        # montré que le retirer sec coûtait 7 détections légitimes.
+        # Le passif en récupère deux sans rien rendre à l'ambiguïté :
+        # une mer, un lac ou un avantage aux échecs disparaissent,
+        # ils ne "sont pas disparus" par quelqu'un.
+        for titre, corps in (
+            ("Uyghur doctor detained",
+             "Dr. Gulshan Abbas was disappeared from her hometown of Urumqi."),
+            ("Uyghur Human Rights Project report",
+             "Political prisoners were tortured and disappeared miles from the venues."),
+            ("Kenya: escalating harassment of defenders",
+             "They were arbitrarily arrested, forcibly disappeared and later found."),
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn("disparition", self._traitements(titre, corps))
+
+    def test_le_passif_ne_franchit_pas_la_frontiere_de_proposition(self):
+        # Cas réel rencontré pendant l'audit : avec une fenêtre de
+        # trois mots entre l'auxiliaire et le participe, "son autorité
+        # was challenged had not disappeared" passait. La coordination
+        # est admise ("were tortured and disappeared"), rien de plus.
+        self.assertNotIn(
+            "disparition",
+            self._traitements(
+                "How new is the New Uzbekistan?",
+                "Its willingness to use coercion when its authority "
+                "was challenged had not disappeared.",
+            ),
+        )
+
+    def test_un_avantage_aux_echecs_ne_disparait_pas_de_force(self):
+        self.assertNotIn(
+            "disparition",
+            self._traitements(
+                "Sindarov finishes second in St. Louis",
+                "His advantage disappeared in a heavy-piece endgame.",
+            ),
+        )

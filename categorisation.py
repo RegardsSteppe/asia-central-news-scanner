@@ -840,7 +840,32 @@ _TRAITEMENT_STEM_PATTERNS: dict[str, list[str]] = {
     # couvre aussi приговорен/приговорили, verbe/participe).
     "condamnation": [r"\bосужден\w*\b", r"\bзаключен\w*\b", r"\bприговор\w*\b"],
     "torture_mauvais_traitement": [r"\bпытк\w*\b", r"\bистязани\w*\b"],
-    "disparition": [r"\bисчезнувш\w*\b"],
+    # "disappeared" NU a été retiré de DISPARITION_TERMS (il ne
+    # déclenchait que la mer d'Aral, un lac bolivien, des emplois, un
+    # avantage aux échecs...). Mais l'audit complet des 23 articles
+    # concernés a montré que le retirer sec coûtait 7 détections
+    # légitimes. Deux d'entre elles se récupèrent par la forme, sans
+    # rien rendre à l'ambiguïté :
+    #
+    #   - le passif. "was/were disappeared" ne se dit QUE d'une
+    #     disparition forcée : une mer, un lac ou un avantage
+    #     disparaissent, ils ne "sont pas disparus" par quelqu'un.
+    #     La coordination "were tortured and disappeared" est admise,
+    #     mais rien de plus large : avec une fenêtre de trois mots,
+    #     "son autorité was challenged had not disappeared" passait.
+    #   - "forcibly disappeared", absent de la liste alors que
+    #     "forced disappearance" y était — un article OMCT sur le
+    #     Kenya le porte.
+    #
+    # Les 5 pertes restantes sont des tournures actives à sujet humain
+    # ("people who have disappeared in Turkmenistan's prisons") : les
+    # distinguer d'un lac qui s'assèche demande le sujet de la phrase,
+    # pas du vocabulaire.
+    "disparition": [
+        r"\bисчезнувш\w*\b",
+        r"\bforcibly disappeared\b",
+        r"\b(?:was|were|been|being)\s+(?:\w+ed\s+and\s+)?disappeared\b",
+    ],
     # "преследован" et "притеснен" ne sont pas repris séparément :
     # déjà couverts par les préfixes plus courts "преследова"/
     # "притесн" ci-dessous (ex. "преследован" = "преследова" + "н").
