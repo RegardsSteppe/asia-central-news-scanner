@@ -11,6 +11,7 @@ from text_utils import (
     normalize_url,
     parse_date,
     article_date_timestamp,
+    strip_boilerplate,
     strip_related_blocks,
 )
 
@@ -182,3 +183,93 @@ class StripRelatedBlocksTests(unittest.TestCase):
     def test_accepte_les_valeurs_vides(self):
         self.assertEqual(strip_related_blocks(""), "")
         self.assertEqual(strip_related_blocks(None), "")
+
+
+class StripBoilerplateTests(unittest.TestCase):
+    """
+    strip_related_blocks() travaille par marqueur ("Читайте также",
+    "Recommended Stories") et ne couvre donc que les sites qui en ont
+    un. Asia-Plus termine par un fil "Recent News" sans aucun
+    marqueur, 24.kg par un bloc "Popular" : un marqueur par site ne
+    passe pas à l'échelle.
+
+    La table de boilerplate.py est dérivée mécaniquement du corpus par
+    tools/detecter_boilerplate.py — un texte identique d'un article à
+    l'autre d'une même source ne peut pas être le contenu de cet
+    article-là.
+    """
+
+    def test_retire_le_pied_de_page_de_la_source(self):
+        from boilerplate import BOILERPLATE_PAR_SOURCE
+
+        source, suffixe = next(iter(BOILERPLATE_PAR_SOURCE.items()))
+        corps = "Le tribunal a condamné l'activiste à huit ans. " + suffixe
+        propre = strip_boilerplate(corps, source)
+        self.assertNotIn(suffixe, propre)
+        self.assertIn("condamné l'activiste", propre)
+
+    def test_ne_touche_pas_au_corps_d_une_autre_source(self):
+        # Le pied de page est indexé par source : l'appliquer
+        # aveuglément retirerait du texte réel à qui ne l'a pas.
+        from boilerplate import BOILERPLATE_PAR_SOURCE
+
+        source, suffixe = next(iter(BOILERPLATE_PAR_SOURCE.items()))
+        corps = "Un article d'une tout autre source. " + suffixe
+        self.assertEqual(
+            strip_boilerplate(corps, "Source Inconnue"), corps.strip()
+        )
+
+    def test_ne_retire_que_le_suffixe_pas_une_occurrence_interne(self):
+        # Seul un suffixe est retiré. Le même texte au MILIEU d'un
+        # article est du contenu cité, pas un pied de page.
+        from boilerplate import BOILERPLATE_PAR_SOURCE
+
+        source, suffixe = next(iter(BOILERPLATE_PAR_SOURCE.items()))
+        corps = "Début. " + suffixe + " Et la suite du vrai article."
+        propre = strip_boilerplate(corps, source)
+        self.assertIn(suffixe, propre)
+
+    def test_est_idempotent(self):
+        # Condition du rattrapage sur l'archive : repasser sur un
+        # corps déjà nettoyé ne doit rien changer, sinon chaque run
+        # réécrirait l'archive entière.
+        from boilerplate import BOILERPLATE_PAR_SOURCE
+
+        source, suffixe = next(iter(BOILERPLATE_PAR_SOURCE.items()))
+        corps = "Texte réel. " + suffixe
+        une_fois = strip_boilerplate(corps, source)
+        self.assertEqual(strip_boilerplate(une_fois, source), une_fois)
+
+    def test_accepte_les_valeurs_vides(self):
+        self.assertEqual(strip_boilerplate("", "Asia-Plus"), "")
+        self.assertEqual(strip_boilerplate(None, "Asia-Plus"), "")
+        self.assertEqual(strip_boilerplate("texte", None), "texte")
+
+
+class TableBoilerplateTests(unittest.TestCase):
+    """
+    Garde-fous sur la table générée elle-même. Elle est produite par
+    une heuristique, donc c'est ici qu'on vérifie que l'heuristique
+    n'a pas dérapé.
+    """
+
+    def test_aucun_suffixe_absurdement_court(self):
+        # En dessous de 120 caractères, une correspondance est une
+        # coïncidence (deux articles finissant par la même phrase
+        # banale), pas un pied de page.
+        from boilerplate import BOILERPLATE_PAR_SOURCE
+
+        for source, suffixe in BOILERPLATE_PAR_SOURCE.items():
+            with self.subTest(source=source):
+                self.assertGreaterEqual(len(suffixe), 120)
+
+    def test_aucun_suffixe_de_taille_d_article(self):
+        # Le garde-fou qui compte. Sans plafond, Kommersant ressortait
+        # avec 4475 caractères partagés par 4 articles sur 180 : ce
+        # n'était pas un pied de page mais le même discours du Kremlin
+        # republié quatre fois.
+        from boilerplate import BOILERPLATE_PAR_SOURCE
+
+        for source, suffixe in BOILERPLATE_PAR_SOURCE.items():
+            with self.subTest(source=source):
+                self.assertLessEqual(len(suffixe), 4000)
