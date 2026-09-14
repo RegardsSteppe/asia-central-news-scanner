@@ -142,6 +142,23 @@ def contains_pattern(text, patterns):
 
 
 @lru_cache(maxsize=None)
+def _borner(terme_normalise):
+    """
+    Encadre une alternative par des frontières de mot.
+
+    Le début est toujours borné. La fin ne l'est QUE si le terme
+    s'achève sur une lettre latine : les listes portent des radicaux
+    russes et persans volontairement tronqués ("задержан", "преследова")
+    qui doivent continuer à matcher leurs flexions ("задержана",
+    "задержаны"). Leur coller un (?!\w) les rendrait muets sur toute
+    forme fléchie, c'est-à-dire sur presque tout le texte réel.
+    """
+    motif = re.escape(terme_normalise)
+    debut = r"(?<!\w)"
+    fin = r"(?!\w)" if terme_normalise[-1:].isascii() and terme_normalise[-1:].isalpha() else ""
+    return debut + motif + fin
+
+
 def _alternation_pattern(terms):
     """
     Combine a term list into one alternation regex instead of matching
@@ -149,9 +166,17 @@ def _alternation_pattern(terms):
     alternatives (e.g. "activist" vs "activists") prefer the longer match.
     Cached on the term tuple: the same static lists (ACTIVIST_TERMS,
     TARGET_TERMS_V9, ...) are reused across every article.
+
+    Chaque alternative est bornée (voir _borner). Sans ça — c'était le
+    cas jusqu'au 2026-09-14 — "forced" matchait dans "reinforced",
+    "ngo" dans "Congo", "convicted" dans n'importe quel mot le
+    contenant. Comme cette fonction alimente relation_present(), donc
+    le signal target_repression_relation, une occurrence interne
+    suffisait à déclarer une relation cible/action sur un article sans
+    rapport, et ce signal déclenche à son tour le plafond à 55.
     """
     escaped = sorted(
-        (re.escape(normalize(term)) for term in terms if term),
+        (_borner(normalize(term)) for term in terms if term),
         key=len,
         reverse=True,
     )

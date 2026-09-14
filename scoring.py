@@ -1048,17 +1048,28 @@ def classify_article(article):
     elif regional_context and not primary_hr_anchor:
         # Le body peut maintenant sauver un article si une vraie
         # action HR y est confirmée, mais avec un plafond prudent.
+        # Ces plafonds valaient 55 et 35 : exactement LEVEL_B_MIN_SCORE
+        # et LEVEL_C_MIN_SCORE. Un plafond posé SUR un seuil ne retient
+        # rien, il promeut — le test est ">=", donc l'article plafonné
+        # atteint pile le niveau qu'on voulait lui refuser. Mesuré le
+        # 2026-09-14 avant correction : 85 des 102 articles de niveau B
+        # étaient à exactement 55/100, et 41 des 106 en C à exactement
+        # 35/100. D'où un changement d'indicatif téléphonique, la mort
+        # d'un acteur ou un trafiquant de MDMA en niveau B.
+        #
+        # Un cran en dessous du seuil, donc, pour que le plafond fasse
+        # ce que son nom dit.
         if target_repression_relation or body_strong_hr_confirmation:
-            score = min(score, 55)
+            score = min(score, LEVEL_B_MIN_SCORE - 1)
             reasons.append("plafond V9: confirmation HR dans le body")
         elif any(phrase_present(primary_hr_text, x) for x in GENERIC_REFORM_TERMS_V7):
-            score = min(score, 35)
+            score = min(score, LEVEL_C_MIN_SCORE - 1)
             reasons.append("plafond V9: réforme générale")
         elif any(phrase_present(primary_hr_text, x) for x in NON_HR_TOPIC_TERMS_V7):
             score = min(score, 28)
             reasons.append("plafond V9: sujet non-HR")
         else:
-            score = min(score, 35)
+            score = min(score, LEVEL_C_MIN_SCORE - 1)
             reasons.append("plafond V9: aucun ancrage HR principal")
 
     # Politique/rule-of-law sans véritable affaire HR.
