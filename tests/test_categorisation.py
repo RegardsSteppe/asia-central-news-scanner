@@ -386,3 +386,74 @@ class VocabulaireEnrichiTests(unittest.TestCase):
             self._article("How Central Asia navigates Russia's war on Ukraine")
         )
         self.assertNotIn("croyant", cat["acteur"])
+
+
+class PageThematiqueTests(unittest.TestCase):
+    """
+    Les pages de rubrique (pays, région, thème) ne sont pas des
+    articles. Audit du 2026-09-14 : 441 sur 8174, dont 80 étiquetées
+    "rapport_analyse" ou "evenement_date" — on affirmait que c'était
+    du contenu.
+    """
+
+    def _article(self, url, title, **overrides):
+        article = {
+            "title": title, "summary": "", "body": "",
+            "source": "Committee to Protect Journalists",
+            "url": url, "language": "en", "date": None,
+        }
+        article.update(overrides)
+        return article
+
+    def test_country_landing_page_is_thematic(self):
+        for url, titre in (
+            ("https://cpj.org/africa/burkina-faso/", "Burkina Faso"),
+            ("https://eurasianet.org/region/central-asia", "Central Asia"),
+            ("https://www.uscirf.gov/countries/north-korea", "North Korea"),
+            ("https://eurasianet.org/voices/tamada-tales", "Tamada Tales"),
+        ):
+            with self.subTest(url=url):
+                cat = categoriser(self._article(url, titre))
+                self.assertEqual(cat["type"], "page_thematique")
+
+    def test_wins_over_date_and_body_length(self):
+        # 80 des 441 portaient une date de dernière modification ou un
+        # corps long, et ressortaient comme du contenu réel.
+        cat = categoriser(
+            self._article(
+                "https://cpj.org/africa/sierra-leone/", "Sierra Leone",
+                date="2026-09-01T00:00:00+00:00", body="x" * 5000,
+            )
+        )
+        self.assertEqual(cat["type"], "page_thematique")
+
+    def test_site_furniture_is_caught_too(self):
+        cat = categoriser(
+            self._article(
+                "https://www.amnesty.org/en/cookie-statement/", "Cookie Statement"
+            )
+        )
+        self.assertEqual(cat["type"], "page_thematique")
+
+    def test_a_real_article_is_not_mistaken_for_one(self):
+        # Le slug d'un vrai article est tronqué ou daté : l'égalité
+        # exacte avec le titre ne se produit pas.
+        cat = categoriser(
+            self._article(
+                "https://thediplomat.com/2026/09/north-koreas-nicaragua-court",
+                "North Korea’s Nicaragua Courtship",
+                date="2026-09-01T00:00:00+00:00",
+            )
+        )
+        self.assertNotEqual(cat["type"], "page_thematique")
+
+    def test_a_long_title_is_never_a_section(self):
+        titre = "Kazakhstan Jails Activist For Ten Years Over Peaceful Protest"
+        cat = categoriser(
+            self._article(
+                "https://ex.org/news/"
+                "kazakhstan-jails-activist-for-ten-years-over-peaceful-protest",
+                titre,
+            )
+        )
+        self.assertNotEqual(cat["type"], "page_thematique")

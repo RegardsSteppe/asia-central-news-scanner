@@ -238,6 +238,7 @@ _LIBELLES_CLASSES = {
     "rapport_analyse": "Rapport / analyse",
     "plaidoyer_communique": "Plaidoyer / communiqué",
     "navigation": "Page de navigation",
+    "page_thematique": "Page thématique / pays",
     "aucun": "aucun",
 }
 
