@@ -1333,3 +1333,32 @@ class PageDeRubriqueTests(unittest.TestCase):
                 "Uzbekistan: Cotton, Wheat Farmers Exploited, Abused",
             )
         )
+
+
+class HautKarabakhGeographieTests(unittest.TestCase):
+    """
+    Même trou côté scoring que côté categorisation.py (voir
+    HautKarabakhTests) : CAUCASUS_TERMS ne contenait aucune forme du
+    Haut-Karabakh, donc regional_context restait False sur des titres
+    HRW qui n'ont pourtant aucune autre géographie à offrir.
+    """
+
+    def test_regional_context_bascule_sur_karabakh_seul(self):
+        article = {
+            "title": "La crise du Karabakh",
+            "summary": "",
+            "source": "Human Rights Watch",
+            "url": "https://www.hrw.org/news/test",
+        }
+        classify_article(article)
+        self.assertTrue(article["signals"]["regional_context"])
+
+    def test_morphologie_russe_flechie_cote_scoring(self):
+        article = {
+            "title": "Незаконные нападения на медицинские объекты в Нагорном Карабахе",
+            "summary": "",
+            "source": "Human Rights Watch",
+            "url": "https://www.hrw.org/news/test",
+        }
+        classify_article(article)
+        self.assertTrue(article["signals"]["regional_context"])

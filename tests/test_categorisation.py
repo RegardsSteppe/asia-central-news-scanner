@@ -155,7 +155,7 @@ class GeoRegistryConsistencyTests(unittest.TestCase):
             "turkmenistan", "azerbaidjan", "armenie", "georgie",
             "caucase_nord", "xinjiang", "iran", "afghanistan", "russie",
             "ukraine", "chine", "bielorussie", "turquie", "moldavie",
-            "asie_centrale", "caucase", "ossetie", "autre",
+            "asie_centrale", "caucase", "ossetie", "haut_karabakh", "autre",
         }
         inconnues = set(_GEO_TERM_COUNTRY.values()) - cures - set(PAYS_MONDE_LIBELLES)
         self.assertEqual(inconnues, set())
@@ -1235,3 +1235,56 @@ class InterdictionVoyagerMorphologieTests(unittest.TestCase):
                 "Она была освобождена из-под стражи под подписку о невыезде.",
             ),
         )
+
+
+class HautKarabakhTests(unittest.TestCase):
+    """
+    Régression du 2026-09-14, trouvée en cherchant les articles sans
+    aucune géographie : "Le droit de retour au Haut-Karabakh devrait
+    être garanti" (HRW) n'avait aucun terme de géographie détecté, ni
+    "Незаконные нападения на медицинские объекты в Нагорном
+    Карабахе". Sur les 9556 articles archivés, 10 ne portaient QUE ce
+    terme comme géographie — leurs titres n'ont, par ailleurs, aucun
+    autre mot du Caucase.
+
+    Le territoire n'est pas fondu dans "armenie" ni "azerbaidjan" :
+    il est disputé entre les deux, comme l'Ossétie l'est entre la
+    Russie et la Géorgie — même raisonnement, même solution
+    (_register_geo_terms séparé).
+    """
+
+    def test_formes_anglaises_et_francaises(self):
+        for titre in (
+            "Le droit de retour au Haut-Karabakh devrait être garanti",
+            "New Report: Azerbaijani Regime Ethnically Cleansed Nagorno-Karabakh Activists",
+            "La crise du Karabakh",
+        ):
+            with self.subTest(titre=titre):
+                resultat = categoriser(
+                    {"title": titre, "summary": "", "source": "Human Rights Watch",
+                     "url": "https://www.hrw.org/news/test"}
+                )
+                self.assertIn("haut_karabakh", resultat["geo"])
+
+    def test_morphologie_russe_flechie(self):
+        # Le motif de racine couvre Карабах/Карабаха/Карабахе/
+        # Карабахом et l'adjectif "нагорно-карабахский" sans les
+        # énumérer un par un.
+        for titre in (
+            "Незаконные нападения на медицинские объекты в Нагорном Карабахе",
+            "Нагорный Карабах: гарантировать право на возвращение",
+        ):
+            with self.subTest(titre=titre):
+                resultat = categoriser(
+                    {"title": titre, "summary": "", "source": "Human Rights Watch",
+                     "url": "https://www.hrw.org/news/test"}
+                )
+                self.assertIn("haut_karabakh", resultat["geo"])
+
+    def test_n_est_rattache_ni_a_l_armenie_ni_a_l_azerbaidjan(self):
+        resultat = categoriser(
+            {"title": "La crise du Karabakh", "summary": "", "source": "Test",
+             "url": "https://example.org/a"}
+        )
+        self.assertNotIn("armenie", resultat["geo"])
+        self.assertNotIn("azerbaidjan", resultat["geo"])

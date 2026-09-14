@@ -250,6 +250,32 @@ CAUCASUS_TERMS = [
     "north ossetia",
     "ingushetia",
 
+    # Haut-Karabakh / Nagorno-Karabakh. Ajouté le 2026-09-14 : le
+    # territoire était absent de CAUCASUS_TERMS dans les trois
+    # langues, alors que des titres HRW entiers n'ont AUCUN autre
+    # terme géographique du Caucase — "Le droit de retour au
+    # Haut-Karabakh devrait être garanti", "Незаконные нападения на
+    # медицинские объекты в Нагорном Карабахе". Ces articles
+    # ressortaient sans aucune géographie détectée, donc
+    # regional_context=False et un score autour de 0-12 malgré un
+    # ancrage HR réel. 10 articles du corpus n'avaient QUE ce terme
+    # comme géographie — aucun autre mot n'aurait rattrapé le cas.
+    #
+    # Le territoire n'est volontairement pas fondu dans "armenie" ni
+    # "azerbaidjan" : il est disputé, comme l'Ossétie l'est déjà entre
+    # la Russie et la Géorgie (voir "ossetie" dans categorisation.py,
+    # même raisonnement, même solution).
+    "karabakh",
+    "nagorno-karabakh",
+    "nagorno karabakh",
+    "haut-karabakh",
+    "haut karabakh",
+    "artsakh",
+    "карабах",
+    "нагорный карабах",
+    "арцах",
+    "нагорно-карабахский",
+
     # Grandes villes
     "baku",
     "tbilisi",
