@@ -18,6 +18,7 @@ from archive import (
     load_state,
     merge_scanned,
     nettoyer_corps,
+    nettoyer_titres,
     rewrite_archive,
     save_state,
 )
@@ -664,3 +665,53 @@ class NettoyerCorpsTests(unittest.TestCase):
         scanned = [("k1", {"level": "A", "body": "A" * 100})]
         self.assertEqual(backfill_bodies(entrees, scanned), 0)
         self.assertEqual(len(entrees["k1"]["body"]), 500)
+
+
+class NettoyerTitresTests(unittest.TestCase):
+    """
+    Rattrapage des titres The Diplomat déjà archivés avec une
+    signature et un chapô collés (voir strip_diplomat_byline dans
+    article_ingestion.py). Contrairement aux corps, un titre archivé
+    n'est JAMAIS retéléchargé — merge_scanned() n'écrit un article
+    déjà connu sous aucun prétexte — donc sans ce rattrapage, les
+    titres déjà pollués le resteraient pour toujours, même une fois le
+    bug corrigé côté extraction.
+    """
+
+    def test_nettoie_un_titre_deja_archive(self):
+        entrees = {
+            "k1": {
+                "title": (
+                    "SCO Summit Produces Surprising Winners By Wesley "
+                    "Alexander Hill The organization's smaller members "
+                    "can use a China-India-Russia-dominated forum."
+                ),
+                "source": "The Diplomat",
+            }
+        }
+        self.assertEqual(nettoyer_titres(entrees), 1)
+        self.assertEqual(
+            entrees["k1"]["title"], "SCO Summit Produces Surprising Winners"
+        )
+
+    def test_ne_touche_pas_une_autre_source(self):
+        entrees = {
+            "k1": {
+                "title": "By Kharkiv Human Rights Protection Group",
+                "source": "ADC Memorial",
+            }
+        }
+        self.assertEqual(nettoyer_titres(entrees), 0)
+
+    def test_second_passage_ne_reecrit_rien(self):
+        entrees = {
+            "k1": {
+                "title": (
+                    "SCO Summit Produces Surprising Winners By Wesley "
+                    "Alexander Hill The organization's smaller members."
+                ),
+                "source": "The Diplomat",
+            }
+        }
+        nettoyer_titres(entrees)
+        self.assertEqual(nettoyer_titres(entrees), 0)

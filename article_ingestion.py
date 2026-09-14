@@ -123,6 +123,50 @@ def parse_rss(
     return articles
 
 
+# thediplomat.com (2026-09-14) : sur la page de liste, chaque carte
+# d'article est un unique <a> qui enveloppe le titre, la signature et
+# le chapô — sans séparateur, get_text(" ") les recolle en une seule
+# chaîne : "SCO Summit Produces Surprising Winners By Wesley Alexander
+# Hill The organization's smaller members can use...". Constaté sur
+# 12 des 24 articles archivés de la source, dont deux à plusieurs
+# auteurs ("By Bimal Adhikari and Aruzhan Kaimoldina"). Le titre
+# gonflé (jusqu'à 250+ caractères) fausse la classification du type
+# d'article et toute logique qui traite le titre différemment du
+# corps.
+#
+# Non vérifiable depuis cet environnement (accès réseau bloqué vers
+# thediplomat.com, comme pour hrw.org) : la coupure est donc basée
+# sur le texte déjà archivé, pas sur une relecture du HTML source.
+# Motif volontairement étroit — deux mots capitalisés consécutifs
+# minimum après "By " — et scopé à cette seule source : sur les 9837
+# titres de l'archive, seuls ceux de The Diplomat le déclenchent.
+_DIPLOMAT_BYLINE_RE = re.compile(
+    "^(.*?)\\bBy [A-Z][a-zA-Z'-]+(?: [A-Z][a-zA-Z'-]+){1,3}\\b\\s+\\S"
+)
+
+
+def strip_diplomat_byline(title: str, source_name: str | None) -> str:
+    """
+    Retire la signature et le chapô collés au titre par
+    extract_links_from_html() sur thediplomat.com.
+
+    Prend un nom de source (chaîne), pas le dict de sources.py — même
+    idiome que strip_boilerplate()/strip_related_blocks() dans
+    text_utils.py — pour pouvoir s'appliquer aussi bien à un article
+    en cours d'extraction (où source est le dict de configuration)
+    qu'à une entrée déjà archivée (où "source" n'est qu'un nom).
+    """
+    if (source_name or "") != "The Diplomat":
+        return title
+
+    match = _DIPLOMAT_BYLINE_RE.match(title)
+    if not match:
+        return title
+
+    titre_seul = match.group(1).strip()
+    return titre_seul or title
+
+
 def extract_links_from_html(
     content: str,
     base_url: str,
@@ -135,6 +179,7 @@ def extract_links_from_html(
     for link in soup.find_all("a", href=True):
         href = urljoin(base_url, link.get("href", ""))
         title = clean_title(link.get_text(" ", strip=True))
+        title = strip_diplomat_byline(title, source.get("name"))
 
         if not title or not href:
             continue
