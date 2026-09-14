@@ -54,6 +54,51 @@ from keywords import (
 # ============================================================
 
 REPRESSION_TERMS_V9 = [
+    # Vocabulaire russe ajouté le 2026-09-14, même démarche que le
+    # français la veille : 93 des 323 titres HRW sans corps restés en
+    # E sont en russe. Les racines sont volontairement tronquées —
+    # _borner() ne pose pas de limite de mot après un caractère non
+    # latin, donc "депортаци" couvre депортация/депортации/депортацию.
+    #
+    # ATTENTION, piège vérifié de près : find_terms() n'est PAS
+    # _alternation_pattern(). Il impose une limite de mot APRÈS le
+    # terme, pour tous les termes, y compris cyrilliques. Une racine
+    # tronquée y est donc totalement inerte — "депортаци" ne matche ni
+    # "депортация" ni "депортации". C'est exactement le défaut que
+    # categorisation.py documente pour les racines de REPRESSION_TERMS
+    # et qu'il corrige avec _TRAITEMENT_STEM_PATTERNS. Les formes sont
+    # donc énumérées ici, une par une.
+    #
+    # Audit sur les 9556 articles, titres ET corps :
+    #
+    #   депортаци        11 occurrences, justes        RETENU
+    #   выдворени         3 occurrences, justes        RETENU
+    #   нарушени* прав   11 occurrences, justes        RETENU
+    #   насильственн* исчезновени (forme qualifiée)    RETENU
+    #   не выпускают из страны    1, juste             RETENU
+    #   принудительн* содержани   1, juste             RETENU
+    #
+    # Trois rejets, tous pour cause de sens non répressif dominant :
+    #
+    #   эксплуатаци   2 justes / 11 — dans les corps le mot signifie
+    #                 "mise en service" : "сдали в эксплуатацию",
+    #                 "срок эксплуатации", "ввели в эксплуатацию".
+    #   нападени      le sens militaire ou criminel domine largement
+    #                 ("нападение России на Украину", morsures de
+    #                 chien, attaques d'infrastructures).
+    #   исчезновени   nu, même piège que "disappeared" en anglais :
+    #                 disparition d'oiseaux, de Telegram de l'App
+    #                 Store, d'un bâtiment aimé des habitants. Seule
+    #                 la forme qualifiée entre.
+    "депортация", "депортации", "депортацию", "депортацией",
+    "депортаций", "депортациям", "депортирован", "депортировали",
+    "выдворение", "выдворения", "выдворению", "выдворении",
+    "нарушение прав", "нарушения прав",
+    "нарушений прав", "нарушениях прав",
+    "насильственное исчезновение", "насильственных исчезновений",
+    "насильственные исчезновения",
+    "не выпускают из страны", "не выпускали из страны",
+    "принудительное содержание", "принудительном содержании",
     # Ajoutés le 2026-09-14, même forme de trou que "crackdown" nu la
     # veille, en français cette fois : la liste contenait "répression
     # policière" et "répression politique" — les formes qualifiées —
