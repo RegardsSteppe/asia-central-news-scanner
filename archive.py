@@ -63,7 +63,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
-from article_ingestion import strip_diplomat_byline
+from article_ingestion import strip_diplomat_byline, strip_osce_metadata
 from text_utils import strip_boilerplate, strip_related_blocks
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -506,10 +506,10 @@ def nettoyer_titres(archive: dict[str, dict[str, Any]]) -> int:
     Contrairement aux corps (voir nettoyer_corps), les titres ne sont
     JAMAIS retéléchargés : merge_scanned() n'écrit un article déjà
     archivé sous aucun prétexte, titre compris. Sans ce rattrapage,
-    les 12 titres de The Diplomat déjà pollués par une signature et un
-    chapô collés (voir extract_links_from_html) le resteraient pour
-    toujours, même une fois le bug corrigé à la source. Idempotente,
-    comme nettoyer_corps.
+    les titres déjà pollués — 12 de The Diplomat (signature et chapô
+    collés), 22 d'OSCE (étiquette, doublon et pied Date/Location) —
+    le resteraient pour toujours, même une fois le bug corrigé à la
+    source. Idempotente, comme nettoyer_corps.
     """
     nettoyes = 0
 
@@ -519,6 +519,7 @@ def nettoyer_titres(archive: dict[str, dict[str, Any]]) -> int:
             continue
 
         propre = strip_diplomat_byline(titre, entry.get("source"))
+        propre = strip_osce_metadata(propre, entry.get("source"))
         if propre != titre:
             entry["title"] = propre
             nettoyes += 1

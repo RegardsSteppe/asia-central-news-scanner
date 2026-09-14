@@ -15,6 +15,7 @@ from article_ingestion import (
     looks_like_article_link,
     parse_rss,
     strip_diplomat_byline,
+    strip_osce_metadata,
 )
 
 
@@ -753,3 +754,62 @@ class StripDiplomatBylineTests(unittest.TestCase):
 
     def test_accepte_une_source_absente(self):
         self.assertEqual(strip_diplomat_byline("Un titre", None), "Un titre")
+
+
+class StripOsceMetadataTests(unittest.TestCase):
+    """
+    Régression du 2026-09-14, trouvée en cherchant d'autres sources
+    avec le même genre de problème que The Diplomat. Sur osce.org, la
+    carte de liste répète le titre deux fois (probablement une version
+    visible et une pour lecteur d'écran, toutes deux capturées par
+    get_text), colle une étiquette de catégorie devant ("Press
+    release", "News Item"...), et un pied "Date Date <date> Location
+    Location <lieu>" derrière. Constaté sur 22 des 26 articles OSCE
+    archivés — 85% de la source, un profil "human_rights" à créneaux
+    d'enrichissement garantis.
+
+    "Date Date"/"Location Location" servent d'ancre : la répétition du
+    mot est un artefact de structure qu'aucun titre réel ne
+    produirait, et elle ne se déclenche nulle part ailleurs sur les
+    9837 titres de l'archive (vérifié).
+    """
+
+    def test_retire_etiquette_doublon_et_pied(self):
+        titre = (
+            "News Item From invisibility to equality: Advancing Roma "
+            "inclusion through legal identity in North Macedonia From "
+            "invisibility to equality: Advancing Roma inclusion through "
+            "legal identity in North Macedonia Date Date 8 April 2026"
+        )
+        self.assertEqual(
+            strip_osce_metadata(titre, "OSCE"),
+            "From invisibility to equality: Advancing Roma inclusion "
+            "through legal identity in North Macedonia",
+        )
+
+    def test_gere_les_cinq_etiquettes_de_categorie(self):
+        for etiquette in (
+            "Press release", "Media advisory", "Project Update",
+            "News Item", "Story",
+        ):
+            with self.subTest(etiquette=etiquette):
+                titre = f"{etiquette} Un vrai titre Date Date 1 January 2026 Location Location VIENNA"
+                self.assertEqual(
+                    strip_osce_metadata(titre, "OSCE"), "Un vrai titre"
+                )
+
+    def test_ne_touche_pas_un_titre_de_navigation_sans_date(self):
+        # Les titres de navigation ("Press releases", "Media
+        # advisories"...) n'ont pas le motif "Date Date" et doivent
+        # rester intacts — c'est looks_like_section_page() qui les
+        # gère, pas cette fonction.
+        for titre in ("Media advisories", "Press releases", "News archive"):
+            with self.subTest(titre=titre):
+                self.assertEqual(strip_osce_metadata(titre, "OSCE"), titre)
+
+    def test_scope_a_la_seule_source_osce(self):
+        titre = "News Item Un titre Date Date 1 January 2026 Location Location VIENNA"
+        self.assertEqual(strip_osce_metadata(titre, "Another Source"), titre)
+
+    def test_accepte_une_source_absente(self):
+        self.assertEqual(strip_osce_metadata("Un titre", None), "Un titre")

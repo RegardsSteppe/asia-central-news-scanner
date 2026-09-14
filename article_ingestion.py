@@ -167,6 +167,40 @@ def strip_diplomat_byline(title: str, source_name: str | None) -> str:
     return titre_seul or title
 
 
+# osce.org (2026-09-14) : la carte de liste répète le titre deux fois
+# (probablement une version visible et une version pour lecteur
+# d'écran, toutes deux capturées par get_text), colle une étiquette
+# de catégorie devant ("Press release", "News Item", "Story"...), et
+# un pied "Date Date <date> Location Location <lieu>" derrière.
+# Constaté sur 22 des 26 articles OSCE archivés — 85% de la source.
+#
+# "Date Date"/"Location Location" servent d'ancre de coupure : la
+# répétition du mot est un artefact de structure qu'aucun titre réel
+# ne produirait, et elle n'apparaît nulle part ailleurs dans les 9837
+# titres de l'archive (vérifié).
+_OSCE_LABEL_RE = re.compile('^(?:Press release|Media advisory|Project Update|News Item|Story)\\s+')
+_OSCE_DATE_FOOTER_RE = re.compile('\\s*\\bDate Date\\b.*$')
+_OSCE_DUPLICATE_RE = re.compile('^(.+?) \\1$')
+
+
+def strip_osce_metadata(title: str, source_name: str | None) -> str:
+    """Retire l'étiquette, le doublon et le pied Date/Location que
+    extract_links_from_html() capture depuis les cartes de liste
+    d'osce.org. Voir strip_diplomat_byline() pour l'idiome
+    (source_name en chaîne, pas le dict de sources.py)."""
+    if (source_name or "") != "OSCE":
+        return title
+
+    sans_pied = _OSCE_DATE_FOOTER_RE.sub("", title)
+    sans_etiquette = _OSCE_LABEL_RE.sub("", sans_pied).strip()
+
+    doublon = _OSCE_DUPLICATE_RE.match(sans_etiquette)
+    if doublon:
+        sans_etiquette = doublon.group(1)
+
+    return sans_etiquette or title
+
+
 def extract_links_from_html(
     content: str,
     base_url: str,
@@ -180,6 +214,7 @@ def extract_links_from_html(
         href = urljoin(base_url, link.get("href", ""))
         title = clean_title(link.get_text(" ", strip=True))
         title = strip_diplomat_byline(title, source.get("name"))
+        title = strip_osce_metadata(title, source.get("name"))
 
         if not title or not href:
             continue

@@ -715,3 +715,39 @@ class NettoyerTitresTests(unittest.TestCase):
         }
         nettoyer_titres(entrees)
         self.assertEqual(nettoyer_titres(entrees), 0)
+
+
+class NettoyerTitresOsceTests(unittest.TestCase):
+    """
+    Même rattrapage que pour The Diplomat (voir NettoyerTitresTests),
+    pour les titres OSCE déjà archivés avec étiquette, doublon et pied
+    Date/Location collés.
+    """
+
+    def test_nettoie_un_titre_osce_deja_archive(self):
+        entrees = {
+            "k1": {
+                "title": (
+                    "Story Roots of resilience: the OSCE's three "
+                    "dimensional approach to security Date Date "
+                    "1 January 2026 Location Location VIENNA"
+                ),
+                "source": "OSCE",
+            }
+        }
+        self.assertEqual(nettoyer_titres(entrees), 1)
+        self.assertEqual(
+            entrees["k1"]["title"],
+            "Roots of resilience: the OSCE's three dimensional approach "
+            "to security",
+        )
+
+    def test_second_passage_ne_reecrit_rien(self):
+        entrees = {
+            "k1": {
+                "title": "News Item Un titre Date Date 1 January 2026 Location Location VIENNA",
+                "source": "OSCE",
+            }
+        }
+        nettoyer_titres(entrees)
+        self.assertEqual(nettoyer_titres(entrees), 0)
