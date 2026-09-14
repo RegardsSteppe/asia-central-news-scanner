@@ -80,6 +80,13 @@ def _load_model() -> Any:
         repo_id=MODEL_REPO,
         filename=MODEL_FILENAME,
         n_ctx=4096,
+        # -1 = toutes les couches déchargées sur le GPU. Sans ce
+        # paramètre, un binaire compilé avec le support CUDA (voir
+        # Dockerfile.juge) tourne quand même entièrement sur CPU — la
+        # compilation active la capacité, ce paramètre l'utilise.
+        # Inoffensif sur un environnement sans GPU : llama.cpp retombe
+        # alors sur le CPU de lui-même.
+        n_gpu_layers=-1,
         verbose=False,
     )
 

@@ -61,10 +61,28 @@ python -m unittest discover -s tests -p "test_*.py"
 
 ## Build and push the image
 
+Two images, two purposes — don't mix them up:
+
 ```bash
-docker build -t <your-dockerhub-user>/asia-central-scoring:latest .
+# Deterministic scoring (score/batch modes). CPU endpoint. Fast cold start.
+docker build -f Dockerfile -t <your-dockerhub-user>/asia-central-scoring:latest .
 docker push <your-dockerhub-user>/asia-central-scoring:latest
+
+# LLM judge (judge mode). Needs a GPU to build: the Dockerfile compiles
+# llama-cpp-python with CUDA support (CMAKE_ARGS=-DGGML_CUDA=on), which
+# requires nvcc — building on a machine without an NVIDIA GPU/driver
+# either fails or silently produces a CPU-only binary. Build this one
+# on a GPU machine (a RunPod pod works), or in CI with a CUDA-enabled
+# runner.
+docker build -f Dockerfile.juge -t <your-dockerhub-user>/asia-central-judge:latest .
+docker push <your-dockerhub-user>/asia-central-judge:latest
 ```
+
+For the judge image specifically: deploy it on a **GPU** RunPod
+Serverless endpoint (not CPU). `juge_llm._load_model()` passes
+`n_gpu_layers=-1` to actually use it — without both the CUDA build
+*and* that parameter, the model runs on CPU regardless of the endpoint
+type, silently, no error, just slow across thousands of articles.
 
 ## Create the RunPod Serverless endpoint
 
