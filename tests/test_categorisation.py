@@ -155,7 +155,8 @@ class GeoRegistryConsistencyTests(unittest.TestCase):
             "turkmenistan", "azerbaidjan", "armenie", "georgie",
             "caucase_nord", "xinjiang", "iran", "afghanistan", "russie",
             "ukraine", "chine", "bielorussie", "turquie", "moldavie",
-            "asie_centrale", "caucase", "ossetie", "haut_karabakh", "autre",
+            "asie_centrale", "caucase", "ossetie", "haut_karabakh",
+            "abkhazie", "autre",
         }
         inconnues = set(_GEO_TERM_COUNTRY.values()) - cures - set(PAYS_MONDE_LIBELLES)
         self.assertEqual(inconnues, set())
@@ -1288,3 +1289,34 @@ class HautKarabakhTests(unittest.TestCase):
         )
         self.assertNotIn("armenie", resultat["geo"])
         self.assertNotIn("azerbaidjan", resultat["geo"])
+
+
+class AbkhazieTests(unittest.TestCase):
+    """
+    Trouvé le même jour que le Haut-Karabakh, par la même méthode :
+    "Живущие Неопределенностью: Положение этнических грузин,
+    возвращающихся в Гальский район Абхазии" (HRW) — un rapport entier
+    sur les Géorgiens de souche rentrant dans le district de Gali —
+    n'avait pas non plus de géographie sans ce terme. L'Abkhazie est
+    disputée entre la Géorgie et la Russie, comme l'Ossétie du Sud.
+    """
+
+    def test_formes_anglaises_et_russes(self):
+        for titre in (
+            "Abkhazia and South Ossetia: Time to Talk Trade",
+            "Живущие Неопределенностью: Положение этнических грузин, "
+            "возвращающихся в Гальский район Абхазии",
+        ):
+            with self.subTest(titre=titre):
+                resultat = categoriser(
+                    {"title": titre, "summary": "", "source": "Human Rights Watch",
+                     "url": "https://www.hrw.org/news/test"}
+                )
+                self.assertIn("abkhazie", resultat["geo"])
+
+    def test_reste_distinct_de_la_georgie_quand_seule_mentionnee(self):
+        resultat = categoriser(
+            {"title": "Abkhazia and South Ossetia: Time to Talk Trade",
+             "summary": "", "source": "Test", "url": "https://example.org/a"}
+        )
+        self.assertNotIn("georgie", resultat["geo"])

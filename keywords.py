@@ -276,6 +276,15 @@ CAUCASUS_TERMS = [
     "арцах",
     "нагорно-карабахский",
 
+    # Abkhazie (2026-09-14) : même trou que le Haut-Karabakh, même
+    # découverte — un rapport HRW entier sur les Géorgiens de souche
+    # rentrant dans le district de Gali n'avait aucune géographie
+    # détectée. Territoire disputé entre la Géorgie et la Russie,
+    # exactement comme l'Ossétie du Sud, déjà traitée séparément.
+    "abkhazia",
+    "abkhazie",
+    "абхазия",
+
     # Grandes villes
     "baku",
     "tbilisi",

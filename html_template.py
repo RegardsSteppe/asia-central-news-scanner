@@ -223,6 +223,7 @@ _LIBELLES_CLASSES = {
     "caucase": "Caucase (région)",
     "ossetie": "Ossétie",
     "haut_karabakh": "Haut-Karabakh",
+    "abkhazie": "Abkhazie",
     "defenseur": "Défenseur des droits",
     "journaliste": "Journaliste",
     "opposant": "Opposant / activiste",

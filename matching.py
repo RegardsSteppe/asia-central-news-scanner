@@ -333,6 +333,9 @@ RUSSIAN_CAUCASUS_STEM_PATTERNS = (
     # Карабахом et l'adjectif "нагорно-карабахский" sans les énumérer
     # un par un — même principe que les autres racines de cette liste.
     ("карабах", r"\bкарабах\w*\b"),
+    # "абхазия" (2026-09-14) : couvre Абхазия/Абхазии/Абхазию/Абхазией
+    # et l'adjectif "абхазский" sans les énumérer un par un.
+    ("абхазия", r"\bабхаз\w*\b"),
 )
 
 
