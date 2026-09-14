@@ -265,7 +265,12 @@ class CategorisationDashboardTests(unittest.TestCase):
     def test_every_schema_class_has_a_readable_label(self):
         # Sans ce garde-fou, une classe ajoutée au schéma s'affiche
         # telle quelle ("minorite_ethnique") sur le site public.
-        from html_template import _LIBELLES_CLASSES
+        #
+        # Le test porte sur _libelle_classe() et non sur la table :
+        # depuis l'ajout de tous les pays du monde, les libellés ont
+        # deux sources (la table curée et pays_monde.py générée), et
+        # c'est la fonction qui doit les réconcilier.
+        from html_template import _libelle_classe
         from categorisation import (
             ACTEUR_TYPE_TERMS,
             TRAITEMENT_TYPE_TERMS,
@@ -277,11 +282,18 @@ class CategorisationDashboardTests(unittest.TestCase):
             | set(TRAITEMENT_TYPE_TERMS)
             | set(_GEO_TERM_COUNTRY.values())
             | {"autre", "evenement_date", "rapport_analyse",
-               "plaidoyer_communique", "navigation", "indetermine"}
+               "plaidoyer_communique", "navigation", "indetermine",
+               "page_thematique"}
         )
 
-        manquants = sorted(c for c in classes if c not in _LIBELLES_CLASSES)
-        self.assertEqual(manquants, [])
+        # Un libellé lisible ne contient pas d'underscore et commence
+        # par une majuscule : c'est ce qui distingue "Minorité
+        # ethnique" de l'identifiant brut qui fuirait sur le site.
+        bruts = sorted(
+            c for c in classes
+            if "_" in _libelle_classe(c) or not _libelle_classe(c)[:1].isupper()
+        )
+        self.assertEqual(bruts, [], f"{len(bruts)} classe(s) sans libellé")
 
     def test_coverage_counts_articles_not_classes(self):
         # Un article "Kazakhstan + Russie" porte deux valeurs mais reste

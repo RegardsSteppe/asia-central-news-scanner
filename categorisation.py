@@ -40,6 +40,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from article_ingestion import looks_like_article_link
+from pays_monde import PAYS_MONDE_LIBELLES, PAYS_MONDE_TERMES
 from text_utils import article_age_days
 
 from keywords import (
@@ -198,13 +199,92 @@ _register_geo_terms("afghanistan", ["afghanistan", "афганистан"])
 _register_geo_terms("russie", ["russia", "россия", "russie"])
 
 
+# Voisins de la zone de veille. Même statut que Iran/Afghanistan/
+# Russie ci-dessus : purement descriptifs, ils n'entrent PAS dans la
+# porte régionale de scoring.py (qui a sa propre géographie) et ne
+# peuvent donc pas gonfler un score.
+#
+# Repéré sur un cas réel le 2026-09-14 : "Украина: Пытки, исчезновения
+# в ходе конфликта на востоке страны" (HRW russe) ressortait
+# geo=aucune alors que le pays est le premier mot du titre. Audit :
+# 706 articles sur 8824 nomment dans leur titre un pays absent du
+# registre — Chine 277, Ukraine 174 en tête.
+_PAYS_VOISINS_TERMS = [
+    "ukraine", "украина", "украины", "украине", "украину",
+    "china", "китай", "китая", "chine",
+    "belarus", "беларусь", "белоруссия", "biélorussie",
+    "turkey", "турция", "turquie",
+    "moldova", "молдова", "молдавия", "moldavie",
+]
+_register_geo_terms("ukraine", ["ukraine", "украина", "украины", "украине", "украину"])
+_register_geo_terms("chine", ["china", "китай", "китая", "chine"])
+_register_geo_terms("bielorussie", ["belarus", "беларусь", "белоруссия", "biélorussie"])
+_register_geo_terms("turquie", ["turkey", "турция", "turquie"])
+_register_geo_terms("moldavie", ["moldova", "молдова", "молдавия", "moldavie"])
+
+# Tous les autres pays du monde, en anglais/français/russe, générés
+# depuis pycountry (voir tools/generer_pays.py). Les sources de cette
+# veille — CPJ, OCCRP, FIDH, Amnesty — couvrent la planète entière :
+# 159 pays distincts apparaissaient dans le corpus sans jamais être
+# situés. Les nommer tous plutôt que de les verser dans "autre" était
+# la demande.
+#
+# Les listes curées au-dessus restent PRIORITAIRES : elles portent la
+# morphologie russe (Украина/Украины/Украине) et les formes
+# familières que la table générée ne connaît pas.
+for _terme, _pays in PAYS_MONDE_TERMES.items():
+    _GEO_TERM_COUNTRY.setdefault(_terme, _pays)
+
+# Régions, pas pays. Elles tombaient sur "autre" faute de pouvoir être
+# rattachées à un État — ce qui était doublement trompeur : "autre"
+# suggère "ailleurs", alors que "Asie centrale" est le cœur même du
+# périmètre. Les nommer dit ce que le texte dit : une région, sans
+# désigner de pays.
+_register_geo_terms("asie_centrale", [
+    "central asia", "central asian", "asie centrale",
+    "центральная азия", "центральноазиатский", "آسیای مرکزی",
+])
+_register_geo_terms("caucase", [
+    "caucasus", "south caucasus", "caucase", "кавказ",
+    "قفقاز", "قفقاز جنوبی",
+])
+# Ossétie seule : le Nord est russe, le Sud est revendiqué par la
+# Géorgie. Le terme ne tranche pas, l'étiquette non plus.
+_register_geo_terms("ossetie", ["осетия"])
+
+_PAYS_MONDE_LISTE = list(PAYS_MONDE_TERMES)
+
+
+def _sans_inclusions(termes: list[str]) -> list[str]:
+    """
+    Retire les noms de pays contenus dans un autre nom détecté.
+
+    "Papua New Guinea" contient "Guinea" comme mot entier : sans ce
+    filtre, un article papouasien ressortirait aussi "Guinée". Même
+    problème pour "South Sudan"/"Sudan" et "North Korea"/"Korea".
+    """
+    return [
+        terme for terme in termes
+        if not any(
+            autre != terme and re.search(
+                r"(?<!\w)" + re.escape(terme) + r"(?!\w)", autre
+            )
+            for autre in termes
+        )
+    ]
+
+
 def _geo_terms_in(text: str, language: str) -> list[str]:
     """Termes géo bruts détectés dans `text` (pas encore mappés à un pays)."""
     central_asia = find_central_asia_terms(text, CENTRAL_ASIA_TERMS, language)
     caucasus = find_caucasus_terms(text, CAUCASUS_TERMS, language)
     uyghur = find_terms(text, UYGHUR_TERMS)
     iran_afg_russia = find_terms(text, _IRAN_AFGHANISTAN_RUSSIA_TERMS)
-    return list(dict.fromkeys(central_asia + caucasus + uyghur + iran_afg_russia))
+    voisins = find_terms(text, _PAYS_VOISINS_TERMS)
+    monde = _sans_inclusions(find_terms(text, _PAYS_MONDE_LISTE))
+    return list(dict.fromkeys(
+        central_asia + caucasus + uyghur + iran_afg_russia + voisins + monde
+    ))
 
 
 # ============================================================
@@ -278,6 +358,8 @@ MINORITE_ETHNIQUE_TERMS = [
     "indigenous people", "indigenous community",
     "этническое меньшинство", "национальное меньшинство",
     "коренной народ",
+    "minorité ethnique", "minorités ethniques",
+    "minorité nationale", "peuple autochtone", "peuples autochtones",
 ]
 
 # Consolidé depuis les termes déjà présents dans VICTIM_TERMS/
@@ -287,6 +369,12 @@ MINORITE_ETHNIQUE_TERMS = [
 FEMME_TERMS = [
     "women", "girls", "women's rights", "girls' rights", "girls rights",
     "женщины", "девушки", "права женщин", "права девушек",
+    # Audit du 2026-09-14 : aucune forme française, sur 274 articles
+    # de sources francophones (HRW, Amnesty, RSF, FIDH). "Liban : Les
+    # femmes transgenres face à la discrimination" ressortait
+    # acteur=aucun.
+    "femme", "femmes", "fille", "filles",
+    "droits des femmes", "droits des filles",
 ]
 
 # Partiellement nouveau — "asylum seeker"/"political asylum" viennent
@@ -306,6 +394,8 @@ CITOYEN_TERMS = [
     "civilian", "civilians", "resident", "residents",
     "ordinary citizen", "ordinary citizens",
     "гражданин", "граждане", "мирные жители", "местный житель",
+    "civil", "civils", "habitant", "habitants",
+    "citoyen ordinaire", "citoyens ordinaires",
 ]
 
 # Absent de keywords.py — vocabulaire créé pour ce module. Enrichi le
@@ -337,6 +427,25 @@ SYNDICALISTE_TERMS = [
     "اتحادیه کارگری", "کارگران اعتصابی",
 ]
 
+# Absent du schéma d'origine, repéré le 2026-09-14 sur "Le Burkina
+# Faso criminalise les relations homosexuelles" (acteur=aucun). 31
+# articles du corpus concernés, dont plusieurs au coeur de la zone :
+# loi kazakhe restreignant les contenus LGBTQ+, répression russe,
+# Kirghizistan.
+MINORITE_SEXUELLE_TERMS = [
+    "lgbt", "lgbtq", "lgbti", "lgbtq+", "lgbti+",
+    "homosexual", "homosexuality", "same-sex",
+    "gay", "gays", "lesbian", "lesbians",
+    "transgender", "transgender people", "trans people",
+    "homosexuel", "homosexuelle", "homosexuels", "homosexuelles",
+    "homosexualité", "relations homosexuelles", "lesbienne",
+    "transgenre", "transgenres", "personnes trans",
+    "femme transgenre", "femmes transgenres",
+    "лгбт", "лгбтик", "гей", "геи", "гомосексуал",
+    "гомосексуальность", "лесбиянк", "трансгендер",
+    "همجنسگرا", "دگرباش",
+]
+
 ACTEUR_TYPE_TERMS: dict[str, list[str]] = {
     "defenseur": HUMAN_RIGHTS_DEFENDER_TERMS,
     "journaliste": JOURNALIST_TERMS,
@@ -349,6 +458,7 @@ ACTEUR_TYPE_TERMS: dict[str, list[str]] = {
     "ecologiste": ECOLOGISTE_TERMS,
     "syndicaliste": SYNDICALISTE_TERMS,
     "citoyen_ordinaire": CITOYEN_TERMS,
+    "minorite_sexuelle": MINORITE_SEXUELLE_TERMS,
 }
 
 
@@ -410,6 +520,8 @@ DISPARITION_TERMS = [
     "missing after detention",
     "насильственное исчезновение", "насильственно исчез",
     "ناپدید شدن اجباری",
+    "disparition forcée", "disparitions forcées",
+    "porté disparu", "portée disparue", "portés disparus",
 ]
 
 # Sous-ensemble de SPECIFIC_RIGHTS_TERMS + SEVERE_REPRESSION_TERMS
@@ -467,6 +579,29 @@ CENSURE_BLOCAGE_TERMS = [
 #     4 fausses, toutes routières ("چالوس مسدود شد" — 7 km de bouchon
 #     sur la route de Chalus).
 
+# Criminaliser un groupe ou une pratique par la loi n'est aucun des
+# traitements existants : ce n'est pas une détention, ni une pression
+# administrative sur un individu, c'est une répression au niveau du
+# texte de loi.
+#
+# Vocabulaire volontairement étroit. Les formes larges ("banned",
+# "ban on", "outlaw", "запретил") ont été testées puis écartées : 62
+# détections, majoritairement fausses ("Travel Bans" dans un titre sur
+# la pression aux journalistes kazakhs, "Putin... banned", "UK
+# edition"). Même erreur que celle commise sur censure_blocage avec
+# "press freedom". Les 21 détections du vocabulaire ci-dessous sont
+# toutes justes.
+CRIMINALISATION_TERMS = [
+    "criminalise", "criminalises", "criminalised",
+    "criminalize", "criminalizes", "criminalized",
+    "criminalization", "criminalisation",
+    "law criminalizing", "law criminalising",
+    "criminalisent", "criminalisant", "loi criminalisant",
+    "lois répressives", "loi répressive",
+    "криминализация", "криминализировал", "криминализации",
+    "уголовная ответственность",
+]
+
 TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
     "detention": DETENTION_TERMS,
     "condamnation": CONDAMNATION_TERMS,
@@ -477,6 +612,7 @@ TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
     "pression_administrative": REPRESSION_TERMS,
     "contrainte_travail": FORCED_LABOR_TERMS,
     "expulsion_extradition": TRANSNATIONAL_REPRESSION_TERMS_V9,
+    "criminalisation": CRIMINALISATION_TERMS,
 }
 
 # Repéré en audit réel le 2026-09-12 sur un article HRW russe

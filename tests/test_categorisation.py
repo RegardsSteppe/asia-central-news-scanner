@@ -141,16 +141,23 @@ class RussianStemTraitementTests(unittest.TestCase):
 
 class GeoRegistryConsistencyTests(unittest.TestCase):
     def test_every_geo_term_maps_to_a_declared_country(self):
-        # Sanity check : la table de correspondance interne ne doit
-        # jamais mapper vers une valeur hors de l'énumération attendue.
+        # La table couvre désormais tous les pays du monde (générés
+        # dans pays_monde.py), donc l'énumération en dur ne tient plus.
+        # Le garde-fou reste le même : aucune valeur ne doit sortir de
+        # nulle part — soit elle est curée à la main, soit elle vient
+        # de la table générée.
         from categorisation import _GEO_TERM_COUNTRY
+        from pays_monde import PAYS_MONDE_LIBELLES
 
-        allowed = {
+        cures = {
             "kazakhstan", "ouzbekistan", "kirghizistan", "tadjikistan",
             "turkmenistan", "azerbaidjan", "armenie", "georgie",
             "caucase_nord", "xinjiang", "iran", "afghanistan", "russie",
+            "ukraine", "chine", "bielorussie", "turquie", "moldavie",
+            "asie_centrale", "caucase", "ossetie", "autre",
         }
-        self.assertTrue(set(_GEO_TERM_COUNTRY.values()) <= allowed)
+        inconnues = set(_GEO_TERM_COUNTRY.values()) - cures - set(PAYS_MONDE_LIBELLES)
+        self.assertEqual(inconnues, set())
 
     def test_modern_kyrgyz_adjective_maps_to_kirghizistan(self):
         # Régression du 2026-09-12 : "кыргыз" (adjectif moderne)
@@ -457,3 +464,232 @@ class PageThematiqueTests(unittest.TestCase):
             )
         )
         self.assertNotEqual(cat["type"], "page_thematique")
+
+
+class PaysVoisinsGeoTests(unittest.TestCase):
+    """
+    Un pays nommé dans le titre ne doit pas ressortir geo=aucune.
+
+    Cas réel du 2026-09-14 : "Украина: Пытки, исчезновения в ходе
+    конфликта на востоке страны" (HRW russe) ressortait sans
+    géographie alors que le pays est le premier mot. Audit : 706
+    articles sur 8824 nommaient un pays absent du registre.
+    """
+
+    def _article(self, titre, **overrides):
+        article = {
+            "title": titre, "summary": "", "body": "",
+            "source": "Human Rights Watch", "url": "https://ex.org/news/a",
+            "language": "ru", "date": None,
+        }
+        article.update(overrides)
+        return article
+
+    def test_the_reported_article_now_has_a_geography(self):
+        cat = categoriser(
+            self._article(
+                "Украина: Пытки, исчезновения в ходе конфликта на востоке страны"
+            )
+        )
+        self.assertEqual(cat["geo"], ["ukraine"])
+        self.assertIn("украина", cat["preuves"]["geo"])
+
+    def test_neighbouring_countries_get_their_own_value(self):
+        for titre, attendu in (
+            ("Китай усиливает контроль", "chine"),
+            ("Беларусь: новые аресты", "bielorussie"),
+            ("Turkey jails opposition journalists", "turquie"),
+            ("Moldova tightens media rules", "moldavie"),
+        ):
+            with self.subTest(titre=titre):
+                cat = categoriser(self._article(titre))
+                self.assertIn(attendu, cat["geo"])
+
+    def test_every_country_gets_its_own_name(self):
+        # Décidé le 2026-09-14 : plus de fourre-tout "autre". Un pays
+        # nommé dans le texte sort sous son nom, où qu'il soit.
+        for titre, attendu in (
+            ("India passes new press law", "inde"),
+            ("Israel restricts foreign media access", "israel"),
+            ("Pakistan detains rights defenders", "pakistan"),
+            ("Fire at nursing home in Chile kills 16", "chili"),
+            ("Myanmar junta jails reporters", "birmanie"),
+        ):
+            with self.subTest(titre=titre):
+                cat = categoriser(self._article(titre))
+                self.assertIn(attendu, cat["geo"])
+                self.assertNotIn("autre", cat["geo"])
+
+    def test_a_country_name_inside_another_never_fires(self):
+        # "Papua New Guinea" contient "Guinea" comme mot entier, et
+        # "South Sudan" contient "Sudan" : sans résolution par
+        # correspondance la plus longue, l'article ressortirait sous
+        # deux pays dont un faux.
+        for titre, attendu, interdit in (
+            ("Papua New Guinea", "papouasie_nouvelle_guinee", "guinee"),
+            ("South Sudan crackdown on journalists", "soudan_du_sud", "soudan"),
+        ):
+            with self.subTest(titre=titre):
+                cat = categoriser(self._article(titre))
+                self.assertIn(attendu, cat["geo"])
+                self.assertNotIn(interdit, cat["geo"])
+
+    def test_regions_are_named_as_regions(self):
+        # "Asie centrale" n'est pas un pays, mais c'est le coeur du
+        # périmètre : le verser dans "autre" (= ailleurs) était le
+        # contraire de la vérité.
+        cat = categoriser(self._article("Central Asia faces new water crisis"))
+        self.assertIn("asie_centrale", cat["geo"])
+        self.assertNotIn("autre", cat["geo"])
+
+    def test_a_common_word_is_not_mistaken_for_a_country(self):
+        # "Того" (Togo en russe) est le génitif de "тот" : il
+        # déclenchait 446 articles avant d'être écarté du générateur.
+        cat = categoriser(
+            self._article("Из-за того что власти Казахстана усилили контроль")
+        )
+        self.assertNotIn("togo", cat["geo"])
+
+    def test_neighbours_never_reach_the_scoring_gate(self):
+        # La garantie qui compte : ces pays sont DESCRIPTIFS. S'ils
+        # entraient dans la porte régionale de scoring.py, un article
+        # ukrainien ou chinois serait traité comme régional et son
+        # score gonflerait.
+        from scoring import classify_article
+
+        article = self._article("Украина: Пытки, исчезновения в ходе конфликта")
+        classify_article(article)
+
+        self.assertFalse(article["signals"]["regional_context"])
+
+
+class PaysMondeEstGenereTests(unittest.TestCase):
+    """pays_monde.py est généré ; pycountry ne doit jamais devenir une
+    dépendance d'exécution du scanner."""
+
+    def test_pycountry_is_only_imported_by_the_generator(self):
+        import re
+        from pathlib import Path
+
+        racine = Path(__file__).resolve().parent.parent
+        coupables = []
+
+        for fichier in racine.glob("*.py"):
+            texte = fichier.read_text(encoding="utf-8")
+            if re.search(r"^\s*(import pycountry|from pycountry)", texte, re.M):
+                coupables.append(fichier.name)
+
+        self.assertEqual(coupables, [])
+
+    def test_the_generated_table_is_consistent(self):
+        from pays_monde import PAYS_MONDE_LIBELLES, PAYS_MONDE_TERMES
+
+        self.assertGreater(len(PAYS_MONDE_LIBELLES), 150)
+        orphelins = set(PAYS_MONDE_TERMES.values()) - set(PAYS_MONDE_LIBELLES)
+        self.assertEqual(orphelins, set(), "des pays sans libellé")
+
+
+class MinoriteSexuelleEtCriminalisationTests(unittest.TestCase):
+    """
+    Deux manques du schéma, trouvés sur "Le Burkina Faso criminalise
+    les relations homosexuelles" : acteur=aucun et traitement=aucun
+    sur un article qui décrit précisément les deux.
+    """
+
+    def _article(self, titre, langue="fr"):
+        return {
+            "title": titre, "summary": "", "body": "",
+            "source": "Human Rights Watch", "url": "https://ex.org/news/a",
+            "language": langue, "date": None,
+        }
+
+    def test_the_reported_article_is_fully_described(self):
+        cat = categoriser(
+            self._article("Le Burkina Faso criminalise les relations homosexuelles")
+        )
+        self.assertIn("burkina_faso", cat["geo"])
+        self.assertIn("minorite_sexuelle", cat["acteur"])
+        self.assertIn("criminalisation", cat["traitement"])
+        self.assertTrue(cat["relation_acteur_traitement"])
+
+    def test_regional_cases_are_caught(self):
+        # Les articles que cette veille existe pour remonter.
+        for titre in (
+            "Ouzbékistan : Les hommes gays face au risque d'abus",
+            "Turkménistan : Un homme gay porté disparu",
+            "Kazakhstan's parliament passes law restricting LGBTQ+ content",
+            "Казахстан: Как на ЛГБТИК+ сообществе обкатывают процесс",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn(
+                    "minorite_sexuelle", categoriser(self._article(titre))["acteur"]
+                )
+
+    def test_criminalisation_vocabulary_stays_narrow(self):
+        # "banned"/"ban on"/"запретил" ont été testés puis écartés :
+        # 62 détections majoritairement fausses ("Travel Bans", "UK
+        # edition"), la même erreur que "press freedom" sur
+        # censure_blocage.
+        for titre in (
+            "Criminal Cases, Travel Bans: Pressure Mounts On Kazakh Journalists",
+            "Amid Setbacks, Putin Looks To Restore Russia's Standing",
+        ):
+            with self.subTest(titre=titre):
+                self.assertNotIn(
+                    "criminalisation",
+                    categoriser(self._article(titre, langue="en"))["traitement"],
+                )
+
+    def test_a_repressive_law_is_a_criminalisation(self):
+        cat = categoriser(
+            self._article("Géorgie : Des lois répressives criminalisent les manifestations")
+        )
+        self.assertIn("criminalisation", cat["traitement"])
+
+
+class FormesFrancaisesTests(unittest.TestCase):
+    """
+    Audit par échantillon du 2026-09-14 : FEMME, CITOYEN,
+    MINORITE_ETHNIQUE et DISPARITION n'avaient aucune forme française,
+    pour 274 articles de sources francophones (HRW, Amnesty, RSF,
+    FIDH). "Liban : Les femmes transgenres face à la discrimination"
+    ressortait acteur=aucun.
+    """
+
+    def _article(self, titre):
+        return {
+            "title": titre, "summary": "", "body": "",
+            "source": "Human Rights Watch — français",
+            "url": "https://ex.org/news/a", "language": "fr", "date": None,
+        }
+
+    def test_french_women_are_detected(self):
+        for titre in (
+            "Ouzbékistan : Les droits des femmes en recul",
+            "Une femme condamnée pour avoir manifesté",
+            "Les filles privées d'école",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn("femme", categoriser(self._article(titre))["acteur"])
+
+    def test_the_reported_article_gets_both_actors(self):
+        cat = categoriser(
+            self._article("Liban : Les femmes transgenres face à la discrimination")
+        )
+        self.assertIn("femme", cat["acteur"])
+        self.assertIn("minorite_sexuelle", cat["acteur"])
+
+    def test_french_disappearance_is_detected(self):
+        cat = categoriser(
+            self._article("Turkménistan : Un homme gay porté disparu après son coming out")
+        )
+        self.assertIn("disparition", cat["traitement"])
+
+    def test_french_ethnic_minority_is_detected(self):
+        cat = categoriser(
+            self._article("Chine : Répression d'une minorité ethnique au Xinjiang")
+        )
+        self.assertIn("minorite_ethnique", categoriser(
+            self._article("Chine : Répression d'une minorité ethnique au Xinjiang")
+        )["acteur"])
+        self.assertIn("xinjiang", cat["geo"])
