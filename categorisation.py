@@ -512,10 +512,75 @@ MINORITE_SEXUELLE_TERMS = [
     "همجنسگرا", "دگرباش",
 ]
 
+# Ajouts du 2026-09-14, issus d'un audit des angles morts : sur 971
+# articles publiés par des organisations dont les droits humains sont
+# le métier (HRW, Amnesty, RSF, CPJ, FIDH, OMCT, CIVICUS), 803
+# ressortaient en E/F. 572 étaient hors zone — HRW écrit sur le
+# Soudan, c'est normal — mais 231 étaient bien dans le périmètre.
+# "Azerbaijan: Opposition Leader Arrested" ressortait acteur=aucun.
+
+# Figures politiques réprimées qu'ACTIVIST_TERMS ne nommait pas.
+OPPOSANT_COMPLEMENT_TERMS = [
+    "opposition leader", "opposition figure", "opposition politician",
+    # "critic"/"critics" nus ont d'abord été écartés par prudence
+    # (critique de cinéma, critique d'une politique), puis mesurés :
+    # 6 déclenchements dans tout le corpus, 6 vrais cas de répression
+    # ("Crackdown on Exiled Critics", "Crackdown on Government
+    # Critics", "targeting of critics"). La prudence était infondée.
+    "critic", "critics",
+    "government critic", "government critics",
+    "exiled critic", "exiled critics", "critic of the government",
+    "critique", "critiques du pouvoir", "критик", "критики", "критиков",
+    "protester", "protesters", "protestor", "protestors",
+    "chef de l'opposition", "opposant politique", "manifestant",
+    "manifestants", "critique du gouvernement",
+    "лидер оппозиции", "оппозиционер", "оппозиционера",
+    "протестующие", "протестующих",
+]
+
+# Le blogueur est la figure la plus réprimée en Ouzbékistan, et
+# JOURNALIST_TERMS l'ignorait : "Uzbekistan: Free Blogger from Forced
+# Psychiatric Detention" ressortait acteur=aucun.
+JOURNALISTE_COMPLEMENT_TERMS = [
+    "blogger", "bloggers", "blogueur", "blogueuse", "blogueurs",
+    "блогер", "блогеры", "блогера", "блогеров",
+]
+
+# Être détenu est une identité dans ce corpus ("political prisoners",
+# "detainee"), pas seulement un traitement subi.
+DETENU_TERMS = [
+    "detainee", "detainees", "political prisoner", "political prisoners",
+    "prisoner of war", "prisoners of war", "pow", "pows",
+    "détenu", "détenus", "prisonnier politique", "prisonniers politiques",
+    "политзаключенный", "политзаключенные", "политзаключенных",
+    "военнопленные", "военнопленных", "заключенный",
+]
+
+# Rôles professionnels, pas catégories démographiques. La distinction
+# est celle déjà tranchée entre "imam" (gardé) et "muslim" (écarté) :
+# "student" et "child" décrivent une population, "professor" et
+# "artist" désignent quelqu'un qu'on peut arrêter pour ce qu'il fait.
+# "researcher" est volontairement absent — il déclenchait sur "AI could
+# destroy humanity, Anthropic researcher" et "Job Opening: Senior
+# Researcher".
+UNIVERSITAIRE_TERMS = [
+    "academic", "academics", "scholar", "scholars", "professor",
+    "university lecturer", "universitaire", "professeur d'université",
+    "ученый", "преподаватель", "профессор",
+]
+
+ARTISTE_TERMS = [
+    "writer", "writers", "poet", "poets", "artist", "artists",
+    "filmmaker", "filmmakers", "musician", "musicians",
+    "écrivain", "écrivaine", "poète", "artiste", "artistes",
+    "cinéaste", "musicien",
+    "писатель", "поэт", "художник", "музыкант", "режиссер",
+]
+
 ACTEUR_TYPE_TERMS: dict[str, list[str]] = {
     "defenseur": HUMAN_RIGHTS_DEFENDER_TERMS,
-    "journaliste": JOURNALIST_TERMS,
-    "opposant": ACTIVIST_TERMS,
+    "journaliste": [*JOURNALIST_TERMS, *JOURNALISTE_COMPLEMENT_TERMS],
+    "opposant": [*ACTIVIST_TERMS, *OPPOSANT_COMPLEMENT_TERMS],
     "avocat": AVOCAT_TERMS,
     "croyant": CROYANT_TERMS,
     "minorite_ethnique": MINORITE_ETHNIQUE_TERMS,
@@ -525,6 +590,9 @@ ACTEUR_TYPE_TERMS: dict[str, list[str]] = {
     "syndicaliste": SYNDICALISTE_TERMS,
     "citoyen_ordinaire": CITOYEN_TERMS,
     "minorite_sexuelle": MINORITE_SEXUELLE_TERMS,
+    "detenu": DETENU_TERMS,
+    "universitaire": UNIVERSITAIRE_TERMS,
+    "artiste": ARTISTE_TERMS,
 }
 
 
@@ -593,6 +661,12 @@ DISPARITION_TERMS = [
 # Sous-ensemble de SPECIFIC_RIGHTS_TERMS + SEVERE_REPRESSION_TERMS
 # (keywords.py).
 VIOLENCE_PHYSIQUE_TERMS = [
+    # "ill-treatment" et "abused in custody" manquaient, alors que
+    # c'est la formule standard des rapports HRW/Amnesty :
+    # "Azerbaijan: Armenian POWs Abused in Custody" ressortait
+    # traitement=aucun.
+    "ill-treatment", "ill treatment", "abused in custody",
+    "abuse in custody", "mauvais traitements", "жестокое обращение",
     "extrajudicial killing", "unlawful killing", "death in custody",
     "custody death", "violent crackdown", "deadly crackdown",
     "sexual violence", "sexual abuse", "gender-based violence",
@@ -668,6 +742,51 @@ CRIMINALISATION_TERMS = [
     "уголовная ответственность",
 ]
 
+# La surveillance n'existait pas dans le schéma, alors que c'est un
+# mode de répression majeur et contemporain dans la région :
+# reconnaissance faciale au Kirghizistan, spyware, écoutes. OCCRP lui
+# consacre une rubrique entière. 51 articles du corpus.
+SURVEILLANCE_TERMS = [
+    "surveillance", "mass surveillance", "facial recognition",
+    "spyware", "pegasus", "wiretap", "wiretapping", "phone tapping",
+    "digital surveillance", "surveillance technology",
+    "surveillance de masse", "reconnaissance faciale", "logiciel espion",
+    "écoutes téléphoniques", "mise sur écoute",
+    "слежка", "слежки", "прослушка", "прослушку",
+    "распознавание лиц", "шпионское по", "шпионская программа",
+]
+
+# Psychiatrie punitive : héritage soviétique toujours actif en
+# Ouzbékistan et en Russie. 3 détections sur 3 justes à l'audit, et
+# ce sont des cas lourds — "Tied To Beds, Forcibly Injected",
+# "End the Punitive Psychiatric Detention of Shohida Sa...".
+INTERNEMENT_PSYCHIATRIQUE_TERMS = [
+    "forced psychiatric", "psychiatric detention", "punitive psychiatry",
+    "forcibly committed", "compulsory psychiatric",
+    "internement psychiatrique", "psychiatrie punitive",
+    "карательная психиатрия", "принудительное психиатрическое",
+    "принудительной госпитализации",
+]
+
+# Interdiction de sortie du territoire : sanction discrète et très
+# utilisée dans la région. Les faux positifs mesurés concernent les
+# décrets américains ("Trump placed under travel bans") — hors zone,
+# donc écartés par la géographie.
+INTERDICTION_VOYAGER_TERMS = [
+    "travel ban", "travel bans", "exit ban", "banned from travelling",
+    "banned from leaving", "barred from leaving",
+    "interdiction de voyager", "interdiction de sortie du territoire",
+    "запрет на выезд", "невыездной", "запретили выезд",
+]
+
+# Exil contraint : l'issue fréquente des trois précédents.
+EXIL_FORCE_TERMS = [
+    "forced into exile", "forced exile", "fled into exile",
+    "driven into exile", "living in exile",
+    "exil forcé", "contraint à l'exil", "réfugié politique",
+    "вынужденная эмиграция", "вынужденной эмиграции", "в изгнании",
+]
+
 TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
     "detention": DETENTION_TERMS,
     "condamnation": CONDAMNATION_TERMS,
@@ -679,6 +798,10 @@ TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
     "contrainte_travail": FORCED_LABOR_TERMS,
     "expulsion_extradition": TRANSNATIONAL_REPRESSION_TERMS_V9,
     "criminalisation": CRIMINALISATION_TERMS,
+    "surveillance": SURVEILLANCE_TERMS,
+    "internement_psychiatrique": INTERNEMENT_PSYCHIATRIQUE_TERMS,
+    "interdiction_voyager": INTERDICTION_VOYAGER_TERMS,
+    "exil_force": EXIL_FORCE_TERMS,
 }
 
 # Repéré en audit réel le 2026-09-12 sur un article HRW russe
