@@ -70,6 +70,7 @@ from matching import (
     find_terms,
     has_russian_repression_morphology,
     normalize,
+    looks_like_section_page,
     relation_present,
     resolve_language,
 )
@@ -573,43 +574,6 @@ def _stem_match(text: str, pattern: str) -> str:
     return found.group(0) if found else ""
 
 
-# Une page de rubrique porte pour titre exactement ce que son URL
-# nomme : "Burkina Faso" sous cpj.org/africa/burkina-faso/, "Central
-# Asia" sous eurasianet.org/region/central-asia. Un vrai article, lui,
-# a un slug tronqué ou daté ("north-koreas-nicaragua-court" pour
-# "North Korea's Nicaragua Courtship"), donc l'égalité EXACTE entre le
-# dernier segment et le titre slugifié les sépare proprement.
-#
-# Audit du 2026-09-14 : 441 entrées sur 8174, réparties sur une
-# douzaine de sources (OCCRP, Stimson, CSIS, CPJ, Eurasianet...), zéro
-# faux positif — les seules à porter une date étant du mobilier de
-# site ("Cookie Statement", "Media Centre", "Job Opening").
-_SLUG_NON_ALNUM = re.compile(r"[^a-z0-9]+")
-
-# Au-delà, un titre n'est plus un nom de rubrique mais une phrase.
-SECTION_TITLE_MAX_WORDS = 5
-
-
-def _slugify(title: str) -> str:
-    return _SLUG_NON_ALNUM.sub("-", (title or "").lower()).strip("-")
-
-
-def _looks_like_section_page(url: str, title: str) -> bool:
-    """Page de rubrique (pays, région, thème) plutôt qu'article."""
-    titre = (title or "").strip()
-
-    if not titre or len(titre.split()) > SECTION_TITLE_MAX_WORDS:
-        return False
-
-    chemin = urlparse(url or "").path.rstrip("/")
-    segments = [segment for segment in chemin.split("/") if segment]
-
-    if not segments:
-        return False
-
-    return segments[-1] == _slugify(titre)
-
-
 def _detect_type(article: dict[str, Any], body_text: str) -> tuple[str, str]:
     """
     Renvoie (type, raison) — la raison alimente preuves["type"].
@@ -634,7 +598,7 @@ def _detect_type(article: dict[str, Any], body_text: str) -> tuple[str, str]:
     # date de dernière modification ressort "evenement_date" : 80 des
     # 441 étaient dans ce cas, étiquetées comme du contenu alors
     # qu'elles n'en sont pas.
-    if _looks_like_section_page(url, title):
+    if looks_like_section_page(url, title):
         return "page_thematique", "titre identique au segment d'URL"
 
     if article.get("date"):

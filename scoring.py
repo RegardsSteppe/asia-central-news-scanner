@@ -1,6 +1,7 @@
 import re
 
 from matching import (
+    looks_like_section_page,
     compiled,
     contains_pattern,
     detect_language,
@@ -333,12 +334,27 @@ _LEVEL_A_CONFIRMATIONS = (
 
 def decide_level(score, signals):
     """
-    Niveau A-E.
+    Niveau A-F.
 
     Hors région, un article portant tout de même un vrai signal droits
     humains (ex. HRW sur un défenseur en Iran ou au Rwanda) tombe en D
     plutôt que dans le bruit ; E regroupe tout le reste.
+
+    F est à part : ce ne sont pas des articles faibles mais des pages
+    de rubrique (pays, région, thème) et du mobilier de site — "Burkina
+    Faso" chez CPJ, "Cookie Statement" chez Amnesty. Les mettre en E
+    revenait à dire "article sans intérêt" d'une page qui n'est pas un
+    article ; et comme certaines sont longues et bien remplies, elles
+    remontaient parfois au-dessus de vrais sujets. F les sort du
+    classement sans les supprimer : elles restent auditables.
+
+    Décidé en premier, avant même le contexte régional : une page pays
+    mentionne évidemment son pays, donc les tests de géographie la
+    valideraient à tort.
     """
+    if signals.get("section_page"):
+        return "F"
+
     if not signals.get("regional_context"):
         return "D" if signals.get("global_hr_signal") else "E"
 
@@ -453,6 +469,13 @@ def classify_article(article):
     source_text = normalize(article.get("source", ""))
     link_text = normalize(article.get("link", article.get("url", "")))
     source_context = source_text + " " + link_text
+
+    # Sur l'URL BRUTE, pas normalisée : la comparaison porte sur le
+    # dernier segment du chemin, que normalize() abîmerait.
+    section_page = looks_like_section_page(
+        article.get("url") or article.get("link") or "",
+        article.get("title") or "",
+    )
 
     headline = (title + " " + summary[:3000]).strip()
     primary_hr_text = (title + " " + summary[:1600]).strip()
@@ -1134,6 +1157,7 @@ def classify_article(article):
     )
 
     signals = {
+        "section_page": section_page,
         "central_asia": central_asia,
         "caucasus": caucasus,
         "uyghur": uyghur,

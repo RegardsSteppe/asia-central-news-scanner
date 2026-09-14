@@ -1,7 +1,7 @@
 """
 Test de caractérisation : verrouille la sortie de classify_article() sur
 478 articles réels (corpus publié du 2026-09-13, échantillon stratifié
-couvrant tous les niveaux A-E, 69 sources et 166 articles avec corps).
+couvrant tous les niveaux A-F, 69 sources et 166 articles avec corps).
 
 Ce test ne dit PAS que le scoring est correct — il dit qu'il n'a pas
 changé. C'est le filet qui permet de refactorer scoring.py (880 lignes,
@@ -130,8 +130,10 @@ class CorpusShapeTests(unittest.TestCase):
     """Le corpus doit rester représentatif, sinon le filet ne protège rien."""
 
     def test_covers_every_level(self):
+        # F depuis le 2026-09-14 : pages de rubrique et mobilier de
+        # site, sortis du classement A-E (voir scoring.decide_level).
         levels = {entry["level"] for entry in load_snapshot()}
-        self.assertEqual(levels, {"A", "B", "C", "D", "E"})
+        self.assertEqual(levels, {"A", "B", "C", "D", "E", "F"})
 
     def test_covers_articles_with_and_without_body(self):
         corpus = load_corpus()

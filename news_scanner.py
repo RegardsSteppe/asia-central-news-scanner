@@ -122,7 +122,9 @@ SOURCE_NAME_TO_GROUP = {
 # Rang des niveaux pour le tri final (A d'abord, E en dernier). Sert
 # uniquement à ordonner l'affichage — le niveau lui-même vient de
 # scoring.py et ne dépend que de la pertinence sémantique.
-LEVEL_RANK = {"A": 4, "B": 3, "C": 2, "D": 1, "E": 0}
+# F (pages de rubrique, voir scoring.decide_level) passe sous E :
+# ce ne sont pas des articles faibles, ce ne sont pas des articles.
+LEVEL_RANK = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1, "F": 0}
 
 
 def final_sort_key(article: dict[str, Any]) -> tuple:
@@ -913,6 +915,7 @@ def build_stats(
         "C": 0,
         "D": 0,
         "E": 0,
+        "F": 0,
     }
 
     relevant = 0
@@ -953,6 +956,7 @@ def build_stats(
         "level_c": levels["C"],
         "level_d": levels["D"],
         "level_e": levels["E"],
+        "level_f": levels["F"],
         "sources_successful": sources_successful,
         "sources_total": sources_total,
         "relevance_rate": round(

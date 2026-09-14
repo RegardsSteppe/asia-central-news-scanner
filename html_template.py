@@ -775,6 +775,11 @@ def render_dashboard(
         )}
 
         {render_stat(
+            stats.get("level_f", 0),
+            "🗂️ Niveau F — pages de rubrique"
+        )}
+
+        {render_stat(
             f'{stats["sources_successful"]}/{stats["sources_total"]}',
             "📡 Sources analysées"
         )}
