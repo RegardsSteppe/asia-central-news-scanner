@@ -645,3 +645,51 @@ class MinoriteSexuelleEtCriminalisationTests(unittest.TestCase):
             self._article("Géorgie : Des lois répressives criminalisent les manifestations")
         )
         self.assertIn("criminalisation", cat["traitement"])
+
+
+class FormesFrancaisesTests(unittest.TestCase):
+    """
+    Audit par échantillon du 2026-09-14 : FEMME, CITOYEN,
+    MINORITE_ETHNIQUE et DISPARITION n'avaient aucune forme française,
+    pour 274 articles de sources francophones (HRW, Amnesty, RSF,
+    FIDH). "Liban : Les femmes transgenres face à la discrimination"
+    ressortait acteur=aucun.
+    """
+
+    def _article(self, titre):
+        return {
+            "title": titre, "summary": "", "body": "",
+            "source": "Human Rights Watch — français",
+            "url": "https://ex.org/news/a", "language": "fr", "date": None,
+        }
+
+    def test_french_women_are_detected(self):
+        for titre in (
+            "Ouzbékistan : Les droits des femmes en recul",
+            "Une femme condamnée pour avoir manifesté",
+            "Les filles privées d'école",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn("femme", categoriser(self._article(titre))["acteur"])
+
+    def test_the_reported_article_gets_both_actors(self):
+        cat = categoriser(
+            self._article("Liban : Les femmes transgenres face à la discrimination")
+        )
+        self.assertIn("femme", cat["acteur"])
+        self.assertIn("minorite_sexuelle", cat["acteur"])
+
+    def test_french_disappearance_is_detected(self):
+        cat = categoriser(
+            self._article("Turkménistan : Un homme gay porté disparu après son coming out")
+        )
+        self.assertIn("disparition", cat["traitement"])
+
+    def test_french_ethnic_minority_is_detected(self):
+        cat = categoriser(
+            self._article("Chine : Répression d'une minorité ethnique au Xinjiang")
+        )
+        self.assertIn("minorite_ethnique", categoriser(
+            self._article("Chine : Répression d'une minorité ethnique au Xinjiang")
+        )["acteur"])
+        self.assertIn("xinjiang", cat["geo"])

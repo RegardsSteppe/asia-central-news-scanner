@@ -358,6 +358,8 @@ MINORITE_ETHNIQUE_TERMS = [
     "indigenous people", "indigenous community",
     "этническое меньшинство", "национальное меньшинство",
     "коренной народ",
+    "minorité ethnique", "minorités ethniques",
+    "minorité nationale", "peuple autochtone", "peuples autochtones",
 ]
 
 # Consolidé depuis les termes déjà présents dans VICTIM_TERMS/
@@ -367,6 +369,12 @@ MINORITE_ETHNIQUE_TERMS = [
 FEMME_TERMS = [
     "women", "girls", "women's rights", "girls' rights", "girls rights",
     "женщины", "девушки", "права женщин", "права девушек",
+    # Audit du 2026-09-14 : aucune forme française, sur 274 articles
+    # de sources francophones (HRW, Amnesty, RSF, FIDH). "Liban : Les
+    # femmes transgenres face à la discrimination" ressortait
+    # acteur=aucun.
+    "femme", "femmes", "fille", "filles",
+    "droits des femmes", "droits des filles",
 ]
 
 # Partiellement nouveau — "asylum seeker"/"political asylum" viennent
@@ -386,6 +394,8 @@ CITOYEN_TERMS = [
     "civilian", "civilians", "resident", "residents",
     "ordinary citizen", "ordinary citizens",
     "гражданин", "граждане", "мирные жители", "местный житель",
+    "civil", "civils", "habitant", "habitants",
+    "citoyen ordinaire", "citoyens ordinaires",
 ]
 
 # Absent de keywords.py — vocabulaire créé pour ce module. Enrichi le
@@ -426,10 +436,11 @@ MINORITE_SEXUELLE_TERMS = [
     "lgbt", "lgbtq", "lgbti", "lgbtq+", "lgbti+",
     "homosexual", "homosexuality", "same-sex",
     "gay", "gays", "lesbian", "lesbians",
-    "transgender", "trans people",
+    "transgender", "transgender people", "trans people",
     "homosexuel", "homosexuelle", "homosexuels", "homosexuelles",
     "homosexualité", "relations homosexuelles", "lesbienne",
-    "transgenre", "personnes trans",
+    "transgenre", "transgenres", "personnes trans",
+    "femme transgenre", "femmes transgenres",
     "лгбт", "лгбтик", "гей", "геи", "гомосексуал",
     "гомосексуальность", "лесбиянк", "трансгендер",
     "همجنسگرا", "دگرباش",
@@ -509,6 +520,8 @@ DISPARITION_TERMS = [
     "missing after detention",
     "насильственное исчезновение", "насильственно исчез",
     "ناپدید شدن اجباری",
+    "disparition forcée", "disparitions forcées",
+    "porté disparu", "portée disparue", "portés disparus",
 ]
 
 # Sous-ensemble de SPECIFIC_RIGHTS_TERMS + SEVERE_REPRESSION_TERMS
