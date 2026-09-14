@@ -108,6 +108,10 @@ _register_geo_terms("kazakhstan", [
     "казахстан", "казах", "алматы", "астана", "нур-султан", "шымкент",
     "караганда", "актобе", "атырау",
     "قزاقستان", "قزاق", "آلماتی",
+    # Allemand (2026-09-14) : "Kasachstan" est orthographié
+    # différemment de l'anglais, contrairement à "Turkmenistan" plus
+    # bas dans ce fichier — voir CENTRAL_ASIA_TERMS pour la mesure.
+    "kasachstan", "kasachstans", "kasachische", "kasachischen",
 ])
 
 _register_geo_terms("ouzbekistan", [
@@ -117,6 +121,8 @@ _register_geo_terms("ouzbekistan", [
     "наманган", "андижан", "фергана", "нукус",
     "ازبکستان", "ازبک", "تاشکند", "سمرقند", "بخارا",
     "ouzbékistan", "ouzbek", "samarcande", "boukhara", "tachkent",
+    "usbekistan", "usbekistans", "usbekisch", "usbekische", "usbekischen",
+    "taschkent",
 ])
 
 _register_geo_terms("kirghizistan", [
@@ -130,6 +136,8 @@ _register_geo_terms("kirghizistan", [
     "джалал-абад", "каракол",
     "قرقیزستان", "قیرقیزستان", "قرقیز", "بیشکک",
     "kirghizistan", "kirghizstan", "kirghize", "bichkek",
+    "kirgistan", "kirgistans", "kirgisisch", "kirgisische", "kirgisischen",
+    "bischkek",
 ])
 
 _register_geo_terms("tadjikistan", [
@@ -137,6 +145,13 @@ _register_geo_terms("tadjikistan", [
     "таджикистан", "таджик", "душанбе", "худжанд", "хорог",
     "تاجیکستان", "تاجیک",
     "tadjikistan", "tadjik", "douchanbé",
+    "tadschikistan", "tadschikistans", "tadschikische", "tadschikischen",
+    "duschanbe",
+    # Haut-Badakhchan (2026-09-14) : territoire tadjik, non disputé —
+    # rattaché directement au pays, comme une grande ville, pas comme
+    # le Haut-Karabakh/l'Abkhazie. Voir CENTRAL_ASIA_TERMS.
+    "berg-badachschan", "berg-badachschans", "gorno-badakhshan",
+    "горно-бадахшанская",
 ])
 
 _register_geo_terms("turkmenistan", [
@@ -144,6 +159,9 @@ _register_geo_terms("turkmenistan", [
     "туркменистан", "туркмен", "ашхабад", "туркменабат", "дашогуз",
     "ترکمنستان", "ترکمن", "عشق‌آباد", "عشق آباد",
     "turkménistan", "turkmène", "achgabat",
+    # "Turkmenistan" s'écrit à l'identique en allemand ; seule la
+    # capitale change.
+    "aschgabat",
 ])
 
 _register_geo_terms("azerbaidjan", [
@@ -151,6 +169,8 @@ _register_geo_terms("azerbaidjan", [
     "азербайджан", "баку",
     "آذربایجان", "باکو",
     "azerbaïdjan", "azerbaïdjanais", "bakou",
+    "aserbaidschan", "aserbaidschans", "aserbaidschanisch",
+    "aserbaidschanische",
 ])
 
 _register_geo_terms("armenie", [
@@ -158,6 +178,7 @@ _register_geo_terms("armenie", [
     "армения", "ереван",
     "ارمنستان", "ایروان",
     "arménie", "arménien", "erevan",
+    "armenien", "armeniens", "armenisch", "armenische", "eriwan",
 ])
 
 _register_geo_terms("georgie", [
@@ -165,6 +186,7 @@ _register_geo_terms("georgie", [
     "грузия", "тбилиси",
     "گرجستان", "تفلیس",
     "géorgie", "géorgien", "tbilissi",
+    "georgien", "georgiens", "georgisch", "georgische", "tiflis",
 ])
 
 _register_geo_terms("caucase_nord", [
@@ -175,6 +197,7 @@ _register_geo_terms("caucase_nord", [
     "قفقاز شمالی", "چچن", "داغستان",
     "tchétchénie", "daguestan", "ossétie du nord", "ingouchie",
     "makhatchkala",
+    "grosny", "machatschkala",
 ])
 
 # Xinjiang/Ouïghours : traité comme un pays/une région à part entière
@@ -244,10 +267,12 @@ for _terme, _pays in PAYS_MONDE_TERMES.items():
 _register_geo_terms("asie_centrale", [
     "central asia", "central asian", "asie centrale",
     "центральная азия", "центральноазиатский", "آسیای مرکزی",
+    "zentralasien", "zentralasiatisch", "zentralasiatische",
+    "zentralasiatischen",
 ])
 _register_geo_terms("caucase", [
     "caucasus", "south caucasus", "caucase", "кавказ",
-    "قفقاز", "قفقاز جنوبی",
+    "قفقاز", "قفقاز جنوبی", "kaukasus",
 ])
 # Ossétie seule : le Nord est russe, le Sud est revendiqué par la
 # Géorgie. Le terme ne tranche pas, l'étiquette non plus.

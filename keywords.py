@@ -232,6 +232,58 @@ CENTRAL_ASIA_TERMS = [
     "achgabat",
     "bichkek",
     "tachkent",
+
+    # German (2026-09-14) : même trou que le français avant le
+    # 2026-09-11, jamais corrigé pour cette langue. Novastan publie une
+    # édition allemande dédiée à l'Asie centrale (46 articles du
+    # corpus), et sans ces formes, un article entier sur "Usbekistan"
+    # ou "Kasachstan" ne franchit jamais la porte géographique. Audité
+    # sur le corpus : 15 occurrences de "Kasachstan(s)", 11 de
+    # "Usbekistan(s)", 10 de "Kirgistan(s)", 8 de "Tadschikistan(s)" —
+    # et surtout 25 de "Zentralasien" nu, le terme le plus fréquent des
+    # cinq. Le génitif allemand ("Kasachstans Schlüsselrolle") est
+    # énuméré à part : find_terms() n'a pas de morphologie pour cette
+    # langue, contrairement au russe.
+    "zentralasien",
+    "zentralasiatisch",
+    "zentralasiatische",
+    "zentralasiatischen",
+    "kasachstan",
+    "kasachstans",
+    "usbekistan",
+    "usbekistans",
+    "tadschikistan",
+    "tadschikistans",
+    "kirgistan",
+    "kirgistans",
+
+    # adjectifs de pays — allemand
+    "usbekisch",
+    "usbekische",
+    "usbekischen",
+    "kasachische",
+    "kasachischen",
+    "tadschikische",
+    "tadschikischen",
+    "kirgisische",
+    "kirgisischen",
+
+    # Grandes villes — allemand
+    "bischkek",
+    "taschkent",
+    "duschanbe",
+    "aschgabat",
+
+    # Autonomie du Haut-Badakhchan (2026-09-14) : non disputée
+    # (territoire tadjik, contrairement au Haut-Karabakh/à
+    # l'Abkhazie), donc pas d'étiquette géo séparée — rattachée
+    # directement au tadjikistan, comme une grande ville. Trouvée par
+    # son nom allemand : "Politisches Oberhaupt Berg-Badachschans bei
+    # Autounfall gestorben" n'avait aucune géographie sans elle.
+    "berg-badachschan",
+    "berg-badachschans",
+    "gorno-badakhshan",
+    "горно-бадахшанская",
 ]
 
 # ------------------------------------------------------------
@@ -346,6 +398,34 @@ CAUCASUS_TERMS = [
     "tbilissi",
     "erevan",
     "makhatchkala",
+
+    # German (2026-09-14) : même trou, même source (Novastan —
+    # allemand) que pour CENTRAL_ASIA_TERMS ci-dessus. "Armenien" et
+    # "Georgien" n'avaient aucune occurrence dans le corpus au moment
+    # de l'audit, mais leur absence serait le même bug dès la
+    # prochaine dépêche allemande sur l'un des deux pays — ajoutés par
+    # cohérence avec le reste de la liste, pas par occurrence mesurée.
+    "kaukasus",
+    "aserbaidschan",
+    "aserbaidschans",
+    "armenien",
+    "armeniens",
+    "georgien",
+    "georgiens",
+
+    # adjectifs de pays — allemand
+    "aserbaidschanisch",
+    "aserbaidschanische",
+    "armenisch",
+    "armenische",
+    "georgisch",
+    "georgische",
+
+    # Grandes villes — allemand
+    "eriwan",
+    "tiflis",
+    "grosny",
+    "machatschkala",
 ]
 
 # ------------------------------------------------------------

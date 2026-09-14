@@ -1320,3 +1320,75 @@ class AbkhazieTests(unittest.TestCase):
              "summary": "", "source": "Test", "url": "https://example.org/a"}
         )
         self.assertNotIn("georgie", resultat["geo"])
+
+
+class GeographieAllemandeTests(unittest.TestCase):
+    """
+    Trouvé le même jour que le Haut-Karabakh et l'Abkhazie, en
+    élargissant la méthode : Novastan publie une édition allemande
+    dédiée à l'Asie centrale (46 articles du corpus), et AUCUNE forme
+    allemande des pays de la région n'était dans CENTRAL_ASIA_TERMS ni
+    CAUCASUS_TERMS — même trou que celui comblé pour le français le
+    2026-09-11, jamais corrigé pour cette langue.
+
+    "Zentralasien" (25 occurrences, le terme le plus fréquent) et les
+    noms de pays orthographiés différemment de l'anglais
+    (Kasachstan, Usbekistan, Tadschikistan, Kirgistan, Aserbaidschan)
+    ne déclenchaient jamais la porte géographique.
+    """
+
+    def test_pays_orthographies_differemment_de_l_anglais(self):
+        cas = (
+            ("Frankreich setzt in Usbekistan auf grüne Energien", "ouzbekistan"),
+            ("Kasachstan: Anti-Kriegs-Priester in psychiatrische Klinik eingewiesen", "kazakhstan"),
+            ("Alte Traditionen in Tadschikistan", "tadjikistan"),
+            ("Wo steht Kirgistan beim Feminismus", "kirghizistan"),
+            ("Gipfel zu Umweltproblemen in Aserbaidschan", "azerbaidjan"),
+        )
+        for titre, pays in cas:
+            with self.subTest(titre=titre):
+                resultat = categoriser(
+                    {"title": titre, "summary": "", "source": "Novastan — allemand",
+                     "url": "https://novastan.org/de/test"}
+                )
+                self.assertIn(pays, resultat["geo"])
+
+    def test_genitif_allemand(self):
+        # "Kasachstans Schlüsselrolle" : find_terms() n'a pas de
+        # morphologie pour l'allemand, contrairement au russe — les
+        # formes au génitif sont énumérées séparément.
+        resultat = categoriser(
+            {"title": "Kasachstans Schlüsselrolle beim Ausbau des Mittleren Korridors",
+             "summary": "", "source": "Novastan — allemand",
+             "url": "https://novastan.org/de/test"}
+        )
+        self.assertIn("kazakhstan", resultat["geo"])
+
+    def test_zentralasien_nu_le_terme_le_plus_frequent(self):
+        resultat = categoriser(
+            {"title": "Zentralasien & Europa: eine neue Partnerschaft",
+             "summary": "", "source": "Novastan — allemand",
+             "url": "https://novastan.org/de/test"}
+        )
+        self.assertIn("asie_centrale", resultat["geo"])
+
+    def test_adjectif_kasachisch(self):
+        resultat = categoriser(
+            {"title": "Ein kleiner Überblick zur kasachischen Sprache",
+             "summary": "", "source": "Novastan — allemand",
+             "url": "https://novastan.org/de/test"}
+        )
+        self.assertIn("kazakhstan", resultat["geo"])
+
+    def test_haut_badakhchan_allemand_rattache_au_tadjikistan(self):
+        # Non disputé (territoire tadjik), donc pas d'étiquette séparée
+        # comme le Haut-Karabakh ou l'Abkhazie — rattaché directement
+        # au pays, comme une grande ville.
+        resultat = categoriser(
+            {"title": "Politisches Oberhaupt Berg-Badachschans bei Autounfall gestorben",
+             "summary": "", "source": "Novastan — allemand",
+             "url": "https://novastan.org/de/test"}
+        )
+        self.assertIn("tadjikistan", resultat["geo"])
+        self.assertNotIn("haut_karabakh", resultat["geo"])
+        self.assertNotIn("abkhazie", resultat["geo"])
