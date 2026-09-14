@@ -1582,6 +1582,25 @@ def merge_with_archive(
 
     nouvelles = archive.merge_scanned(archive_entries, state, scanned)
     archive.append_entries(nouvelles)
+
+    # Les corps téléchargés ce run pour des articles DÉJÀ archivés :
+    # merge_scanned n'écrit que les nouveautés, donc sans cette étape
+    # leur texte serait jeté et retéléchargé à chaque run (constaté le
+    # 2026-09-14 : 914 corps récupérés, 18 conservés).
+    #
+    # C'est la seule opération qui réécrit l'archive en entier, d'où le
+    # garde-fou : pas un seul corps ajouté, pas de réécriture, et le
+    # coût git reste proportionnel aux nouveautés comme le reste du
+    # temps.
+    corps_ajoutes = archive.backfill_bodies(archive_entries, scanned)
+
+    if corps_ajoutes:
+        archive.rewrite_archive(archive_entries.values())
+
+    print(
+        f"ARCHIVE | {corps_ajoutes} corps ajoutés à des entrées existantes"
+    )
+
     archive.save_state(state)
 
     scan_date = state.get("dernier_scan", "")

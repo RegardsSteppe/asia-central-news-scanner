@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from archive import (
     ARCHIVE_FIELDS,
+    backfill_bodies,
     BODY_KEEP_LEVELS,
     append_entries,
     derniere_vue,
@@ -339,3 +340,64 @@ class MergeFilesTests(unittest.TestCase):
 
         append_entries([entry_from_article(article(), "a")], self.base)
         self.assertEqual(merge_files(self.base, self.incoming), 0)
+
+
+class BackfillBodiesTests(unittest.TestCase):
+    """
+    merge_scanned() n'écrit que les nouveautés : sans backfill, un
+    article déjà archivé qui reçoit enfin son corps ne verrait jamais
+    sa ligne changer. Run du 2026-09-14 : 914 corps téléchargés, 18
+    conservés, le reste retéléchargé à chaque run pour rien.
+    """
+
+    def _archive(self, body=""):
+        entry = entry_from_article(article(level="A"), "cle")
+        entry["body"] = body
+        return {"cle": entry}
+
+    def test_fills_a_missing_body_on_an_existing_entry(self):
+        arch = self._archive(body="")
+        scanned = [("cle", article(level="A", body="texte complet"))]
+
+        self.assertEqual(backfill_bodies(arch, scanned), 1)
+        self.assertEqual(arch["cle"]["body"], "texte complet")
+
+    def test_never_replaces_a_body_with_a_shorter_one(self):
+        # Une extraction partielle (mur payant, redirection) ne doit
+        # pas dégrader un texte déjà complet.
+        arch = self._archive(body="un texte complet et long")
+        scanned = [("cle", article(level="A", body="court"))]
+
+        self.assertEqual(backfill_bodies(arch, scanned), 0)
+        self.assertEqual(arch["cle"]["body"], "un texte complet et long")
+
+    def test_ignores_articles_absent_from_the_archive(self):
+        arch = self._archive(body="")
+        scanned = [("inconnue", article(level="A", body="texte"))]
+
+        self.assertEqual(backfill_bodies(arch, scanned), 0)
+        self.assertEqual(arch["cle"]["body"], "")
+
+    def test_respects_the_configured_levels(self):
+        import importlib
+        import os
+        from unittest.mock import patch
+
+        import archive as archive_module
+
+        with patch.dict(os.environ, {"SCANNER_BODY_KEEP_LEVELS": "A"}):
+            recharge = importlib.reload(archive_module)
+            try:
+                entry = recharge.entry_from_article(article(level="A"), "cle")
+                entry["body"] = ""
+                arch = {"cle": entry}
+                scanned = [("cle", article(level="E", body="texte"))]
+                self.assertEqual(recharge.backfill_bodies(arch, scanned), 0)
+            finally:
+                importlib.reload(archive_module)
+
+    def test_empty_body_is_not_counted_as_an_update(self):
+        arch = self._archive(body="")
+        scanned = [("cle", article(level="A", body=""))]
+
+        self.assertEqual(backfill_bodies(arch, scanned), 0)
