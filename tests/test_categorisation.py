@@ -271,3 +271,118 @@ class PortedIntelligenceTests(unittest.TestCase):
                     ("arrest",),
                     "un terme sous-chaîne ne doit pas apparaître en preuve",
                 )
+
+
+class TypeArticleTests(unittest.TestCase):
+    """
+    Le champ "type" a été corrigé le 2026-09-14 après un audit sur les
+    7795 articles publiés : il ne portait aucune information. 100% des
+    "navigation" étaient des URL Google News, et 100% des URL Google
+    News étaient "navigation" — le champ recopiait le nom d'hôte.
+    """
+
+    GOOGLE_NEWS_URL = (
+        "https://news.google.com/rss/articles/CBMikwFBVV95cUxNSzNqODlVV2Zw"
+    )
+
+    def _article(self, **overrides):
+        article = {
+            "title": "Kazakh Journalist Detained After Covering Protest",
+            "summary": "",
+            "body": "",
+            "source": "RFE/RL",
+            "url": "https://www.rferl.org/a/kazakh-journalist/123.html",
+            "language": "en",
+            "date": None,
+        }
+        article.update(overrides)
+        return article
+
+    def test_google_news_url_is_not_navigation(self):
+        # Son chemin contient littéralement "/rss", ce qui faisait
+        # échouer looks_like_article_link() alors que ces liens
+        # viennent de flux d'ARTICLES.
+        cat = categoriser(self._article(url=self.GOOGLE_NEWS_URL))
+        self.assertNotEqual(cat["type"], "navigation")
+
+    def test_google_news_url_with_date_is_a_dated_event(self):
+        cat = categoriser(
+            self._article(
+                url=self.GOOGLE_NEWS_URL,
+                date="2026-09-06T11:34:14+00:00",
+            )
+        )
+        self.assertEqual(cat["type"], "evenement_date")
+
+    def test_unknown_falls_back_to_indetermine_not_institutional(self):
+        # "page_institutionnelle" affirmait un fait ("c'est une page
+        # institutionnelle") à partir d'une absence d'information
+        # (ni date, ni corps). 64,5% du corpus était concerné.
+        cat = categoriser(self._article(date=None, body=""))
+        self.assertEqual(cat["type"], "indetermine")
+        self.assertIn("sans date", cat["preuves"]["type"])
+
+    def test_genuine_navigation_link_still_rejected(self):
+        cat = categoriser(
+            self._article(
+                url="https://example.org/category/news/",
+                title="Countries and regions",
+            )
+        )
+        self.assertEqual(cat["type"], "navigation")
+
+
+class VocabulaireEnrichiTests(unittest.TestCase):
+    """
+    Trois listes ne reposaient que sur des locutions de 2+ mots, qui
+    n'apparaissent jamais telles quelles dans un titre. Audit du
+    2026-09-14 : censure_blocage sortait 2 articles sur 7795.
+    """
+
+    def _article(self, title, **overrides):
+        article = {
+            "title": title,
+            "summary": "",
+            "body": "",
+            "source": "RFE/RL",
+            "url": "https://www.rferl.org/a/sujet/123.html",
+            "language": "en",
+            "date": None,
+        }
+        article.update(overrides)
+        return article
+
+    def test_single_word_censorship_is_detected(self):
+        for titre in (
+            "Uzbekistan tightens censorship of online media",
+            "Цензура и свобода СМИ в Узбекистане",
+            "Блокировка независимого сайта в Киргизии",
+        ):
+            with self.subTest(titre=titre):
+                cat = categoriser(self._article(titre))
+                self.assertIn("censure_blocage", cat["traitement"])
+
+    def test_press_freedom_is_a_theme_not_a_treatment(self):
+        # Déclenchait seul sur "Sierra Leone", "Protect journalists" ou
+        # un guide RSF sur les drones : un thème, pas un fait subi.
+        cat = categoriser(self._article("Services aux journalistes et aux médias"))
+        self.assertNotIn("censure_blocage", cat["traitement"])
+
+    def test_generic_farsi_blocked_does_not_mean_censorship(self):
+        # "مسدود" seul : 4 détections sur 4 fausses, toutes routières.
+        cat = categoriser(
+            self._article("ترافیک ۷ کیلومتری در جاده کندوان؛ چالوس مسدود شد")
+        )
+        self.assertNotIn("censure_blocage", cat["traitement"])
+
+    def test_religious_role_is_an_actor(self):
+        cat = categoriser(self._article("Imam detained in Tajikistan over sermon"))
+        self.assertIn("croyant", cat["acteur"])
+
+    def test_bare_religious_demonym_is_not_an_actor(self):
+        # "muslim" seul décrit une population, pas quelqu'un à qui on
+        # fait subir quelque chose.
+        cat = categoriser(
+            self._article("How Central Asia navigates Russia's war on Ukraine")
+        )
+        self.assertNotIn("croyant", cat["acteur"])

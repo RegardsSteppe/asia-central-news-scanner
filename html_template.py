@@ -193,6 +193,60 @@ def render_title_vocabulary(
 
 
 # ============================================================
+# TABLEAU DE BORD DE CATÉGORISATION
+# ============================================================
+
+# Libellés lisibles pour les valeurs du schéma (categorisation.py),
+# qui sont des identifiants sans accent ni espace.
+_LIBELLES_CLASSES = {
+    "caucase_nord": "Caucase du Nord",
+    "azerbaidjan": "Azerbaïdjan",
+    "georgie": "Géorgie",
+    "armenie": "Arménie",
+    "kazakhstan": "Kazakhstan",
+    "kirghizistan": "Kirghizistan",
+    "iran": "Iran",
+    "xinjiang": "Xinjiang",
+    "afghanistan": "Afghanistan",
+    "indetermine": "Indéterminé",
+    "tadjikistan": "Tadjikistan",
+    "turkmenistan": "Turkménistan",
+    "ouzbekistan": "Ouzbékistan",
+    "russie": "Russie",
+    "autre": "Autre / non régional",
+    "defenseur": "Défenseur des droits",
+    "journaliste": "Journaliste",
+    "opposant": "Opposant / activiste",
+    "avocat": "Avocat",
+    "croyant": "Croyant",
+    "minorite_ethnique": "Minorité ethnique",
+    "femme": "Femme",
+    "migrant": "Migrant / réfugié",
+    "ecologiste": "Écologiste",
+    "syndicaliste": "Syndicaliste",
+    "citoyen_ordinaire": "Citoyen ordinaire",
+    "detention": "Détention",
+    "condamnation": "Condamnation",
+    "torture_mauvais_traitement": "Torture / mauvais traitement",
+    "disparition": "Disparition",
+    "violence_physique": "Violence physique",
+    "censure_blocage": "Censure / blocage",
+    "pression_administrative": "Pression administrative",
+    "contrainte_travail": "Travail forcé",
+    "expulsion_extradition": "Expulsion / extradition",
+    "evenement_date": "Événement daté",
+    "rapport_analyse": "Rapport / analyse",
+    "plaidoyer_communique": "Plaidoyer / communiqué",
+    "navigation": "Page de navigation",
+    "aucun": "aucun",
+}
+
+
+def _libelle_classe(nom):
+    return _LIBELLES_CLASSES.get(nom, nom.replace("_", " "))
+
+
+# ============================================================
 # CATÉGORISATION (categorisation.py / regles_editoriales.py)
 # ============================================================
 #
@@ -207,10 +261,16 @@ def _categorisation_summary(article):
     if not cat:
         return ""
 
-    geo = ", ".join(cat.get("geo") or []) or "aucun"
-    acteur = ", ".join(cat.get("acteur") or ["aucun"])
-    traitement = ", ".join(cat.get("traitement") or ["aucun"])
-    type_article = cat.get("type") or ""
+    def lisible(valeurs):
+        # Mêmes libellés que le tableau de bord : le lecteur d'une
+        # carte et celui d'un graphique doivent voir le même mot, pas
+        # "minorite_ethnique" ici et "Minorité ethnique" là-bas.
+        return ", ".join(_libelle_classe(v) for v in valeurs)
+
+    geo = lisible(cat.get("geo") or []) or "aucune"
+    acteur = lisible(cat.get("acteur") or ["aucun"])
+    traitement = lisible(cat.get("traitement") or ["aucun"])
+    type_article = _libelle_classe(cat["type"]) if cat.get("type") else ""
 
     return f"geo: {geo} · acteur: {acteur} · traitement: {traitement} · type: {type_article}"
 
@@ -727,6 +787,120 @@ def render_dashboard(
     """
 
 
+def render_categorisation_axe(axe, total):
+    """
+    Un axe descriptif : son taux de couverture, puis ses classes en
+    barres horizontales.
+
+    Barres horizontales et non verticales parce que les libellés sont
+    longs ("torture / mauvais traitement") et qu'il y a jusqu'à
+    quatorze classes : en colonnes, les étiquettes se chevauchent ou
+    basculent à l'oblique.
+
+    Une seule teinte pour toutes les barres : la longueur porte déjà la
+    grandeur, et les classes n'ont pas d'ordre naturel. Les colorer
+    chacune différemment coderait deux fois la même information, ou
+    ferait croire à une progression qui n'existe pas.
+
+    Chaque barre porte son effectif en clair : l'échelle est propre à
+    l'axe (sinon les onze classes d'"acteur", toutes sous 170, seraient
+    des traits invisibles à côté des 2738 événements datés), donc la
+    longueur ne se compare qu'à l'intérieur d'un même axe. Le nombre
+    écrit, lui, se compare partout.
+    """
+    classes = axe["classes"]
+    maximum = max((c["effectif"] for c in classes), default=0)
+
+    lignes = []
+
+    for classe in classes:
+        effectif = classe["effectif"]
+        largeur = (100 * effectif / maximum) if maximum else 0
+        part = (100 * effectif / total) if total else 0
+
+        lignes.append(f"""
+        <div
+            class="cat-ligne"
+            title="{esc(_libelle_classe(classe['nom']))} — {effectif} articles ({part:.1f}% du corpus)"
+        >
+            <div class="cat-nom">{esc(_libelle_classe(classe["nom"]))}</div>
+            <div class="cat-piste">
+                <div class="cat-barre" style="width: {largeur:.1f}%"></div>
+            </div>
+            <div class="cat-valeur">{effectif}</div>
+        </div>
+        """)
+
+    if not lignes:
+        lignes.append(
+            '<div class="cat-vide">Aucune classe détectée sur ce corpus.</div>'
+        )
+
+    return f"""
+    <div class="cat-carte">
+
+        <div class="cat-entete">
+            <h3>{esc(axe["libelle"])}</h3>
+            <div class="cat-couverture-valeur">{axe["couverture"]:.1f}%</div>
+        </div>
+
+        <div class="cat-piste cat-piste-couverture">
+            <div
+                class="cat-barre cat-barre-couverture"
+                style="width: {axe["couverture"]:.1f}%"
+            ></div>
+        </div>
+
+        <div class="cat-sous-titre">
+            {axe["decrits"]} articles sur {total} portent au moins une valeur
+        </div>
+
+        <div class="cat-lignes">
+            {"".join(lignes)}
+        </div>
+
+    </div>
+    """
+
+
+def render_categorisation_dashboard(cat_stats):
+    """
+    Tableau de bord des catégories descriptives (categorisation.py).
+
+    Distinct du tableau de bord de scoring juste au-dessus, et c'est
+    voulu : celui-là dit ce qu'on a RETENU, celui-ci ce qu'on a su
+    DÉCRIRE. Les deux chiffres n'ont rien à voir et les confondre
+    donnerait une fausse impression de couverture.
+    """
+    if not cat_stats or not cat_stats.get("total"):
+        return ""
+
+    total = cat_stats["total"]
+
+    cartes = "".join(
+        render_categorisation_axe(axe, total)
+        for axe in cat_stats["axes"]
+    )
+
+    return f"""
+    <h2>Catégorisation du corpus</h2>
+
+    <p class="subtitle">
+
+    Description factuelle des {total} articles archivés, indépendante du
+    score. Un article peut porter plusieurs valeurs sur un même axe
+    (Kazakhstan <em>et</em> Russie), donc les effectifs d’un axe ne
+    s’additionnent pas à 100&nbsp;%. L’échelle des barres est propre à
+    chaque axe.
+
+    </p>
+
+    <div class="cat-grille">
+        {cartes}
+    </div>
+    """
+
+
 # ============================================================
 # CSS
 # ============================================================
@@ -851,6 +1025,192 @@ h1 {
     box-shadow:
         0 2px 8px
         rgba(0,0,0,.07);
+}
+
+/* --------------------------------------------------------
+   TABLEAU DE BORD DE CATÉGORISATION
+
+   Une seule teinte de marque (--cat-serie) pour toutes les
+   barres : la longueur code déjà la grandeur, et les classes
+   d'un axe n'ont pas d'ordre naturel. Vérifiée contre la
+   surface blanche des cartes (contraste >= 3:1).
+
+   Le texte ne porte jamais la couleur des données : les
+   libellés et les valeurs restent en encre neutre, la barre
+   à côté d'eux suffit à les rattacher à la série.
+-------------------------------------------------------- */
+
+.cat-grille {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(320px, 1fr)
+        );
+
+    gap: 16px;
+
+    margin-bottom: 40px;
+}
+
+.cat-carte {
+
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 8px
+        rgba(0,0,0,.07);
+}
+
+.cat-entete {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+.cat-entete h3 {
+
+    margin: 0;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: #0b0b0b;
+}
+
+.cat-couverture-valeur {
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #0b0b0b;
+}
+
+.cat-sous-titre {
+
+    margin: 6px 0 16px;
+
+    font-size: 12px;
+
+    color: #898781;
+}
+
+/* Piste : un cran hors surface, jamais un trait autour de la
+   barre — c'est le creux qui sépare, pas une bordure. */
+.cat-piste {
+
+    flex: 1;
+
+    height: 14px;
+
+    background: #f0efec;
+
+    border-radius: 3px;
+
+    overflow: hidden;
+}
+
+.cat-piste-couverture {
+
+    height: 8px;
+
+    margin-top: 10px;
+}
+
+.cat-barre {
+
+    height: 100%;
+
+    background: #2a78d6;
+
+    border-radius: 0 4px 4px 0;
+
+    min-width: 2px;
+}
+
+.cat-lignes {
+
+    display: flex;
+
+    flex-direction: column;
+
+    /* > 2px : l'écart en couleur de surface est ce qui
+       sépare deux barres voisines. */
+    gap: 7px;
+}
+
+.cat-ligne {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    /* Cible de survol plus grande que la barre elle-même. */
+    padding: 3px 4px;
+
+    margin: -3px -4px;
+
+    border-radius: 5px;
+}
+
+.cat-ligne:hover {
+
+    background: #f7f9fc;
+}
+
+.cat-nom {
+
+    flex: 0 0 132px;
+
+    font-size: 12px;
+
+    color: #52514e;
+
+    overflow-wrap: anywhere;
+}
+
+.cat-valeur {
+
+    flex: 0 0 46px;
+
+    text-align: right;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #0b0b0b;
+
+    font-variant-numeric: tabular-nums;
+}
+
+.cat-vide {
+
+    font-size: 12px;
+
+    color: #898781;
+}
+
+@media (max-width: 520px) {
+
+    .cat-nom {
+        flex-basis: 96px;
+    }
 }
 
 .stat-number {
@@ -1371,6 +1731,7 @@ def create_web_page(
     stats,
     title_words=None,
     synthesis="",
+    cat_stats=None,
 ):
     """
     Build the complete HTML page.
@@ -1559,6 +1920,13 @@ Dernier scan :
 ========================================================= -->
 
 {render_dashboard(stats)}
+
+
+<!-- ========================================================
+     CATÉGORISATION
+========================================================= -->
+
+{render_categorisation_dashboard(cat_stats)}
 
 
 <!-- ========================================================

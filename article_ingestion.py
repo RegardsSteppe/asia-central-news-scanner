@@ -89,14 +89,17 @@ def parse_rss(
         # Asia", "Countries") au même titre que les vrais articles.
         # looks_like_article_link() n'était jamais appliqué aux
         # entrées RSS (seulement au scraping HTML) : le titre seul
-        # ("Countries" — 1 mot) suffit à les rejeter. Pour Google
-        # News uniquement le titre compte : son URL de redirection
-        # opaque (news.google.com/rss/articles/<hash>) contient
-        # littéralement "/rss", ce que looks_like_article_link()
-        # rejetterait toujours à tort si on lui passait cette URL. Le
-        # suffixe Google News doit être retiré AVANT ce test, sinon
+        # ("Countries" — 1 mot) suffit à les rejeter. Le suffixe
+        # Google News doit être retiré AVANT ce test, sinon
         # "Countries - Human Rights Watch" (5 mots) masquerait que le
         # vrai titre "Countries" (1 mot) devrait être rejeté.
+        #
+        # Le test reste branché sur le FLUX et non sur le lien :
+        # looks_like_article_link() sait désormais se limiter au titre
+        # pour une URL news.google.com (is_google_news_url), mais un
+        # flux Google News qui renverrait par exception un lien direct
+        # ne doit pas se voir appliquer d'un coup les tests de chemin
+        # dont il a toujours été dispensé.
         if is_google_news:
             if not _title_passes_generic_filter(title):
                 continue
@@ -382,6 +385,29 @@ def _title_passes_generic_filter(title: str) -> bool:
     return True
 
 
+GOOGLE_NEWS_HOST = "news.google.com"
+
+
+def is_google_news_url(url: str) -> bool:
+    """
+    Vrai pour un lien de redirection Google News
+    (news.google.com/rss/articles/<hash>).
+
+    Ces URL n'ont pas de chemin lisible : le hash ne dit rien de
+    l'article, et le "/rss" qui le précède n'est pas le flux mais un
+    segment de la redirection. Toute heuristique de chemin appliquée
+    à ces liens se trompe systématiquement, d'où ce test explicite
+    partout où l'URL est inspectée.
+    """
+    if not url:
+        return False
+
+    try:
+        return urlparse(url).netloc == GOOGLE_NEWS_HOST
+    except ValueError:
+        return False
+
+
 def looks_like_article_link(url: str, title: str) -> bool:
     """
     Heuristique conservatrice pour ne garder que les liens
@@ -389,12 +415,21 @@ def looks_like_article_link(url: str, title: str) -> bool:
 
     Rejette les liens de navigation/catégories/tags/pages
     utilitaires ainsi que les libellés de lien trop génériques.
+
+    Cas Google News : l'URL de redirection ne porte aucune
+    information exploitable (voir is_google_news_url), donc seul le
+    titre est jugé. Sans cette sortie anticipée, le "/rss" du chemin
+    ferait échouer TOUS ces liens — et comme ils viennent de flux
+    d'articles, ce sont bien des articles.
     """
     if not url or not title:
         return False
 
     if not _title_passes_generic_filter(title):
         return False
+
+    if is_google_news_url(url):
+        return True
 
     parsed = urlparse(url)
     path = parsed.path.lower()

@@ -43,16 +43,22 @@ Le score, le niveau, le thème : recalculés à chaque run par scoring.py
 mot-clé profite rétroactivement à tout l'historique, sans rien
 re-télécharger.
 
-Le corps des articles, sauf pour les niveaux A-D (voir BODY_KEEP_LEVELS)
-: le garder pour tout le corpus ferait des dizaines de Mo. Les articles
-qui comptent gardent leur texte intégral, donc leur profondeur de
-scoring ; les autres sont rescorés sur titre + résumé, ce qu'ils ont
-déjà aujourd'hui.
+CE QUI EST STOCKÉ, ET POURQUOI ÇA A CHANGÉ
+------------------------------------------
+
+Le corps des articles l'est désormais pour tous les niveaux (voir
+BODY_KEEP_LEVELS). Il ne l'était que pour A-D, par souci de taille, et
+c'était un mauvais calcul : le corps est l'endroit où vit l'information
+descriptive (73% des articles qui portent un "traitement" le perdent
+sans lui), et le niveau E est justement là où les catégories sont
+vides. On jetait donc un texte qu'on venait de télécharger, à l'endroit
+précis où il aurait servi.
 """
 
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator
@@ -62,9 +68,29 @@ BASE_DIR = Path(__file__).resolve().parent
 ARCHIVE_FILE = BASE_DIR / "archive.jsonl"
 ARCHIVE_STATE_FILE = BASE_DIR / "archive_state.json"
 
-# Niveaux dont on conserve le corps complet dans l'archive. ~5 % du
-# corpus (340 articles sur 6764 au 2026-09-13), soit quelques Mo bornés.
-BODY_KEEP_LEVELS = frozenset({"A", "B", "C", "D"})
+# Niveaux dont on conserve le corps complet dans l'archive.
+#
+# Était {"A","B","C","D"} — le corps d'un article de niveau E était
+# jeté alors qu'on venait de le télécharger. Mesuré le 2026-09-14 sur
+# les 167 articles du corpus qui ont un corps : sans lui, 73% de ceux
+# qui portent un "traitement" et 61% de ceux qui portent un "acteur"
+# ressortent vides. Autrement dit le corps est l'endroit où vit
+# l'information descriptive, et le niveau E est précisément la zone où
+# les catégories sont vides. Garder A-D seulement garantissait que le
+# problème ne se résorbe jamais.
+#
+# Le coût est réel et borné par BODY_MAX_CHARS : environ 6 Ko par
+# article, soit ~30 Mo pour la part récupérable du corpus (un tiers des
+# URL sont des redirections Google News dont le corps n'existe pas).
+# SCANNER_BODY_KEEP_LEVELS permet de revenir au comportement d'avant
+# sans toucher au code si l'archive devient trop lourde.
+_BODY_KEEP_LEVELS_ENV = os.getenv("SCANNER_BODY_KEEP_LEVELS", "A,B,C,D,E")
+
+BODY_KEEP_LEVELS = frozenset(
+    niveau.strip().upper()
+    for niveau in _BODY_KEEP_LEVELS_ENV.split(",")
+    if niveau.strip()
+)
 
 # Longueur max du corps conservé, alignée sur BODY_CACHE_MAX_CHARS
 # (news_scanner.py) pour ne pas stocker deux troncatures différentes.

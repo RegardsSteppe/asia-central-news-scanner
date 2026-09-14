@@ -958,3 +958,60 @@ class MergeWithArchiveTests(unittest.TestCase):
 
         self.assertTrue(published[0]["dernier_scan"])
         self.assertTrue(published[0]["derniere_vue"])
+
+
+class EnrichmentTargetsNewGroundTests(unittest.TestCase):
+    """
+    Le budget d'enrichissement doit aller aux articles SANS corps.
+
+    Sans ce filtre, la sélection par score reconduisait les mêmes têtes
+    de classement d'un run à l'autre : 167 articles sur 7795 avaient un
+    corps, et le reste n'était jamais couvert.
+    """
+
+    def _articles(self):
+        return [
+            {
+                "source": "Generic Source", "score": 90,
+                "url": "https://example.com/deja", "title": "A" * 10,
+            },
+            {
+                "source": "Generic Source", "score": 10,
+                "url": "https://example.com/neuf", "title": "B" * 10,
+            },
+        ]
+
+    @patch("news_scanner.extract_body")
+    def test_skips_articles_whose_body_is_already_archived(self, mock_extract):
+        mock_extract.return_value = ("full body text", None)
+
+        articles = self._articles()
+        deja = {canonical_article_key(articles[0])}
+
+        with patch("news_scanner.SOURCES", new=[
+            {"name": "Generic Source", "profile": "regional_media"},
+        ]), patch("news_scanner.ENRICH_LIMIT", 1), patch(
+            "news_scanner.ENRICH_PER_SOURCE_LIMIT", 0
+        ):
+            enrich_articles(articles, deja_avec_corps=deja)
+
+        # Le mieux classé est écarté : son corps est déjà archivé.
+        self.assertNotIn("body", articles[0])
+        # Le budget est allé au suivant, qui n'en avait pas.
+        self.assertEqual(articles[1]["body"], "full body text")
+
+    @patch("news_scanner.extract_body")
+    def test_without_the_set_the_ranking_is_unchanged(self, mock_extract):
+        mock_extract.return_value = ("full body text", None)
+
+        articles = self._articles()
+
+        with patch("news_scanner.SOURCES", new=[
+            {"name": "Generic Source", "profile": "regional_media"},
+        ]), patch("news_scanner.ENRICH_LIMIT", 1), patch(
+            "news_scanner.ENRICH_PER_SOURCE_LIMIT", 0
+        ):
+            enrich_articles(articles)
+
+        self.assertEqual(articles[0]["body"], "full body text")
+        self.assertNotIn("body", articles[1])
