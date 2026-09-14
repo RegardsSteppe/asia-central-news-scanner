@@ -881,8 +881,8 @@
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
-  "score": 0,
-  "signals_sha256": "5cc19c6a3cd7af30",
+  "score": 3,
+  "signals_sha256": "b11152742796db15",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/ru/latest/news/2026/08/palestine-hamas-must-stamp-out-extrajudicial-executions-and-ensure-justice-for-victims/"
  },
@@ -1053,8 +1053,8 @@
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
-  "score": 0,
-  "signals_sha256": "f6295afdac55d35f",
+  "score": 2,
+  "signals_sha256": "04a3406174231038",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/ru/projects/russias-aggression-in-ukraine/"
  },
@@ -1066,7 +1066,7 @@
   ],
   "relevant": false,
   "score": 14,
-  "signals_sha256": "5e39bc1ae583b6c3",
+  "signals_sha256": "6ecf420183f65230",
   "theme": "Droits spécifiques",
   "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPUjYtNEoyRV9OeTJTVEtaUVhUOWtEYlJJcVJoS09oVnBiMVJMUzNoOTZ1Y0RWYWVBOWdycjJsWmUydWxIcEJrenQ2bVQ3TFhRTGREeExTOHFzd3BubC1JOFpUX25tU09haHloYXdNSmpXRUZyZnRQeFNDSDY1NWU4UFRjZmFxRnA2blh2NXV0Zw?oc=5"
  },
@@ -2045,8 +2045,8 @@
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
-  "score": 8,
-  "signals_sha256": "24f8abb23e1140df",
+  "score": 12,
+  "signals_sha256": "216582ea494a4b4a",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/ru/projects/israels-occupation-of-palestinian-territory/"
  },
@@ -5140,16 +5140,16 @@
   "url": "https://tass.com/world/2186851"
  },
  {
-  "level": "E",
-  "priority": "FAIBLE",
+  "level": "B",
+  "priority": "MOYENNE",
   "reasons": [
    "Asie centrale: таджикистан, таджик",
-   "plafond V9: aucun ancrage HR principal"
+   "CAS HR CRITIQUE"
   ],
-  "relevant": false,
-  "score": 22,
-  "signals_sha256": "ce16616be3d5ef6c",
-  "theme": "Faible priorité",
+  "relevant": true,
+  "score": 58,
+  "signals_sha256": "47aa6cd2a4ad510a",
+  "theme": "Répression / droits humains",
   "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOc3QyZk9QQ05ZUTY1aUtlc3V5MGU3QmpYWXJIWmhBZ2ItVTVLYXF2bnZCUzFjRlBjR3JOQ3dHelZoTm84alpNQTNTRUg1c1M3Vm1SNmEtX3lxb0F0RkhmWkZ1SFJfd2llRnRIaFBsWVlGLWVmdzhiZGk5ME05U1RfeWI4UkNJMDlQMHpVREJGZGdNa0E?oc=5"
  },
  {

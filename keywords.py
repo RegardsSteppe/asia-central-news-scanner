@@ -464,6 +464,12 @@ ACTIVIST_TERMS = [
     # présent étant invariable.
     "détracteur", "détracteurs", "manifestant", "manifestants",
     "opposants", "opposant politique", "opposants politiques",
+    # "несогласные" — les dissidents, au sens de ceux qui ne sont pas
+    # d'accord avec le pouvoir. 2 titres HRW, 2 justes ("Чеченские
+    # власти против несогласных", "Несогласным из Горного Бадахшана").
+    # Formes énumérées, pas une racine : find_terms() exige une
+    # limite de mot après le terme, donc "несогласн" serait inerte.
+    "несогласные", "несогласных", "несогласным", "несогласными",
     # Ajoutés le 2026-09-14 depuis categorisation.py, pour que le
     # SCORING en profite aussi et non la seule description. C'est la
     # raison d'être de keywords.py : une liste, deux consommateurs.

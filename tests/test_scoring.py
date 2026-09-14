@@ -1185,3 +1185,83 @@ class VocabulaireFrancaisHRWTests(unittest.TestCase):
         minuscules = [terme.lower() for terme in TARGET_TERMS_V9]
         self.assertNotIn("militant", minuscules)
         self.assertNotIn("militants", minuscules)
+
+
+class VocabulaireRusseHRWTests(unittest.TestCase):
+    """
+    Suite du travail sur les titres HRW sans corps : 93 des 323 restés
+    en niveau E sont en russe.
+
+    Le piège principal n'était pas le vocabulaire mais l'outil.
+    find_terms() n'est PAS _alternation_pattern() : il impose une
+    limite de mot APRÈS le terme, pour tous les termes, cyrilliques
+    compris. Une racine tronquée y est donc totalement inerte —
+    "депортаци" ne matche ni "депортация" ni "депортации". Les formes
+    sont énumérées une par une, et ces tests le vérifient.
+    """
+
+    def _article(self, titre):
+        article = {
+            "title": titre,
+            "summary": "",
+            "source": "Human Rights Watch — russe",
+            "url": "https://www.hrw.org/ru/news/test",
+        }
+        classify_article(article)
+        return article
+
+    def test_les_formes_flechies_sont_bien_enumerees(self):
+        # Le test qui aurait attrapé l'erreur : avec des racines
+        # tronquées, ces quatre titres passaient tous à ancre=False
+        # sans que rien ne le signale.
+        for titre in (
+            "Турция: Туркменской активистке угрожает депортация",
+            "Россия: Журналисту грозит выдворение в Узбекистан",
+            "Казахстан: Изоляция и нарушения прав детей в интернатах",
+            "Туркменистан: Родственников активиста не выпускают из страны",
+        ):
+            with self.subTest(titre=titre):
+                self.assertTrue(
+                    self._article(titre)["signals"]["primary_hr_anchor"]
+                )
+
+    def test_ekspluataciya_est_un_faux_ami(self):
+        # Dans les corps du corpus, le mot signifie "mise en service"
+        # 9 fois sur 11 : "сдали в эксплуатацию", "срок эксплуатации",
+        # "ввели в эксплуатацию". Rejeté pour ça.
+        article = self._article("Многоквартирный дом сдали в эксплуатацию")
+        self.assertFalse(article["signals"]["primary_hr_anchor"])
+
+    def test_napadenie_reste_dehors(self):
+        # Le sens militaire ou criminel domine largement : attaque de
+        # la Russie contre l'Ukraine, morsures de chien, attaques
+        # d'infrastructures énergétiques.
+        article = self._article("Нападение России на Украину освещают по-разному")
+        self.assertFalse(article["signals"]["primary_hr_anchor"])
+
+    def test_ischeznovenie_nu_reste_dehors(self):
+        # Même piège que "disappeared" en anglais : dans les corps, le
+        # mot parle d'oiseaux dont l'habitat disparaît, de Telegram
+        # retiré de l'App Store, d'un bâtiment aimé des habitants.
+        # Seule la forme qualifiée "насильственное исчезновение" entre.
+        article = self._article("Осушение болот приведет к исчезновению птиц")
+        self.assertFalse(article["signals"]["primary_hr_anchor"])
+
+    def test_la_disparition_forcee_qualifiee_entre_bien(self):
+        article = self._article(
+            "Туркменистан: насильственные исчезновения активистов продолжаются"
+        )
+        self.assertTrue(article["signals"]["primary_hr_anchor"])
+
+    def test_nesoglasnye_est_une_cible_pas_un_ancrage(self):
+        # "несогласные" désigne ceux qui ne sont pas d'accord avec le
+        # pouvoir : c'est un RÔLE, donc il alimente la cible, pas
+        # l'ancrage répressif. Vérifié explicitement pour que la
+        # distinction ne se perde pas.
+        from matching import find_terms
+        import keywords
+
+        self.assertEqual(
+            find_terms("чеченские власти против несогласных", keywords.ACTIVIST_TERMS),
+            ["несогласных"],
+        )
