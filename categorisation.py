@@ -417,6 +417,24 @@ SYNDICALISTE_TERMS = [
     "اتحادیه کارگری", "کارگران اعتصابی",
 ]
 
+# Absent du schéma d'origine, repéré le 2026-09-14 sur "Le Burkina
+# Faso criminalise les relations homosexuelles" (acteur=aucun). 31
+# articles du corpus concernés, dont plusieurs au coeur de la zone :
+# loi kazakhe restreignant les contenus LGBTQ+, répression russe,
+# Kirghizistan.
+MINORITE_SEXUELLE_TERMS = [
+    "lgbt", "lgbtq", "lgbti", "lgbtq+", "lgbti+",
+    "homosexual", "homosexuality", "same-sex",
+    "gay", "gays", "lesbian", "lesbians",
+    "transgender", "trans people",
+    "homosexuel", "homosexuelle", "homosexuels", "homosexuelles",
+    "homosexualité", "relations homosexuelles", "lesbienne",
+    "transgenre", "personnes trans",
+    "лгбт", "лгбтик", "гей", "геи", "гомосексуал",
+    "гомосексуальность", "лесбиянк", "трансгендер",
+    "همجنسگرا", "دگرباش",
+]
+
 ACTEUR_TYPE_TERMS: dict[str, list[str]] = {
     "defenseur": HUMAN_RIGHTS_DEFENDER_TERMS,
     "journaliste": JOURNALIST_TERMS,
@@ -429,6 +447,7 @@ ACTEUR_TYPE_TERMS: dict[str, list[str]] = {
     "ecologiste": ECOLOGISTE_TERMS,
     "syndicaliste": SYNDICALISTE_TERMS,
     "citoyen_ordinaire": CITOYEN_TERMS,
+    "minorite_sexuelle": MINORITE_SEXUELLE_TERMS,
 }
 
 
@@ -547,6 +566,29 @@ CENSURE_BLOCAGE_TERMS = [
 #     4 fausses, toutes routières ("چالوس مسدود شد" — 7 km de bouchon
 #     sur la route de Chalus).
 
+# Criminaliser un groupe ou une pratique par la loi n'est aucun des
+# traitements existants : ce n'est pas une détention, ni une pression
+# administrative sur un individu, c'est une répression au niveau du
+# texte de loi.
+#
+# Vocabulaire volontairement étroit. Les formes larges ("banned",
+# "ban on", "outlaw", "запретил") ont été testées puis écartées : 62
+# détections, majoritairement fausses ("Travel Bans" dans un titre sur
+# la pression aux journalistes kazakhs, "Putin... banned", "UK
+# edition"). Même erreur que celle commise sur censure_blocage avec
+# "press freedom". Les 21 détections du vocabulaire ci-dessous sont
+# toutes justes.
+CRIMINALISATION_TERMS = [
+    "criminalise", "criminalises", "criminalised",
+    "criminalize", "criminalizes", "criminalized",
+    "criminalization", "criminalisation",
+    "law criminalizing", "law criminalising",
+    "criminalisent", "criminalisant", "loi criminalisant",
+    "lois répressives", "loi répressive",
+    "криминализация", "криминализировал", "криминализации",
+    "уголовная ответственность",
+]
+
 TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
     "detention": DETENTION_TERMS,
     "condamnation": CONDAMNATION_TERMS,
@@ -557,6 +599,7 @@ TRAITEMENT_TYPE_TERMS: dict[str, list[str]] = {
     "pression_administrative": REPRESSION_TERMS,
     "contrainte_travail": FORCED_LABOR_TERMS,
     "expulsion_extradition": TRANSNATIONAL_REPRESSION_TERMS_V9,
+    "criminalisation": CRIMINALISATION_TERMS,
 }
 
 # Repéré en audit réel le 2026-09-12 sur un article HRW russe

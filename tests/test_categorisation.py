@@ -587,3 +587,61 @@ class PaysMondeEstGenereTests(unittest.TestCase):
         self.assertGreater(len(PAYS_MONDE_LIBELLES), 150)
         orphelins = set(PAYS_MONDE_TERMES.values()) - set(PAYS_MONDE_LIBELLES)
         self.assertEqual(orphelins, set(), "des pays sans libellé")
+
+
+class MinoriteSexuelleEtCriminalisationTests(unittest.TestCase):
+    """
+    Deux manques du schéma, trouvés sur "Le Burkina Faso criminalise
+    les relations homosexuelles" : acteur=aucun et traitement=aucun
+    sur un article qui décrit précisément les deux.
+    """
+
+    def _article(self, titre, langue="fr"):
+        return {
+            "title": titre, "summary": "", "body": "",
+            "source": "Human Rights Watch", "url": "https://ex.org/news/a",
+            "language": langue, "date": None,
+        }
+
+    def test_the_reported_article_is_fully_described(self):
+        cat = categoriser(
+            self._article("Le Burkina Faso criminalise les relations homosexuelles")
+        )
+        self.assertIn("burkina_faso", cat["geo"])
+        self.assertIn("minorite_sexuelle", cat["acteur"])
+        self.assertIn("criminalisation", cat["traitement"])
+        self.assertTrue(cat["relation_acteur_traitement"])
+
+    def test_regional_cases_are_caught(self):
+        # Les articles que cette veille existe pour remonter.
+        for titre in (
+            "Ouzbékistan : Les hommes gays face au risque d'abus",
+            "Turkménistan : Un homme gay porté disparu",
+            "Kazakhstan's parliament passes law restricting LGBTQ+ content",
+            "Казахстан: Как на ЛГБТИК+ сообществе обкатывают процесс",
+        ):
+            with self.subTest(titre=titre):
+                self.assertIn(
+                    "minorite_sexuelle", categoriser(self._article(titre))["acteur"]
+                )
+
+    def test_criminalisation_vocabulary_stays_narrow(self):
+        # "banned"/"ban on"/"запретил" ont été testés puis écartés :
+        # 62 détections majoritairement fausses ("Travel Bans", "UK
+        # edition"), la même erreur que "press freedom" sur
+        # censure_blocage.
+        for titre in (
+            "Criminal Cases, Travel Bans: Pressure Mounts On Kazakh Journalists",
+            "Amid Setbacks, Putin Looks To Restore Russia's Standing",
+        ):
+            with self.subTest(titre=titre):
+                self.assertNotIn(
+                    "criminalisation",
+                    categoriser(self._article(titre, langue="en"))["traitement"],
+                )
+
+    def test_a_repressive_law_is_a_criminalisation(self):
+        cat = categoriser(
+            self._article("Géorgie : Des lois répressives criminalisent les manifestations")
+        )
+        self.assertIn("criminalisation", cat["traitement"])
