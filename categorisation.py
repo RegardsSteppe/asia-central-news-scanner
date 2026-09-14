@@ -40,6 +40,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from article_ingestion import looks_like_article_link
+from pays_monde import PAYS_MONDE_LIBELLES, PAYS_MONDE_TERMES
 from text_utils import article_age_days
 
 from keywords import (
@@ -221,19 +222,56 @@ _register_geo_terms("bielorussie", ["belarus", "беларусь", "белору
 _register_geo_terms("turquie", ["turkey", "турция", "turquie"])
 _register_geo_terms("moldavie", ["moldova", "молдова", "молдавия", "moldavie"])
 
-# Pays hors zone, volontairement NON enregistrés vers une valeur
-# propre : détectés, ils tombent sur "autre" (le défaut des termes non
-# mappés). C'est la réponse honnête — on sait situer l'article, et on
-# sait qu'il est hors périmètre — au lieu d'un "aucune" qui laisse
-# croire qu'aucune géographie n'a été trouvée. Leur donner une valeur
-# nommée gonflerait le schéma sans servir la veille.
-_PAYS_HORS_ZONE_TERMS = [
-    "united states", "сша", "états-unis",
-    "india", "индия", "inde",
-    "israel", "израиль", "israël",
-    "pakistan", "пакистан",
-    "syria", "сирия", "syrie",
-]
+# Tous les autres pays du monde, en anglais/français/russe, générés
+# depuis pycountry (voir tools/generer_pays.py). Les sources de cette
+# veille — CPJ, OCCRP, FIDH, Amnesty — couvrent la planète entière :
+# 159 pays distincts apparaissaient dans le corpus sans jamais être
+# situés. Les nommer tous plutôt que de les verser dans "autre" était
+# la demande.
+#
+# Les listes curées au-dessus restent PRIORITAIRES : elles portent la
+# morphologie russe (Украина/Украины/Украине) et les formes
+# familières que la table générée ne connaît pas.
+for _terme, _pays in PAYS_MONDE_TERMES.items():
+    _GEO_TERM_COUNTRY.setdefault(_terme, _pays)
+
+# Régions, pas pays. Elles tombaient sur "autre" faute de pouvoir être
+# rattachées à un État — ce qui était doublement trompeur : "autre"
+# suggère "ailleurs", alors que "Asie centrale" est le cœur même du
+# périmètre. Les nommer dit ce que le texte dit : une région, sans
+# désigner de pays.
+_register_geo_terms("asie_centrale", [
+    "central asia", "central asian", "asie centrale",
+    "центральная азия", "центральноазиатский", "آسیای مرکزی",
+])
+_register_geo_terms("caucase", [
+    "caucasus", "south caucasus", "caucase", "кавказ",
+    "قفقاز", "قفقاز جنوبی",
+])
+# Ossétie seule : le Nord est russe, le Sud est revendiqué par la
+# Géorgie. Le terme ne tranche pas, l'étiquette non plus.
+_register_geo_terms("ossetie", ["осетия"])
+
+_PAYS_MONDE_LISTE = list(PAYS_MONDE_TERMES)
+
+
+def _sans_inclusions(termes: list[str]) -> list[str]:
+    """
+    Retire les noms de pays contenus dans un autre nom détecté.
+
+    "Papua New Guinea" contient "Guinea" comme mot entier : sans ce
+    filtre, un article papouasien ressortirait aussi "Guinée". Même
+    problème pour "South Sudan"/"Sudan" et "North Korea"/"Korea".
+    """
+    return [
+        terme for terme in termes
+        if not any(
+            autre != terme and re.search(
+                r"(?<!\w)" + re.escape(terme) + r"(?!\w)", autre
+            )
+            for autre in termes
+        )
+    ]
 
 
 def _geo_terms_in(text: str, language: str) -> list[str]:
@@ -243,9 +281,9 @@ def _geo_terms_in(text: str, language: str) -> list[str]:
     uyghur = find_terms(text, UYGHUR_TERMS)
     iran_afg_russia = find_terms(text, _IRAN_AFGHANISTAN_RUSSIA_TERMS)
     voisins = find_terms(text, _PAYS_VOISINS_TERMS)
-    hors_zone = find_terms(text, _PAYS_HORS_ZONE_TERMS)
+    monde = _sans_inclusions(find_terms(text, _PAYS_MONDE_LISTE))
     return list(dict.fromkeys(
-        central_asia + caucasus + uyghur + iran_afg_russia + voisins + hors_zone
+        central_asia + caucasus + uyghur + iran_afg_russia + voisins + monde
     ))
 
 

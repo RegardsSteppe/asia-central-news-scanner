@@ -141,17 +141,23 @@ class RussianStemTraitementTests(unittest.TestCase):
 
 class GeoRegistryConsistencyTests(unittest.TestCase):
     def test_every_geo_term_maps_to_a_declared_country(self):
-        # Sanity check : la table de correspondance interne ne doit
-        # jamais mapper vers une valeur hors de l'énumération attendue.
+        # La table couvre désormais tous les pays du monde (générés
+        # dans pays_monde.py), donc l'énumération en dur ne tient plus.
+        # Le garde-fou reste le même : aucune valeur ne doit sortir de
+        # nulle part — soit elle est curée à la main, soit elle vient
+        # de la table générée.
         from categorisation import _GEO_TERM_COUNTRY
+        from pays_monde import PAYS_MONDE_LIBELLES
 
-        allowed = {
+        cures = {
             "kazakhstan", "ouzbekistan", "kirghizistan", "tadjikistan",
             "turkmenistan", "azerbaidjan", "armenie", "georgie",
             "caucase_nord", "xinjiang", "iran", "afghanistan", "russie",
             "ukraine", "chine", "bielorussie", "turquie", "moldavie",
+            "asie_centrale", "caucase", "ossetie", "autre",
         }
-        self.assertTrue(set(_GEO_TERM_COUNTRY.values()) <= allowed)
+        inconnues = set(_GEO_TERM_COUNTRY.values()) - cures - set(PAYS_MONDE_LIBELLES)
+        self.assertEqual(inconnues, set())
 
     def test_modern_kyrgyz_adjective_maps_to_kirghizistan(self):
         # Régression du 2026-09-12 : "кыргыз" (adjectif moderne)
@@ -499,18 +505,50 @@ class PaysVoisinsGeoTests(unittest.TestCase):
                 cat = categoriser(self._article(titre))
                 self.assertIn(attendu, cat["geo"])
 
-    def test_out_of_zone_countries_fall_back_to_autre(self):
-        # Détectés mais non nommés : "autre" dit qu'on a su situer
-        # l'article ET qu'il est hors périmètre, là où "aucune"
-        # laissait croire qu'aucune géographie n'avait été trouvée.
-        for titre in (
-            "India passes new press law",
-            "Israel restricts foreign media access",
-            "Pakistan detains rights defenders",
+    def test_every_country_gets_its_own_name(self):
+        # Décidé le 2026-09-14 : plus de fourre-tout "autre". Un pays
+        # nommé dans le texte sort sous son nom, où qu'il soit.
+        for titre, attendu in (
+            ("India passes new press law", "inde"),
+            ("Israel restricts foreign media access", "israel"),
+            ("Pakistan detains rights defenders", "pakistan"),
+            ("Fire at nursing home in Chile kills 16", "chili"),
+            ("Myanmar junta jails reporters", "birmanie"),
         ):
             with self.subTest(titre=titre):
                 cat = categoriser(self._article(titre))
-                self.assertEqual(cat["geo"], ["autre"])
+                self.assertIn(attendu, cat["geo"])
+                self.assertNotIn("autre", cat["geo"])
+
+    def test_a_country_name_inside_another_never_fires(self):
+        # "Papua New Guinea" contient "Guinea" comme mot entier, et
+        # "South Sudan" contient "Sudan" : sans résolution par
+        # correspondance la plus longue, l'article ressortirait sous
+        # deux pays dont un faux.
+        for titre, attendu, interdit in (
+            ("Papua New Guinea", "papouasie_nouvelle_guinee", "guinee"),
+            ("South Sudan crackdown on journalists", "soudan_du_sud", "soudan"),
+        ):
+            with self.subTest(titre=titre):
+                cat = categoriser(self._article(titre))
+                self.assertIn(attendu, cat["geo"])
+                self.assertNotIn(interdit, cat["geo"])
+
+    def test_regions_are_named_as_regions(self):
+        # "Asie centrale" n'est pas un pays, mais c'est le coeur du
+        # périmètre : le verser dans "autre" (= ailleurs) était le
+        # contraire de la vérité.
+        cat = categoriser(self._article("Central Asia faces new water crisis"))
+        self.assertIn("asie_centrale", cat["geo"])
+        self.assertNotIn("autre", cat["geo"])
+
+    def test_a_common_word_is_not_mistaken_for_a_country(self):
+        # "Того" (Togo en russe) est le génitif de "тот" : il
+        # déclenchait 446 articles avant d'être écarté du générateur.
+        cat = categoriser(
+            self._article("Из-за того что власти Казахстана усилили контроль")
+        )
+        self.assertNotIn("togo", cat["geo"])
 
     def test_neighbours_never_reach_the_scoring_gate(self):
         # La garantie qui compte : ces pays sont DESCRIPTIFS. S'ils
@@ -523,3 +561,29 @@ class PaysVoisinsGeoTests(unittest.TestCase):
         classify_article(article)
 
         self.assertFalse(article["signals"]["regional_context"])
+
+
+class PaysMondeEstGenereTests(unittest.TestCase):
+    """pays_monde.py est généré ; pycountry ne doit jamais devenir une
+    dépendance d'exécution du scanner."""
+
+    def test_pycountry_is_only_imported_by_the_generator(self):
+        import re
+        from pathlib import Path
+
+        racine = Path(__file__).resolve().parent.parent
+        coupables = []
+
+        for fichier in racine.glob("*.py"):
+            texte = fichier.read_text(encoding="utf-8")
+            if re.search(r"^\s*(import pycountry|from pycountry)", texte, re.M):
+                coupables.append(fichier.name)
+
+        self.assertEqual(coupables, [])
+
+    def test_the_generated_table_is_consistent(self):
+        from pays_monde import PAYS_MONDE_LIBELLES, PAYS_MONDE_TERMES
+
+        self.assertGreater(len(PAYS_MONDE_LIBELLES), 150)
+        orphelins = set(PAYS_MONDE_TERMES.values()) - set(PAYS_MONDE_LIBELLES)
+        self.assertEqual(orphelins, set(), "des pays sans libellé")

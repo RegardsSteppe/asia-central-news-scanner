@@ -219,6 +219,9 @@ _LIBELLES_CLASSES = {
     "turquie": "Turquie",
     "moldavie": "Moldavie",
     "autre": "Autre / non régional",
+    "asie_centrale": "Asie centrale (région)",
+    "caucase": "Caucase (région)",
+    "ossetie": "Ossétie",
     "defenseur": "Défenseur des droits",
     "journaliste": "Journaliste",
     "opposant": "Opposant / activiste",
@@ -249,7 +252,19 @@ _LIBELLES_CLASSES = {
 
 
 def _libelle_classe(nom):
-    return _LIBELLES_CLASSES.get(nom, nom.replace("_", " "))
+    """
+    Libellé lisible d'une valeur du schéma.
+
+    Les pays du monde viennent de la table générée (pays_monde.py) :
+    les énumérer une seconde fois ici ne ferait que créer une occasion
+    de divergence.
+    """
+    if nom in _LIBELLES_CLASSES:
+        return _LIBELLES_CLASSES[nom]
+
+    from pays_monde import PAYS_MONDE_LIBELLES
+
+    return PAYS_MONDE_LIBELLES.get(nom, nom.replace("_", " "))
 
 
 # ============================================================
