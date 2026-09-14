@@ -258,7 +258,7 @@ def empty_state() -> dict[str, Any]:
 def merge_files(base_path: Path, incoming_path: Path) -> tuple[int, int]:
     """
     Fusionne `incoming_path` dans `base_path`. Retourne
-    (entrées ajoutées, corps récupérés).
+    (entrées ajoutées, faits récupérés — corps et dates).
 
     Sert à résoudre une course entre deux runs : si un autre run a poussé
     ses lignes pendant le nôtre, réécrire notre version par-dessus
@@ -275,8 +275,11 @@ def merge_files(base_path: Path, incoming_path: Path) -> tuple[int, int]:
     un run de remplissage de corps (fetch_all_bodies.py --archive) perd
     des heures de téléchargement pour un simple conflit de push.
 
-    Comme backfill_bodies, un corps n'est jamais remplacé par un plus
-    court : la fusion ne peut qu'enrichir.
+    L'union porte sur les corps ET sur les dates, pour la même raison :
+    une date extraite pendant une passe d'une heure se perdrait au
+    premier conflit de push. Comme backfill_bodies et backfill_dates,
+    un corps n'est jamais remplacé par un plus court et une date connue
+    n'est jamais écrasée : la fusion ne peut qu'enrichir.
     """
     base = load_archive(base_path)
     incoming = load_archive(incoming_path)
@@ -292,6 +295,11 @@ def merge_files(base_path: Path, incoming_path: Path) -> tuple[int, int]:
         nouveau = entry.get("body") or ""
         if nouveau and len(nouveau) > len(base[key].get("body") or ""):
             base[key]["body"] = nouveau
+            corps_recuperes += 1
+
+        date = entry.get("date")
+        if date and not base[key].get("date"):
+            base[key]["date"] = date
             corps_recuperes += 1
 
     if corps_recuperes:
@@ -455,6 +463,43 @@ def backfill_bodies(
     return mis_a_jour
 
 
+def backfill_dates(
+    archive: dict[str, dict[str, Any]],
+    scanned: list[tuple[str, dict[str, Any]]],
+) -> int:
+    """
+    Inscrit dans l'archive la date de publication découverte pour des
+    entrées qui n'en avaient pas. Modifie `archive` sur place, renvoie
+    le nombre d'entrées mises à jour.
+
+    Même angle mort que pour les corps : merge_scanned() n'écrit que
+    les nouveautés, donc une date extraite après coup — au moment où
+    l'article reçoit enfin son texte — ne rejoignait jamais sa ligne.
+    Audit du 2026-09-14 : 5829 entrées sur 8824 sans date, dont 3545
+    dont la page avait pourtant été téléchargée.
+
+    Ne remplit qu'une date ABSENTE. Une date déjà connue vient du flux
+    RSS, qui est plus fiable que ce qu'on devine dans une page HTML.
+    """
+    mis_a_jour = 0
+
+    for key, article in scanned:
+        if not key or key not in archive:
+            continue
+
+        if archive[key].get("date"):
+            continue
+
+        date = _serialize_date(article.get("date"))
+        if not date:
+            continue
+
+        archive[key]["date"] = date
+        mis_a_jour += 1
+
+    return mis_a_jour
+
+
 def iter_articles(
     archive: dict[str, dict[str, Any]],
     state: dict[str, Any],
@@ -491,15 +536,15 @@ if __name__ == "__main__":
         metavar=("BASE", "INCOMING"),
         required=True,
         help=(
-            "Fusionne INCOMING dans BASE : entrées manquantes, et corps "
-            "d'articles que BASE n'a pas encore."
+            "Fusionne INCOMING dans BASE : entrées manquantes, et faits "
+            "(corps, dates) que BASE n'a pas encore."
         ),
     )
     args = parser.parse_args()
 
     base, incoming = (Path(p) for p in args.merge_into)
-    ajoutees, corps = merge_files(base, incoming)
+    ajoutees, faits = merge_files(base, incoming)
     print(
-        f"ARCHIVE | {ajoutees} entrée(s) et {corps} corps "
+        f"ARCHIVE | {ajoutees} entrée(s) et {faits} fait(s) "
         f"fusionné(s) dans {base.name}"
     )
