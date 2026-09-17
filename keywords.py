@@ -600,6 +600,31 @@ ACTIVIST_TERMS = [
     "лидер оппозиции", "оппозиционер", "оппозиционера",
     "протестующие", "протестующих", "критик", "критики", "критиков",
 
+    # Ajoutés le 2026-09-17, audit des 585 titres HRW restés en E avec
+    # géographie + ancrage répressif confirmés mais aucune cible
+    # reconnue par has_activist (seul canal qui alimente target_score,
+    # TARGET_TERMS_V9 lui-même n'y contribue pas). "lawyer" : 9 titres
+    # du corpus, 8 justes (avocats emprisonnés/disparus/visés par une
+    # répression) ; le seul faux (Sandusky) porte sur une affaire
+    # pénale américaine sans aucun rapport, et reste hors zone de
+    # veille de toute façon. "прокурор"/"юрист"/"адвокат" nus ont été
+    # mesurés et REJETÉS : 2 titres HR sur 12-16, l'écrasante majorité
+    # étant des chroniques juridiques grand public (Izvestia : "Юрист
+    # объяснила права родителей après un divorce", "Юрист заявил о
+    # незаконности платы за парковку") qui, en l'absence de tout autre
+    # ancrage, feraient basculer ces articles de E à D via
+    # global_hr_signal.
+    "lawyer", "lawyers",
+
+    # Prisonnier de guerre : catégorie déjà reconnue côté catégorisation
+    # (DETENU_TERMS, categorisation.py) mais absente ici, donc invisible
+    # pour target_score. "Azerbaijan: Armenian POWs Abused in Custody"
+    # passait de E (23) à B (58) une fois ajouté. 4 titres du corpus,
+    # 4 justes.
+    "pow", "pows", "prisoner of war", "prisoners of war",
+    "военнопленный", "военнопленного", "военнопленным",
+    "военнопленные", "военнопленных", "военнопленными",
+
     "activist",
     "activists",
     "human rights activist",
