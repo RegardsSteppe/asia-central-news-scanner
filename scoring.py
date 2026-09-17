@@ -262,6 +262,12 @@ POLITICAL_PRISONER_TERMS_V9 = [
     "political imprisonment", "политический заключенный",
     "политические заключенные", "узник совести", "политическое заключение",
     "политическое преследование", "политически мотивированное обвинение",
+    # Français, ajouté le 2026-09-17 : la forme existait déjà en
+    # anglais et en russe, pas en français — "Ouzbékistan : Le
+    # calvaire des prisonniers politiques" (HRW) restait à 23 (E)
+    # faute de primary_political_prisoner, malgré une géographie et
+    # un ancrage confirmés. Passe à 45 (C) une fois ajouté.
+    "prisonnier politique", "prisonniers politiques",
 ]
 
 DEMOCRACY_CIVIC_SPACE_TERMS_V9 = [

@@ -14,7 +14,7 @@
   ],
   "relevant": true,
   "score": 100,
-  "signals_sha256": "a3bedf720acb7582",
+  "signals_sha256": "33513b486a2a689c",
   "theme": "Activistes / dissidents sous pression",
   "url": "https://www.amnesty.org/en/latest/news/2026/09/azerbaijan-lengthy-sentences-for-anar-mammadli-and-other-independent-voices-point-to-the-shocking-scale-of-the-crackdown-on-dissent/"
  },
@@ -207,13 +207,15 @@
   "reasons": [
    "Asie centrale: tajik",
    "géographie confirmée dans le corps",
+   "activiste / défenseur des droits ciblé",
+   "activiste/HRD + action répressive",
    "répression grave confirmée",
    "plafond V9: confirmation HR dans le body"
   ],
   "relevant": true,
   "score": 54,
-  "signals_sha256": "3ae00685e3d40e63",
-  "theme": "Répression / droits humains",
+  "signals_sha256": "bb4415f154946ca4",
+  "theme": "Activistes / dissidents sous pression",
   "url": "https://www.aljazeera.com/news/2025/10/8/tajik-war-prisoner-captured-by-ukraine-fears-being-swapped"
  },
  {
@@ -1113,8 +1115,8 @@
    "porte régionale: aucun ancrage régional"
   ],
   "relevant": false,
-  "score": 14,
-  "signals_sha256": "d26979fb8c345460",
+  "score": 17,
+  "signals_sha256": "c1244b7560982656",
   "theme": "Faible priorité",
   "url": "https://www.amnesty.org/en/annual-report-archive/"
  },
@@ -1251,7 +1253,7 @@
   ],
   "relevant": false,
   "score": 20,
-  "signals_sha256": "c605b7c8c51bc6df",
+  "signals_sha256": "83087870a96b9cf5",
   "theme": "Faible priorité",
   "url": "https://www.fidh.org/en/en/region/asia/thailand/thailand-new-report-details-more-than-a-decade-of-lese-majeste-abuse-33104"
  },
@@ -1288,7 +1290,7 @@
   ],
   "relevant": false,
   "score": 20,
-  "signals_sha256": "952dc7d1be751b1d",
+  "signals_sha256": "1ae4c35fad6b802d",
   "theme": "Droits spécifiques",
   "url": "https://www.fidh.org/en/en/region/americas/ecuador/ecuador-international-organizations-warn-of-a-rapid-deterioration-of"
  },
@@ -4174,14 +4176,15 @@
   "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE5UbVk5R2tPQTU4UFBiNl85Wlh0NldxZjFGWVktQk44UUwwZmlldmhRV3R5QWVfS0lSSndjb0lnNXlOdzd2emxmLTRn?oc=5"
  },
  {
-  "level": "E",
-  "priority": "FAIBLE",
+  "level": "C",
+  "priority": "MOYENNE",
   "reasons": [
-   "Asie centrale: ouzbékistan"
+   "Asie centrale: ouzbékistan",
+   "prisonnier politique / détenu politique"
   ],
-  "relevant": false,
-  "score": 23,
-  "signals_sha256": "8b6b3d75dad7731a",
+  "relevant": true,
+  "score": 45,
+  "signals_sha256": "21d7cf4e5e8d4f02",
   "theme": "Répression / droits humains",
   "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOLVZKek93MjFrOW9fMHNQd3FUalh6R1hVd1p4RWhIOVZ6ZkFubzZldENpU2JqR0tXX3k5cjEybDlUMy1sWU1sMDludV9yVnMxcDNrNmIxZWRXcmxQX2Y1WnE4ZHlkaEl4UERWNk9wN0p3SjJxU1YzaVl6cjN3NENINjB6OVNGVG80MmlwQ3BZMmtFNUpRdDhCOUtJWmxJYUVISEZ3NjhB?oc=5"
  },

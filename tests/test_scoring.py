@@ -1267,6 +1267,106 @@ class VocabulaireRusseHRWTests(unittest.TestCase):
         )
 
 
+class CiblesManquantesHRWTests(unittest.TestCase):
+    """
+    Régression du 2026-09-17. Sur les 585 titres HRW restés en niveau
+    E, 35 avaient géographie + ancrage répressif confirmés
+    (primary_hr_anchor) mais aucune cible reconnue (target_score=0) :
+    has_activist/has_journalist sont les deux seuls canaux qui
+    alimentent target_score, pas TARGET_TERMS_V9 lui-même.
+
+    "lawyer" et le prisonnier de guerre étaient déjà couverts côté
+    catégorisation (AVOCAT_TERMS, DETENU_TERMS dans categorisation.py)
+    sans jamais atteindre le scoring — deux listes séparées pour une
+    même notion. Le français manquait "prisonnier politique" alors
+    que l'anglais et le russe l'avaient déjà.
+    """
+
+    def _article(self, titre, source="Human Rights Watch"):
+        article = {
+            "title": titre,
+            "summary": "",
+            "source": source,
+            "url": "https://www.hrw.org/news/test",
+        }
+        classify_article(article)
+        return article
+
+    def test_lawyer_est_une_cible(self):
+        # 9 titres du corpus contiennent "lawyer(s)", 8 justes (le
+        # seul faux, Sandusky, est une affaire pénale américaine sans
+        # rapport et hors zone de veille de toute façon).
+        from scoring import LEVEL_A_MIN_SCORE
+
+        for titre in (
+            "Uzbekistan Should Free Imprisoned Lawyer",
+            "Uzbekistan Convicts Karakalpak Lawyer – Again",
+        ):
+            with self.subTest(titre=titre):
+                article = self._article(titre)
+                self.assertTrue(article["signals"]["has_activist"])
+                self.assertGreaterEqual(article["score"], LEVEL_A_MIN_SCORE)
+
+    def test_yurist_advokat_nus_restent_dehors(self):
+        # Garde-fou : mesurés puis REJETÉS. "юрист"/"адвокат" seuls
+        # sont dominés par les chroniques juridiques grand public
+        # (Izvestia : divorce, stationnement, achat immobilier), 2
+        # titres HR sur 12-16. Les ajouter ferait basculer ces
+        # chroniques de E à D via global_hr_signal.
+        for titre in (
+            "Юрист объяснила права родителей после развода",
+            "Юрист заявил о незаконности платы за парковку во дворе",
+            "Адвокат предупредил россиян о признаках мошенничества со стороны риелторов",
+        ):
+            with self.subTest(titre=titre):
+                article = self._article(titre, source="Izvestia")
+                self.assertFalse(article["signals"]["has_activist"])
+                self.assertEqual(article["level"], "E")
+
+    def test_pow_est_une_cible(self):
+        # 4 titres du corpus, 4 justes. "Azerbaijan: Armenian POWs
+        # Abused in Custody" passait de E (23) à B avant/après.
+        from scoring import LEVEL_B_MIN_SCORE
+
+        for titre in (
+            "Azerbaijan: Armenian POWs Abused in Custody",
+            "Азербайджан: Грубые нарушения в обращении с армянскими военнопленными",
+        ):
+            with self.subTest(titre=titre):
+                article = self._article(titre, source="Human Rights Watch — russe")
+                self.assertTrue(article["signals"]["has_activist"])
+
+        article = self._article("Azerbaijan: Armenian POWs Abused in Custody")
+        self.assertGreaterEqual(article["score"], LEVEL_B_MIN_SCORE)
+
+    def test_prisonnier_politique_francais_ancre_le_score(self):
+        from scoring import LEVEL_C_MIN_SCORE
+
+        article = self._article(
+            "Ouzbékistan : Le calvaire des prisonniers politiques",
+            source="Human Rights Watch — français",
+        )
+        self.assertTrue(article["signals"]["primary_political_prisoner"])
+        self.assertGreaterEqual(article["score"], LEVEL_C_MIN_SCORE)
+
+    def test_farmer_nu_reste_dehors(self):
+        # Garde-fou : mesuré puis REJETÉ. 3-4 titres HR justes sur 8
+        # ("Cotton, Wheat Farmers Exploited") contre du bruit agricole
+        # massif hors zone (Chine, Kosovo, Afrique) : Xinhua "Farmers
+        # busy with autumn harvesting", China Daily "smart
+        # agricultural tech", UN Women Kosovo.
+        for titre, source in (
+            ("Farmers busy with autumn harvesting across China", "Xinhua"),
+            (
+                "Women farmers in Kosovo are empowered to shape the future of agriculture",
+                "UN Women — Europe & Asie centrale",
+            ),
+        ):
+            with self.subTest(titre=titre):
+                article = self._article(titre, source=source)
+                self.assertFalse(article["signals"]["has_activist"])
+
+
 class PageDeRubriqueTests(unittest.TestCase):
     """
     Élargissement du 2026-09-14, en réponse au recensement des
