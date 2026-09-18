@@ -48,7 +48,7 @@ sys.path.insert(0, str(RACINE))
 from text_utils import strip_related_blocks  # noqa: E402
 
 SORTIE = RACINE / "boilerplate.py"
-ARCHIVE = RACINE / "archive.jsonl"
+ARCHIVE = RACINE / "data" / "archive.jsonl"
 
 # Un corps plus court que ça n'apprend rien sur le pied de page de sa
 # source : il est probablement tronqué ou n'est pas un article.
