@@ -89,7 +89,7 @@ jobs:
       #     explicit merge below.
       - name: Persist scanner memory and archive
         run: |
-          TRACKED="memory.json archive.jsonl archive_state.json"
+          TRACKED="data/memory.json data/archive.jsonl data/archive_state.json"
 
           if [ -z "$(git status --porcelain -- $TRACKED)" ]; then
             echo "nothing to persist"
@@ -99,18 +99,22 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          mkdir -p /tmp/persist
+          # /tmp/persist reproduit l'arborescence du dépôt : les chemins
+          # de $TRACKED portent maintenant leur dossier data/, donc la
+          # copie a besoin que ce dossier existe des deux côtés.
+          mkdir -p /tmp/persist/data
           for f in $TRACKED; do
             [ -f "$f" ] && cp "$f" "/tmp/persist/$f"
           done
 
           for attempt in 1 2 3 4 5; do
-            for f in memory.json archive_state.json; do
+            mkdir -p data
+            for f in data/memory.json data/archive_state.json; do
               [ -f "/tmp/persist/$f" ] && cp "/tmp/persist/$f" "$f"
             done
 
-            if [ -f /tmp/persist/archive.jsonl ]; then
-              python archive.py --merge-into archive.jsonl /tmp/persist/archive.jsonl
+            if [ -f /tmp/persist/data/archive.jsonl ]; then
+              python archive.py --merge-into data/archive.jsonl /tmp/persist/data/archive.jsonl
             fi
 
             if [ -n "$(git status --porcelain -- $TRACKED)" ]; then

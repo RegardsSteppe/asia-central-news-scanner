@@ -52,8 +52,9 @@ from article_ingestion import (
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
 
-MEMORY_FILE = BASE_DIR / "memory.json"
+MEMORY_FILE = DATA_DIR / "memory.json"
 OUTPUT_FILE = BASE_DIR / "index.html"
 CSV_OUTPUT_FILE = BASE_DIR / "articles.csv"
 
@@ -442,6 +443,7 @@ def safe_save_memory(
 ) -> None:
 
     try:
+        MEMORY_FILE.parent.mkdir(parents=True, exist_ok=True)
         with MEMORY_FILE.open(
             "w",
             encoding="utf-8",

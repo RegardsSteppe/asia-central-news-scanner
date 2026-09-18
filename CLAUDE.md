@@ -9,6 +9,8 @@ Couches, du bas vers le haut. Une couche n'importe jamais une couche au-dessus d
 - `scoring.py` et `categorisation.py` — importent `matching` + `keywords`, **jamais l'un l'autre**.
 - `regles_editoriales.py` — applique des choix sur le dict de `categoriser()`. Ne détecte rien.
 - `news_scanner.py` — orchestration. `archive.py` — persistance append-only.
+- `data/` — `archive.jsonl`, `archive_state.json`, `memory.json`. Chemins définis une seule fois (`DATA_DIR` dans `archive.py` et `news_scanner.py`) : ne jamais écrire un de ces noms en dur ailleurs.
+- `docs/` — `HISTORY.md`, `QUICKSTART.md`, `RUNPOD.md`. `CLAUDE.md` et `README.md` restent à la racine (Claude Code et GitHub les y lisent).
 
 Invariants :
 
@@ -21,7 +23,7 @@ Invariants :
 
 ## Conventions
 
-- **Auditer avant d'ajouter du vocabulaire.** Chercher le candidat dans `archive.jsonl` (titres **et** corps), compter les déclenchements justes, et rejeter sous ~80 % de précision. Chiffres dans le commentaire, au-dessus du terme.
+- **Auditer avant d'ajouter du vocabulaire.** Chercher le candidat dans `data/archive.jsonl` (titres **et** corps), compter les déclenchements justes, et rejeter sous ~80 % de précision. Chiffres dans le commentaire, au-dessus du terme.
 - **Rejeter les mots qui désignent une population, garder ceux qui désignent un rôle.** `imam` oui, `muslim` non. `opposants` oui, `opposant` non (participe présent de *opposer*). `юрист` non (chroniques juridiques). `farmer` non (moissons chinoises).
 - **Avant de retirer un terme**, mesurer ce que le retrait coûte en détections légitimes — pas seulement ce qu'il fait gagner.
 - **Chaque candidat rejeté devient un test** dans `tests/test_scoring.py`, avec les chiffres de l'audit. C'est le seul garde-fou contre sa réintroduction.

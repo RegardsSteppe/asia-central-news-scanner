@@ -67,9 +67,10 @@ from article_ingestion import strip_diplomat_byline, strip_osce_metadata
 from text_utils import strip_boilerplate, strip_related_blocks
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
 
-ARCHIVE_FILE = BASE_DIR / "archive.jsonl"
-ARCHIVE_STATE_FILE = BASE_DIR / "archive_state.json"
+ARCHIVE_FILE = DATA_DIR / "archive.jsonl"
+ARCHIVE_STATE_FILE = DATA_DIR / "archive_state.json"
 
 # Niveaux dont on conserve le corps complet dans l'archive.
 #
@@ -220,6 +221,8 @@ def append_entries(
     if not entries:
         return 0
 
+    path.parent.mkdir(parents=True, exist_ok=True)
+
     with path.open("a", encoding="utf-8") as handle:
         for entry in entries:
             handle.write(json.dumps(entry, ensure_ascii=False, sort_keys=True))
@@ -245,6 +248,8 @@ def rewrite_archive(
     """
     path = path or ARCHIVE_FILE
     entries = list(entries)
+
+    path.parent.mkdir(parents=True, exist_ok=True)
 
     with path.open("w", encoding="utf-8") as handle:
         for entry in entries:
@@ -355,6 +360,7 @@ def save_state(state: dict[str, Any], path: Path | None = None) -> None:
     path = path or ARCHIVE_STATE_FILE
 
     try:
+        path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as handle:
             json.dump(state, handle, ensure_ascii=False, sort_keys=True, indent=1)
     except Exception as exc:

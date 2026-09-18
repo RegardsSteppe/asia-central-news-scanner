@@ -94,7 +94,7 @@ jobs:
         # fichier jamais commité.
         if: always()
         run: |
-          if [ -z "$(git status --porcelain -- archive.jsonl)" ]; then
+          if [ -z "$(git status --porcelain -- data/archive.jsonl)" ]; then
             echo "nothing to persist"
             exit 0
           fi
@@ -102,18 +102,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          mkdir -p /tmp/persist
-          cp archive.jsonl /tmp/persist/archive.jsonl
+          mkdir -p /tmp/persist/data
+          cp data/archive.jsonl /tmp/persist/data/archive.jsonl
 
           # Le scan quotidien peut avoir poussé pendant ces heures. On
           # ne réécrit jamais sa version par-dessus la nôtre : on prend
           # l'union, qui porte aussi sur les corps (archive.merge_files)
           # — sinon un conflit de push coûterait tout le téléchargement.
           for attempt in 1 2 3 4 5; do
-            python archive.py --merge-into archive.jsonl /tmp/persist/archive.jsonl
+            mkdir -p data
+            python archive.py --merge-into data/archive.jsonl /tmp/persist/data/archive.jsonl
 
-            if [ -n "$(git status --porcelain -- archive.jsonl)" ]; then
-              git add archive.jsonl
+            if [ -n "$(git status --porcelain -- data/archive.jsonl)" ]; then
+              git add data/archive.jsonl
               git commit -m "Fill article bodies in the archive [skip ci]"
             fi
 
