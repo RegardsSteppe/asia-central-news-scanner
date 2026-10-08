@@ -276,7 +276,9 @@ collecte moins de `CORPUS_COLLAPSE_RATIO` (défaut **0,5**) du run
 précédent. **Rien n'est publié** ; le site garde sa version complète.
 
 - Jamais déclenché au premier run (pas de référence) ni quand le corpus
-  grandit. La référence est `memory["last_corpus_size"]`.
+  grandit. La référence est `memory["last_collected_size"]` : le nombre
+  d'articles **collectés** au dernier run publié, avant fusion avec
+  l'archive.
 - `SCANNER_ALLOW_CORPUS_DROP=1` dégrade l'erreur en avertissement, pour
   une chute légitime et assumée (panne durable d'un fournisseur, coupe
   volontaire de sources).
