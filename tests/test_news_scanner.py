@@ -12,6 +12,7 @@ from news_scanner import (
     CorpusCollapseError,
     merge_with_archive,
     check_corpus_not_collapsed,
+    record_collected_size,
     build_audit,
     build_csv_rows,
     build_title_vocabulary,
@@ -833,17 +834,17 @@ class CorpusCollapseGuardTests(unittest.TestCase):
     """
 
     def test_passes_when_corpus_is_stable(self):
-        check_corpus_not_collapsed(6700, {"last_corpus_size": 6706})
+        check_corpus_not_collapsed(6700, {"last_collected_size": 6706})
 
     def test_passes_when_corpus_grows(self):
-        check_corpus_not_collapsed(9000, {"last_corpus_size": 6706})
+        check_corpus_not_collapsed(9000, {"last_collected_size": 6706})
 
     def test_passes_on_first_ever_run(self):
         check_corpus_not_collapsed(120, {})
 
     def test_raises_on_the_real_2026_09_13_collapse(self):
         with self.assertRaises(CorpusCollapseError) as caught:
-            check_corpus_not_collapsed(2086, {"last_corpus_size": 6706})
+            check_corpus_not_collapsed(2086, {"last_collected_size": 6706})
 
         message = str(caught.exception)
         self.assertIn("2086", message)
@@ -851,11 +852,24 @@ class CorpusCollapseGuardTests(unittest.TestCase):
 
     def test_tolerates_a_moderate_drop(self):
         # Une source majeure en panne ne doit pas bloquer la publication.
-        check_corpus_not_collapsed(4000, {"last_corpus_size": 6706})
+        check_corpus_not_collapsed(4000, {"last_collected_size": 6706})
 
     def test_ignores_corrupted_reference(self):
         for bogus in (None, 0, -5, "6706"):
-            check_corpus_not_collapsed(10, {"last_corpus_size": bogus})
+            check_corpus_not_collapsed(10, {"last_collected_size": bogus})
+
+    def test_ignores_legacy_post_archive_reference(self):
+        # Run #193 du 2026-10-08 : 6222 collectés contre une référence de
+        # 16134 qui comptait l'archive. Cette ancienne clé ne doit plus
+        # rien bloquer.
+        check_corpus_not_collapsed(6222, {"last_corpus_size": 16134})
+
+    def test_reference_is_the_collected_count_and_drops_legacy_key(self):
+        memory = {"last_corpus_size": 16134}
+        record_collected_size(memory, 6703)
+        self.assertEqual(memory, {"last_collected_size": 6703})
+        # Un run normal le lendemain passe.
+        check_corpus_not_collapsed(6222, memory)
 
 
 class MergeWithArchiveTests(unittest.TestCase):

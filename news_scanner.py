@@ -1546,6 +1546,23 @@ ALLOW_CORPUS_DROP = os.getenv(
 ).strip().lower() in {"1", "true", "yes"}
 
 
+# Référence du garde-fou : le nombre d'articles COLLECTÉS au dernier run
+# publié, avant fusion avec l'archive. L'ancienne clé "last_corpus_size"
+# enregistrait la taille APRÈS fusion (16134 au run #182 du 2026-09-27,
+# pour 6703 collectés) et la comparait à une collecte brute : seuil à
+# 8067, inatteignable, onze scans planifiés bloqués du 28/09 au 08/10.
+# Nouvelle clé plutôt que correction de valeur : l'ancienne est fausse
+# et ignorée, le premier run après correctif repart sans référence.
+CORPUS_SIZE_KEY = "last_collected_size"
+_LEGACY_CORPUS_SIZE_KEY = "last_corpus_size"
+
+
+def record_collected_size(memory: dict[str, Any], collected: int) -> None:
+    """Enregistre la référence du garde-fou (à appeler après publication)."""
+    memory[CORPUS_SIZE_KEY] = collected
+    memory.pop(_LEGACY_CORPUS_SIZE_KEY, None)
+
+
 def check_corpus_not_collapsed(
     count: int,
     memory: dict[str, Any],
@@ -1557,7 +1574,7 @@ def check_corpus_not_collapsed(
     Ne se déclenche jamais au premier run (aucune référence), ni quand
     le corpus grandit. Contourné par SCANNER_ALLOW_CORPUS_DROP=1.
     """
-    previous = memory.get("last_corpus_size")
+    previous = memory.get(CORPUS_SIZE_KEY)
 
     if not isinstance(previous, int) or previous <= 0:
         return
@@ -1714,7 +1731,8 @@ def run_scan(
 
     # Vérifié ici, avant tout travail coûteux et surtout avant la
     # moindre écriture de index.html/articles.csv.
-    check_corpus_not_collapsed(len(all_articles), memory)
+    collected_count = len(all_articles)
+    check_corpus_not_collapsed(collected_count, memory)
 
     # --------------------------------------------------------
     # Première passe : titre + résumé uniquement
@@ -1884,8 +1902,9 @@ def run_scan(
         print("MEMORY | seen_article_keys mis à jour")
 
     # Enregistré seulement maintenant : une taille de référence ne vaut
-    # que si le corpus correspondant a bien été publié.
-    memory["last_corpus_size"] = len(all_articles)
+    # que si le corpus correspondant a bien été publié. collected_count
+    # et non len(all_articles), qui inclut désormais toute l'archive.
+    record_collected_size(memory, collected_count)
 
     # Toujours persisté, y compris quand SKIP_PREVIOUSLY_SEEN est
     # désactivé : le cache par source (fraîcheur des sources) en dépend.
